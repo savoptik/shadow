@@ -1,4 +1,5 @@
-.\" Copyright 1989 - 1990, John F. Haugh II
+.\"$Id: passwd.5,v 1.6 2003/04/28 02:14:00 kloczek Exp $
+.\" Copyright 1989 - 1990, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -9,18 +10,14 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\" This product includes software developed by John F. Haugh, II
-.\"      and other contributors.
-.\" 4. Neither the name of John F. Haugh, II nor the names of its contributors
+.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
 .\"    may be used to endorse or promote products derived from this software
 .\"    without specific prior written permission.
 .\"
-.\" THIS SOFTWARE IS PROVIDED BY JOHN HAUGH AND CONTRIBUTORS ``AS IS'' AND
+.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JOHN HAUGH OR CONTRIBUTORS BE LIABLE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
 .\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 .\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
 .\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -29,12 +26,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	$Id: passwd.5,v 1.1 2001/06/16 02:35:46 kloczek Exp $
-.\"
 .\" Japanese Version Copyright (c) 1997 Kazuyoshi Furutaka
 .\"         all rights reserved.
 .\" Translated Fri Feb 14 23:06:00 JST 1997
 .\"         by Kazuyoshi Furutaka <furutaka@Flux.tokai.jaeri.go.jp>
+.\" Modified Tue 18 Sep 2002 by NAKNAO Takeo <nakano@apm.seikei.ac.jp>
 .\"
 .TH PASSWD 5
 .SH 名前
@@ -42,70 +38,76 @@ passwd \- パスワードファイル
 .SH 説明
 .I passwd
 ファイルには各ユーザアカウントの様々な情報が記録されている。
-書かれているのは、
+書かれているのは次の通り。
 .IP "" .5i
 ログイン名
 .IP "" .5i
-オプションの暗号化されたパスワード
+暗号化されたパスワード (無いこともある)
 .IP "" .5i
-ユーザID番号
+ユーザ ID 番号
 .IP "" .5i
-グループID番号
+グループ ID 番号
 .IP "" .5i
-ユーザ名もしくはコメント欄
+ユーザ名またはコメントのフィールド
 .IP "" .5i
 ユーザのホームディレクトリ
 .IP "" .5i
 ユーザのコマンドインタプリタ
 .PP
-パスワードがshadowされている場合、パスワード欄を埋めてはならない。
-shadowパスワードを用いている場合、暗号化されたパスワードは
-\fB/etc/shadow\fRに書かれている。
-暗号化されたパスワードは、アルファベットaからz、AからZ、0から9
-及び\.と/.の64文字から作られた13文字からなる。
-この文字列がどのように解釈されるかの詳細は、\fIcrypt(3)\fRを
-参照のこと。
+パスワードが shadow 化されている場合は、
+パスワードフィールドを埋めてはならない。
+shadow パスワードを用いている場合、暗号化されたパスワードは
+\fI/etc/shadow\fR に書かれている。
+暗号化されたパスワードは、
+アルファベット a から z、A から Z、0 から 9、\. と / の
+64 文字から作られた 13 文字からなる。
+この文字列がどのように解釈されるかの詳細は
+\fBcrypt\fR(3) を参照のこと。
 .PP
-オプションで、パスワードに続いてパスワード有効期限が、
-コンマで区切って同じ文字集合の文字をを使って記されていることもある。
-パスワード有効期限は、パスワード自身と同じ文字集合から作られている。
-最初の文字には、パスワードが何週間有効かが記されている。
-二番目の文字は、何週間経てばユーザがパスワードを変更できるかを与える。
-最後の二文字には、最後にパスワードを変更したのは1970年1月から何週間
-経過した時であるかを表す。
-パスワードの有効期限が過ぎた時は、ユーザは新しいパスワードを設定
-しなくてはならない。
+オプションとして、パスワードの後に、
+コンマに続いてパスワードの有効期限文字列が記されていることもある。
+この文字列はパスワードと同じ文字セットからなる。
+最初の文字は、パスワードが何週間有効かを示す。
+二番目の文字は、何週間経てばユーザがパスワードを変更できるかを示す。
+最後の二文字は、
+最後にパスワードを変更したのが
+1970 年 1 月から何週間経過した時点であるかを表す。
+パスワードの有効期限が過ぎた時は、
+ユーザは新しいパスワードを設定しなければならない。
 .PP
-コメント欄は、\fIfinger(1)\fR等の様々なシステムユーティリティに利用される。
-コメント欄には更に3つの数値が記入されていても良い。
-それらは、
+コメントフィールドは
+\fBfinger\fR(1) のような様々なシステムユーティリティから利用される。
+コメントフィールドには、追加情報として、
+次のような 3 つの数値が記入されていることもある。
 .IP "" .5i
-pri= \- niceの初期設定値
+pri= \- nice の初期設定値
 .IP "" .5i
-umask= \- umaskの初期設定値
+umask= \- umask の初期設定値
 .IP "" .5i
-ulimit= \- ulimitの初期設定値
+ulimit= \- ulimit の初期設定値
 .PP
-これらの欄は互いに、またコメント欄の別のフィールドと、コンマを用いて
-区別されている。
+これらのフィールドは互いに、また他のコメントフィールドと、
+コンマを用いて分離される。
 .PP
-ホームディレクトリ欄にはログイン時の作業ディレクトリ名が記されている。
-\fILogin\fRはこの情報を用いて環境変数\fBHOME\fRの内容を設定する。
+ホームディレクトリフィールドは、
+初期作業ディレクトリの名前を与える。
+\fBlogin\fR はこの情報を用いて環境変数 \fBHOME\fR の内容を設定する。
 .PP
-コマンドインタプリタ欄にはユーザのコマンド言語インタプリタもしくは
+コマンドインタプリタのフィールドには、
+ユーザのコマンド言語インタプリタか、
 最初に実行するプログラムの名前を記す。
-\fILogin\fRはこの情報を用いて環境変数\fBSHELL\fRの内容を設定する。
-この欄に何も記されていない場合は、ディフォルト値として\fB/bin/sh\fRを
-使用する。
+\fBlogin\fR はこの情報を用いて環境変数 \fBSHELL\fR の内容を設定する。
+このフィールドに何も記されていない場合は、
+デフォルト値として \fB/bin/sh\fR を使用する。
 .SH ファイル
-/etc/passwd \- ユーザのアカウント情報
+\fI/etc/passwd\fR \- ユーザアカウント情報
 .SH 関連項目
-login(1),
-passwd(1),
-su(1),
-sulogin(1M),
-shadow(5),
-pwconv(8),
-pwunconv(8)
-.SH 翻訳者
-古高和禎 <furutaka@Flux.tokai.jaeri.go.jp>
+.BR login (1),
+.BR passwd (1),
+.BR su (1),
+.BR shadow (5),
+.BR pwconv (8),
+.BR pwunconv (8),
+.BR sulogin (8)
+.SH 著者
+Julianne Frances Haugh (jockgrrl@ix.netcom.com)

@@ -3,7 +3,7 @@ EXTRA_DOST = .indent.pro
 
 DEFS = -DHAVE_CONFIG_H
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/lib
+INCLUDES = -I$(top_srcdir)/lib
 
 lib_LTLIBRARIES = libmisc.la
 
@@ -48,7 +48,6 @@ libmisc_la_SOURCES = \
 	setupenv.c \
 	shell.c \
 	strtoday.c \
-	suauth.c \
 	sub.c \
 	sulog.c \
 	ttytype.c \
@@ -57,3 +56,5 @@ libmisc_la_SOURCES = \
 	utmp.c \
 	valid.c \
 	xmalloc.c
+
+libmisc_la_LIBADD = $(LIBCRACK)

@@ -1,4 +1,7 @@
 
+# subdirectories for translated manual pages
+SUBDIRS = cs de es fr hu id it ja ko pl pt_BR ru zh_CN zh_TW
+
 man_MANS = \
 	adduser.8 \
 	chage.1 \
@@ -12,6 +15,7 @@ man_MANS = \
 	groupadd.8 \
 	groupdel.8 \
 	groupmod.8 \
+	groups.1 \
 	grpck.8 \
 	grpconv.8 \
 	grpunconv.8 \
@@ -30,23 +34,19 @@ man_MANS = \
 	pwck.8 \
 	pwconv.8 \
 	pwunconv.8 \
+	sg.1 \
 	shadow.5 \
 	su.1 \
 	suauth.5 \
 	useradd.8 \
 	userdel.8 \
 	usermod.8 \
+	vigr.8 \
 	vipw.8
 
 EXTRA_DIST = $(man_MANS) \
-	dpasswd.8 \
-	groups.1 \
 	id.1 \
 	pw_auth.3 \
-	pwauth.8 \
 	shadow.3 \
 	shadowconfig.8 \
 	sulogin.8
-
-# subdirectories for translated manual pages
-SUBDIRS = ja pl pt_BR

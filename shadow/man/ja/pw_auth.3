@@ -1,4 +1,5 @@
-.\" Copyright 1992 - 1993, John F. Haugh II
+.\"$Id: pw_auth.3,v 1.4 2003/04/28 02:14:00 kloczek Exp $
+.\" Copyright 1992 - 1993, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -9,18 +10,14 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\" This product includes software developed by John F. Haugh, II
-.\"      and other contributors.
-.\" 4. Neither the name of John F. Haugh, II nor the names of its contributors
+.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
 .\"    may be used to endorse or promote products derived from this software
 .\"    without specific prior written permission.
 .\"
-.\" THIS SOFTWARE IS PROVIDED BY JOHN HAUGH AND CONTRIBUTORS ``AS IS'' AND
+.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JOHN HAUGH OR CONTRIBUTORS BE LIABLE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
 .\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 .\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
 .\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -29,102 +26,120 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	$Id: pw_auth.3,v 1.1 2001/06/16 02:35:46 kloczek Exp $
-.\"
 .\" Japanese Version Copyright (c) 1997 Kazuyoshi Furutaka
 .\"         all rights reserved.
 .\" Translated Fri Feb 14 23:06:00 JST 1997
 .\"         by Kazuyoshi Furutaka <furutaka@Flux.tokai.jaeri.go.jp>
+.\" updated Tue 17 Sep 2002 by NAKANO Takeo <nakano@apm.seikei.ac.jp>
 .\"
 .TH PWAUTH 3
 .SH 名前
 pwauth \- 管理者の設定したパスワード認証ルーチン
 .SH 書式
-.IP "" .5i
-#include <pwauth.h>
-.IP "" .5i
-int pw_auth (char *command, char *user, int reason, char *input);
+.B #include <pwauth.h>
+.PP
+.B int pw_auth (char
+.I *command,
+.B char
+.I *user,
+.B int
+.I reason,
+.B char
+.IB *input) ;
 .SH 説明
-.I pw_auth
-は、指定されたユーザに対して管理者が設定した関数を呼び出す。
+.B pw_auth
+は、与えられたユーザに対して管理者が設定した関数を呼び出す。
 .PP
-\fIcommand\fRは認証プログラムの名前である。
-どの認証プログラムを使用するかはパスワードファイルに記されたユーザ情報
-により決定される。
-この文字列には、セミコロンで区切られた一つ以上の実行ファイル名を指定する。
+\fIcommand\fR は認証プログラムの名前である。
+これはパスワードファイルに記されたそのユーザの情報から決定される。
+この文字列はセミコロンで区切られた一つ以上の実行ファイル名からなる。
 各々のプログラムは記されている順に実行される。
-コマンドライン引数は以下に挙げる方法で指定される。
+以下に記述するそれぞれの
+.I reason
+に応じて、コマンドライン引数が与えられる。
 .PP
-\fIuser\fRは、\fB/etc/passwd\fRファイル中に記された、
-認証されるユーザ名である。
+\fIuser\fR は認証されるユーザ名で、
+\fI/etc/passwd\fR ファイル中のものに対応する。
 ユーザエントリはユーザ名で指定される。
-したがって、一意的でないユーザIDがあっても良く、
-そのユーザIDに結びつけられた異なるユーザ名各々に対して異なる認証プログラム
-及び認証情報を指定できる。
+したがってユーザ ID には重なっているものがあっても良く、
+そのユーザ ID に結びつけられた異なるユーザ名の各々に対して、
+異なる認証プログラムと認証情報とを指定できる。
 .PP
-使用できる各々の認証方法は、全く異なる仕方で実行され得る。
-特に記されていない場合は、ユーザとやりとりするために標準的な
-ファイルディスクリプタ0,1及び2を使うことが出来る。
-認証を要請したユーザの同一性を調べるために実際のユーザIDを用いることも出来る。
-\fIreason\fRは以下のいずれかである
-.IP PW_SU 1i
-指定したユーザの実ユーザIDに変更するために、コマンドを起動したユーザの
-実ユーザIDの認証を行う。
-\fB-s\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_LOGIN 1i
-新たにログインセッションを作り出そうとしている指定されたユーザの認証を
-行う。
-\fB-l\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_ADD 1i
+使用できる各々の認証方法は、異なる方法で取り扱われることがある。
+特に記されていない場合は、標準的な
+ファイルディスクリプタ 0, 1, 2 を使ってユーザと通信できる。
+実ユーザIDを用いて、
+認証を要請したユーザの身元 (identity) を決めることもできる。
+\fIreason\fR は以下のいずれかである。
+.IP \fBPW_SU\fR 1i
+指定されたユーザの実ユーザ ID に切り替えようとしている、
+現在の実ユーザ ID に対して認証を行う。
+\fB-s\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_LOGIN\fR 1i
+新たにログインセッションを作り出そうとしている
+指定されたユーザを認証する。
+\fB-l\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_ADD\fR 1i
 指定されたユーザに対して新たなエントリを作る。
-これにより、認証プログラムが新規ユーザ用の記憶領域を準備することが出来る。
-\fB-a\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_CHANGE 1i
+これにより、認証プログラムは新規ユーザ用の記憶領域を準備できる。
+\fB-a\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_CHANGE\fR 1i
 指定されたユーザの既存のエントリを変更する。
-これにより、認証プログラムが既存のユーザの認証情報を変更することが出来る。
-\fB-c\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_DELETE 1i
+これにより、認証プログラムは既存のユーザの認証情報を変更できる。
+\fB-c\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_DELETE\fR 1i
 指定されたユーザの認証情報を消去する。
-これにより、以後この認証プログラムを用いて認証される事の無くなったユーザ
-情報の記憶領域を回復することが出来る。
-\fB-d\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_TELNET 1i
-\fItelnet\fRコマンドを用いてシステムに接続して来たユーザの認証を行う。
-\fB-t\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_RLOGIN 1i
-\fIrlogin\fRコマンドを用いてシステムに接続して来たユーザの認証を行う。
-\fB-r\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-.IP PW_FTP 1i
-\fIftp\fRコマンドを用いてシステムに接続して来たユーザの認証を行う。
-\fB-f\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-ユーザとやりとりするために標準ファイルディスクリプタを用いることは出来ない。
-標準入力ファイルディスクリプタは親プロセスに結びつけられており、
-一方他の二つの出力ファイルディスクリプタは\fB/dev/null\fRに結びつけられている。
-\fIpw_auth\fR関数はファイルディスクリプタ0を用いて一行のデータを
-認証プログラムにパイプする。
-.IP PW_REXEC 1i
-\fIrexec\fRコマンドを用いてシステムに接続して来たユーザの認証を行う。
-\fB-x\fRオプションの後にユーザ名を指定して認証プログラムが呼び出される。
-リモートユーザとやりとりするために標準ファイルディスクリプタを用いることは
-出来ない。
-標準入力ファイルディスクリプタは親プロセスに結びつけられており、
-一方他の二つの出力ファイルディスクリプタは\fB/dev/null\fRに結びつけられている。
-\fIpw_auth\fR関数はファイルディスクリプタ0を用いて一行のデータを
-認証プログラムにパイプする。
+これにより、認証プログラムは今後認証することが無くなった
+ユーザ用の記憶領域を再利用できる。
+\fB-d\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_TELNET\fR 1i
+\fBtelnet\fR コマンドを用いてシステムに接続して来たユーザの認証を行う。
+\fB-t\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_RLOGIN\fR 1i
+\fBrlogin\fR コマンドを用いてシステムに接続して来たユーザの認証を行う。
+\fB-r\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+.IP \fBPW_FTP\fR 1i
+\fBftp\fR コマンドを用いてシステムに接続して来たユーザの認証を行う。
+\fB-f\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+標準のファイルディスクリプタを用いてユーザと通信することはできない。
+標準の入力ファイルディスクリプタは親プロセスに接続されており、
+他の二つの出力ファイルディスクリプタは \fI/dev/null\fR に接続されている。
+\fBpw_auth\fR 関数はファイルディスクリプタ 0
+を用いて一行のデータを認証プログラムにパイプする。
+.IP \fBPW_REXEC\fR 1i
+\fIrexec\fR コマンドを用いてシステムに接続して来たユーザの認証を行う。
+\fB-x\fR オプションの後にユーザ名を指定して認証プログラムが呼び出される。
+標準のファイルディスクリプタを用いてユーザと通信することはできない。
+標準の入力ファイルディスクリプタは親プロセスに接続されており、
+他の二つの出力ファイルディスクリプタは \fI/dev/null\fR に接続されている。
+\fBpw_auth\fR 関数はファイルディスクリプタ 0
+を用いて一行のデータを認証プログラムにパイプする。
 .PP
-最後の引数はPW_FTP及びPW_REXECの方法で用いられる認証データであり、
-一行の文として扱われて、認証プログラムにパイプされる。
-PW_CHANGEの方法でユーザ名が変更される場合は、\fIinput\fRの内容は
-以前用いていたユーザ名となっている。
+最後の引数は
+.B PW_FTP
+及び
+.B PW_REXEC
+の方法で用いられる認証データであり、
+一行のテキストとして扱われ、認証プログラムにパイプされる。
+.I reason
+が
+.B PW_CHANGE
+のときは、ユーザ名が変更される場合には
+\fIinput\fR の内容は以前用いていたユーザ名である。
 .SH 警告
 この関数は実際のセッションを作り出すことはしない。
 指定されたユーザのセッションを作り出す事を許可するか否かを答えるだけである。
 .PP
 まだネットワークオプションはテストしていない。
 .SH 返り値
-\fIpw_auth\fR関数は、認証プログラムが終了コード0で終了した場合は0を、
+\fBpw_auth\fR 関数は、認証プログラムが終了コード 0 で終了した場合は 0 を、
 それ以外の場合はゼロ以外の値を返す。
 .SH 関連項目
-login(1), passwd(1), su(1), useradd(1), userdel(1), usermod(1)
-.\" .SH 翻訳者
-.\" 古高和禎 <furutaka@Flux.tokai.jaeri.go.jp>
+.BR login (1),
+.BR passwd (1),
+.BR su (1),
+.BR useradd (8),
+.BR userdel (8),
+.BR usermod (8)
+.SH 著者
+Julianne Frances Haugh (jockgrrl@ix.netcom.com)

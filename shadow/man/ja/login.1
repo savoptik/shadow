@@ -1,4 +1,5 @@
-.\" Copyright 1989 - 1994, John F. Haugh II
+.\"$Id: login.1,v 1.6 2003/04/28 02:14:00 kloczek Exp $
+.\" Copyright 1989 - 1994, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -9,18 +10,14 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\" This product includes software developed by John F. Haugh, II
-.\"      and other contributors.
-.\" 4. Neither the name of John F. Haugh, II nor the names of its contributors
+.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
 .\"    may be used to endorse or promote products derived from this software
 .\"    without specific prior written permission.
 .\"
-.\" THIS SOFTWARE IS PROVIDED BY JOHN HAUGH AND CONTRIBUTORS ``AS IS'' AND
+.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JOHN HAUGH OR CONTRIBUTORS BE LIABLE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
 .\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 .\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
 .\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -29,152 +26,135 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	$Id: login.1,v 1.1 2001/06/16 02:35:46 kloczek Exp $
-.\"
 .\" Japanese Version Copyright (c) 1997 Kazuyoshi Furutaka
 .\"         all rights reserved.
 .\" Translated Fri Feb 14 23:06:00 JST 1997
 .\"         by Kazuyoshi Furutaka <furutaka@Flux.tokai.jaeri.go.jp>
+.\" Updated Fri Jan 12 04:05:44 JST 2001
+.\"         by Kentaro Shirakata <argrath@ub32.org>
+.\" Modified Tue 16 Sep 2002 by NAKANO Takeo <nakano@apm.seikei.ac.jp>
 .\"
 .TH LOGIN 1
 .SH 名前
-login \- システム上にセッションを開く
+login \- システム上でセッションを開く
 .SH 書式
-.B login
-[ username [ environmental-variables ] ]
+\fBlogin\fR [\fB-p\fR] [\fIusername\fR] [\fIENV=VAR\fR ...]
+.br
+\fBlogin\fR [\fB-p\fR] [\fB-h \fIhost\fR] [\fB-f \fIusername\fR]
+.br
+\fBlogin\fR [\fB-p\fR] \fB-r \fIhost\fR
 .SH 説明
-.I login
+.B login
 はシステムに新たにセッションを開くために用いられる。
 通常は、ユーザの端末に表示される
-.B login:
-というプロンプトに応える事によって自動的に起動される。
-.I login
-はシェルにのみ限定されており、サブプロセスとして起動することは出来ない。
-典型的には、シェルは
-.I login
+.I login:
+というプロンプトに応じる事によって自動的に起動される。
+.B login
+はシェル専用のものであり、
+サブプロセスとして起動することはできない。
+通常シェルは
+.B login
 を
-\fBexec login\fRと見做すので、ユーザは現在のシェルから抜けることになる。
-ログインシェル以外から\fIlogin\fRを起動しようとすると、エラーメッセージが
-表示される。
+\fBexec login\fR とみなすので、ユーザは現在のシェルから抜けることになる。
+ログインシェル以外から \fBlogin\fR を起動しようとすると、
+エラーメッセージが表示される。
 .PP
-\fBlogin:\fRプロンプトから起動した際は、ユーザ名に続いて環境変数を入力
-する事もできる。
-それらを入力する場合は\fBNAME=VALUE\fRという書式で行う。
+\fIlogin:\fRプロンプトから起動した際は、
+ユーザ名に続いて環境変数を入力する事もできる。
+それらを入力する場合は \fBNAME=VALUE\fR という書式で行う。
 この方法で全ての変数を設定できるわけではない。
-設定できないものの代表例として、\fBPATH\fR、\fBHOME\fR及び\fBSHELL\fRが
-ある。
-加えて、ログインシェルが\fB/bin/sh\fRの場合は\fBIFS\fRの設定も
-行う事が出来ない。
+例えば
+\fBPATH\fR, \fBHOME\fR, \fBSHELL\fR
+などは設定できない。
+さらにログインシェルが \fB/bin/sh\fR の場合は
+\fBIFS\fR も設定もできない。
 .PP
-次いで、必要ならば、パスワードの入力を促される。
-パスワードを明かしてしまわないために、エコーは行われない。
-数回以上パスワード入力に失敗すると\fIlogin\fRは終了し通信の接続は
-切断されてしまう。
+次いで、必要な場合には、ユーザはパスワードを入力するよう促される。
+パスワードを表示してしまわないよう、エコーは行われない。
+数回以上パスワード入力に失敗すると
+\fBlogin\fR は終了し、通信の接続は切断されてしまう。
 .PP
 アカウントに対してパスワードの有効期限が設定されている場合は、
 先に進む前に新しいパスワードの設定を促されることもある。
-セッションを続けるためには古いパスワード及び新しいパスワードを入力
-しなくてはならない。
-詳しい情報は\fIpasswd(1)\fRを参照せよ。
+セッションを続けるためには古いパスワードと
+新しいパスワードを入力しなくてはならない。
+詳しい情報は \fBpasswd\fR(1) を参照すること。
 .PP
-ログインに成功すると、システムに関する情報やメイルの有無が表示される。
-ログインディレクトリに長さ0のファイル\fI.hushlogin\fRを作っておくことで、
-システムのメッセージファイル、即ち\fI/etc/motd\fRが表示されなくすること
-も出来る。
-メイルに関するメッセージとしては、メイルボックスの状態によって
-"\fIYou have new mail.\fR"、
-"\fIYou have mail.\fR"、もしくは "\fINo Mail.\fR"のいずれが表示される。
+ログインに成功すると、システムメッセージやメールの有無が表示される。
+ログインディレクトリに長さ 0 のファイル \fI.hushlogin\fR を作っておけば、
+システムメッセージファイルである
+\fI/etc/motd\fR の表示を無効にできる。
+メールに関するメッセージは、メールボックスの状態によって
+"\fBYou have new mail.\fR",
+"\fBYou have mail.\fR",
+"\fBNo Mail.\fR"
+のいずれかになる。
 .PP
-ユーザ及びグループのIDは\fI/etc/passwd\fRファイル中に記載されている値
-によって設定される。
-\fB$HOME\fR、\fB$SHELL\fR、\fB$PATH\fR、\fB$LOGNAME\fR及び\fB$MAIL\fRの値
-はパスワードエントリー中の対応する欄に記された値によって設定される。
-ulimit、umask及びnice値をGECOS欄のエントリーによって設定することもできる。
+ユーザ ID とグループの ID は
+\fI/etc/passwd\fR ファイル中に記載されている値に従って設定される。
+\fB$HOME\fR, \fB$SHELL\fR, \fB$PATH\fR, \fB$LOGNAME\fR, \fB$MAIL\fR
+の値は、パスワードエントリのそれぞれのフィールドに従って設定される。
+ulimit, umask, nice 値が、
+GECOS フィールドのエントリーによって設定されることもある。
 .PP
-インストレーションによっては、
-ttyデバイスの端末の種類にあわせて、
-環境変数\fB$TERM\fRが
-\fI/etc/ttytype\fRに指定された通りに初期化される。
+インストール時の設定によっては、
+\fI/etc/ttytype\fR の指定に従って、
+環境変数\fB$TERM\fRが tty 接続の端末の型 (terminal type)
+に初期化されることもある。
 .PP
 コマンドインタプリタの初期化スクリプトが実行されることもある。
 この機能についての詳しい情報は適当なマニュアルセクションを参照のこと。
+.PP
+サブシステムログインでは、
+ログインシェルの最初の文字に "*" を置く。
+渡されたホームディレクトリは、
+ユーザが実際にログインする新しいファイルシステムのルートとして扱われる。
+.SH オプション
+.TP
+.B -p
+環境を保存する。
+.TP
+.B -f
+ユーザはすでに認証されているものとして、認証動作を行なわない。
+.TP
+.B -h
+このログインのリモートホストの名前。
+.TP
+.B -r
+rlogin の自動ログインプロトコルを実行する。
+.PP
+\fB-r\fP, \fB-h\fP, \fB-f\fP オプションは、
+root が \fBlogin\fP を起動した場合にのみ用いる。
 .SH 警告
+この版の \fBlogin\fR には多くのコンパイル時オプションがあるが、
+サイトによってはこのうちの一部しか使われていないかもしれない。
 .PP
-この版の\fIlogin\fRには多くのコンパイル時オプションがあるが、
-サイトによっては、そのうちのいくつかしか使われていないこともある。
-.PP
-システムの設定の違いによって上記ファイルの在処はかわる。
-.SH shadowログインプログラムでのユーザ制限の設定方法
-.PP
-まず、リソースに対して課したい制限を記した、rootのみが読むことの出来る
-ファイル(ディフォルトでは\fB/etc/limits\fR、
-若しくはconfig.h中で定義されているLIMITS_FILEで指定したもの)を作る。
-ディフォルトでは、'root'にはquotaの制限は課されない。
-実際のところ、この手法によってrootと同権のアカウント(UIDが0のアカウント)
-に制限を課す手立ては存在しない。
-.PP
-各行には以下の書式でユーザへの制限を書いておく。
-.br
-\fBuser LIMITS_STRING\fR
-.PP
-\fBLIMITS_STRING\fRはリソースに対する制限のリストを連結した
-文字列である。
-各制限は識別子一文字とそれに続く制限数値によって指定する。
-識別子として有効なものは:
-.br
-\fBC\fR: coreファイルサイズの最大値 (KB)
-.br
-\fBD\fR: 最大のデータサイズ (KB)
-.br
-\fBF\fR: 最大のファイルサイズ (KB)
-.br
-\fBM\fR: メモリ中で占有することの出来るアドレス空間の最大値 (KB)
-.br
-\fBN\fR: 開くことの出来るファイル数の最大値
-.br
-\fBR\fR: 常駐させられる最大サイズ (KB)
-.br
-\fBS\fR: 最大のスタックサイズ (KB)
-.br
-\fBT\fR: 最大CPUタイム (分)
-.br
-\fBU\fR: 最大プロセス数
-.br
-\fBL\fR: ログイン出来る数の最大値
-.PP
-例えば、\fBL2D2048N5\fRは正しい\fBLIMITS_STRING\fRである。
-.PP
-ディフォルトのエントリーは'\fB*\fR'というユーザ名で表される。
-LIMITS_FILE中に複数の'ディフォルト'エントリーが設定されている場合は、
-最後のものがディフォルトエントリーとして用いられる。
+システム設定の違いによって上記ファイルの置き場所は変わる。
 .SH ファイル
-/etc/utmp \- 現在のログインセッションのリスト
+\fI/var/log/utmp\fR \   - 現在のログインセッションのリスト
 .br
-/etc/wtmp \- 直前のログインセッションのリスト
+\fI/var/run/wtmp\fR \   - 過去のログインセッションのリスト
 .br
-/etc/passwd \- ユーザアカウントの情報
+\fI/etc/passwd\fR \     - ユーザアカウント情報
 .br
-/etc/shadow \- shadowされたパスワード及び、期限の情報
+\fI/etc/shadow\fR \     - 暗号化パスワードと有効期限情報
 .br
-/etc/motd \- システムメッセージファイル
+\fI/etc/motd\fR \       - システムメッセージファイル
 .br
-/etc/ttytype \- 端末の種類のリスト
+\fI/etc/nologin\fR \    - root 以外のユーザのログインを禁止する
 .br
-/etc/limits \- ユーザに課すシステムリソースへの制限
+\fI/etc/ttytype\fR \    - 端末の型のリスト
 .br
-$HOME/.profile \- ディフォルトシェルの初期化スクリプト
-.br
-$HOME/.hushlogin \- システムメッセージの表示をとめる
-.br
-.SH 関連コマンド
-.PP
-getty(1M),
-mail(1),
-passwd(1),
-sh(1),
-su(1),
-d_passwd(4),
-passwd(4)
-.SH 翻訳者
-古高和禎 <furutaka@Flux.tokai.jaeri.go.jp>
-
+\fI$HOME/.hushlogin\fR \- システムメッセージの表示を抑制する
+.SH 関連項目
+.BR mail (1),
+.BR passwd (1),
+.BR sh (1),
+.BR su (1),
+.\" .BR d_passwd (5),
+.BR login.defs (5),
+.BR nologin (5),
+.BR passwd (5),
+.BR getty (8)
+.SH 著者
+Julianne Frances Haugh <jockgrrl@ix.netcom.com>

@@ -31,7 +31,7 @@
 #include <config.h>
 
 #include "rcsid.h"
-RCSID("$Id: getpass.c,v 1.10 1999/08/27 19:02:51 marekm Exp $")
+RCSID("$Id: getpass.c,v 1.12 2003/05/05 21:44:12 kloczek Exp $")
 
 #include "defines.h"
 
@@ -197,10 +197,6 @@ prompt_password(const char *prompt, int with_echo)
 	is_tty = 1;
 	if (GTTY(fileno(ifp), &old_modes)) {
 		is_tty = 0;
-#if 0  /* to make getpass work with redirected stdin */
-		return_value = NULL;
-		goto out2;
-#endif
 	}
 
 #ifdef USE_SETJMP
@@ -267,7 +263,6 @@ out:
 #else
 	(void) signal (SIGINT, old_signal);
 #endif
-out2:
 	if (tty_opened)
 		(void) fclose(ifp);
 

@@ -1,0 +1,11 @@
+--- shadow-4.0.4.1/src/chage.c.orig	2004-11-10 20:00:39 +0300
++++ shadow-4.0.4.1/src/chage.c	2004-11-10 20:01:16 +0300
+@@ -355,7 +355,7 @@ int main (int argc, char **argv)
+ 	struct spwd spwd;
+ 	uid_t ruid;
+ 	gid_t rgid;
+-	int amroot, pwrw;
++	int amroot;
+ 	const struct passwd *pw;
+ 	struct passwd pwent;
+ 	char name[BUFSIZ];

@@ -1,4 +1,4 @@
-/* $Id: defines.h,v 1.18 2001/06/28 20:47:05 kloczek Exp $ */
+/* $Id: defines.h,v 1.21 2003/05/03 16:14:23 kloczek Exp $ */
 /* some useful defines */
 
 #ifndef _DEFINES_H_
@@ -43,12 +43,8 @@ char *strchr(), *strrchr(), *strtok();
 # endif
 #endif /* not STDC_HEADERS */
 
-/* Solaris 2.4 defines __SVR4, but not SVR4 -j. */
-
-#ifdef __SVR4
-# ifndef SVR4
-#  define SVR4 __SVR4
-# endif
+#if HAVE_ERRNO_H
+# include <errno.h>
 #endif
 
 #include <sys/stat.h>
@@ -279,7 +275,7 @@ char *strchr(), *strrchr(), *strtok();
 /* get rid of a few ugly repeated #ifdefs in pwent.c and grent.c */
 /* XXX - this is ugly too, configure should test it and not check for
    any hardcoded system names, if possible.  --marekm */
-#if defined(SVR4) || defined(AIX) || defined(__linux__)
+#if defined(AIX) || defined(__linux__)
 #define SETXXENT_TYPE void
 #define SETXXENT_RET(x) return
 #define SETXXENT_TEST(x) x; if (0) /* compiler should optimize this away */

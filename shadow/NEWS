@@ -1,5 +1,117 @@
-$Id: NEWS,v 1.12 2001/09/07 15:35:54 kloczek Exp $
+$Id: NEWS,v 1.57.2.1.2.1 2004/01/14 14:11:25 kloczek Exp $
 
+shadow-4.0.4 => shadow-4.0.4.1
+- bug fixes in automake files for generate correct tar ball on "make dist":
+  added midsiing "EXTRA_DIST = $(man_MANS)" in man/*/Makefile.am.
+
+shadow-4.0.3 => shadow-4.0.4
+
+*** general:
+- added missing information about -f options in groupadd usage mesage
+  (document this also in man page),
+- removed TCFS support (tcfs is dead),
+- convert all po/*.po files to utf-8,
+- one TODO entry gone: fix nscd flushing databases on change (use
+  per service flushing method instead HUPing nscd process),
+- removed old AUTH_METHODS dependent code,
+- chage: now all code depend on SHADOWPWD. If shadow will not be configured
+  on autoconf level for using shadow possword chage is olny stub which
+  informs "chage not configured for shadow password support."
+- dpasswd: removed,
+- login: remove handle login.defs::DIALUPS_CHECK_ENAB code,
+- login: remove handle login.defs::NO_PASSWORD_CONSOLE code,
+- ALL tools, libraries: remove old SVR4, SVR4_SI86_EUA BSD_QUOTA and ATT_AGE
+  dependent code,
+- ALL: ready for gettext 0.11.5, automake 1.7.4, autoconf 2.57,
+- logoutd, userd: handle also utmpx if avalaile,
+- newgrp: fix for non-PAM version
+  Use CLOSE_SESSIONS depending code only when USE_PAM.
+  The problem was reported by Mattias Webjorn Eriksson using Slackware
+  8.1 and reproduced it using slackware-current (9.0beta) (fix submited by
+  Simon Williams <simon@no-dns-yet.org.uk>),
+- fix in too_many_failures() function: incorrect if() condition in non-PAM
+  dependent code in fail login handling (fixed by Krzysztof
+  Oledzki <ole@ans.pl>),
+*** documentation:
+- install groups(1) man page (moved from EXTRA_DIST to man_MANS),
+- removed pwauth(8), d_passwd(5), dialups(5) man pages,
+- remove text about password aging from passwd(5) (based on Debian changes),
+- document useradd and groupadd -M option in en and pl man pages
+  (by Jakub Mikusek <mick3y@o.k.pl>).
+- added ru passwd(1) man page from KSI resources,
+- added es man pages found in Conectiva distribution resources,
+- added chch(1), chfn(1) man pages from chinese man pages translation
+  project,
+- added id(1) man page czech man pages translation project,
+- updated ja man pages and added expiry(1),
+- removed old doc/ANNOUNCE,
+- updated german passwd(1), chsh(1) and login(1) man page and added chfn(1)
+  (by Josef Spillner <josef@ggzgamingzone.org>),
+- many other cleanups and unifications in man pages.
+
+shadow-4.0.2 => shadow-4.0.3
+
+- added variouse cs, de, fr, id, it, ko man pages found mainly in national
+  man pages translations projects (this documents are not synced with
+  current en version but you know .. "Documentations is lik sex. When it is
+  good it very very good. Whet it is bad it is better than nothing."). Any
+  changes for syncing this are welcome and for anyone who will want maintain
+  this documents directly I can give cvs write access to project resources.
+- added new de translation (by Frank Schmid <frank@cs-schmid.de>).
+- fixed building --with-shared: swapped utent (in src/login.c and
+  libmisc/utmp.c) and pwent (in libmisc/suauth.c and src/su.c)
+  definition/extern (by Dimitar Zhekov <jimmy@is-vn.bg>).
+- minor changes and updates in man pages (also merged
+  shadow-4.0.0-owl-man.patch by Solar Designer <solar@openwall.com>).
+
+shadow-4.0.1 => shadow-4.0.2
+
+- resolve many fuzzy translations also all this which may cause problems on
+  displaing long uid/gid,
+- allow use "$" on ending in cereated by useradd usermname accouts for allow
+  create machine acounts for samba (thanks to Jerome Borsboom
+  <borsboom@tch.fgg.eur.nl> for point this problem in 4.0.1),
+- fix small but ugly bug in configure.in in libpam_mics library detection.
+
+shadow-4.0.0 => shadow-4.0.1
+
+- added ability to log session closes in newgrp
+  (Joseph Parmelee <jparmele@wildbear.com>),
+- add -pcs to .indent.pro file and reindent all code in src/,
+- remove "\n" from all SYSLOG() messages,
+- finish integrate AGING code into SHADOWPW,
+- remove handle old HAVE_USERSEC_H code,
+- updated ja and added hu man pages,
+- applied patches by Solar Designer <solar@openwall.com>:
+  shadow-4.0.0-owl-chage-drop-priv.diffd
+  shadow-4.0.0-owl-chage-ro-no-lock.diff:
+    Added locks which are needed when doing r/w accesses, not when running
+    as root.  If root does read-only, there's no lock needed. Added missing
+    "#include <errno.h>" for above (me).
+  shadow-4.0.0-owl-warnings.diff
+    Olny one fix from this patch was aplayd because other was fixed few days
+    before :)
+  shadow-4.0.0-owl-check_names.diff
+    Merge only prat this patch with checking login name matching; checking
+    is login string isn't longer than possible it will be good prepare using
+    probably _POSIX_LOGIN_NAME_MAX from <bits/posix1_lim.h>,
+  shadow-4.0.0-owl-chage-drop-priv.diff
+  shadow-4.0.0-owl-pam-auth.diff
+    Merge part with reorder initialize PAM and checkin is chage is runed by
+    root or not - now chage can be runed from non-root account for checking
+    by user own accout information (if PAM enabled).
+- fixes for handle/print correctly 32bit uid/gid (Thorsten Kukuk <kukuk@suse.de>),
+- implemented functions for better reloading the nscd cache (per NSS map)
+  (Thorsten Kukuk <kukuk@suse.de>),
+- fixed warnings "not used but defined" on compile using gcc 3.0.x 
+  (bulletpr00ph <bullet@users.sourceforge.net>),
+- added ja, ko translations found in SuSE,
+- added symlinks: newgrp -> sg, vipw -> vigr,
+- added vigr(1) man page as roff .so link to vipw(1),
+- added sg(1) man page as roff .so link to newgrp(1),
+- installed fix for SEGV when using pwck -s on /etc/passwd file with
+  empty lines in it.
+  
 shadow-20001016 => shadow-4.0.0
 
 - fix bug discovered and fixed by Marcel Ritter
@@ -7,8 +119,7 @@ shadow-20001016 => shadow-4.0.0
   Due to a big buffer size in lib/commonio.c this error does only appear
   if a line gets longer than 4096 bytes (there are probably very few people
   stumbling across this).
-  Ths bug can be exposed by trashing /etc/groups file with using useradd
-  with script:
+  Ths bug can be exposed by trashing /etc/groups file using useradd with script:
 	#!/bin/sh
 	typeset -i NUM
 	NUM=0

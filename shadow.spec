@@ -1,14 +1,7 @@
 Name: shadow
-Version: 4.0.0
-Release: alt15
+Version: 4.0.4.1
+Release: alt1
 Serial: 1
-
-%define BUILD_LIBSHADOW 0
-%if %BUILD_LIBSHADOW
-%define	enable_shared enable-shared
-%else
-%define	enable_shared disable-shared
-%endif
 
 Summary: Utilities for managing shadow password files and user/group accounts
 License: BSD
@@ -28,36 +21,35 @@ Source9: gpasswd.control
 Source10: newgrp.control
 
 # Owl
-Patch0: shadow-4.0.0-owl-warnings.patch
-Patch1: shadow-4.0.0-owl-alt-check-reads.patch
-Patch2: shadow-4.0.0-owl-usermod-unlock.patch
-Patch3: shadow-4.0.0-owl-tmp.patch
-Patch4: shadow-4.0.0-owl-pam-auth.patch
-Patch5: shadow-4.0.0-owl-chage-drop-priv.patch
-Patch6: shadow-4.0.0-owl-chage-ro-no-lock.patch
-Patch7: shadow-4.0.0-owl-useradd-usermod-usage.patch
-Patch8: shadow-4.0.0-owl-pam_chauthtok.patch
-Patch10: shadow-4.0.0-rh-owl-redhat.patch
-Patch20: shadow-4.0.0-owl-man.patch
-Patch21: shadow-4.0.0-alt-check_names.patch
-Patch22: shadow-4.0.0-owl-create-mailbox.patch
-Patch23: shadow-4.0.0-owl-restrict-locale.patch
-Patch24: shadow-4.0.0-owl-crypt_gensalt.patch
-Patch25: shadow-4.0.0-owl-newgrp.patch
-Patch26: shadow-4.0.0-owl-automake.patch
-Patch30: shadow-4.0.0-owl-alt-tcb.patch
+Patch1: shadow-4.0.4.1-owl-alt-check-reads.patch
+Patch2: shadow-4.0.4.1-owl-usermod-unlock.patch
+Patch3: shadow-4.0.4.1-owl-tmp.patch
+Patch4: shadow-4.0.4.1-owl-pam-auth.patch
+Patch5: shadow-4.0.4.1-owl-chage-drop-priv.patch
+Patch6: shadow-4.0.4.1-owl-chage-ro-no-lock.patch
+Patch7: shadow-4.0.4.1-alt-userdel-path_prefix.patch
+Patch8: shadow-4.0.4.1-owl-pam_chauthtok.patch
+Patch10: shadow-4.0.4.1-rh-owl-alt-redhat.patch
+#Patch20: shadow-4.0.4.1-owl-man.patch
+Patch21: shadow-4.0.4.1-alt-check_names.patch
+Patch22: shadow-4.0.4.1-owl-create-mailbox.patch
+Patch23: shadow-4.0.4.1-owl-restrict-locale.patch
+Patch24: shadow-4.0.4.1-owl-alt-crypt_gensalt.patch
+Patch25: shadow-4.0.4.1-owl-newgrp.patch
+Patch30: shadow-4.0.4.1-owl-alt-tcb.patch
+Patch31: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
 
 # ALT
-Patch100: shadow-4.0.0-alt-default_skel.patch
-Patch101: shadow-4.0.0-alt-progname.patch
-Patch102: shadow-4.0.0-alt-configure-fix.patch
-Patch103: shadow-4.0.0-alt-disable-build-unused.patch
-Patch104: shadow-4.0.0-alt-fix-userdel-path_prefix.patch
-Patch105: shadow-4.0.0-alt-skel.patch
-Patch106: shadow-4.0.0-alt-copy_tree-perms.patch
-Patch107: shadow-4.0.0-alt-user_groups.patch
-Patch108: shadow-4.0.0-alt-configure-passwd.patch
-Patch109: shadow-4.0.0-alt-configure-gettext.patch
+Patch101: shadow-4.0.4.1-alt-default_skel.patch
+Patch102: shadow-4.0.4.1-alt-progname.patch
+Patch103: shadow-4.0.4.1-alt-configure.patch
+Patch104: shadow-4.0.4.1-alt-makefile.patch
+Patch105: shadow-4.0.4.1-alt-useradd-skel.patch
+Patch106: shadow-4.0.4.1-alt-copy_tree-perms.patch
+Patch107: shadow-4.0.4.1-alt-configure-passwd.patch
+Patch108: shadow-4.0.4.1-alt-warnings.patch
+
+%def_disable shared
 
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 
@@ -103,9 +95,6 @@ linked software based on lib%name.
 Summary: Utilities for managing shadow password files and user/group accounts
 Group: System/Base
 PreReq: %name-convert = %serial:%version-%release, tcb-utils >= 0.9.8
-%if !%BUILD_LIBSHADOW
-#Obsoletes: lib%name, lib%name-devel, lib%name-devel-static
-%endif
 Obsoletes: adduser
 
 %description utils
@@ -134,7 +123,7 @@ shadow-password, or shadow-group files:
 %package convert
 Summary: Utilities for convertion to and from shadow passwords and groups
 Group: System/Base
-%if %BUILD_LIBSHADOW
+%if_enabled shadow
 PreReq: lib%name = %serial:%version-%release
 %endif
 
@@ -197,7 +186,6 @@ This package includes utilities for examining lastlog and faillog files:
 %setup -q
 
 # Owl
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -207,17 +195,16 @@ This package includes utilities for examining lastlog and faillog files:
 %patch7 -p1
 %patch8 -p1
 %patch10 -p1
-%patch20 -p1
+#%patch20 -p1
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
 %patch25 -p1
-%patch26 -p1
 %patch30 -p1
+%patch31 -p1
 
 # ALT
-%patch100 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -226,29 +213,20 @@ This package includes utilities for examining lastlog and faillog files:
 %patch106 -p1
 %patch107 -p1
 %patch108 -p1
-%patch109 -p1
 
-find -type f -name \*.orig -print -delete
+find -type f -name \*.orig -delete -print
 
 %build
-# buildreq hangs on some checks.
-%{?__buildreqs:export gt_cv_int_divbyzero_sigfpe=yes}
-
-find lib libmisc src -type f -name \*.c >po/POTFILES.in
-rm -rf intl
-%__install -pv -m644 /usr/share/gettext/intl/Makevars* po/Makevars
 autoreconf -fisv
-%__subst 's/^\(mkinstalldirs =\).*/\1 $(SHELL) $(MKINSTALLDIRS)/' po/Makefile*
-
-%add_optflags -DEXTRA_CHECK_HOME_DIR
+%add_optflags -DEXTRA_CHECK_HOME_DIR -DSHADOWTCB
 %configure \
-	--%enable_shared \
-	--enable-static \
+	%{subst_enable shared} \
 	--disable-desrpc \
 	--with-libcrypt \
 	--with-libpam \
 	--without-libcrack
-make
+%make_build
+bzip2 -9fk ChangeLog NEWS
 
 %install
 %makeinstall
@@ -275,12 +253,6 @@ pushd $RPM_BUILD_ROOT%_sysconfdir/pam.d
 popd
 
 %__ln_s useradd $RPM_BUILD_ROOT%_sbindir/adduser
-%__ln_s vipw $RPM_BUILD_ROOT%_sbindir/vigr
-%__ln_s vipw.8 $RPM_BUILD_ROOT%_man8dir/vigr.8
-
-for n in getspent getspnam setspent endspent fgetspent sgetspent putspent lckpwdf ulckpwdf; do
-	%__ln_s shadow.3 "$RPM_BUILD_ROOT%_man3dir/$n"
-done
 
 %__install -pD -m755 $RPM_SOURCE_DIR/chage.control $RPM_BUILD_ROOT/etc/control.d/facilities/chage
 %__install -pD -m755 $RPM_SOURCE_DIR/chfn.control $RPM_BUILD_ROOT/etc/control.d/facilities/chfn
@@ -304,18 +276,18 @@ if [ $1 = 1 ]; then
 fi
 
 %pre change
-[ $1 -eq 1 ] || /usr/sbin/control-dump chage chfn chsh
+%pre_control chage chfn chsh
 
 %post change
-[ $1 -eq 1 ] || /usr/sbin/control-restore chage chfn chsh
+%post_control chage chfn chsh
 
 %pre groups
-[ $1 -eq 1 ] || /usr/sbin/control-dump gpasswd newgrp
+%pre_control gpasswd newgrp
 
 %post groups
-[ $1 -eq 1 ] || /usr/sbin/control-restore gpasswd newgrp
+%post_control gpasswd newgrp
 
-%if %BUILD_LIBSHADOW
+%if_enabled shadow
 %files -n lib%name
 %_libdir/*.so*
 
@@ -347,15 +319,14 @@ fi
 %_sbindir/adduser
 %_sbindir/newusers
 %_sbindir/chpasswd
-%_mandir/man?/login.defs.*
-%_mandir/man?/adduser.*
-%_mandir/man?/group*.*
-%_mandir/man?/user*.*
-%_mandir/man?/newusers.*
-%_mandir/man?/chpasswd.*
-#%_man5dir/shadow.*
-%doc ChangeLog NEWS README TODO doc/{ANNOUNCE,LICENSE}
-#%doc doc/{ANNOUNCE,CHANGES,HOWTO,LICENSE,README,README.linux}
+%_man5dir/login.defs.*
+%_man5dir/shadow.*
+%_man8dir/adduser.*
+%_man8dir/chpasswd.*
+%_man8dir/group*.*
+%_man8dir/newusers.*
+%_man8dir/user*.*
+%doc ChangeLog.bz2 NEWS.bz2 README TODO doc/LICENSE
 
 %files check
 %_sbindir/*ck
@@ -373,9 +344,9 @@ fi
 %_sysconfdir/pam.d/chage
 %_sysconfdir/pam.d/chfn
 %_sysconfdir/pam.d/chsh
-%attr(2711,root,shadow) %_bindir/chage
-%attr(4711,root,root) %_bindir/chfn
-%attr(4711,root,root) %_bindir/chsh
+%attr(700,root,root) %_bindir/chage
+%attr(700,root,root) %_bindir/chfn
+%attr(700,root,root) %_bindir/chsh
 %_mandir/man?/chage.*
 %_mandir/man?/chfn.*
 %_mandir/man?/chsh.*
@@ -387,8 +358,8 @@ fi
 %files groups
 %config /etc/control.d/facilities/gpasswd
 %config /etc/control.d/facilities/newgrp
-%attr(4711,root,root) %_bindir/gpasswd
-%attr(4711,root,root) %_bindir/newgrp
+%attr(700,root,root) %_bindir/gpasswd
+%attr(700,root,root) %_bindir/newgrp
 %_bindir/sg
 %_mandir/man?/gpasswd.*
 %_mandir/man?/newgrp.*
@@ -399,6 +370,16 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Wed Nov 10 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt1
+- Updated to 4.0.4.1-owl2.
+- Updated patches.
+- Use control macros.
+- Added help to control.
+- Documented user/group name restrictions (#4390).
+- Keep tools at mode "restricted" in the packages, but default
+  them to "public" in %post when the packages are first installed.
+  This avoids a race and fail-open behaviour.
+
 * Thu Jun 10 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt15
 - Properly check the return value from pam_chauthtok() in
   libmisc/pwdcheck.c: passwd_check() that is used by chfn and

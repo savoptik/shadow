@@ -1,0 +1,71 @@
+--- shadow-4.0.4.1/man/useradd.8.orig	2004-11-10 19:18:39 +0300
++++ shadow-4.0.4.1/man/useradd.8	2004-11-10 19:22:28 +0300
+@@ -44,6 +44,7 @@
+ .br
+ [\fB-e\fI default_expire_date\fR] [\fB-f\fI default_inactive\fR]
+ .br
++[\fB-k\fI default_skeleton_dir\fR]
+ [\fB-s\fI default_shell\fR]
+ .SH DESCRIPTION
+ .SS Creating New Users
+@@ -132,6 +133,8 @@
+ .IP "\fB-g\fR \fIdefault_group\fR"
+ The group name or ID for a new user's initial group. The named group must
+ exist, and a numerical group ID must have an existing entry .
++.IP "\fB-k \fIdefault_skeleton_dir\fR"
++The name of the new skeleton directory.
+ .IP "\fB-s\fR \fIdefault_shell\fR"
+ The name of the new user's login shell. The named program will be used for
+ all future new user accounts.
+@@ -140,7 +143,8 @@
+ values.
+ .SH NOTES
+ The system administrator is responsible for placing the default user files
+-in the \fI/etc/skel/\fR directory.
++in the skeleton directory (\fI/etc/skel\fR or directory
++defined in \fI/etc/default/useradd\fR file).
+ .SH CAVEATS
+ You may not add a user to an NIS group. This must be performed on the NIS
+ server.
+--- shadow-4.0.4.1/src/useradd.c.orig	2004-11-10 18:04:37 +0300
++++ shadow-4.0.4.1/src/useradd.c	2004-11-10 18:12:41 +0300
+@@ -707,7 +707,7 @@ static void usage (void)
+ #endif
+ 	fprintf (stderr, _("               [-p passwd] [-n] [-r] name\n"));
+ 	fprintf (stderr,
+-		 _("       useradd -D [-g group] [-b base] [-s shell]\n"));
++		 _("       useradd -D [-g group] [-b base] [-k template] [-s shell]\n"));
+ #ifdef SHADOWPWD
+ 	fprintf (stderr, _("               [-f inactive] [-e expire]\n"));
+ #endif
+@@ -1221,6 +1221,12 @@ static void process_flags (int argc, cha
+ 			Gflg++;
+ 			break;
+ 		case 'k':
++			if (!VALID(optarg) || optarg[0] != '/') {
++				fprintf(stderr,
++					_("%s: invalid template directory `%s'\n"),
++					Prog, optarg);
++				exit(E_BAD_ARG);
++			}
+ 			def_template = optarg;
+ 			kflg++;
+ 			break;
+@@ -1293,7 +1299,7 @@ static void process_flags (int argc, cha
+ 	 * Certain options are only valid in combination with others.
+ 	 * Check it here so that they can be specified in any order.
+ 	 */
+-	if (kflg && !mflg)
++	if (kflg && !mflg && !Dflg)
+ 		usage ();
+ 
+ 	if (mflg && Mflg) /* the admin hasn't decided to create or not? */
+@@ -1880,7 +1886,7 @@ int main (int argc, char **argv)
+ 	 */
+ 
+ 	if (Dflg) {
+-		if (gflg || bflg || fflg || eflg || sflg)
++		if (gflg || bflg || fflg || eflg || sflg || kflg)
+ 			exit (set_defaults ()? 1 : 0);
+ 
+ 		show_defaults ();

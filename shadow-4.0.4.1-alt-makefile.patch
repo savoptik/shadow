@@ -1,0 +1,106 @@
+diff -uprk.orig shadow-4.0.4.1.orig/libmisc/Makefile.am shadow-4.0.4.1/libmisc/Makefile.am
+--- shadow-4.0.4.1.orig/libmisc/Makefile.am	2004-11-10 20:44:03 +0300
++++ shadow-4.0.4.1/libmisc/Makefile.am	2004-11-10 20:44:18 +0300
+@@ -52,7 +52,6 @@ libmisc_la_SOURCES = \
+ 	ttytype.c \
+ 	tz.c \
+ 	ulimit.c \
+-	utmp.c \
+ 	valid.c \
+ 	xmalloc.c
+ 
+diff -uprk.orig shadow-4.0.4.1.orig/man/Makefile.am shadow-4.0.4.1/man/Makefile.am
+--- shadow-4.0.4.1.orig/man/Makefile.am	2003-12-17 13:04:25 +0300
++++ shadow-4.0.4.1/man/Makefile.am	2004-11-10 20:45:47 +0300
+@@ -15,20 +15,17 @@ man_MANS = \
+ 	groupadd.8 \
+ 	groupdel.8 \
+ 	groupmod.8 \
+-	groups.1 \
+ 	grpck.8 \
+ 	grpconv.8 \
+ 	grpunconv.8 \
+ 	lastlog.8 \
+ 	limits.5 \
+-	login.1 \
+ 	login.access.5 \
+ 	login.defs.5 \
+ 	logoutd.8 \
+ 	mkpasswd.8 \
+ 	newgrp.1 \
+ 	newusers.8 \
+-	passwd.1 \
+ 	passwd.5 \
+ 	porttime.5 \
+ 	pwck.8 \
+@@ -36,7 +33,6 @@ man_MANS = \
+ 	pwunconv.8 \
+ 	sg.1 \
+ 	shadow.5 \
+-	su.1 \
+ 	suauth.5 \
+ 	useradd.8 \
+ 	userdel.8 \
+@@ -45,7 +41,11 @@ man_MANS = \
+ 	vipw.8
+ 
+ EXTRA_DIST = $(man_MANS) \
++	groups.1 \
+ 	id.1 \
++	login.1 \
++	passwd.1 \
++	su.1 \
+ 	pw_auth.3 \
+ 	shadow.3 \
+ 	shadowconfig.8 \
+diff -uprk.orig shadow-4.0.4.1.orig/src/Makefile.am shadow-4.0.4.1/src/Makefile.am
+--- shadow-4.0.4.1.orig/src/Makefile.am	2004-11-10 20:44:03 +0300
++++ shadow-4.0.4.1/src/Makefile.am	2004-11-10 20:44:18 +0300
+@@ -21,8 +21,9 @@ INCLUDES = \
+ # and installation would be much simpler (just two directories,
+ # $prefix/bin and $prefix/sbin, no install-data hacks...)
+ 
+-bin_PROGRAMS = groups login su
+-ubin_PROGRAMS = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
++bin_PROGRAMS = 
++sbin_PROGRAMS = 
++ubin_PROGRAMS = faillog lastlog chage chfn chsh expiry gpasswd newgrp
+ usbin_PROGRAMS = \
+ 	chpasswd \
+ 	groupadd \
+@@ -42,12 +43,10 @@ usbin_PROGRAMS = \
+ 	usermod \
+ 	vipw
+ 
+-noinst_PROGRAMS = id sulogin
+-
+ # id and groups are from gnu, sulogin from sysvinit
+ 
+-suidbins = su
+-suidubins = chage chfn chsh expiry gpasswd newgrp passwd
++suidbins = 
++suidubins = 
+ 
+ LDADD = $(top_builddir)/libmisc/libmisc.la \
+ 	$(top_builddir)/lib/libshadow.la \
+@@ -60,18 +59,14 @@ chsh_LDADD     = $(LDADD) $(LIBPAM)
+ groupadd_LDADD = $(LDADD) $(LIBPAM)
+ groupdel_LDADD = $(LDADD) $(LIBPAM)
+ groupmod_LDADD = $(LDADD) $(LIBPAM)
+-login_LDADD    = $(LDADD) $(LIBPAM)
+ newusers_LDADD = $(LDADD) $(LIBPAM) -lpam_userpass
+-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK)
+-su_SOURCES     = su.c suauth.c
+-su_LDADD       = $(LDADD) $(LIBPAM)
+ useradd_LDADD  = $(LDADD) $(LIBPAM)
+ userdel_LDADD  = $(LDADD) $(LIBPAM)
+ usermod_LDADD  = $(LDADD) $(LIBPAM)
+ 
+ install-exec-hook:
+-	ln -sf newgrp	$(DESTDIR)$(bindir)/sg
+-	ln -sf vipw	$(DESTDIR)$(bindir)/vigr
++	ln -sf newgrp	$(DESTDIR)$(ubindir)/sg
++	ln -sf vipw	$(DESTDIR)$(usbindir)/vigr
+ 	for i in $(suidbins); do \
+ 		chmod 4755 $(DESTDIR)$(bindir)/$$i; \
+ 	done

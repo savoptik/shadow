@@ -9,4 +9,8 @@ new_fmode public 4711 root root
 new_fmode wheelonly 4710 root wheel
 new_fmode restricted 700 root root
 
+new_help public "Any user can execute $BINARY"
+new_help wheelonly "Only \"wheel\" group members can execute $BINARY"
+new_help restricted "Only root can execute $BINARY"
+
 control_fmode "$BINARY" "$*" || exit 1

@@ -1,0 +1,12 @@
+--- shadow-4.0.4.1/src/userdel.c.orig	2004-11-10 18:02:16 +0300
++++ shadow-4.0.4.1/src/userdel.c	2004-11-10 18:02:16 +0300
+@@ -653,7 +653,8 @@
+ #ifdef EXTRA_CHECK_HOME_DIR
+ static int path_prefix (const char *s1, const char *s2)
+ {
+-	return (strncmp (s2, s1, strlen (s1)) == 0);
++	size_t len = strlen (s1);
++	return (strncmp (s2, s1, len) == 0) && ((s2[len] == '\0') || (s2[len] == '/'));
+ }
+ #endif
+ 
