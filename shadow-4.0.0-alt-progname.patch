@@ -58,8 +58,8 @@ diff -ur shadow-4.0.0~/src/chage.c shadow-4.0.0/src/chage.c
  #ifdef	AGING	/*{*/
  
  /*
-@@ -422,12 +420,6 @@
- 	ruid = getuid();
+@@ -424,12 +422,6 @@
+ 	rgid = getgid();
  	amroot = (ruid == 0);
  
 -	/*
@@ -71,17 +71,19 @@ diff -ur shadow-4.0.0~/src/chage.c shadow-4.0.0/src/chage.c
  	OPENLOG("chage");
  
  #ifdef	NDBM
-@@ -924,10 +916,6 @@
+@@ -926,12 +918,9 @@
  int
  main(int argc, char **argv)
  {
 -	char	*Prog;
--
+ 	uid_t ruid;
+ 	gid_t rgid;
+ 
 -	Prog = Basename(argv[0]);
 -
- 	if (setgid(getgid()) || setuid(getuid())) {
- 		fprintf(stderr, "%s: failed to drop privileges (%s)\n",
- 			Prog, strerror(errno));
+ 	ruid = getuid();
+ 	rgid = getgid();
+ 	if (setregid(rgid, rgid) || setreuid(ruid, ruid)) {
 diff -ur shadow-4.0.0~/src/chfn.c shadow-4.0.0/src/chfn.c
 --- shadow-4.0.0~/src/chfn.c	Tue Dec 18 13:02:17 2001
 +++ shadow-4.0.0/src/chfn.c	Tue Dec 18 13:51:58 2001

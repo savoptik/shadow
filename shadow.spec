@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.0
-Release: alt5
+Release: alt8
 Serial: 1
 
 %define BUILD_LIBSHADOW 0
@@ -21,6 +21,11 @@ Source2: useradd.default
 Source3: user-group-mod.pamd
 Source4: chage-chfn-chsh.pamd
 Source5: chpasswd-newusers.pamd
+Source6: chage.control
+Source7: chfn.control
+Source8: chsh.control
+Source9: gpasswd.control
+Source10: newgrp.control
 
 # Owl
 Patch0: shadow-4.0.0-owl-warnings.patch
@@ -30,6 +35,7 @@ Patch3: shadow-4.0.0-owl-tmp.patch
 Patch4: shadow-4.0.0-owl-pam-auth.patch
 Patch5: shadow-4.0.0-owl-chage-drop-priv.patch
 Patch6: shadow-4.0.0-owl-chage-ro-no-lock.patch
+Patch7: shadow-4.0.0-owl-useradd-usermod-usage.patch
 Patch10: shadow-4.0.0-rh-owl-redhat.patch
 Patch20: shadow-4.0.0-owl-man.patch
 Patch21: shadow-4.0.0-alt-check_names.patch
@@ -46,12 +52,13 @@ Patch101: shadow-4.0.0-alt-progname.patch
 Patch102: shadow-4.0.0-alt-configure-fix.patch
 Patch103: shadow-4.0.0-alt-disable-build-unused.patch
 Patch104: shadow-4.0.0-alt-fix-userdel-path_prefix.patch
-Patch105: shadow-4.0.0-skel.patch
+Patch105: shadow-4.0.0-alt-skel.patch
+Patch106: shadow-4.0.0-alt-copy_tree-perms.patch
 
-BuildPreReq: mktemp >= 1:1.3.1
+BuildPreReq: mktemp >= 1:1.3.1, autoconf = 2.13, automake = 1.4
 
-# Automatically added by buildreq on Thu Dec 20 2001
-BuildRequires: bison libpam-devel libtcb-devel pam_userpass-devel passwd
+# Automatically added by buildreq on Mon Oct 28 2002
+BuildRequires: glibc-devel-static libpam-devel libtcb-devel pam_userpass-devel passwd
 
 %description
 This package includes the tools necessary for manipulating local user and
@@ -91,7 +98,7 @@ linked software based on lib%name.
 %package utils
 Summary: Utilities for managing shadow password files and user/group accounts
 Group: System/Base
-PreReq: %name-convert = %serial:%version-%release, /etc/tcb
+PreReq: %name-convert = %serial:%version-%release, tcb-utils >= 0.9.8
 %if !%BUILD_LIBSHADOW
 #Obsoletes: lib%name, lib%name-devel, lib%name-devel-static
 %endif
@@ -138,7 +145,7 @@ and groups:
 %package change
 Summary: Utilities for changing user shell, finger and password information
 Group: System/Base
-PreReq: %name-utils = %serial:%version-%release
+PreReq: %name-utils = %serial:%version-%release, control
 
 %description change
 This package includes utilities for changing user shell, finger and password
@@ -163,7 +170,7 @@ shadow-password, or shadow-group files:
 %package groups
 Summary: Utilities for execute command as different group ID
 Group: System/Base
-PreReq: %name-utils = %serial:%version-%release
+PreReq: %name-utils = %serial:%version-%release, control
 
 %description groups
 This package includes utilities for execute command as different group ID:
@@ -193,6 +200,7 @@ This package includes utilities for examining lastlog and faillog files:
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 %patch10 -p1
 %patch20 -p1
 %patch21 -p1
@@ -210,12 +218,19 @@ This package includes utilities for examining lastlog and faillog files:
 %patch103 -p1
 %patch104 -p1
 %patch105 -p1
+%patch106 -p1
 
-find -type f -name \*.orig -print0 |xargs -r0 rm -f
+find -type f -name \*.orig -print0 |
+	xargs -r0 rm -f
 
 %build
+# buildreq hangs on some checks.
+%{?__buildreqs:export gt_cv_int_divbyzero_sigfpe=yes}
+
 find lib libmisc src -type f -name \*.c >po/POTFILES.in
 %undefine __libtoolize
+%set_autoconf_version 2.13
+%set_automake_version 1.4
 libtoolize --copy --force
 aclocal
 automake
@@ -235,41 +250,45 @@ make
 %install
 %makeinstall
 
-install -p -m640 -D %SOURCE1 $RPM_BUILD_ROOT%_sysconfdir/login.defs
-install -p -m600 -D %SOURCE2 $RPM_BUILD_ROOT%_sysconfdir/default/useradd
+%__install -pD -m640 %SOURCE1 $RPM_BUILD_ROOT%_sysconfdir/login.defs
+%__install -pD -m600 %SOURCE2 $RPM_BUILD_ROOT%_sysconfdir/default/useradd
 
-mkdir -p $RPM_BUILD_ROOT%_sysconfdir/pam.d
+%__mkdir_p $RPM_BUILD_ROOT%_sysconfdir/pam.d
 pushd $RPM_BUILD_ROOT%_sysconfdir/pam.d
-install -p -m600 $RPM_SOURCE_DIR/user-group-mod.pamd user-group-mod
-ln -s user-group-mod groupadd
-ln -s user-group-mod groupdel
-ln -s user-group-mod groupmod
-ln -s user-group-mod useradd
-ln -s user-group-mod userdel
-ln -s user-group-mod usermod
-install -p -m640 $RPM_SOURCE_DIR/chage-chfn-chsh.pamd chage-chfn-chsh
-ln -s chage-chfn-chsh chage
-ln -s chage-chfn-chsh chfn
-ln -s chage-chfn-chsh chsh
-install -p -m600 $RPM_SOURCE_DIR/chpasswd-newusers.pamd chpasswd-newusers
-ln -s chpasswd-newusers chpasswd
-ln -s chpasswd-newusers newusers
+%__install -p -m600 $RPM_SOURCE_DIR/user-group-mod.pamd user-group-mod
+%__ln_s user-group-mod groupadd
+%__ln_s user-group-mod groupdel
+%__ln_s user-group-mod groupmod
+%__ln_s user-group-mod useradd
+%__ln_s user-group-mod userdel
+%__ln_s user-group-mod usermod
+%__install -p -m640 $RPM_SOURCE_DIR/chage-chfn-chsh.pamd chage-chfn-chsh
+%__ln_s chage-chfn-chsh chage
+%__ln_s chage-chfn-chsh chfn
+%__ln_s chage-chfn-chsh chsh
+%__install -p -m600 $RPM_SOURCE_DIR/chpasswd-newusers.pamd chpasswd-newusers
+%__ln_s chpasswd-newusers chpasswd
+%__ln_s chpasswd-newusers newusers
 popd
 
-ln -s useradd $RPM_BUILD_ROOT%_sbindir/adduser
-ln -s vipw $RPM_BUILD_ROOT%_sbindir/vigr
-ln -s vipw.8 $RPM_BUILD_ROOT%_mandir/man8/vigr.8
+%__ln_s useradd $RPM_BUILD_ROOT%_sbindir/adduser
+%__ln_s vipw $RPM_BUILD_ROOT%_sbindir/vigr
+%__ln_s vipw.8 $RPM_BUILD_ROOT%_man8dir/vigr.8
 
 for n in getspent getspnam setspent endspent fgetspent sgetspent putspent lckpwdf ulckpwdf; do
-	ln -s shadow.3 "$RPM_BUILD_ROOT%_mandir/man3/$n"
+	%__ln_s shadow.3 "$RPM_BUILD_ROOT%_man3dir/$n"
 done
+
+%__install -pD -m755 $RPM_SOURCE_DIR/chage.control $RPM_BUILD_ROOT/etc/control.d/facilities/chage
+%__install -pD -m755 $RPM_SOURCE_DIR/chfn.control $RPM_BUILD_ROOT/etc/control.d/facilities/chfn
+%__install -pD -m755 $RPM_SOURCE_DIR/chsh.control $RPM_BUILD_ROOT/etc/control.d/facilities/chsh
+%__install -pD -m755 $RPM_SOURCE_DIR/gpasswd.control $RPM_BUILD_ROOT/etc/control.d/facilities/gpasswd
+%__install -pD -m755 $RPM_SOURCE_DIR/newgrp.control $RPM_BUILD_ROOT/etc/control.d/facilities/newgrp
 
 %find_lang %name
 
-%if %BUILD_LIBSHADOW
-%post -n lib%name -p /sbin/ldconfig
-%postun -n lib%name -p /sbin/ldconfig
-%endif
+%post -n lib%name -p %post_ldconfig
+%postun -n lib%name -p %postun_ldconfig
 
 %post convert
 if [ $1 = 1 ]; then
@@ -280,6 +299,18 @@ if [ $1 = 1 ]; then
 		%_sbindir/pwconv
 	fi
 fi
+
+%pre change
+[ $1 -eq 1 ] || /usr/sbin/control-dump chage chfn chsh
+
+%post change
+[ $1 -eq 1 ] || /usr/sbin/control-restore chage chfn chsh
+
+%pre groups
+[ $1 -eq 1 ] || /usr/sbin/control-dump gpasswd newgrp
+
+%post groups
+[ $1 -eq 1 ] || /usr/sbin/control-restore gpasswd newgrp
 
 %if %BUILD_LIBSHADOW
 %files -n lib%name
@@ -332,6 +363,9 @@ fi
 %_mandir/man?/*conv.*
 
 %files change
+%config /etc/control.d/facilities/chage
+%config /etc/control.d/facilities/chfn
+%config /etc/control.d/facilities/chsh
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/pam.d/chage-chfn-chsh
 %_sysconfdir/pam.d/chage
 %_sysconfdir/pam.d/chfn
@@ -348,6 +382,8 @@ fi
 %_mandir/man?/vi??.*
 
 %files groups
+%config /etc/control.d/facilities/gpasswd
+%config /etc/control.d/facilities/newgrp
 %attr(4711,root,root) %_bindir/gpasswd
 %attr(4711,root,root) %_bindir/newgrp
 %_bindir/sg
@@ -360,6 +396,24 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Mon Oct 28 2002 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt8
+- Merged Owl changes:
+  * Thu Oct 24 2002 Solar Designer <solar@owl.openwall.com>
+  - Cleaned up the recent changes.
+  - Corrected a newly introduced memory leak on an error path.
+  - Changed the TCB_SYMLINKS pseudo-code in login.defs(5) manual page to be
+    C/English rather than shell for consistency with the pam_tcb(8) page.
+  * Mon Aug 19 2002 Rafal Wojtczuk <nergal@owl.openwall.com>
+  - Merged the enhancements which remove 32K users limit.
+
+* Thu Oct 17 2002 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt7
+- Added control support for chage, chfn, chsh, gpasswd, and newgrp.
+
+* Wed Aug 14 2002 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt6
+- copy_tree: ensure strict permissions of created files.
+- chage: made "chage -l" drop its saved GID too (Owl).
+- useradd, usermod: removed the extra space in "[-e expire ]" in the usage instructions (Owl).
+
 * Mon Mar 18 2002 Dmitry V. Levin <ldv@alt-linux.org> 1:4.0.0-alt5
 - Updated chkname patch.
 

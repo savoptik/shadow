@@ -1,3 +1,4 @@
+copy: *.control
 copy: *.default
 copy: *.defs
 copy: *.pamd

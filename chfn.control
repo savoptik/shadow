@@ -1,0 +1,11 @@
+#!/bin/sh
+# $Id: chfn.control,v 1.1 2001/11/12 01:47:45 solar Exp $
+
+. /etc/control.d/functions
+
+BINARY=/usr/bin/chfn
+
+new_fmode public 4711 root root
+new_fmode restricted 700 root root
+
+control_fmode "$BINARY" "$*" || exit 1
