@@ -1,0 +1,13 @@
+diff -Naur shadow-4.0.0.orig/src/useradd.c shadow-4.0.0/src/useradd.c
+--- shadow-4.0.0.orig/src/useradd.c	Fri Jan 25 15:07:58 2002
++++ shadow-4.0.0/src/useradd.c	Fri Jan 25 15:21:11 2002
+@@ -2060,7 +2060,8 @@
+ 	if (mflg) {
+ 		create_home ();
+ 		create_mailbox ();
+-		copy_tree (def_template, user_home, user_id, user_gid, 1);
++		copy_tree ((access(def_template,R_OK|X_OK)?SKEL_DIR:def_template),
++		user_home, user_id, user_gid, 1);
+ 	}
+ 
+ 	close_files ();

@@ -1,0 +1,46 @@
+diff -ur shadow-4.0.0~/libmisc/Makefile.am shadow-4.0.0/libmisc/Makefile.am
+--- shadow-4.0.0~/libmisc/Makefile.am	Tue Dec 18 20:12:57 2001
++++ shadow-4.0.0/libmisc/Makefile.am	Tue Dec 18 20:13:11 2001
+@@ -53,6 +53,5 @@
+ 	ttytype.c \
+ 	tz.c \
+ 	ulimit.c \
+-	utmp.c \
+ 	valid.c \
+ 	xmalloc.c
+diff -ur shadow-4.0.0~/src/Makefile.am shadow-4.0.0/src/Makefile.am
+--- shadow-4.0.0~/src/Makefile.am	Tue Dec 18 20:12:57 2001
++++ shadow-4.0.0/src/Makefile.am	Tue Dec 18 20:14:35 2001
+@@ -21,19 +21,15 @@
+ # and installation would be much simpler (just two directories,
+ # $prefix/bin and $prefix/sbin, no install-data hacks...)
+ 
+-bin_PROGRAMS = groups login su
+-ubin_PROGRAMS = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
++ubin_PROGRAMS = faillog lastlog chage chfn chsh expiry gpasswd newgrp
+ usbin_PROGRAMS = chpasswd dpasswd groupadd groupdel groupmod \
+ 	logoutd mkpasswd newusers useradd userdel usermod grpck \
+ 	pwck vipw grpconv grpunconv pwconv pwunconv
+ 
+-noinst_PROGRAMS = id sulogin
+-
+ # id and groups are from gnu, sulogin from sysvinit,
+ # also suid programs are installed by hand.
+ 
+-suidbins = su
+-suidubins = chage chfn chsh expiry gpasswd newgrp passwd
++suidubins = chage chfn chsh expiry gpasswd newgrp
+ 
+ LDADD = $(top_builddir)/libmisc/libmisc.la \
+ 	$(top_builddir)/lib/libshadow.la \
+@@ -46,10 +42,7 @@
+ groupadd_LDADD = $(LDADD) $(LIBPAM)
+ groupdel_LDADD = $(LDADD) $(LIBPAM)
+ groupmod_LDADD = $(LDADD) $(LIBPAM)
+-login_LDADD    = $(LDADD) $(LIBPAM)
+ newusers_LDADD = $(LDADD) $(LIBPAM) -lpam_userpass
+-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK)
+-su_LDADD       = $(LDADD) $(LIBPAM)
+ useradd_LDADD  = $(LDADD) $(LIBPAM)
+ userdel_LDADD  = $(LDADD) $(LIBPAM)
+ usermod_LDADD  = $(LDADD) $(LIBPAM)

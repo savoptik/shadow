@@ -1,0 +1,567 @@
+diff -ur shadow-4.0.0~/lib/defines.h shadow-4.0.0/lib/defines.h
+--- shadow-4.0.0~/lib/defines.h	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/lib/defines.h	Tue Dec 18 13:51:12 2001
+@@ -4,6 +4,11 @@
+ #ifndef _DEFINES_H_
+ #define _DEFINES_H_
+ 
++#define Basename basename
++#define	Prog __progname
++#define	Progname __progname
++extern const char *__progname;
++
+ #define ISDIGIT_LOCALE(c) (IN_CTYPE_DOMAIN (c) && isdigit (c))
+ 
+ /* Take care of NLS matters.  */
+diff -ur shadow-4.0.0~/lib/prototypes.h shadow-4.0.0/lib/prototypes.h
+--- shadow-4.0.0~/lib/prototypes.h	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/lib/prototypes.h	Tue Dec 18 13:46:18 2001
+@@ -15,6 +15,7 @@
+ #ifndef _PROTOTYPES_H
+ #define _PROTOTYPES_H
+ 
++#include <string.h>
+ #include <sys/stat.h>
+ #include <utmp.h>
+ #include <pwd.h>
+@@ -36,10 +37,6 @@
+ extern int expire(const struct passwd *);
+ extern int isexpired(const struct passwd *);
+ #endif
+-
+-/* basename() renamed to Basename() to avoid libc name space confusion */
+-/* basename.c */
+-extern char *Basename(char *str);
+ 
+ /* chkshell.c */
+ extern int check_shell(const char *);
+diff -ur shadow-4.0.0~/libmisc/Makefile.am shadow-4.0.0/libmisc/Makefile.am
+--- shadow-4.0.0~/libmisc/Makefile.am	Sat Sep  8 11:01:32 2001
++++ shadow-4.0.0/libmisc/Makefile.am	Tue Dec 18 13:46:47 2001
+@@ -10,7 +10,6 @@
+ libmisc_la_SOURCES = \
+ 	addgrps.c \
+ 	age.c \
+-	basename.c \
+ 	chkname.c \
+ 	chkname.h \
+ 	chkshell.c \
+diff -ur shadow-4.0.0~/src/chage.c shadow-4.0.0/src/chage.c
+--- shadow-4.0.0~/src/chage.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/chage.c	Tue Dec 18 13:56:07 2001
+@@ -64,8 +64,6 @@
+ #endif	/* !ATT_AGE && AGING */
+ #endif	/* SHADOWPWD */
+ 
+-static char	*Prog;
+-
+ #ifdef	AGING	/*{*/
+ 
+ /*
+@@ -422,12 +420,6 @@
+ 	ruid = getuid();
+ 	amroot = (ruid == 0);
+ 
+-	/*
+-	 * Get the program name so that error messages can use it.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+-
+ 	OPENLOG("chage");
+ 
+ #ifdef	NDBM
+@@ -924,10 +916,6 @@
+ int
+ main(int argc, char **argv)
+ {
+-	char	*Prog;
+-
+-	Prog = Basename(argv[0]);
+-
+ 	if (setgid(getgid()) || setuid(getuid())) {
+ 		fprintf(stderr, "%s: failed to drop privileges (%s)\n",
+ 			Prog, strerror(errno));
+diff -ur shadow-4.0.0~/src/chfn.c shadow-4.0.0/src/chfn.c
+--- shadow-4.0.0~/src/chfn.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/chfn.c	Tue Dec 18 13:51:58 2001
+@@ -56,7 +56,6 @@
+  * Global variables.
+  */
+ 
+-static char *Prog;
+ static char fullnm[BUFSIZ];
+ static char roomno[BUFSIZ];
+ static char workph[BUFSIZ];
+@@ -274,13 +273,6 @@
+ #ifdef	NDBM
+ 	pw_dbm_mode = O_RDWR;
+ #endif
+-
+-	/*
+-	 * Get the program name.  The program name is used as a
+-	 * prefix to most error messages.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("chfn");
+ 
+diff -ur shadow-4.0.0~/src/chpasswd.c shadow-4.0.0/src/chpasswd.c
+--- shadow-4.0.0~/src/chpasswd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/chpasswd.c	Tue Dec 18 13:49:35 2001
+@@ -62,7 +62,6 @@
+ #include <security/pam_misc.h>
+ #endif /* USE_PAM */
+ 
+-     static char *Prog;
+      static int eflg = 0;
+ 
+      extern char *l64a ();
+@@ -210,8 +209,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-    Prog = Basename (argv[0]);
+ 
+     setlocale (LC_ALL, "");
+     bindtextdomain (PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/chsh.c shadow-4.0.0/src/chsh.c
+--- shadow-4.0.0~/src/chsh.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/chsh.c	Tue Dec 18 13:52:15 2001
+@@ -60,7 +60,6 @@
+  * Global variables.
+  */
+ 
+-static char *Prog;			/* Program name */
+ static int amroot;				/* Real UID is root */
+ static char loginsh[BUFSIZ];		/* Name of new login shell */
+ 
+@@ -177,13 +176,6 @@
+ #ifdef	NDBM
+ 	pw_dbm_mode = O_RDWR;
+ #endif
+-
+-	/*
+-	 * Get the program name.  The program name is used as a
+-	 * prefix to most error messages.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("chsh");
+ 
+diff -ur shadow-4.0.0~/src/dpasswd.c shadow-4.0.0/src/dpasswd.c
+--- shadow-4.0.0~/src/dpasswd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/dpasswd.c	Tue Dec 18 13:54:16 2001
+@@ -53,7 +53,6 @@
+ 
+ static int aflg = 0;
+ static int dflg = 0;
+-static char *Prog;
+ 
+ extern int optind;
+ extern char *optarg;
+@@ -83,8 +82,6 @@
+ 	int	fd;
+ 	int	found = 0;
+ 	int	opt;
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/faillog.c shadow-4.0.0/src/faillog.c
+--- shadow-4.0.0~/src/faillog.c	Sat Aug 26 22:27:18 2000
++++ shadow-4.0.0/src/faillog.c	Tue Dec 18 13:55:06 2001
+@@ -41,7 +41,6 @@
+ #include "defines.h"
+ #include "faillog.h"
+ 
+-static char *Prog;	/* program name */
+ static FILE *fail;	/* failure file stream */
+ static uid_t user;	/* one single user, specified on command line */
+ static int days;	/* number of days to consider for print command */
+@@ -86,8 +85,6 @@
+ {
+ 	int c, anyflag = 0;
+ 	struct passwd *pwent;
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/gpasswd.c shadow-4.0.0/src/gpasswd.c
+--- shadow-4.0.0~/src/gpasswd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/gpasswd.c	Tue Dec 18 13:53:22 2001
+@@ -48,7 +48,6 @@
+ #include "sgroupio.h"
+ #endif
+ 
+-static char *Prog;
+ #ifdef SHADOWGRP
+ static int is_shadowgrp;
+ #endif
+@@ -229,8 +228,6 @@
+ #endif
+ 	gr_dbm_mode = O_RDWR;
+ #endif
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("gpasswd");
+ 	setbuf(stdout, NULL);
+diff -ur shadow-4.0.0~/src/groupadd.c shadow-4.0.0/src/groupadd.c
+--- shadow-4.0.0~/src/groupadd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/groupadd.c	Tue Dec 18 13:48:30 2001
+@@ -73,8 +73,6 @@
+ static gid_t	group_id;
+ static char *empty_list = NULL;
+ 
+-static char	*Prog;
+-
+ static int oflg = 0; /* permit non-unique group ID to be specified with -g */
+ static int gflg = 0; /* ID value for the new group */
+ static int fflg = 0; /* if group already exists, do nothing and exit(0) */
+@@ -510,12 +508,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/groupdel.c shadow-4.0.0/src/groupdel.c
+--- shadow-4.0.0~/src/groupdel.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/groupdel.c	Tue Dec 18 13:49:00 2001
+@@ -49,7 +49,6 @@
+ #include "defines.h"
+ 
+ static char	*group_name;
+-static char	*Prog;
+ static int	errors;
+ 
+ #ifdef	NDBM
+@@ -281,12 +280,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/groupmod.c shadow-4.0.0/src/groupmod.c
+--- shadow-4.0.0~/src/groupmod.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/groupmod.c	Tue Dec 18 13:49:20 2001
+@@ -73,8 +73,6 @@
+ static gid_t	group_id;
+ static gid_t	group_newid;
+ 
+-static char	*Prog;
+-
+ static int
+ 	oflg = 0, /* permit non-unique group ID to be specified with -g */
+ 	gflg = 0, /* new ID value for the group */
+@@ -481,12 +479,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/grpck.c shadow-4.0.0/src/grpck.c
+--- shadow-4.0.0~/src/grpck.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/grpck.c	Tue Dec 18 13:53:48 2001
+@@ -75,7 +75,6 @@
+  * Local variables
+  */
+ 
+-static char *Prog;
+ static const char *grp_file = GROUP_FILE;
+ #ifdef	SHADOWGRP
+ static const char *sgr_file = SGROUP_FILE;
+@@ -167,12 +166,6 @@
+ 	struct	sgrp	*sgr;
+ 	int is_shadow = 0;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/login.c shadow-4.0.0/src/login.c
+--- shadow-4.0.0~/src/login.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/login.c	Tue Dec 18 13:50:29 2001
+@@ -129,7 +129,6 @@
+  * Global variables.
+  */
+ 
+-static char *Prog;
+ static int amroot;
+ static int timeout;
+ 
+@@ -480,7 +479,6 @@
+ 
+ 	username[0] = '\0';
+ 	amroot = (getuid() == 0);
+-	Prog = Basename(argv[0]);
+ 
+ 	check_flags(argc, argv);
+ 
+diff -ur shadow-4.0.0~/src/logoutd.c shadow-4.0.0/src/logoutd.c
+--- shadow-4.0.0~/src/logoutd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/logoutd.c	Tue Dec 18 13:53:09 2001
+@@ -49,8 +49,6 @@
+ #define	signal	sigset
+ #endif
+ 
+-static char	*Prog;
+-
+ #ifndef DEFAULT_HUP_MESG
+ #define DEFAULT_HUP_MESG "login time exceeded\r\n"
+ #endif
+@@ -191,12 +189,6 @@
+ 		exit(1);
+ 	}
+ #endif /* !DEBUG */
+-
+-	/*
+-	 * Start syslogging everything
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("logoutd");
+ 
+diff -ur shadow-4.0.0~/src/mkpasswd.c shadow-4.0.0/src/mkpasswd.c
+--- shadow-4.0.0~/src/mkpasswd.c	Sat Aug 26 22:27:18 2000
++++ shadow-4.0.0/src/mkpasswd.c	Tue Dec 18 13:51:24 2001
+@@ -79,7 +79,6 @@
+ #define USAGE		_("Usage: %s [ -vf ] [ -p|g ] file\n")
+ #endif	/* SHADOWPWD */
+ 
+-char	*Progname;
+ int	vflg = 0;
+ int	fflg = 0;
+ int	gflg = 0;
+@@ -143,12 +142,6 @@
+ #endif
+ 	DBM	*dbm;			/* Pointer to new NDBM files         */
+ 	DBM	*dbm_open();		/* Function to open NDBM files       */
+-
+-	/*
+-	 * Figure out what my name is.  I will use this later ...
+-	 */
+-
+-	Progname = Basename(argv[0]);
+ 
+ 	/*
+ 	 * Figure out what the flags might be ...
+diff -ur shadow-4.0.0~/src/newgrp.c shadow-4.0.0/src/newgrp.c
+--- shadow-4.0.0~/src/newgrp.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/newgrp.c	Tue Dec 18 13:54:05 2001
+@@ -47,7 +47,6 @@
+ static GETGROUPS_T *grouplist;
+ #endif
+ 
+-static char *Prog;
+ static int is_newgrp;
+ 
+ /* local function prototypes */
+@@ -112,7 +111,6 @@
+ 	 * command line argument.
+ 	 */
+ 
+-	Prog = Basename(argv[0]);
+ 	is_newgrp = (strcmp(Prog, "newgrp") == 0);
+ 	OPENLOG(is_newgrp ? "newgrp" : "sg");
+ 	gid = getgid();
+diff -ur shadow-4.0.0~/src/newusers.c shadow-4.0.0/src/newusers.c
+--- shadow-4.0.0~/src/newusers.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/newusers.c	Tue Dec 18 13:50:15 2001
+@@ -53,8 +53,6 @@
+ #include <pwd.h>
+ #endif /* USE_PAM */
+ 
+-static char *Prog;
+-
+ #include "getdef.h"
+ #include "pwio.h"
+ #include "groupio.h"
+@@ -383,8 +381,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/passwd.c shadow-4.0.0/src/passwd.c
+--- shadow-4.0.0~/src/passwd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/passwd.c	Tue Dec 18 13:51:41 2001
+@@ -103,7 +103,6 @@
+ 
+ static char *name;	/* The name of user whose password is being changed */
+ static char *myname;	/* The current user's name */
+-static char *Prog;		/* Program name */
+ static int amroot;		/* The real UID was 0 */
+ 
+ static int
+@@ -1032,12 +1031,6 @@
+ 	 * than when executed by a normal user.
+ 	 */
+ 	amroot = (getuid () == 0);
+-
+-	/*
+-	 * Get the program name.  The program name is used as a
+-	 * prefix to most error messages.
+-	 */
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("passwd");
+ 
+diff -ur shadow-4.0.0~/src/pwck.c shadow-4.0.0/src/pwck.c
+--- shadow-4.0.0~/src/pwck.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/pwck.c	Tue Dec 18 13:53:34 2001
+@@ -76,7 +76,6 @@
+  * Local variables
+  */
+ 
+-static char *Prog;
+ static const char *pwd_file = PASSWD_FILE;
+ #ifdef	SHADOWPWD
+ static const char *spw_file = SHADOW_FILE;
+@@ -149,12 +148,6 @@
+ 	struct	spwd	*spw;
+ 	int	is_shadow = 0;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/su.c shadow-4.0.0/src/su.c
+--- shadow-4.0.0~/src/su.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/su.c	Tue Dec 18 13:47:27 2001
+@@ -67,8 +67,6 @@
+ static char name[BUFSIZ];
+ static char oldname[BUFSIZ];
+ 
+-static char *Prog;
+-
+ struct	passwd	pwent;
+ 
+ /*
+@@ -186,13 +184,6 @@
+ 		bindtextdomain(PACKAGE, LOCALEDIR);
+ 		textdomain(PACKAGE);
+ 	}
+-
+-	/*
+-	 * Get the program name.  The program name is used as a
+-	 * prefix to most error messages.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	OPENLOG("su");
+ 
+diff -ur shadow-4.0.0~/src/useradd.c shadow-4.0.0/src/useradd.c
+--- shadow-4.0.0~/src/useradd.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/useradd.c	Tue Dec 18 13:54:42 2001
+@@ -112,8 +112,6 @@
+ static long sys_ngroups;
+ static int do_grp_update = 0;  /* group files need to be updated */
+ 
+-static char	*Prog;
+-
+ static int
+ 	uflg = 0, /* specify user ID for new account */
+ 	oflg = 0, /* permit non-unique user ID to be specified with -u */
+@@ -1916,12 +1914,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/userdel.c shadow-4.0.0/src/userdel.c
+--- shadow-4.0.0~/src/userdel.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/userdel.c	Tue Dec 18 13:56:27 2001
+@@ -74,7 +74,6 @@
+ static char *user_home;
+ static char *user_group;
+ 
+-static char	*Prog;
+ static int fflg = 0, rflg = 0;
+ 
+ #ifdef	NDBM
+@@ -794,12 +793,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+diff -ur shadow-4.0.0~/src/usermod.c shadow-4.0.0/src/usermod.c
+--- shadow-4.0.0~/src/usermod.c	Tue Dec 18 13:02:17 2001
++++ shadow-4.0.0/src/usermod.c	Tue Dec 18 13:54:57 2001
+@@ -99,8 +99,6 @@
+ static long sys_ngroups;
+ static char **user_groups;  /* NULL-terminated list */
+ 
+-static char *Prog;
+-
+ #ifdef AUTH_METHODS
+ static char *auth_arg;
+ static char user_auth[BUFSIZ];
+@@ -1646,11 +1644,6 @@
+ 	struct passwd *pampw;
+ 	int retval;
+ #endif
+-
+-	/*
+-	 * Get my name so that I can use it to report errors.
+-	 */
+-	Prog = Basename(argv[0]);
+ 
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);

@@ -1,0 +1,70 @@
+diff -ur shadow-4.0.0~/man/useradd.8 shadow-4.0.0/man/useradd.8
+--- shadow-4.0.0~/man/useradd.8	Tue Dec 18 12:30:20 2001
++++ shadow-4.0.0/man/useradd.8	Tue Dec 18 12:50:45 2001
+@@ -45,6 +45,7 @@
+ [\fB-f\fI default_inactive\fR] [\fB-e\fI default_expire_date\fR]
+ .br
+ [\fB-s\fI default_shell\fR]
++[\fB-k\fI default_skeleton_dir\fR]
+ .SH DESCRIPTION
+ .SS Creating New Users
+ When invoked without the \fB-D\fR option, the \fBuseradd\fR command
+@@ -150,11 +151,14 @@
+ The name of the new user's login shell.
+ The named program will be used for all future new user accounts.
+ .PP
++.IP "\fB-k \fIdefault_skeleton_dir\fR"
++The name of the new skeleton directory.
+ If no options are specified, \fBuseradd\fR displays the current
+ default values.
+ .SH NOTES
+ The system administrator is responsible for placing the default
+-user files in the \fI/etc/skel\fR directory.
++user files in the skeleton directory (\fI/etc/skel\fR or directory
++defined in \fI/etc/default/useradd\fR file).
+ .SH CAVEATS
+ You may not add a user to an NIS group.
+ This must be performed on the NIS server.
+diff -ur shadow-4.0.0~/src/useradd.c shadow-4.0.0/src/useradd.c
+--- shadow-4.0.0~/src/useradd.c	Tue Dec 18 12:30:20 2001
++++ shadow-4.0.0/src/useradd.c	Tue Dec 18 12:42:50 2001
+@@ -730,7 +730,7 @@
+ #endif
+ 	fprintf(stderr, _("[-p passwd] [-n] [-r] name\n"));
+ 
+-	fprintf(stderr, _("       %s\t-D [-g group] [-b base] [-s shell]\n"),
++	fprintf(stderr, _("       %s\t-D [-g group] [-b base] [-s shell] [-k template]\n"),
+ 		Prog);
+ #ifdef SHADOWPWD
+ 	fprintf(stderr, _("\t\t[-f inactive] [-e expire ]\n"));
+@@ -1327,6 +1327,12 @@
+ 			Gflg++;
+ 			break;
+ 		case 'k':
++			if (!VALID(optarg) || optarg[0] != '/') {
++				fprintf(stderr,
++					_("%s: invalid template directory `%s'\n"),
++					Prog, optarg);
++				exit(E_BAD_ARG);
++			}
+ 			def_template = optarg;
+ 			kflg++;
+ 			break;
+@@ -1396,7 +1402,7 @@
+ 	 * Certain options are only valid in combination with others.
+ 	 * Check it here so that they can be specified in any order.
+ 	 */
+-	if (kflg && !mflg)
++	if (!Dflg && kflg && !mflg)
+ 		usage();
+ 
+ 	if (mflg && Mflg) /* the admin hasn't decided to create or not? */
+@@ -2001,7 +2007,7 @@
+ 	 */
+ 
+ 	if (Dflg) {
+-		if (gflg || bflg || fflg || eflg || sflg)
++		if (gflg || bflg || fflg || eflg || sflg || kflg)
+ 			exit (set_defaults () ? 1:0);
+ 
+ 		show_defaults();
