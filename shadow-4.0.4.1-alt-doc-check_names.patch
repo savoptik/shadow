@@ -1,15 +1,3 @@
-diff -uprk.orig shadow-4.0.4.1.orig/libmisc/chkname.c shadow-4.0.4.1/libmisc/chkname.c
---- shadow-4.0.4.1.orig/libmisc/chkname.c	2003-05-12 09:29:14 +0400
-+++ shadow-4.0.4.1/libmisc/chkname.c	2004-11-10 21:19:49 +0300
-@@ -46,7 +46,7 @@ int check_user_name (const char *name)
- 	 * User names are limited by whatever utmp can
- 	 * handle (usually max 8 characters).
- 	 */
--	if (strlen (name) > sizeof (ut.ut_user))
-+	if (strlen (name) >= sizeof (ut.ut_user))
- 		return 0;
- 
- 	return good_name (name);
 diff -uprk.orig shadow-4.0.4.1.orig/man/groupadd.8 shadow-4.0.4.1/man/groupadd.8
 --- shadow-4.0.4.1.orig/man/groupadd.8	2004-11-10 21:19:33 +0300
 +++ shadow-4.0.4.1/man/groupadd.8	2004-11-10 21:25:20 +0300

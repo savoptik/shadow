@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt1
+Release: alt2
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -29,25 +29,26 @@ Patch5: shadow-4.0.4.1-owl-chage-drop-priv.patch
 Patch6: shadow-4.0.4.1-owl-chage-ro-no-lock.patch
 Patch7: shadow-4.0.4.1-alt-userdel-path_prefix.patch
 Patch8: shadow-4.0.4.1-owl-pam_chauthtok.patch
-Patch10: shadow-4.0.4.1-rh-owl-alt-redhat.patch
+Patch9: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
+Patch10: shadow-4.0.4.1-owl-alt-usergroupname_max.patch
+Patch19: shadow-4.0.4.1-rh-owl-alt-redhat.patch
 #Patch20: shadow-4.0.4.1-owl-man.patch
-Patch21: shadow-4.0.4.1-alt-check_names.patch
-Patch22: shadow-4.0.4.1-owl-create-mailbox.patch
-Patch23: shadow-4.0.4.1-owl-restrict-locale.patch
-Patch24: shadow-4.0.4.1-owl-alt-crypt_gensalt.patch
-Patch25: shadow-4.0.4.1-owl-newgrp.patch
-Patch30: shadow-4.0.4.1-owl-alt-tcb.patch
-Patch31: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
+Patch21: shadow-4.0.4.1-owl-create-mailbox.patch
+Patch22: shadow-4.0.4.1-owl-restrict-locale.patch
+Patch23: shadow-4.0.4.1-owl-alt-crypt_gensalt.patch
+Patch24: shadow-4.0.4.1-owl-newgrp.patch
+Patch30: shadow-4.0.4.1-owl-tcb.patch
 
 # ALT
-Patch101: shadow-4.0.4.1-alt-default_skel.patch
-Patch102: shadow-4.0.4.1-alt-progname.patch
-Patch103: shadow-4.0.4.1-alt-configure.patch
-Patch104: shadow-4.0.4.1-alt-makefile.patch
-Patch105: shadow-4.0.4.1-alt-useradd-skel.patch
-Patch106: shadow-4.0.4.1-alt-copy_tree-perms.patch
-Patch107: shadow-4.0.4.1-alt-configure-passwd.patch
-Patch108: shadow-4.0.4.1-alt-warnings.patch
+Patch101: shadow-4.0.4.1-alt-doc-check_names.patch
+Patch102: shadow-4.0.4.1-alt-default_skel.patch
+Patch103: shadow-4.0.4.1-alt-progname.patch
+Patch104: shadow-4.0.4.1-alt-configure.patch
+Patch105: shadow-4.0.4.1-alt-makefile.patch
+Patch106: shadow-4.0.4.1-alt-useradd-skel.patch
+Patch107: shadow-4.0.4.1-alt-copy_tree-perms.patch
+Patch108: shadow-4.0.4.1-alt-configure-passwd.patch
+Patch109: shadow-4.0.4.1-alt-warnings.patch
 
 %def_disable shared
 
@@ -182,6 +183,20 @@ This package includes utilities for examining lastlog and faillog files:
            failure counts and limits;
 + lastlog: formats the contents of the system last login file.
 
+%package suite
+Summary: The shadow suite
+Group: System/Base
+Requires: %name-change = %serial:%version-%release
+Requires: %name-check = %serial:%version-%release
+Requires: %name-convert = %serial:%version-%release
+Requires: %name-edit = %serial:%version-%release
+Requires: %name-groups = %serial:%version-%release
+Requires: %name-log = %serial:%version-%release
+Requires: %name-utils = %serial:%version-%release
+
+%description suite
+This virtual package unifies all shadow suite subpackages.
+
 %prep
 %setup -q
 
@@ -194,15 +209,15 @@ This package includes utilities for examining lastlog and faillog files:
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 %patch10 -p1
+%patch19 -p1
 #%patch20 -p1
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
-%patch25 -p1
 %patch30 -p1
-%patch31 -p1
 
 # ALT
 %patch101 -p1
@@ -213,6 +228,7 @@ This package includes utilities for examining lastlog and faillog files:
 %patch106 -p1
 %patch107 -p1
 %patch108 -p1
+%patch109 -p1
 
 find -type f -name \*.orig -delete -print
 
@@ -279,13 +295,13 @@ fi
 %pre_control chage chfn chsh
 
 %post change
-%post_control chage chfn chsh
+%post_control -s restricted chage chfn chsh
 
 %pre groups
 %pre_control gpasswd newgrp
 
 %post groups
-%post_control gpasswd newgrp
+%post_control -s restricted gpasswd newgrp
 
 %if_enabled shadow
 %files -n lib%name
@@ -369,7 +385,17 @@ fi
 %_bindir/*log
 %_mandir/man?/*log.*
 
+%files suite
+
 %changelog
+* Sat Nov 20 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt2
+- Synced with 4.0.4.1-owl4:
+  + Added the USERNAME_MAX and GROUPNAME_MAX options.
+- chage, chfn, chsh, gpasswd, newgrp:
+  + Changed default mode to "restricted"; this is required to add
+  shadow-change and shadow-groups packages to default install set.
+- shadow-suite: new subpackage, unifies all shadow suite subpackages.
+
 * Wed Nov 10 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt1
 - Updated to 4.0.4.1-owl2.
 - Updated patches.
