@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt2
+Release: alt3
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -19,6 +19,8 @@ Source7: chfn.control
 Source8: chsh.control
 Source9: gpasswd.control
 Source10: newgrp.control
+
+Patch0: shadow-cvs-20041008-userdel.patch
 
 # Owl
 Patch1: shadow-4.0.4.1-owl-alt-check-reads.patch
@@ -199,6 +201,8 @@ This virtual package unifies all shadow suite subpackages.
 
 %prep
 %setup -q
+
+%patch0 -p0
 
 # Owl
 %patch1 -p1
@@ -388,6 +392,9 @@ fi
 %files suite
 
 %changelog
+* Mon Nov 22 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt3
+- userdel: fixed return code.
+
 * Sat Nov 20 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt2
 - Synced with 4.0.4.1-owl4:
   + Added the USERNAME_MAX and GROUPNAME_MAX options.
