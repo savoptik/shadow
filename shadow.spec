@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.0
-Release: alt14
+Release: alt15
 Serial: 1
 
 %define BUILD_LIBSHADOW 0
@@ -36,6 +36,7 @@ Patch4: shadow-4.0.0-owl-pam-auth.patch
 Patch5: shadow-4.0.0-owl-chage-drop-priv.patch
 Patch6: shadow-4.0.0-owl-chage-ro-no-lock.patch
 Patch7: shadow-4.0.0-owl-useradd-usermod-usage.patch
+Patch8: shadow-4.0.0-owl-pam_chauthtok.patch
 Patch10: shadow-4.0.0-rh-owl-redhat.patch
 Patch20: shadow-4.0.0-owl-man.patch
 Patch21: shadow-4.0.0-alt-check_names.patch
@@ -204,6 +205,7 @@ This package includes utilities for examining lastlog and faillog files:
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 %patch10 -p1
 %patch20 -p1
 %patch21 -p1
@@ -397,6 +399,12 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Thu Jun 10 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt15
+- Properly check the return value from pam_chauthtok() in
+  libmisc/pwdcheck.c: passwd_check() that is used by chfn and
+  chsh commands (Owl).
+  Thanks to Steve Grubb, Martin Schulze and Solar Designer.
+
 * Thu Mar 25 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt14
 - Fixed build with new gettext and autotools.
 - Fixed typo in chage-chfn-chsh.pamd (#3904).
