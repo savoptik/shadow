@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.0
-Release: alt12
+Release: alt13
 Serial: 1
 
 %define BUILD_LIBSHADOW 0
@@ -398,6 +398,11 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Sat Nov 22 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt13
+- In tcbfuncs/tcb_move(), use mode 0700 instead of mode 0 for the
+  directory being modified as the latter is incompatible with
+  the mode 0 hack in vserver kernel patches.
+
 * Wed Aug 20 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt12
 - Explicitly use old libtool for build.
 
