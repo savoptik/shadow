@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt3
+Release: alt4
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -20,7 +20,7 @@ Source8: chsh.control
 Source9: gpasswd.control
 Source10: newgrp.control
 
-Patch0: shadow-cvs-20041008-userdel.patch
+Patch0: shadow-4.0.4.1-cvs-20041008-userdel.patch
 
 # Owl
 Patch1: shadow-4.0.4.1-owl-alt-check-reads.patch
@@ -28,11 +28,11 @@ Patch2: shadow-4.0.4.1-owl-usermod-unlock.patch
 Patch3: shadow-4.0.4.1-owl-tmp.patch
 Patch4: shadow-4.0.4.1-owl-pam-auth.patch
 Patch5: shadow-4.0.4.1-owl-chage-drop-priv.patch
-Patch6: shadow-4.0.4.1-owl-chage-ro-no-lock.patch
-Patch7: shadow-4.0.4.1-alt-userdel-path_prefix.patch
-Patch8: shadow-4.0.4.1-owl-pam_chauthtok.patch
-Patch9: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
-Patch10: shadow-4.0.4.1-owl-alt-usergroupname_max.patch
+Patch6: shadow-4.0.4.1-alt-userdel-path_prefix.patch
+Patch7: shadow-4.0.4.1-owl-pam_chauthtok.patch
+Patch8: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
+Patch9: shadow-4.0.4.1-owl-alt-usergroupname_max.patch
+
 Patch19: shadow-4.0.4.1-rh-owl-alt-redhat.patch
 #Patch20: shadow-4.0.4.1-owl-man.patch
 Patch21: shadow-4.0.4.1-owl-create-mailbox.patch
@@ -50,7 +50,7 @@ Patch105: shadow-4.0.4.1-alt-makefile.patch
 Patch106: shadow-4.0.4.1-alt-useradd-skel.patch
 Patch107: shadow-4.0.4.1-alt-copy_tree-perms.patch
 Patch108: shadow-4.0.4.1-alt-configure-passwd.patch
-Patch109: shadow-4.0.4.1-alt-warnings.patch
+Patch109: shadow-4.0.4.1-alt-xmalloc.patch
 
 %def_disable shared
 
@@ -214,7 +214,6 @@ This virtual package unifies all shadow suite subpackages.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
 %patch19 -p1
 #%patch20 -p1
 %patch21 -p1
@@ -364,9 +363,9 @@ fi
 %_sysconfdir/pam.d/chage
 %_sysconfdir/pam.d/chfn
 %_sysconfdir/pam.d/chsh
-%attr(700,root,root) %_bindir/chage
-%attr(700,root,root) %_bindir/chfn
-%attr(700,root,root) %_bindir/chsh
+%attr(700,root,root) %verify(not mode,group) %_bindir/chage
+%attr(700,root,root) %verify(not mode) %_bindir/chfn
+%attr(700,root,root) %verify(not mode) %_bindir/chsh
 %_mandir/man?/chage.*
 %_mandir/man?/chfn.*
 %_mandir/man?/chsh.*
@@ -378,8 +377,8 @@ fi
 %files groups
 %config /etc/control.d/facilities/gpasswd
 %config /etc/control.d/facilities/newgrp
-%attr(700,root,root) %_bindir/gpasswd
-%attr(700,root,root) %_bindir/newgrp
+%attr(700,root,root) %verify(not mode,group) %_bindir/gpasswd
+%attr(700,root,root) %verify(not mode,group) %_bindir/newgrp
 %_bindir/sg
 %_mandir/man?/gpasswd.*
 %_mandir/man?/newgrp.*
@@ -392,6 +391,12 @@ fi
 %files suite
 
 %changelog
+* Sun Jan 16 2005 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt4
+- Synced with 4.0.4.1-owl7:
+  + Report /etc/login.defs read errors to stderr, not only to syslog.
+  + Removed verify checks for files controlled via control(8) facility.
+  + Fixed compilation issues detected by gcc-3.4.3.
+
 * Mon Nov 22 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt3
 - userdel: fixed return code.
 
