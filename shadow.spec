@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.0
-Release: alt8
+Release: alt12
 Serial: 1
 
 %define BUILD_LIBSHADOW 0
@@ -54,8 +54,9 @@ Patch103: shadow-4.0.0-alt-disable-build-unused.patch
 Patch104: shadow-4.0.0-alt-fix-userdel-path_prefix.patch
 Patch105: shadow-4.0.0-alt-skel.patch
 Patch106: shadow-4.0.0-alt-copy_tree-perms.patch
+Patch107: shadow-4.0.0-alt-user_groups.patch
 
-BuildPreReq: mktemp >= 1:1.3.1, autoconf = 2.13, automake = 1.4
+BuildPreReq: mktemp >= 1:1.3.1, autoconf = 2.13, automake = 1.4, libtool = 1.4.3, rpm-build >= 4.0.4-alt10
 
 # Automatically added by buildreq on Mon Oct 28 2002
 BuildRequires: glibc-devel-static libpam-devel libtcb-devel pam_userpass-devel passwd
@@ -219,9 +220,9 @@ This package includes utilities for examining lastlog and faillog files:
 %patch104 -p1
 %patch105 -p1
 %patch106 -p1
+%patch107 -p1
 
-find -type f -name \*.orig -print0 |
-	xargs -r0 rm -f
+find -type f -name \*.orig -print -delete
 
 %build
 # buildreq hangs on some checks.
@@ -231,6 +232,7 @@ find lib libmisc src -type f -name \*.c >po/POTFILES.in
 %undefine __libtoolize
 %set_autoconf_version 2.13
 %set_automake_version 1.4
+%set_libtool_version 1.4
 libtoolize --copy --force
 aclocal
 automake
@@ -396,6 +398,19 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Wed Aug 20 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt12
+- Explicitly use old libtool for build.
+
+* Mon Jun 30 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt11
+- useradd, usermod:
+  fixed user_group initialization (voins, #0001875).
+
+* Sat May 24 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt10
+- PAM configuration policy enforcement.
+
+* Sat Apr 12 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt9
+- Rebuilt with libpam_userpass.so.1.
+
 * Mon Oct 28 2002 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt8
 - Merged Owl changes:
   * Thu Oct 24 2002 Solar Designer <solar@owl.openwall.com>

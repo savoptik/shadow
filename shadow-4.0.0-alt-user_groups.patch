@@ -1,0 +1,20 @@
+--- shadow-4.0.0/src/usermod.c.vns	2003-06-22 22:14:37 +0400
++++ shadow-4.0.0/src/usermod.c	2003-06-22 22:53:00 +0400
+@@ -1651,6 +1651,7 @@
+ 
+ 	sys_ngroups = sysconf(_SC_NGROUPS_MAX);
+ 	user_groups = malloc((1 + sys_ngroups) * sizeof(char *));
++	user_groups[0] = (char *) 0;
+ 
+ 	OPENLOG("usermod");
+ 
+--- shadow-4.0.0/src/useradd.c.vns	2003-06-22 22:14:37 +0400
++++ shadow-4.0.0/src/useradd.c	2003-06-22 22:14:38 +0400
+@@ -1928,6 +1928,7 @@
+ 
+ 	sys_ngroups = sysconf(_SC_NGROUPS_MAX);
+ 	user_groups = malloc((1 + sys_ngroups) * sizeof(char *));
++	user_groups[0] = (char *) 0;
+ 
+ #ifdef SHADOWPWD
+ 	is_shadow_pwd = spw_file_present();
