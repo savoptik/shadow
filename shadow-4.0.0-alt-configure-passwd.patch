@@ -1,0 +1,18 @@
+--- shadow-4.0.0/configure.in.orig	2001-08-06 12:30:27 +0400
++++ shadow-4.0.0/configure.in	2004-03-25 20:24:19 +0300
+@@ -181,14 +181,7 @@
+ 	fi
+ done
+ 
+-AC_MSG_CHECKING(location of the passwd program)
+-if test -f /usr/bin/passwd; then
+-	passwd_dir=/usr/bin
+-else
+-	passwd_dir=/bin
+-fi
+-AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "$passwd_dir/passwd")
+-AC_MSG_RESULT($passwd_dir)
++AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "/usr/bin/passwd")
+ 
+ dnl XXX - quick hack, should disappear before anyone notices :).
+ AC_DEFINE(SHADOWPWD)

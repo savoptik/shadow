@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.0
-Release: alt13
+Release: alt14
 Serial: 1
 
 %define BUILD_LIBSHADOW 0
@@ -55,11 +55,13 @@ Patch104: shadow-4.0.0-alt-fix-userdel-path_prefix.patch
 Patch105: shadow-4.0.0-alt-skel.patch
 Patch106: shadow-4.0.0-alt-copy_tree-perms.patch
 Patch107: shadow-4.0.0-alt-user_groups.patch
+Patch108: shadow-4.0.0-alt-configure-passwd.patch
+Patch109: shadow-4.0.0-alt-configure-gettext.patch
 
-BuildPreReq: mktemp >= 1:1.3.1, autoconf = 2.13, automake = 1.4, libtool = 1.4.3, rpm-build >= 4.0.4-alt10
+BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 
 # Automatically added by buildreq on Mon Oct 28 2002
-BuildRequires: glibc-devel-static libpam-devel libtcb-devel pam_userpass-devel passwd
+BuildRequires: cvs libpam-devel libtcb-devel pam_userpass-devel
 
 %description
 This package includes the tools necessary for manipulating local user and
@@ -221,6 +223,8 @@ This package includes utilities for examining lastlog and faillog files:
 %patch105 -p1
 %patch106 -p1
 %patch107 -p1
+%patch108 -p1
+%patch109 -p1
 
 find -type f -name \*.orig -print -delete
 
@@ -229,15 +233,10 @@ find -type f -name \*.orig -print -delete
 %{?__buildreqs:export gt_cv_int_divbyzero_sigfpe=yes}
 
 find lib libmisc src -type f -name \*.c >po/POTFILES.in
-%undefine __libtoolize
-%set_autoconf_version 2.13
-%set_automake_version 1.4
-%set_libtool_version 1.4
-libtoolize --copy --force
-aclocal
-automake
-autoheader
-autoconf
+rm -rf intl
+%__install -pv -m644 /usr/share/gettext/intl/Makevars* po/Makevars
+autoreconf -fisv
+%__subst 's/^\(mkinstalldirs =\).*/\1 $(SHELL) $(MKINSTALLDIRS)/' po/Makefile*
 
 %add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
@@ -398,6 +397,10 @@ fi
 %_mandir/man?/*log.*
 
 %changelog
+* Thu Mar 25 2004 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt14
+- Fixed build with new gettext and autotools.
+- Fixed typo in chage-chfn-chsh.pamd (#3904).
+
 * Sat Nov 22 2003 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.0-alt13
 - In tcbfuncs/tcb_move(), use mode 0700 instead of mode 0 for the
   directory being modified as the latter is incompatible with
