@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt4
+Release: alt5
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -391,6 +391,9 @@ fi
 %files suite
 
 %changelog
+* Mon May 16 2005 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt5
+- Fixed double free bug in userdel_rm_tcbdir().
+
 * Sun Jan 16 2005 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt4
 - Synced with 4.0.4.1-owl7:
   + Report /etc/login.defs read errors to stderr, not only to syslog.
