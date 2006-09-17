@@ -32,8 +32,8 @@ diff -uNrp shadow-4.0.4.1/src/newgrp.c shadow-4.0.4.1.owl-newgrp/src/newgrp.c
 -		SYSLOG ((LOG_INFO, "user `%s' switched to group `%s'",
 -			 name, group));
 -	if (getdef_bool ("SYSLOG_SG_ENAB")) {
- 		char *loginname = xstrdup (getlogin ());
- 		char *tty = xstrdup (ttyname (0));
+ 		char *loginname = getlogin ();
+ 		char *tty = ttyname (0);
  
 @@ -447,7 +434,6 @@ int main (int argc, char **argv)
  			signal (SIGTTOU, SIG_DFL);

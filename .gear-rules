@@ -3,4 +3,4 @@ copy: *.default
 copy: *.defs
 copy: *.pamd
 copy: *.patch
-tar.bz2: shadow
+tar: shadow
