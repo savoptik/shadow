@@ -11,4 +11,6 @@ new_fmode restricted 700 root root
 new_help public "Any user can execute $BINARY"
 new_help restricted "Only root can execute $BINARY"
 
+new_summary 'Change user fullname, office number, office extension, and phone number information'
+
 control_fmode "$BINARY" "$*" || exit 1

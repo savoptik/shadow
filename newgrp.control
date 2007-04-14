@@ -13,4 +13,6 @@ new_help public "Any user can execute $BINARY"
 new_help wheelonly "Only \"wheel\" group members can execute $BINARY"
 new_help restricted "Only root can execute $BINARY"
 
+new_summary 'Change the current group ID during a login session'
+
 control_fmode "$BINARY" "$*" || exit 1

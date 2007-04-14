@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt6
+Release: alt7
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -236,7 +236,8 @@ This virtual package unifies all shadow suite subpackages.
 %patch108 -p1
 %patch109 -p1
 
-find -type f -name \*.orig -delete -print
+find -type f -name \*.orig -delete
+bzip2 -9k ChangeLog NEWS
 
 %build
 autoreconf -fisv
@@ -248,39 +249,38 @@ autoreconf -fisv
 	--with-libpam \
 	--without-libcrack
 %make_build
-bzip2 -9fk ChangeLog NEWS
 
 %install
 %makeinstall
 
-%__install -pD -m640 %SOURCE1 $RPM_BUILD_ROOT%_sysconfdir/login.defs
-%__install -pD -m600 %SOURCE2 $RPM_BUILD_ROOT%_sysconfdir/default/useradd
+install -pD -m640 %SOURCE1 %buildroot%_sysconfdir/login.defs
+install -pD -m600 %SOURCE2 %buildroot%_sysconfdir/default/useradd
 
-%__mkdir_p $RPM_BUILD_ROOT%_sysconfdir/pam.d
-pushd $RPM_BUILD_ROOT%_sysconfdir/pam.d
-%__install -p -m600 $RPM_SOURCE_DIR/user-group-mod.pamd user-group-mod
-%__ln_s user-group-mod groupadd
-%__ln_s user-group-mod groupdel
-%__ln_s user-group-mod groupmod
-%__ln_s user-group-mod useradd
-%__ln_s user-group-mod userdel
-%__ln_s user-group-mod usermod
-%__install -p -m640 $RPM_SOURCE_DIR/chage-chfn-chsh.pamd chage-chfn-chsh
-%__ln_s chage-chfn-chsh chage
-%__ln_s chage-chfn-chsh chfn
-%__ln_s chage-chfn-chsh chsh
-%__install -p -m600 $RPM_SOURCE_DIR/chpasswd-newusers.pamd chpasswd-newusers
-%__ln_s chpasswd-newusers chpasswd
-%__ln_s chpasswd-newusers newusers
+mkdir -p %buildroot%_sysconfdir/pam.d
+pushd %buildroot%_sysconfdir/pam.d
+install -pm600 %_sourcedir/user-group-mod.pamd user-group-mod
+ln -s user-group-mod groupadd
+ln -s user-group-mod groupdel
+ln -s user-group-mod groupmod
+ln -s user-group-mod useradd
+ln -s user-group-mod userdel
+ln -s user-group-mod usermod
+install -pm640 %_sourcedir/chage-chfn-chsh.pamd chage-chfn-chsh
+ln -s chage-chfn-chsh chage
+ln -s chage-chfn-chsh chfn
+ln -s chage-chfn-chsh chsh
+install -pm600 %_sourcedir/chpasswd-newusers.pamd chpasswd-newusers
+ln -s chpasswd-newusers chpasswd
+ln -s chpasswd-newusers newusers
 popd
 
-%__ln_s useradd $RPM_BUILD_ROOT%_sbindir/adduser
+ln -s useradd %buildroot%_sbindir/adduser
 
-%__install -pD -m755 $RPM_SOURCE_DIR/chage.control $RPM_BUILD_ROOT/etc/control.d/facilities/chage
-%__install -pD -m755 $RPM_SOURCE_DIR/chfn.control $RPM_BUILD_ROOT/etc/control.d/facilities/chfn
-%__install -pD -m755 $RPM_SOURCE_DIR/chsh.control $RPM_BUILD_ROOT/etc/control.d/facilities/chsh
-%__install -pD -m755 $RPM_SOURCE_DIR/gpasswd.control $RPM_BUILD_ROOT/etc/control.d/facilities/gpasswd
-%__install -pD -m755 $RPM_SOURCE_DIR/newgrp.control $RPM_BUILD_ROOT/etc/control.d/facilities/newgrp
+install -pD -m755 %_sourcedir/chage.control %buildroot/etc/control.d/facilities/chage
+install -pD -m755 %_sourcedir/chfn.control %buildroot/etc/control.d/facilities/chfn
+install -pD -m755 %_sourcedir/chsh.control %buildroot/etc/control.d/facilities/chsh
+install -pD -m755 %_sourcedir/gpasswd.control %buildroot/etc/control.d/facilities/gpasswd
+install -pD -m755 %_sourcedir/newgrp.control %buildroot/etc/control.d/facilities/newgrp
 
 %find_lang %name
 
@@ -394,6 +394,9 @@ fi
 %files suite
 
 %changelog
+* Sun Apr 15 2007 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt7
+- Added summary to control scripts.
+
 * Sun Sep 17 2006 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt6
 - newgrp: Fixed potential NULL pointer dereference (#9362).
 
