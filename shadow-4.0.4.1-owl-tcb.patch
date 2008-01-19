@@ -327,7 +327,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/shadowio.c shadow-4.0.4.1/lib/shadowio.c
 diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 --- shadow-4.0.4.1.orig/lib/tcbfuncs.c	Thu Jan  1 00:00:00 1970
 +++ shadow-4.0.4.1/lib/tcbfuncs.c	Sun Feb 29 03:21:46 2004
-@@ -0,0 +1,476 @@
+@@ -0,0 +1,469 @@
 +#define _GNU_SOURCE
 +#include <stdio.h>
 +#include <fcntl.h>
@@ -388,10 +388,8 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +		free(stored_tcb_user);
 +
 +	stored_tcb_user = strdup(name);
-+	if (!stored_tcb_user)
-+		NOMEM;
-+	asprintf(&buf, TCB_FMT, name);
-+	if (!buf)
++	if (!stored_tcb_user ||
++	    asprintf(&buf, TCB_FMT, name) < 0)
 +		NOMEM;
 +
 +	retval = spw_name(buf);	/* should be 1 */
@@ -408,8 +406,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +	int i;
 +
 +	for (i = 0; i < 3; i++) {
-+		asprintf(&tmp, TCB_FMT "%s", user, suffs[i]);
-+		if (!tmp)
++		if (asprintf(&tmp, TCB_FMT "%s", user, suffs[i]) < 0)
 +			NOMEM;
 +		if (unlink(tmp) && errno != ENOENT) {
 +			fprintf(stderr, "unlink: %s: %s\n", tmp,
@@ -432,15 +429,17 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +{
 +	char *ret;
 +
-+	if (!getdef_bool("TCB_SYMLINKS") || uid < HASH_BY)
-+		asprintf(&ret, "%s", name);
-+	else if (uid < HASH_BY * HASH_BY)
-+		asprintf(&ret, ":%dK/%s", uid / HASH_BY, name);
-+	else
-+		asprintf(&ret, ":%dM/:%dK/%s", uid / (HASH_BY * HASH_BY),
-+			 (uid % (HASH_BY * HASH_BY)) / HASH_BY, name);
-+	if (!ret)
-+		NOMEM;
++	if (!getdef_bool("TCB_SYMLINKS") || uid < HASH_BY) {
++		if (asprintf(&ret, "%s", name) < 0)
++			NOMEM;
++	} else if (uid < HASH_BY * HASH_BY) {
++		if (asprintf(&ret, ":%dK/%s", uid / HASH_BY, name) < 0)
++			NOMEM;
++	} else {
++		if (asprintf(&ret, ":%dM/:%dK/%s", uid / (HASH_BY * HASH_BY),
++			     (uid % (HASH_BY * HASH_BY)) / HASH_BY, name) < 0)
++			NOMEM;
++	}
 +	return ret;
 +}
 +
@@ -451,8 +450,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +	char link[8192];
 +	int ret;
 +
-+	asprintf(&path, TCB_DIR "/%s", name);
-+	if (!path)
++	if (asprintf(&path, TCB_DIR "/%s", name) < 0)
 +		NOMEM;
 +	if (lstat(path, &st)) {
 +		fprintf(stderr, "Cannot stat %s: %s\n", path,
@@ -497,7 +495,8 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +
 +	if (!(rel = tcb_path_rel(name, uid)))
 +		return 0;
-+	asprintf(&ret, TCB_DIR "/%s", rel);
++	if (asprintf(&ret, TCB_DIR "/%s", rel) < 0)
++		ret = NULL;
 +	free(rel);
 +	if (!ret)
 +		NOMEM;
@@ -510,7 +509,8 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +
 +	if (!(rel = tcb_path_rel_existing(name)))
 +		return 0;
-+	asprintf(&ret, TCB_DIR "/%s", rel);
++	if (asprintf(&ret, TCB_DIR "/%s", rel) < 0)
++		ret = NULL;
 +	free(rel);
 +	if (!ret)
 +		NOMEM;
@@ -531,8 +531,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +	}
 +	while ((ind = strchr(ptr, '/'))) {
 +		*ind = 0;
-+		asprintf(&dir, TCB_DIR "/%s", path);
-+		if (!dir)
++		if (asprintf(&dir, TCB_DIR "/%s", path) < 0)
 +			NOMEM;
 +		if (mkdir(dir, 0700) && errno != EEXIST) {
 +			perror("mkdir");
@@ -567,8 +566,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +
 +	while ((ind = strrchr(path, '/'))) {
 +		*ind = 0;
-+		asprintf(&dir, TCB_DIR "/%s", path);
-+		if (!dir)
++		if (asprintf(&dir, TCB_DIR "/%s", path) < 0)
 +			NOMEM;
 +		if (rmdir(dir)) {
 +			if (errno != ENOTEMPTY) {
@@ -596,8 +594,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +		return 0;
 +	free(path);
 +	free(rel);
-+	asprintf(&path, TCB_DIR "/%s", name);
-+	if (!path)
++	if (asprintf(&path, TCB_DIR "/%s", name) < 0)
 +		NOMEM;
 +	if (unlink(path) && errno != ENOENT)
 +		ret = 0;
@@ -614,8 +611,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +	struct stat oldmode;
 +	int ret = 0;
 +
-+	asprintf(&olddir, TCB_DIR "/%s", stored_tcb_user);
-+	if (!olddir)
++	if (asprintf(&olddir, TCB_DIR "/%s", stored_tcb_user) < 0)
 +		goto out_free_nomem;
 +	if (stat(olddir, &oldmode)) {
 +		perror("stat");
@@ -646,8 +642,7 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +		perror("unlink");
 +		goto out_free;
 +	}
-+	asprintf(&newdir, TCB_DIR "/%s", user_newname);
-+	if (!newdir)
++	if (asprintf(&newdir, TCB_DIR "/%s", user_newname) < 0)
 +		goto out_free_nomem;
 +	if (!(real_new_dir_rel = tcb_path_rel(user_newname, the_newid)))
 +		goto out_free;
@@ -685,9 +680,8 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +	/* Directory moved, adjust ownership */
 +	if (user_newid == -1)
 +		return 1;
-+	asprintf(&tcbdir, TCB_DIR "/%s", user_newname);
-+	asprintf(&shadow, TCB_DIR "/%s/shadow", user_newname);
-+	if (!tcbdir || !shadow)
++	if (asprintf(&tcbdir, TCB_DIR "/%s", user_newname) < 0 ||
++	    asprintf(&shadow, TCB_DIR "/%s/shadow", user_newname) < 0)
 +		NOMEM;
 +	if (stat(tcbdir, &dirmode)) {
 +		perror("stat");
@@ -765,9 +759,8 @@ diff -uNrp shadow-4.0.4.1.orig/lib/tcbfuncs.c shadow-4.0.4.1/lib/tcbfuncs.c
 +		authgid = gr->gr_gid;
 +	else
 +		authgid = shadowgid;
-+	asprintf(&dir, TCB_DIR "/%s", name);
-+	asprintf(&shadow, TCB_FMT, name);
-+	if (!dir || !shadow)
++	if (asprintf(&dir, TCB_DIR "/%s", name) < 0 ||
++	    asprintf(&shadow, TCB_FMT, name) < 0)
 +		NOMEM;
 +	if (mkdir(dir, 0700)) {
 +		fprintf(stderr, "mkdir: %s: %s\n", dir, strerror(errno));
@@ -1904,17 +1897,29 @@ diff -uNrp shadow-4.0.4.1.orig/src/pwunconv.c shadow-4.0.4.1/src/pwunconv.c
 diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
 --- shadow-4.0.4.1.orig/src/useradd.c	Sat Feb 28 15:35:59 2004
 +++ shadow-4.0.4.1/src/useradd.c	Sun Feb 29 03:21:46 2004
-@@ -56,6 +56,9 @@ RCSID (PKG_VER "$Id: useradd.c,v 1.46.2.
+@@ -56,6 +56,10 @@ RCSID (PKG_VER "$Id: useradd.c,v 1.46.2.
  #endif
  #include "faillog.h"
  #include "nscd.h"
 +#ifdef SHADOWTCB
++#include <tcb.h>
 +#include "tcbfuncs.h"
 +#endif
  #ifndef SKEL_DIR
  #define SKEL_DIR "/etc/skel"
  #endif
-@@ -214,6 +217,7 @@ static void find_new_uid (void);
+@@ -145,6 +149,10 @@ extern int sg_dbm_mode;
+ 
+ static int home_added;
+ 
++#ifdef SHADOWTCB
++static int tcb_added;
++#endif
++
+ #ifdef NDBM
+ static int pw_dbm_added;
+ static int gr_dbm_added;
+@@ -214,11 +222,49 @@ static void find_new_uid (void);
  static void process_flags (int argc, char **argv);
  static void close_files (void);
  static void open_files (void);
@@ -1922,7 +1927,60 @@ diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
  static void faillog_reset (uid_t);
  static void lastlog_reset (uid_t);
  static void usr_update (void);
-@@ -1405,23 +1409,6 @@ static void open_files (void)
+ static void create_home (void);
+ 
++#ifdef SHADOWTCB
++static int useradd_rm_tcbdir(const char *user_name, uid_t user_id)
++{
++	char *buf;
++	int ret = 0;
++
++	if (!getdef_bool("USE_TCB"))
++		return 0;
++
++	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
++		fprintf(stderr, "Can't allocate memory, "
++			"tcb entry for %s not removed.\n",
++			user_name);
++		return 1;
++	}
++	if (!s_drop_priv()) {
++		perror("tcb_drop_privs");
++		free(buf);
++		return 1;
++	}
++	if (remove_tree(buf)) {
++		perror("remove_tree");
++		s_gain_priv();
++		free(buf);
++		return 1;
++	}
++	s_gain_priv();
++	free(buf);
++	if (!tcb_rmdir(user_name)) {
++		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
++			user_name, strerror(errno));
++		ret = 1;
++	}
++	return ret;
++}
++#endif
++
+ /*
+  * fail_exit - undo as much as possible
+  */
+@@ -247,6 +293,10 @@ static void fail_exit (int code)
+ 			 Prog);
+ #endif
+ #endif				/* NDBM */
++#ifdef SHADOWTCB
++	if (tcb_added)
++		useradd_rm_tcbdir(user_name, user_id);
++#endif
+ 	if (home_added)
+ 		rmdir (user_home);
+ 
+@@ -1405,23 +1455,6 @@ static void open_files (void)
  		pw_unlock ();
  		exit (E_PW_UPDATE);
  	}
@@ -1946,7 +2004,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
  	/*
  	 * Lock and open the group file.  This will load all of the group
  	 * entries.
-@@ -1449,6 +1436,26 @@ static void open_files (void)
+@@ -1449,6 +1482,26 @@ static void open_files (void)
  #endif        /* SHADOWGRP*/
  }
  
@@ -1973,7 +2031,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
  
  static void faillog_reset (uid_t uid)
  {
-@@ -1927,6 +1934,18 @@ int main (int argc, char **argv)
+@@ -1927,6 +1980,19 @@ int main (int argc, char **argv)
  	 * gid too ... --gafton */
  	if (! uflg)
  		find_new_uid ();
@@ -1983,6 +2041,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
 +			fprintf(stderr, "Problems creating /etc/tcb/%s\n", user_name);
 +			exit(E_UID_IN_USE);
 +		}
++		tcb_added = 1;
 +	}
 +#endif
 +#ifdef SHADOWPWD
@@ -1995,7 +2054,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/useradd.c shadow-4.0.4.1/src/useradd.c
 diff -uNrp shadow-4.0.4.1.orig/src/userdel.c shadow-4.0.4.1/src/userdel.c
 --- shadow-4.0.4.1.orig/src/userdel.c	Sat Feb 28 15:15:16 2004
 +++ shadow-4.0.4.1/src/userdel.c	Sun Feb 29 03:21:46 2004
-@@ -38,11 +38,19 @@ RCSID (PKG_VER "$Id: userdel.c,v 1.29 20
+@@ -38,11 +38,19 @@ RCSID (PKG_VER "$Id: userdel.c,v 1.30 20
  #include <grp.h>
  #include <ctype.h>
  #include <fcntl.h>
@@ -2015,7 +2074,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/userdel.c shadow-4.0.4.1/src/userdel.c
  #include "prototypes.h"
  #include "defines.h"
  #include "getdef.h"
-@@ -698,6 +706,44 @@ static struct pam_conv conv = {
+@@ -699,6 +707,43 @@ static struct pam_conv conv = {
  	misc_conv, NULL
  };
  #endif				/* USE_PAM */
@@ -2029,8 +2088,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/userdel.c shadow-4.0.4.1/src/userdel.c
 +	if (!getdef_bool("USE_TCB"))
 +		return 0;
 +
-+	asprintf(&buf, TCB_DIR "/%s", user_name);
-+	if (!buf) {
++	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
 +		fprintf(stderr, "Can't allocate memory, "
 +			"tcb entry for %s not removed.\n",
 +			user_name);
@@ -2060,7 +2118,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/userdel.c shadow-4.0.4.1/src/userdel.c
  /*
   * main - userdel command
   */
-@@ -798,6 +845,10 @@ int main (int argc, char **argv)
+@@ -799,6 +844,10 @@ int main (int argc, char **argv)
  			 Prog, user_name);
  		exit (E_NOTFOUND);
  	}
@@ -2071,7 +2129,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/userdel.c shadow-4.0.4.1/src/userdel.c
  #ifdef	USE_NIS
  
  	/*
-@@ -904,6 +955,9 @@ int main (int argc, char **argv)
+@@ -905,6 +954,9 @@ int main (int argc, char **argv)
  
  	user_cancel (user_name);
  	close_files ();
@@ -2157,7 +2215,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
  static int (*unlock) (void);
  
  /* local function prototypes */
-@@ -89,6 +97,26 @@ create_backup_file (FILE * fp, const cha
+@@ -89,6 +97,25 @@ create_backup_file (FILE * fp, const cha
  	return 0;
  }
  
@@ -2171,8 +2229,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
 +	if (unlink(fileedit)) return 0;
 +	if (!s_drop_priv()) return 0;
 +	if (stat(file, &st)) return 0;
-+	asprintf(to_rename, "%s+", file);
-+	if (!*to_rename) {
++	if (asprintf(to_rename, "%s+", file) < 0) {
 +		fclose(f);
 +		return 0;
 +	}
@@ -2184,7 +2241,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
  
  static void vipwexit (const char *msg, int syserr, int ret)
  {
-@@ -110,6 +138,8 @@ static void vipwexit (const char *msg, i
+@@ -110,6 +137,8 @@ static void vipwexit (const char *msg, i
  #define DEFAULT_EDITOR "vi"
  #endif
  
@@ -2193,7 +2250,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
  static void
  vipwedit (const char *file, int (*file_lock) (void),
  	  int (*file_unlock) (void))
-@@ -120,24 +150,58 @@ vipwedit (const char *file, int (*file_l
+@@ -120,24 +149,58 @@ vipwedit (const char *file, int (*file_l
  	int status;
  	FILE *f;
  	char filebackup[1024], fileedit[1024];
@@ -2254,7 +2311,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
  	if (create_backup_file (f, fileedit, &st1))
  		vipwexit (_("Couldn't make backup"), errno, 1);
  	createedit = 1;
-@@ -192,19 +256,51 @@ vipwedit (const char *file, int (*file_l
+@@ -192,19 +255,51 @@ vipwedit (const char *file, int (*file_l
  	 */
  
  	createedit = 0;
@@ -2308,7 +2365,7 @@ diff -uNrp shadow-4.0.4.1.orig/src/vipw.c shadow-4.0.4.1/src/vipw.c
  
  int main (int argc, char **argv)
  {
-@@ -235,18 +331,27 @@ int main (int argc, char **argv)
+@@ -235,18 +330,27 @@ int main (int argc, char **argv)
  		case 'h':
  			e = 0;
  		default:
