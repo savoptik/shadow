@@ -1,0 +1,93 @@
+--- shadow-4.0.4.1.orig/man/chage.1	2008-01-19 23:13:12 +0000
++++ shadow-4.0.4.1/man/chage.1	2008-01-19 23:14:34 +0000
+@@ -52,7 +52,7 @@ Set the minimum number of days between p
+ this field indicates that the user may change her password at any time.
+ .IP "\fB-M\fR \fImaxdays\fR"
+ Set maximum number of days during which a password is valid. When
+-\fImaxdays\fR plus fIlastday\fR is less than the current day, the user will
++\fImaxdays\fR plus \fIlastday\fR is less than the current day, the user will
+ be required to change her password before being able to use her account.
+ This occurance can be planned for in advance by use of the \fB-W\fR option,
+ which provides the user with advance warning.
+--- shadow-4.0.4.1.orig/man/lastlog.8	2008-01-19 23:13:12 +0000
++++ shadow-4.0.4.1/man/lastlog.8	2008-01-19 23:14:31 +0000
+@@ -44,7 +44,7 @@ to be printed, sorted by their order in 
+ \fIlogin-name\fR only to be printed
+ .TP
+ \fB-t\fR, \fB--time\fR \fIdays\fR will cause only the lastlogins more recent
+-\than fIdays\fR to be printed
++\than \fIdays\fR to be printed
+ .TP
+ \fB-h\fR, \fB--help\fR print a one-line help message and exit.
+ .BR
+--- shadow-4.0.4.1.orig/man/login.defs.5	2008-01-19 23:13:12 +0000
++++ shadow-4.0.4.1/man/login.defs.5	2008-01-19 23:14:24 +0000
+@@ -73,8 +73,8 @@ If \fIyes\fR, the \fBchfn\fR and \fBchsh
+ authentication before making any changes, unless run by the superuser.
+ .\"
+ .IP "CHFN_RESTRICT (string)"
+-This parameter specifies which values in the fIgecos\fR field of the
+-\fI/etc/passwd\fR file may be changed by regular users using the fBchfn\fR
++This parameter specifies which values in the \fIgecos\fR field of the
++\fI/etc/passwd\fR file may be changed by regular users using the \fBchfn\fR
+ program. It can be any combination of letters \fIf\fR, \fIr\fR, \fIw\fR,
+ \fIh\fR, for Full name, Room number, Work phone, and Home phone,
+ respectively. For backward compatibility, "yes" is equivalent to "rwh" and
+@@ -97,7 +97,7 @@ for information on supported password ha
+ .\"
+ .IP "GID_MAX (number)"
+ .IP "GID_MIN (number)"
+-Range of group IDs to choose from for the fBuseradd\fR and \fBgroupadd\fR
++Range of group IDs to choose from for the \fBuseradd\fR and \fBgroupadd\fR
+ programs.
+ .\"
+ .IP "GROUPNAME_MAX (number)"
+--- shadow-4.0.4.1.orig/man/pwconv.8	2008-01-19 23:13:12 +0000
++++ shadow-4.0.4.1/man/pwconv.8	2008-01-19 23:15:01 +0000
+@@ -17,7 +17,7 @@ pwconv, pwunconv, grpconv, grpunconv \- 
+ \fBpwunconv\fR creates \fIpasswd\fR from \fIpasswd\fR and \fIshadow\fR and then
+ removes \fIshadow\fR.
+ .PP
+-\fBgrpconv\fR creates \fIgshadow/fR from \fIgroup/fR and an optionally existing
++\fBgrpconv\fR creates \fIgshadow\fR from \fIgroup\fR and an optionally existing
+ \fIgshadow\fR.
+ .PP
+ \fBgrpunconv\fR creates \fIgroup\fR from \fIgroup\fR and \fIgshadow\fR and then
+@@ -28,7 +28,7 @@ files: \fI/etc/passwd\fR, \fI/etc/group\
+ \fI/etc/gshadow\fR.
+ .PP
+ .PP 
+-Each program acquires the necessary locks before conversion. fBpwconv\fR and
++Each program acquires the necessary locks before conversion. \fBpwconv\fR and
+ \fBgrpconv\fR are similiar. First, entries in the shadowed file which don't
+ exist in the main file are removed. Then, shadowed entries which don't have
+ `x' as the password in the main file are updated. Any missing shadowed
+@@ -36,14 +36,14 @@ entries are added. Finally, passwords in
+ `x'. These programs can be used for initial conversion as well to update the
+ shadowed file if the main file is edited by hand.
+ .PP
+-\fBpwconv\fR will use the values of fBPASS_MIN_DAYS\fR, \fBPASS_MAX_DAYS\fR,
+-and \fBPASS_WARN_AGE\fR from fI/etc/login.defs\fR when adding new entries
++\fBpwconv\fR will use the values of \fBPASS_MIN_DAYS\fR, \fBPASS_MAX_DAYS\fR,
++and \fBPASS_WARN_AGE\fR from \fI/etc/login.defs\fR when adding new entries
+ to \fI/etc/shadow\fR.
+ .PP
+ Likewise  \fBpwunconv\fR and \fBgrpunconv\fR are similiar. Passwords in the
+ main file are updated from the shadowed file. Entries which exist in the
+ main file but not in the shadowed file are left alone. Finally, the shadowed
+-file is removed. Some password aging information is lost by fBpwunconv\fR.
++file is removed. Some password aging information is lost by \fBpwunconv\fR.
+ It will convert what it can.
+ .SH "BUGS"
+ Errors in the password or group files (such as invalid or duplicate entries)
+--- shadow-4.0.4.1.orig/man/vipw.8	2008-01-19 23:13:12 +0000
++++ shadow-4.0.4.1/man/vipw.8	2008-01-19 23:14:12 +0000
+@@ -9,7 +9,7 @@ vipw, vigr \- edit the password, group, 
+ .SH DESCRIPTION
+ \fBvipw\fR and \fBvigr\fR will edit the files \fI/etc/passwd\fR and
+ \fI/etc/group\fR, respectively. With the \fB-s\fR flag, they will edit the
+-shadow versions of those files, fI/etc/shadow\fR and \fI/etc/gshadow\fR,
++shadow versions of those files, \fI/etc/shadow\fR and \fI/etc/gshadow\fR,
+ respectively. The programs will set the appropriate locks to prevent file
+ corruption. When looking for an editor, the programs will first try the
+ environment variable \fBVISUAL\fR, then the environment variable

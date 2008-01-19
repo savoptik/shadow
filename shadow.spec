@@ -53,6 +53,7 @@ Patch106: shadow-4.0.4.1-alt-useradd-skel.patch
 Patch107: shadow-4.0.4.1-alt-copy_tree-perms.patch
 Patch108: shadow-4.0.4.1-alt-configure-passwd.patch
 Patch109: shadow-4.0.4.1-alt-xmalloc.patch
+Patch110: shadow-4.0.4.1-alt-man.patch
 
 %def_disable shared
 
@@ -235,6 +236,7 @@ This virtual package unifies all shadow suite subpackages.
 %patch107 -p1
 %patch108 -p1
 %patch109 -p1
+%patch110 -p1
 
 find -type f -name \*.orig -delete
 bzip2 -9k ChangeLog NEWS
