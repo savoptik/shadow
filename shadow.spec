@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt7
+Release: alt8
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -398,6 +398,11 @@ fi
 %files suite
 
 %changelog
+* Sun Jan 20 2008 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt8
+- useradd: Remove tcb user dir in case of abnormal program completion (#14091).
+- Fixed a few manpage typos (#12230).
+- Fixed build with new autotools.
+
 * Sun Apr 15 2007 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt7
 - Added summary to control scripts.
 
