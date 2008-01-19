@@ -238,6 +238,8 @@ This virtual package unifies all shadow suite subpackages.
 
 find -type f -name \*.orig -delete
 bzip2 -9k ChangeLog NEWS
+grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
+	echo 'ACLOCAL_AMFLAGS = -I m4' >>Makefile.am
 
 %build
 autoreconf -fisv
