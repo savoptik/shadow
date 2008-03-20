@@ -2,5 +2,5 @@
 auth     required	pam_rootok.so
 account  required	pam_permit.so
 password required	pam_userpass.so
-password include	system-auth-use_first_pass
+password include	system-auth-use_first_pass-local
 session  required	pam_deny.so

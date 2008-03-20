@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt8
+Release: alt8.1
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -398,6 +398,10 @@ fi
 %files suite
 
 %changelog
+* Fri Mar 21 2008 Grigory Batalov <bga@altlinux.ru> 1:4.0.4.1-alt8.1
+- Include local system-auth-use_first_pass into chpasswd-newusers
+  PAM config as it doesn't work with ldap one.
+
 * Sun Jan 20 2008 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt8
 - useradd: Remove tcb user dir in case of abnormal program completion (#14091).
 - Fixed a few manpage typos (#12230).
