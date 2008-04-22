@@ -1,10 +1,10 @@
 Name: shadow
 Version: 4.0.4.1
-Release: alt8.1
+Release: alt9
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
-License: BSD
+License: BSD-style
 Group: System/Base
 Url: ftp://ftp.pld.org.pl/software/shadow
 Packager: Dmitry V. Levin <ldv@altlinux.org>
@@ -54,6 +54,7 @@ Patch107: shadow-4.0.4.1-alt-copy_tree-perms.patch
 Patch108: shadow-4.0.4.1-alt-configure-passwd.patch
 Patch109: shadow-4.0.4.1-alt-xmalloc.patch
 Patch110: shadow-4.0.4.1-alt-man.patch
+Patch111: shadow-4.0.4.1-alt-getdef.patch
 
 %def_disable shared
 
@@ -144,7 +145,7 @@ and groups:
 %package change
 Summary: Utilities for changing user shell, finger and password information
 Group: System/Base
-PreReq: %name-utils = %serial:%version-%release, control
+PreReq: %name-utils = %serial:%version-%release
 
 %description change
 This package includes utilities for changing user shell, finger and password
@@ -169,7 +170,7 @@ shadow-password, or shadow-group files:
 %package groups
 Summary: Utilities for execute command as different group ID
 Group: System/Base
-PreReq: %name-utils = %serial:%version-%release, control
+PreReq: %name-utils = %serial:%version-%release
 
 %description groups
 This package includes utilities for execute command as different group ID:
@@ -237,6 +238,7 @@ This virtual package unifies all shadow suite subpackages.
 %patch108 -p1
 %patch109 -p1
 %patch110 -p1
+%patch111 -p1
 
 find -type f -name \*.orig -delete
 bzip2 -9k ChangeLog NEWS
@@ -257,8 +259,8 @@ autoreconf -fisv
 %install
 %makeinstall
 
-install -pD -m640 %SOURCE1 %buildroot%_sysconfdir/login.defs
-install -pD -m600 %SOURCE2 %buildroot%_sysconfdir/default/useradd
+install -pD -m640 %_sourcedir/login.defs %buildroot%_sysconfdir/login.defs
+install -pD -m600 %_sourcedir/useradd.default %buildroot%_sysconfdir/default/useradd
 
 mkdir -p %buildroot%_sysconfdir/pam.d
 pushd %buildroot%_sysconfdir/pam.d
@@ -280,11 +282,11 @@ popd
 
 ln -s useradd %buildroot%_sbindir/adduser
 
-install -pD -m755 %_sourcedir/chage.control %buildroot/etc/control.d/facilities/chage
-install -pD -m755 %_sourcedir/chfn.control %buildroot/etc/control.d/facilities/chfn
-install -pD -m755 %_sourcedir/chsh.control %buildroot/etc/control.d/facilities/chsh
-install -pD -m755 %_sourcedir/gpasswd.control %buildroot/etc/control.d/facilities/gpasswd
-install -pD -m755 %_sourcedir/newgrp.control %buildroot/etc/control.d/facilities/newgrp
+install -pD -m755 %_sourcedir/chage.control %buildroot%_controldir/chage
+install -pD -m755 %_sourcedir/chfn.control %buildroot%_controldir/chfn
+install -pD -m755 %_sourcedir/chsh.control %buildroot%_controldir/chsh
+install -pD -m755 %_sourcedir/gpasswd.control %buildroot%_controldir/gpasswd
+install -pD -m755 %_sourcedir/newgrp.control %buildroot%_controldir/newgrp
 
 %find_lang %name
 
@@ -319,12 +321,15 @@ fi
 
 %files -n lib%name-devel
 %_libdir/*.so
-%_libdir/*.la
 %_man3dir/*
 
 %files -n lib%name-devel-static
 %_libdir/*.a
 %endif
+
+%files convert
+%_sbindir/*conv
+%_mandir/man?/*conv.*
 
 %files utils -f %name.lang
 %attr(751,root,root) %dir %_sysconfdir/default
@@ -358,14 +363,10 @@ fi
 %_sbindir/*ck
 %_mandir/man?/*ck.*
 
-%files convert
-%_sbindir/*conv
-%_mandir/man?/*conv.*
-
 %files change
-%config /etc/control.d/facilities/chage
-%config /etc/control.d/facilities/chfn
-%config /etc/control.d/facilities/chsh
+%config %_controldir/chage
+%config %_controldir/chfn
+%config %_controldir/chsh
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/pam.d/chage-chfn-chsh
 %_sysconfdir/pam.d/chage
 %_sysconfdir/pam.d/chfn
@@ -382,8 +383,8 @@ fi
 %_mandir/man?/vi??.*
 
 %files groups
-%config /etc/control.d/facilities/gpasswd
-%config /etc/control.d/facilities/newgrp
+%config %_controldir/gpasswd
+%config %_controldir/newgrp
 %attr(700,root,root) %verify(not mode,group) %_bindir/gpasswd
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgrp
 %_bindir/sg
@@ -398,9 +399,12 @@ fi
 %files suite
 
 %changelog
+* Tue Apr 22 2008 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt9
+- def_load: Silence complains about missing /etc/login.defs file.
+
 * Fri Mar 21 2008 Grigory Batalov <bga@altlinux.ru> 1:4.0.4.1-alt8.1
 - Include local system-auth-use_first_pass into chpasswd-newusers
-  PAM config as it doesn't work with ldap one.
+  PAM config as it doesn't work with ldap one (#15003).
 
 * Sun Jan 20 2008 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt8
 - useradd: Remove tcb user dir in case of abnormal program completion (#14091).
