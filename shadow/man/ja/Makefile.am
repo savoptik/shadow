@@ -2,7 +2,6 @@
 mandir = @mandir@/ja
 
 man_MANS = \
-	adduser.8 \
 	chage.1 \
 	chfn.1 \
 	chpasswd.8 \
@@ -19,17 +18,13 @@ man_MANS = \
 	grpconv.8 \
 	grpunconv.8 \
 	lastlog.8 \
-	limits.5 \
 	login.1 \
-	login.access.5 \
 	login.defs.5 \
 	logoutd.8 \
-	mkpasswd.8 \
 	newgrp.1 \
 	newusers.8 \
 	passwd.1 \
 	passwd.5 \
-	porttime.5 \
 	pwck.8 \
 	pwconv.8 \
 	pwunconv.8 \
@@ -43,9 +38,18 @@ man_MANS = \
 	vigr.8 \
 	vipw.8
 
-EXTRA_DIST = $(man_MANS) \
+man_nopam = \
+	limits.5 \
+	login.access.5 \
+	porttime.5
+
+if !USE_PAM
+man_MANS += $(man_nopam)
+endif
+
+EXTRA_DIST = \
+	$(man_MANS) \
+	$(man_nopam) \
 	id.1 \
-	pw_auth.3 \
 	shadow.3 \
-	shadowconfig.8 \
 	sulogin.8

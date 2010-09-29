@@ -1,71 +1,108 @@
-.\" $Id: groupdel.8,v 1.7 2003/04/28 17:52:15 kloczek Exp $
-.\" {PTM/WK/0.1/VIII-1999}
-.\" Copyright 1991 - 1993, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: groupdel
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH GROUPDEL 8
-.SH NAZWA
-groupdel - usuñ grupê
-.SH SK£ADNIA
-\fBgroupdel\fR \fIgrupa\fR
-.SH OPIS
-Polecenie \fBgroupdel\fR zmienia systemowe pliki kont, usuwaj±c
-wszystkie zapisy odnosz±ce siê do \fIgrupy\fR.
-Wymieniona grupa musi istnieæ.
+.TH "GROUPDEL" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+groupdel \- delete a group
+.SH "SK\(/LADNIA"
+.HP \w'\fBgroupdel\fR\ 'u
+\fBgroupdel\fR \fIgroup\fR
+.SH "OPIS"
 .PP
-Musisz rêcznie sprawdziæ wszystkie systemy plików, by upewniæ siê, ¿e
-nie pozosta³y ¿adne pliki, dla których wymieniona grupa jest grup± w³a¶cicieli.
-.SH PRZESTROGI
-Nie mo¿esz usun±æ podstawowej grupy ¿adnego z istniej±cych u¿ytkowników.
-Musisz usun±æ u¿ytkownika przed usuniêciem takiej grupy.
-.SH PLIKI
-\fI/etc/group\fR	\- informacja o grupach
-.br
-\fI/etc/gshadow\fR	\- bezpieczna informacja o grupach
-.SH KOD ZAKOÑCZENIA
-.TP 2
-Polecenie \fBgroupdel\fR koñczy dzia³anie z nastêpuj±cymi warto¶ciami kodów zakoñczenia:
-.br
-\fB0\fR	\- powodzenie
-.br
-\fB2\fR	\- niew³a¶ciwa sk³adnia parametrów polecenia
-.br
-\fB6\fR	\- podana grupa nie istnieje
-.br
-\fB8\fR	\- nie mo¿na usun±æ grupy podstawowej u¿ytykownika
-.br
-\fB10\fR	\- nie mo¿na zaktualizowaæ pliku z grupami
-.SH ZOBACZ TAK¯E
-.BR chfn (1),
-.BR chsh (1),
-.BR passwd (1),
-.BR groupadd (8),
-.BR groupmod (8),
-.BR useradd (8),
-.BR userdel (8),
-.BR usermod (8)
-.SH AUTOR
-Julianne Frances Haugh (jockgrrl@ix.netcom.com)
+The
+\fBgroupdel\fR
+command modifies the system account files, deleting all entries that refer to
+\fIgroup\fR\&. The named group must exist\&.
+.SH "OSTRZEÅ»ENIA"
+.PP
+You may not remove the primary group of any existing user\&. You must remove the user before you remove the group\&.
+.PP
+You should manually check all file systems to ensure that no files remain owned by this group\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+The default value is 0, meaning that there are no limits in the number of members in a group\&.
+.sp
+This feature (split group) permits to limit the length of lines in the group file\&. This is useful to make sure that lines for NIS groups are not larger than 1024 characters\&.
+.sp
+If you need to enforce such limit, you can use 25\&.
+.sp
+Note: split groups may not be supported by all tools (even in the Shadow toolsuite)\&. You should not use this variable unless you really need it\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/group
+.RS 4
+Informacje o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informacje chronione o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.SH "KOD ZAKOÅƒCZENIA"
+.PP
+Polecenie
+\fBgroupdel\fR
+koÅ„czy dzia\(/lanie z nastÄ™pujÄ…cymi wartoÅ›ciami kod\('ow zakoÅ„czenia:
+.PP
+\fI0\fR
+.RS 4
+poprawne zakoÅ„czenie dzia\(/lania programu
+.RE
+.PP
+\fI2\fR
+.RS 4
+niepoprawna sk\(/ladnia polecenia
+.RE
+.PP
+\fI6\fR
+.RS 4
+specified group doesn\'t exist
+.RE
+.PP
+\fI8\fR
+.RS 4
+can\'t remove user\'s primary group
+.RE
+.PP
+\fI10\fR
+.RS 4
+nie moÅ¼na zaktualizowaÄ‡ pliku z grupami
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBchfn\fR(1),
+\fBchsh\fR(1),
+\fBpasswd\fR(1),
+\fBgpasswd\fR(8),
+\fBgroupadd\fR(8),
+\fBgroupmod\fR(8),
+\fBuseradd\fR(8),
+\fBuserdel\fR(8),
+\fBusermod\fR(8)

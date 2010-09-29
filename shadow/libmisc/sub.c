@@ -1,5 +1,7 @@
 /*
- * Copyright 1989 - 1991, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1991, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2006, Tomasz Kłoczko
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,31 +12,32 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: sub.c,v 1.7 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: sub.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+
+#include <pwd.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include "prototypes.h"
 #include "defines.h"
-#include <pwd.h>
 #define	BAD_SUBROOT2	"invalid root `%s' for user `%s'\n"
 #define	NO_SUBROOT2	"no subsystem root `%s' for user `%s'\n"
 /*
@@ -52,10 +55,10 @@ void subsystem (const struct passwd *pw)
 	 */
 
 	if (pw->pw_dir[0] != '/') {
-		printf (_("Invalid root directory \"%s\"\n"), pw->pw_dir);
+		printf (_("Invalid root directory '%s'\n"), pw->pw_dir);
 		SYSLOG ((LOG_WARN, BAD_SUBROOT2, pw->pw_dir, pw->pw_name));
 		closelog ();
-		exit (1);
+		exit (EXIT_FAILURE);
 	}
 
 	/*
@@ -64,10 +67,10 @@ void subsystem (const struct passwd *pw)
 	 */
 
 	if (chdir (pw->pw_dir) || chroot (pw->pw_dir)) {
-		printf (_("Can't change root directory to \"%s\"\n"),
+		printf (_("Can't change root directory to '%s'\n"),
 			pw->pw_dir);
 		SYSLOG ((LOG_WARN, NO_SUBROOT2, pw->pw_dir, pw->pw_name));
 		closelog ();
-		exit (1);
+		exit (EXIT_FAILURE);
 	}
 }

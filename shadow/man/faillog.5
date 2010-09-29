@@ -1,54 +1,57 @@
-.\"$Id: faillog.5,v 1.9 2003/05/01 18:17:39 kloczek Exp $
-.\" Copyright 1989 - 1994, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: faillog
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual:  File Formats and Conversions
+.\"    Source:  File Formats and Conversions
+.\"  Language: English
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH FAILLOG 5
-.SH NAME
-faillog \- Login failure logging file
-.SH DESCRIPTION
-\fI/var/log/faillog\fR maintains a count of login failures and the limits
-for each account. The file is fixed length record, indexed by numerical UID.
-Each record contains the count of login failures since the last successful
-login; the maximum number of failures before the account is disabled; the
-line the last login failure occured on; and the date the last login failure
-occured.
+.TH "FAILLOG" "5" "07/24/2009" "File Formats and Conversions" "File Formats and Conversions"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+faillog \- login failure logging file
+.SH "DESCRIPTION"
 .PP
-The structure of the file is
-.DS
 
-        struct	faillog {
-                short   fail_cnt;
-                short   fail_max;
-                char    fail_line[12];
-                time_t  fail_time;
-        };
-.DE
-.SH FILES
-\fI/var/log/faillog\fR \	- login failure log
-.SH SEE ALSO
-.BR faillog (8)
-.SH AUTHOR
-Julianne Frances Haugh (jockgrrl@ix.netcom.com)
+/var/log/faillog
+maintains a count of login failures and the limits for each account\&.
+.PP
+The file contains fixed length records, indexed by numerical UID\&. Each record contains the count of login failures since the last successful login; the maximum number of failures before the account is disabled; the line on whiche the last login failure occurred; the date of the last login failure; and the duration (in seconds) during which the account will be locked after a failure\&.
+.PP
+The structure of the file is:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+struct	faillog {
+	short   fail_cnt;
+	short   fail_max;
+	char    fail_line[12];
+	time_t  fail_time;
+	long    fail_locktime;
+};
+.fi
+.if n \{\
+.RE
+.\}
+.SH "FILES"
+.PP
+/var/log/faillog
+.RS 4
+Failure logging file\&.
+.RE
+.SH "SEE ALSO"
+.PP
+
+\fBfaillog\fR(8)

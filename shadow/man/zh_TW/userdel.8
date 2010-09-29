@@ -1,4 +1,5 @@
-.\" Copyright 1991 - 1994, Julianne Frances Haugh
+.\" $Id: userdel.8 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" Copyright 1991 \- 1994, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -24,36 +25,33 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: userdel.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
-.\"
 .TH USERDEL 8
-.SH ¦WºÙ
-userdel \- §R °£ ¨Ï ¥Î ªÌ ±b ¸¹ ¤Î ¬Û Ãö ÀÉ ®×
-.SH »yªk
+.SH åç¨±
+userdel \- åˆª é™¤ ä½¿ ç”¨ è€… å¸³ è™Ÿ åŠ ç›¸ é—œ æª” æ¡ˆ
+.SH èªžæ³•
 .B userdel
-[\fB-r\fR]
+[\fB\-r\fR]
 .I login
-.SH ´y­z
-\fBuserdel\fR ©R ¥O ­× §ï ¨t ²Î ±b ¸¹ ÀÉ
-§R °£ ©Ò ¦³ \fIlogin\fR ·| °Ñ ¦Ò ªº ³¡ ¥÷ ¡C
-¨Ï ¥Î ªÌ ¦W ºÙ ¥² ¶·¬O ¦s ¦b ªº ¡C
-.IP \fB-r\fR
-¨Ï ¥Î ªÌ ¥Ø ¿ý ¤U ªº ÀÉ ®× ¤@ ¨Ã ²¾ °£ ¡C ¦b ¨ä ¥L ¦ì ¸m ¤W ªº ÀÉ
-®× ¤] ±N ¤@ ¤@ §ä ¥X ¨Ã §R °£ ¡C
-.SH ÀÉ®×
-\fI/etc/passwd\fR \- ¨Ï ¥Î ªÌ ±b ¸¹ ¸ê ®Æ
+.SH æè¿°
+\fBuserdel\fR å‘½ ä»¤ ä¿® æ”¹ ç³» çµ± å¸³ è™Ÿ æª”
+åˆª é™¤ æ‰€ æœ‰ \fIlogin\fR æœƒ åƒ è€ƒ çš„ éƒ¨ ä»½ ã€‚
+ä½¿ ç”¨ è€… å ç¨± å¿… é ˆæ˜¯ å­˜ åœ¨ çš„ ã€‚
+.IP \fB\-r\fR
+ä½¿ ç”¨ è€… ç›® éŒ„ ä¸‹ çš„ æª” æ¡ˆ ä¸€ ä¸¦ ç§» é™¤ ã€‚ åœ¨ å…¶ ä»– ä½ ç½® ä¸Š çš„ æª”
+æ¡ˆ ä¹Ÿ å°‡ ä¸€ ä¸€ æ‰¾ å‡º ä¸¦ åˆª é™¤ ã€‚
+.SH æª”æ¡ˆ
+\fI/etc/passwd\fR \- ä½¿ ç”¨ è€… å¸³ è™Ÿ è³‡ æ–™
 .br
-\fI/etc/shadow\fR \- ¨Ï ¥Î ªÌ ±b ¸¹ ¸ê °T ¥[ ±K
+\fI/etc/shadow\fR \- ä½¿ ç”¨ è€… å¸³ è™Ÿ è³‡ è¨Š åŠ  å¯†
 .br
-\fI/etc/group\fR \- ¸s ²Õ ¸ê °T
-.SH Äµ§i
-\fBuserdel\fR ¤£ ¤¹ ³\ §A ²¾ °£ ¥¿ ¦b½u ¤W
-ªº ¨Ï ¥Î ªÌ ±b ¸¹ ¡C
-§A ¥² ¶· ¬å ±¼ ¦¹ ±b ¸¹ ²{ ¦b ¦b ¨t ²Î ¤W °õ ¦æ ªº µ{ §Ç ¤~ ¯à ¶i ¦æ ±b ¸¹
-§R °£ ¡C
-¤£ ¯à ¦b NIS client ºÝ ²¾ °£ NIS ÄÝ ©Ê ªº ªF ¦è ¡C
-³o °Ê °µ ¶· ¦b NIS server ºÝ ¤W °õ ¦æ ¡C
+\fI/etc/group\fR \- ç¾¤ çµ„ è³‡ è¨Š
+.SH è­¦å‘Š
+\fBuserdel\fR ä¸ å… è¨± ä½  ç§» é™¤ æ­£ åœ¨ç·š ä¸Š
+çš„ ä½¿ ç”¨ è€… å¸³ è™Ÿ ã€‚
+ä½  å¿… é ˆ ç  æŽ‰ æ­¤ å¸³ è™Ÿ ç¾ åœ¨ åœ¨ ç³» çµ± ä¸Š åŸ· è¡Œ çš„ ç¨‹ åº æ‰ èƒ½ é€² è¡Œ å¸³ è™Ÿ
+åˆª é™¤ ã€‚
+ä¸ èƒ½ åœ¨ NIS client ç«¯ ç§» é™¤ NIS å±¬ æ€§ çš„ æ± è¥¿ ã€‚
+é€™ å‹• åš é ˆ åœ¨ NIS server ç«¯ ä¸Š åŸ· è¡Œ ã€‚
 .SH SEE ALSO
 .BR chfn (1),
 .BR chsh (1),
@@ -63,5 +61,5 @@ userdel \- §R °£ ¨Ï ¥Î ªÌ ±b ¸¹ ¤Î ¬Û Ãö ÀÉ ®×
 .BR passwd (1),
 .BR useradd (8),
 .BR usermod (8)
-.SH §@ªÌ
+.SH ä½œè€…
 Julianne Frances Haugh (jfh@tab.com)

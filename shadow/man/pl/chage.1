@@ -1,99 +1,158 @@
-.\" $Id: chage.1,v 1.7 2003/05/06 22:55:11 kloczek Exp $
-.\" {PTM/WK/1999-09-16}
-.\" Copyright 1990 - 1994 Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: chage
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia uÅ¼ytkownik\('ow
+.\"    Source: Polecenia uÅ¼ytkownik\('ow
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH CHAGE 1
-.SH NAZWA
-chage \- zmiana informacji o terminie wa¿no¶ci has³a u¿ytkownika
-.SH SK£ADNIA
-.TP 6
-\fBchage\fR
-[\fB-m \fImindni\fR] [\fB-M \fImaxdni\fR]
-[\fB-d \fIostatni\fR] [\fB-I \fInieaktywne\fR]
-.br
-[\fB-E \fIdata_wa¿no¶ci\fR] [\fB-W \fIdni_ostrzegania\fR] \fIu¿ytkownik\fR
-.TP 6
-\fBchage\fR
-\fB-l \fIu¿ytkownik\fR
-.SH OPIS
-\fBchage\fR zmienia liczbê dni pomiêdzy zmianami has³a i datê ostatniej
-zmiany has³a. Informacjê tê system wykorzystuje do ustalenia, kiedy
-u¿ytkownik musi zmieniæ has³o.
-Polecenia \fBchage\fR mo¿e u¿yæ tylko u¿ytkownik root, za wyj±tkiem
-opcji \fB-l\fR. Mo¿e siê ni± pos³u¿yæ siê u¿ytkownik nieuprzywilejowany
-do stwierdzenia, kiedy wygasa jego w³asne has³o lub konto.
-Polecenie \fBchage\fR posiada nastêpuj±ce opcje:
-.IP "\fB-m\fR \fImindni\fR"
-Utawia minimaln± liczbê dni pomiêdzy zmianami has³a na warto¶æ fImindni\fR.
-Warto¶æ zerowa oznacza, ¿e u¿ytkownik mo¿e je zmieniaæ w dowolnym czasie.
-.IP "\fB-M\fR \fImaxdni\fR"
-Ustawia maksymaln± liczbê dni, przez jakie has³o jest wa¿ne na warto¶æ
-\fImaxdni\fR. Gdy \fImaxdni\fR plus \fIostatni\fR jest mniejsze ni¿ bie¿±cy
-dzieñ, u¿ytkownik musi zmieniæ swoje has³a, zanim bêdzie móg³ skorzystaæ z
-konta. Zdarzenie to mo¿e byæ zaplanowane z wyprzedzeniem przez wykorzystanie
-opcji \fB-W\fR, ostrzegaj±cej zawczasu u¿ytkownika o zbli¿aj±cym siê
-terminie zmiany.
-.IP "\fB-M\fR \fIostatni\fR"
-Ustawia liczbê dni od 1 stycznia 1970 do dnia kiedy ostatnio zmieniono has³o
-na \fIostatni\fR. Data mo¿e równie¿ zostaæ podana w postaci RRRR-MM-DD (lub
-postaci powszechniej u¿ywanej w danym regionie).
-.IP "\fB-E\fR \fIdata_wa¿no¶ci\fR"
-Ustawia datê, pocz±wszy od której konto u¿ytkownika nie bêdzie ju¿ dostêpne.
-\fIdata_wa¿no¶ci\fR jest liczb± dni od 1 stycznia 1970, od której konto jest
-blokowane. Data mo¿e byæ te¿ wyra¿ona w postaci RRRR-MM-DD (lub innej,
-powszechniej u¿ywanej w danym regionie).
-U¿ytkownik, którego konto jest zablokowane musi skontaktowaæ siê
-z administratorem systemu zanim bêdzie móg³ z niego ponownie skorzystaæ.
-.IP "\fB-I\fR \fInieaktywne\fR"
-Opcja \fB-I\fR s³u¿y do ustawiania czasu nieaktywno¶ci po wyga¶niêciu
-has³a, po którym konto jest blokowane. Parametr \fInieaktywne\fR podaje
-liczbê dni nieaktywno¶ci. Warto¶æ 0 wy³±cza tê funkcjê.
-U¿ytkownik, którego konto jest zablokowane musi skontaktowaæ siê
-z administratorem systemu zanim bêdzie móg³ z niego ponownie skorzystaæ.
-.IP "\fB-W\fR \fIdni_ostrzegania\fR"
-Ustawia na \fIdni_ostrzegania\fR liczbê dni przed up³ywem wa¿no¶ci has³a.
-Od tego dnia u¿ytkownik bêdzie ostrzegany o nadchodz±cym terminie zmiany
-has³a.
+.TH "CHAGE" "1" "07/24/2009" "Polecenia uÅ¼ytkownik\('ow" "Polecenia uÅ¼ytkownik\('ow"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+chage \- zmiana informacji o terminie waÅ¼noÅ›ci has\(/la uÅ¼ytkownika
+.SH "SK\(/LADNIA"
+.HP \w'\fBchage\fR\ 'u
+\fBchage\fR [\fIopcje\fR] [\fILOGIN\fR]
+.SH "OPIS"
 .PP
-Je¶li nie podano ¿adnej opcji, to \fBchage\fR dzia³a w trybie interaktywnym,
-proponuj±c u¿ytkownikowi warto¶ci bie¿±ce dla ka¿dego z pól. Wprowadzenie
-nowej warto¶ci powoduje zmianê warto¶ci pola, a podanie warto¶ci pustej
-pozostawia warto¶æ bie¿±c±.
-Bie¿±ca warto¶æ pola wy¶wietlana jest w nawiasach \fB[ ]\fR.
-.SH UWAGA
-Program \fBchage\fR wymaga do dzia³ania chronionego pliku hase³ u¿ytkowników
-(shadow). Je¶li has³a u¿ytkowników s± przechowywane w pliku passwd,
-funkcjonalno¶æ programu \fBchage\fR jest niedostêpna.
-.SH PLIKI
-\fI/etc/passwd\fR \- informacje o kontach u¿ytkowników
-.br
-\fI/etc/shadow\fR \- chronione informacje o kontach u¿ytkowników
-.SH ZOBACZ TAK¯E
-.BR passwd (5),
-.BR shadow (5)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+Polecenie
+\fBchage\fR
+zmienia liczbÄ™ dni pomiÄ™dzy zmianami has\(/la i datÄ™ ostatniej zmiany has\(/la\&. InformacjÄ™ tÄ™ system wykorzystuje do ustalenia, kiedy uÅ¼ytkownik musi zmieniÄ‡ has\(/lo\&.
+.SH "OPCJE"
+.PP
+Polecenie
+\fBchage\fR
+posiada nastÄ™pujÄ…ce opcje:
+.PP
+\fB\-d\fR, \fB\-\-lastday\fR\fIOSTATNI\fR
+.RS 4
+Ustawia iloÅ›Ä‡ dni od 1 stycznia 1970 kiedy ha\(/lo by\(/lo ostani raz zmieniane\&. Data waÅ¼noÅ›ci moÅ¼e byÄ‡ takze prezekazana w formacie RRRR\-MM\-DD (lub formacie uÅ¼ywanym lokalnie)\&.
+.RE
+.PP
+\fB\-E\fR, \fB\-\-expiredate\fR\fIDATA_WAÅ»N\fR
+.RS 4
+Ustawia datÄ™, poczÄ…wszy od kt\('orej konto uÅ¼ytkownika nie bÄ™dzie juÅ¼ dostÄ™pne\&.
+\fIDATA_WAÅ»N\fR
+jest liczbÄ… dni od 1 stycznia 1970, od kt\('orej konto jest blokowane\&. Data moÅ¼e byÄ‡ teÅ¼ wyraÅ¼ona w formacie RRRR\-MM\-DD (lub innej, powszechniej uÅ¼ywanej w danym regionie)\&. UÅ¼ytkownik, kt\('orego konto jest zablokowane musi skontaktowaÄ‡ siÄ™ z administratorem systemu zanim bÄ™dzie m\('og\(/l z niego ponownie skorzystaÄ‡\&.
+.sp
+Przekazanie
+\fI\-1\fR
+jako
+\fIDATA_WAÅ»N\fR
+usuwa ograniczenie waÅ¼noÅ›ci konta uÅ¼ytkownika\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+WyÅ›wietlenie komunikatu pomocy i zakoÅ„czenie dzia\(/lania\&.
+.RE
+.PP
+\fB\-I\fR, \fB\-\-inactive\fR\fINIEAKTYWNE\fR
+.RS 4
+Opcja ta s\(/luÅ¼y do ustawiania czasu nieaktywnoÅ›ci konta po wygaÅ›niÄ™ciu waÅ¼noÅ›ci has\(/la, po kt\('orym to czasie konto jest blokowane\&. Parametr
+\fINIEAKTYWNE\fR
+jest liczbÄ… dni nieaktywnoÅ›ci\&. UÅ¼ytkownik, kt\('orego konto jest zablokowane musi skontaktowaÄ‡ siÄ™ z administratorem systemu zanim bÄ™dzie m\('og\(/l z niego ponownie skorzystaÄ‡\&.
+.sp
+Przekazanie
+\fI\-1\fR
+jako
+\fINIEAKTYWNE\fR
+usuwa ograniczenie nieaktywniÅ›ci konta uÅ¼ytkownika\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-list\fR
+.RS 4
+WyÅ›wietlenie informacji o terminach waÅ¼noÅ›ci konta i has\(/la\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-mindays\fR\fIMIN_DNI\fR
+.RS 4
+Utawia minimalnÄ… liczbÄ™ dni pomiÄ™dzy zmianami has\(/la na
+\fIMIN_DAYS\fR\&. WartoÅ›Ä‡ zerowa oznacza, Å¼e uÅ¼ytkownik moÅ¼e je zmieniaÄ‡ w dowolnym czasie\&.
+.RE
+.PP
+\fB\-M\fR, \fB\-\-maxdays\fR\fIMAX_DNI\fR
+.RS 4
+Ustawia maksymalnÄ… liczbÄ™ dni, przez jakie has\(/lo jest waÅ¼ne\&. Gdy
+\fIMAX_DNI\fR
+plus
+\fIOSTATNI\fR
+jest mniejsze niÅ¼ bieÅ¼Ä…cy dzieÅ„, uÅ¼ytkownik musi zmieniÄ‡ swoje has\(/la, zanim bÄ™dzie m\('og\(/l skorzystaÄ‡ z konta\&. Zdarzenie to moÅ¼e byÄ‡ zaplanowane z wyprzedzeniem przez wykorzystanie opcji
+\fB\-W\fR, ostrzegajÄ…cej zawczasu uÅ¼ytkownika o zbliÅ¼ajÄ…cym siÄ™ terminie zmiany\&.
+.sp
+Przekazanie
+\fI\-1\fR
+jako
+\fIMAX_DAYS\fR
+usuwa sprawdzanie waznoÅ›ci has\(/la\&.
+.RE
+.PP
+\fB\-W\fR, \fB\-\-warndays\fR\fIDNI_OSTRZ\fR
+.RS 4
+Ustawia na
+\fIDNI_OSTRZ\fR
+liczbÄ™ dni przed up\(/lywem waÅ¼noÅ›ci has\(/la\&. Od tego dnia uÅ¼ytkownik bÄ™dzie ostrzegany o nadchodzÄ…cym terminie zmiany has\(/la\&.
+.RE
+.PP
+JeÅ›li nie podano Å¼adnej opcji, to
+\fBchage\fR
+dzia\(/la w trybie interaktywnym, proponujÄ…c uÅ¼ytkownikowi wartoÅ›ci bieÅ¼Ä…ce dla kaÅ¼dego z p\('ol\&. Wprowadzenie nowej wartoÅ›ci powoduje zmianÄ™ wartoÅ›ci pola, a podanie wartoÅ›ci pustej pozostawia wartoÅ›Ä‡ bieÅ¼Ä…cÄ…\&. BieÅ¼Ä…ca wartoÅ›Ä‡ pola wyÅ›wietlana jest w nawiasach
+\fI[ ]\fR\&.
+.SH "UWAGI"
+.PP
+Program
+\fBchage\fR
+wymaga do dzia\(/lania chronionego pliku hase\(/l uÅ¼ytkownik\('ow (shadow)\&.
+.PP
+Polecenia chage moÅ¼e uÅ¼yÄ‡ tylko uÅ¼ytkownik root, za wyjÄ…tkiem opcji
+\fB\-l\fR\&. MoÅ¼e siÄ™ niÄ… pos\(/luÅ¼yÄ‡ siÄ™ uÅ¼ytkownik nieuprzywilejowany do stwierdzenia, kiedy wygasa jego w\(/lasne has\(/lo lub konto\&.
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.SH "KOD ZAKOÅƒCZENIA"
+.PP
+Polecenie
+\fBchage\fR
+koÅ„czy dzia\(/lanie z nastÄ™pujÄ…cymi wartoÅ›ciami kod\('ow zakoÅ„czenia:
+.PP
+\fI0\fR
+.RS 4
+poprawne zakoÅ„czenie dzia\(/lania programu
+.RE
+.PP
+\fI1\fR
+.RS 4
+brak dostÄ™pu
+.RE
+.PP
+\fI2\fR
+.RS 4
+niepoprawna sk\(/ladnia polecenia
+.RE
+.PP
+\fI15\fR
+.RS 4
+nie moÅ¼na znaleÅºÄ‡ pliku shadow
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBpasswd\fR(5),
+\fBshadow\fR(5)\&.

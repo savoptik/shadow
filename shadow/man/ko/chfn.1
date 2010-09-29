@@ -1,59 +1,52 @@
+.\" $Id: chfn.1 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" (c) 1994 by salvatore valente <svalente@athena.mit.edu>
 .\"
-.\"  chfn.1 -- change your finger information
-.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
-.\"
-.\"  this program is free software.  you can redistribute it and
-.\"  modify it under the terms of the gnu general public license.
-.\"  there is no warranty.
-.\"
-.\"  $Author: kloczek $
-.\"  $Revision: 1.1 $
-.\"  $Date: 2002/03/13 19:03:01 $
-.\"
+.\" this program is free software.  you can redistribute it and
+.\" modify it under the terms of the gnu general public license.
+.\" there is no warranty.
 .TH CHFN 1 "October 13 1994" "chfn" "Linux Reference Manual"
 .SH NAME
-chfn \- »ç¿ëÀÚ finger Á¤º¸¸¦ ¹Ù²Û´Ù.
+chfn \- ì‚¬ìš©ìž finger ì •ë³´ë¥¼ ë°”ê¾¼ë‹¤.
 .SH SYNOPSIS
-.B chfn
-[\ \-f\ full-name\ ] [\ \-o\ office\ ] [\ \-p\ office-phone\ ]
-[\ \-h\ home-phone\ ] [\ \-u\ ] [\ \-v\ ] [\ username\ ]
+\fBchfn\fR [\fB\-f\fR \fIfull\-name\fR] [\fB\-o\fR \fIoffice\fR] [\fB\-p\fR \fIoffice\-phone\fR]
+[\ \-h\ home\-phone\ ] [\ \-u\ ] [\ \-v\ ] [\ username\ ]
 .SH DESCRIPTION
 .B chfn
-¸í·ÉÀº »ç¿ëÀÚÀÇ finger Á¤º¸¸¦ ¹Ù²Û´Ù. ÀÌ°ÍÀº 
+ëª…ë ¹ì€ ì‚¬ìš©ìžì˜ finger ì •ë³´ë¥¼ ë°”ê¾¼ë‹¤. ì´ê²ƒì€ 
 .I /etc/passwd
-ÆÄÀÏÀÇ Á¤º¸¸¦ ¹Ù²Û´Ù. 
+íŒŒì¼ì˜ ì •ë³´ë¥¼ ë°”ê¾¼ë‹¤. 
 .B finger
-¸í·ÉÀÌ »ç¿ëµÉ ¶§ ¹Ù·Î ÀÌ ÆÄÀÏÀ» ÂüÁ¶ÇÏ±â ¶§¹®ÀÌ´Ù.
+ëª…ë ¹ì´ ì‚¬ìš©ë  ë•Œ ë°”ë¡œ ì´ íŒŒì¼ì„ ì°¸ì¡°í•˜ê¸° ë•Œë¬¸ì´ë‹¤.
 .B finger
-¸í·ÉÀº 
+ëª…ë ¹ì€ 
 .B chfn
-¸í·É¿¡¼­ ¹Ù²ï ½ÇÀçÀÌ¸§, Á÷Àå, Á÷ÀåÀüÈ­, ÁýÀüÈ­¹øÈ£¸¦ º¸¿©ÁØ´Ù.
+ëª…ë ¹ì—ì„œ ë°”ë€ ì‹¤ìž¬ì´ë¦„, ì§ìž¥, ì§ìž¥ì „í™”, ì§‘ì „í™”ë²ˆí˜¸ë¥¼ ë³´ì—¬ì¤€ë‹¤.
 .SS COMMAND LINE
-¾Æ¹« ¿É¼Ç ¾øÀÌ ÀÌ ¸í·ÉÀ» »ç¿ëÇÏ¸é, Á÷Á¢ »ç¿ëÀÚ¿¡°Ô °¢°¢ÀÇ ¹Ù²Ü Á¤º¸¸¦ 
-¹°¾îº¸Áö¸¸, ÀÌ Á¤º¸µéÀ» ¸í·ÉÇà¿¡¼­ Á÷Á¢ ÀÔ·ÂÇÒ ¼öµµ ÀÖ´Ù.
+ì•„ë¬´ ì˜µì…˜ ì—†ì´ ì´ ëª…ë ¹ì„ ì‚¬ìš©í•˜ë©´, ì§ì ‘ ì‚¬ìš©ìžì—ê²Œ ê°ê°ì˜ ë°”ê¿€ ì •ë³´ë¥¼ 
+ë¬¼ì–´ë³´ì§€ë§Œ, ì´ ì •ë³´ë“¤ì„ ëª…ë ¹í–‰ì—ì„œ ì§ì ‘ ìž…ë ¥í•  ìˆ˜ë„ ìžˆë‹¤.
 .SS INTERACTIVE MODE
-¾Æ¹« ¿É¼Ç ¾øÀÌ ÀÌ ¸í·ÉÀ» »ç¿ëÇÏ¸é, Á÷Á¢ »ç¿ëÀÚ¿¡°Ô °¢°¢ÀÇ ¹Ù²Ü Á¤º¸¸¦ 
-¹°¾îº»´Ù. ÀÌ¶§ Á¤´çÇÑ °ªÀ» ÁöÁ¤ÇØ ÁÖ°í, ¿ø·¡ÀÇ °ªÀ» ¹Ù²ÙÁö ¾ÊÀ¸·Á¸é, 
-±×³É Enter ±Û¼è¸¦ ´©¸£¸é µÈ´Ù.
+ì•„ë¬´ ì˜µì…˜ ì—†ì´ ì´ ëª…ë ¹ì„ ì‚¬ìš©í•˜ë©´, ì§ì ‘ ì‚¬ìš©ìžì—ê²Œ ê°ê°ì˜ ë°”ê¿€ ì •ë³´ë¥¼ 
+ë¬¼ì–´ë³¸ë‹¤. ì´ë•Œ ì •ë‹¹í•œ ê°’ì„ ì§€ì •í•´ ì£¼ê³ , ì›ëž˜ì˜ ê°’ì„ ë°”ê¾¸ì§€ ì•Šìœ¼ë ¤ë©´, 
+ê·¸ëƒ¥ Enter ê¸€ì‡ ë¥¼ ëˆ„ë¥´ë©´ ëœë‹¤.
 .SH OPTIONS
 .TP
-.I "\-f, \-\-full-name"
-»ç¿ëÀÚ ½ÇÀç ÀÌ¸§
+.I "\-f, \-\-full\-name"
+ì‚¬ìš©ìž ì‹¤ìž¬ ì´ë¦„
 .TP
 .I "\-o, \-\-office"
-»ç¿ëÀÚ Á÷Àå
+ì‚¬ìš©ìž ì§ìž¥
 .TP
-.I "\-p, \-\-office-phone"
-»ç¿ëÀÚ Á÷Àå ÀüÈ­¹øÈ£
+.I "\-p, \-\-office\-phone"
+ì‚¬ìš©ìž ì§ìž¥ ì „í™”ë²ˆí˜¸
 .TP
-.I "\-h, \-\-home-phone"
-»ç¿ëÀÚ Áý ÀüÈ­ ¹øÈ£
+.I "\-h, \-\-home\-phone"
+ì‚¬ìš©ìž ì§‘ ì „í™” ë²ˆí˜¸
 .TP
 .I "\-u, \-\-help"
-µµ¿ò¸»À» º¸¿©ÁÖ°í ¸¶Ä£´Ù.
+ë„ì›€ë§ì„ ë³´ì—¬ì£¼ê³  ë§ˆì¹œë‹¤.
 .TP
-.I "-v, \-\-version"
-¹öÀü Á¤º¸¸¦ º¸¿©ÁÖ°í ¸¶Ä£´Ù.
+.I "\-v, \-\-version"
+ë²„ì „ ì •ë³´ë¥¼ ë³´ì—¬ì£¼ê³  ë§ˆì¹œë‹¤.
 .SH "SEE ALSO"
 .BR finger (1),
 .BR passwd (5)

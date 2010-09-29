@@ -1,66 +1,163 @@
-.\" $Id: pwconv.8,v 1.3 2002/03/09 11:16:22 ankry Exp $
-.\" {PTM/WK/1999-09-14}
-.TH PWCONV 8 "26 wrze¶nia 1997"
-.SH NAZWA
-pwconv, pwunconv, grpconv, grpunconv - konwersja dot. chronionych plików hase³ i grup
-.SH SK£ADNIA
-.B pwconv
-.br
-.B pwunconv
-.br
-.B grpconv
-.br
-.B grpunconv
-.SH OPIS
-Wszystkie te cztery programy dzia³aj± na zwyk³ych i dodatkowych (shadow)
-plikach hase³ i grup:
-.IR /etc/passwd ", " /etc/group ", " /etc/shadow " i " /etc/gshadow .
+'\" t
+.\"     Title: pwconv
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
+.\"
+.TH "PWCONV" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+pwconv, pwunconv, grpconv, grpunconv \- convert to and from shadow passwords and groups
+.SH "SK\(/LADNIA"
+.HP \w'\fBpwconv\fR\ 'u
+\fBpwconv\fR
+.HP \w'\fBpwunconv\fR\ 'u
+\fBpwunconv\fR
+.HP \w'\fBgrpconv\fR\ 'u
+\fBgrpconv\fR
+.HP \w'\fBgrpunconv\fR\ 'u
+\fBgrpunconv\fR
+.SH "OPIS"
+.PP
+The
+\fBpwconv\fR
+command creates
+\fIshadow\fR
+from
+\fIpasswd\fR
+and an optionally existing
+\fIshadow\fR\&.
+.PP
+The
+\fBpwunconv\fR
+command creates
+\fIpasswd\fR
+from
+\fIpasswd\fR
+and
+\fIshadow\fR
+and then removes
+\fIshadow\fR\&.
+.PP
+The
+\fBgrpconv\fR
+command creates
+\fIgshadow\fR
+from
+\fIgroup\fR
+and an optionally existing
+\fIgshadow\fR\&.
+.PP
+The
+\fBgrpunconv\fR
+command creates
+\fIgroup\fR
+from
+\fIgroup\fR
+and
+\fIgshadow\fR
+and then removes
+\fIgshadow\fR\&.
+.PP
+These four programs all operate on the normal and shadow password and group files:
+/etc/passwd,
+/etc/group,
+/etc/shadow, and
+/etc/gshadow\&.
+.PP
+Each program acquires the necessary locks before conversion\&.
+\fBpwconv\fR
+and
+\fBgrpconv\fR
+are similar\&. First, entries in the shadowed file which don\'t exist in the main file are removed\&. Then, shadowed entries which don\'t have `x\' as the password in the main file are updated\&. Any missing shadowed entries are added\&. Finally, passwords in the main file are replaced with `x\'\&. These programs can be used for initial conversion as well to update the shadowed file if the main file is edited by hand\&.
+.PP
 
-.B pwconv
-.RI "tworzy " shadow " z " passwd " i opcjonalnie istniej±cego " shadow .
-.B pwunconv
-.RI "tworzy " passwd " z " passwd " i " shadow " a nastêpnie usuwa " shadow .
-.B grpconv
-.RI "tworzy " gshadow " z " group " i opcjonalnie istniej±cego " gshadow .
-.B grpunconv
-.RI "tworzy " group " z " group " i " gshadow " a nastêpnie usuwa " gshadow .
-
-Ka¿dy z programów zdobywa niezbêdne blokady przed konwersj±.
-
-.BR pwconv " i " grpconv
-s± podobne. Po pierwsze, z pliku dodatkowego usuwane s± pozycje, które
-nie istniej± w pliku g³ównym. Nastêpnie, w pliku dodatkowym aktualizowane s±
-pozycje nie posiadaj±ce 'x' jako has³a w pliku g³ównym. Dodawane s± pozycje
-brakuj±ce w stosunku do pliku g³ównego. Na koniec, has³a w pliku g³ównym
-zastêpowane s± przez 'x'. Programy te mog± s³u¿yæ zarówno do pocz±tkowej
-konwersji jak i do aktualizacji dodatkowego pliku hase³ je¶li plik g³ówny
-zmieniany by³ rêcznie.
-
-Przy dodawaniu nowych wpisów do
-.IR /etc/shadow
-.B pwconv
-u¿yje warto¶ci
-.BR PASS_MIN_DAYS ", " PASS_MAX_DAYS " i " PASS_WARN_AGE
-z pliku
-.IR /etc/login.defs .
-
-.RB "Podobnie, " pwunconv " oraz " grpunconv
-s± zbli¿one.  Has³a w pliku g³ównym aktualizowane s± na podstawie pliku
-dodatkowego (shadow). Wpisy istniej±ce w pliku g³ównym, a nie posiadaj±ce
-odpowiedników w dodatkowym s± pozostawiane bez zmian. Na koniec usuwany
-jest plik dodatkowy.
-
-Czê¶æ informacji o wa¿no¶ci hase³ jest tracona przez
-.BR pwunconv .
-Przeprowadza on konwersjê tego, co potrafi.
-.SH B£ÊDY
-B³êdy w plikach hase³ czy grup (takie jak nieprawid³owe czy powtórzone
-pozycje) mog± spowodowaæ zapêtlenie siê omawianych programów lub ró¿nego
-rodzaju inne b³êdne zachowanie. Przed konwersj± na lub z dodatkowych plików
-hase³ lub grup proszê uruchomiæ \fBpwck\fR i \fBgrpck\fR, by poprawiæ tego
-rodzaju b³êdy.
-.SH ZOBACZ TAK¯E
-.BR login.defs (5),
-.BR grpck (8),
-.BR pwck (8),
-.BR shadowconfig (8)
+\fBpwconv\fR
+will use the values of
+\fIPASS_MIN_DAYS\fR,
+\fIPASS_MAX_DAYS\fR, and
+\fIPASS_WARN_AGE\fR
+from
+/etc/login\&.defs
+when adding new entries to
+/etc/shadow\&.
+.PP
+Likewise
+\fBpwunconv\fR
+and
+\fBgrpunconv\fR
+are similar\&. Passwords in the main file are updated from the shadowed file\&. Entries which exist in the main file but not in the shadowed file are left alone\&. Finally, the shadowed file is removed\&. Some password aging information is lost by
+\fBpwunconv\fR\&. It will convert what it can\&.
+.SH "B\(/LÄ˜DY"
+.PP
+Errors in the password or group files (such as invalid or duplicate entries) may cause these programs to loop forever or fail in other strange ways\&. Please run
+\fBpwck\fR
+and
+\fBgrpck\fR
+to correct any such errors before converting to or from shadow passwords or groups\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variable in
+/etc/login\&.defs
+changes the behavior of
+\fBgrpconv\fR
+and
+\fBgrpunconv\fR:
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+The default value is 0, meaning that there are no limits in the number of members in a group\&.
+.sp
+This feature (split group) permits to limit the length of lines in the group file\&. This is useful to make sure that lines for NIS groups are not larger than 1024 characters\&.
+.sp
+If you need to enforce such limit, you can use 25\&.
+.sp
+Note: split groups may not be supported by all tools (even in the Shadow toolsuite)\&. You should not use this variable unless you really need it\&.
+.RE
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of
+\fBpwconv\fR:
+.PP
+\fBPASS_MAX_DAYS\fR (number)
+.RS 4
+The maximum number of days a password may be used\&. If the password is older than this, a password change will be forced\&. If not specified, \-1 will be assumed (which disables the restriction)\&.
+.RE
+.PP
+\fBPASS_MIN_DAYS\fR (number)
+.RS 4
+The minimum number of days allowed between password changes\&. Any password changes attempted sooner than this will be rejected\&. If not specified, \-1 will be assumed (which disables the restriction)\&.
+.RE
+.PP
+\fBPASS_WARN_AGE\fR (number)
+.RS 4
+The number of days warning given before a password expires\&. A zero means warning is given only upon the day of expiration, a negative value means no warning is given\&. If not specified, no warning will be provided\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguracja pakietu shadow\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBgrpck\fR(8),
+\fBlogin.defs\fR(5),
+\fBpwck\fR(8)\&.

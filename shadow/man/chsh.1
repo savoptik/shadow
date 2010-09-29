@@ -1,61 +1,104 @@
-.\"$Id: chsh.1,v 1.10 2003/05/01 18:17:39 kloczek Exp $
-.\" Copyright 1990, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: chsh
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: User Commands
+.\"    Source: User Commands
+.\"  Language: English
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH CHSH 1
-.SH NAME
+.TH "CHSH" "1" "07/24/2009" "User Commands" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
 chsh \- change login shell
-.SH SYNOPSIS
-.TP 5
-\fBchsh\fR [\fB-s \fIlogin_shell\fR] [\fIuser\fR]
-.SH DESCRIPTION
-\fBchsh\fR changes the user login shell. This determines the name of the
-user's initial login command. A normal user may only change the login shell
-for her own account, the super user may change the login shell for any
-account.
+.SH "SYNOPSIS"
+.HP \w'\fBchsh\fR\ 'u
+\fBchsh\fR [\fIoptions\fR] [\fILOGIN\fR]
+.SH "DESCRIPTION"
 .PP
-The only restrictions placed on the login shell is that the command name
-must be listed in \fI/etc/shells\fR, unless the invoker is the super-user,
-and then any value may be added. An account with a restricted login shell
-may not change her login shell. For this reason, placing \fB/bin/rsh\fR in
-\fI/etc/shells\fR is discouraged since accidentally changing to a restricted
-shell would prevent the user from every changing her login shell back to its
-original value.
+The
+\fBchsh\fR
+command changes the user login shell\&. This determines the name of the user\'s initial login command\&. A normal user may only change the login shell for her own account, the superuser may change the login shell for any account\&.
+.SH "OPTIONS"
 .PP
-If the \fB-s\fR option is not selected, \fBchsh\fR operates in an
-interactive fashion, prompting the user with the current login shell. Enter
-the new value to change the shell, or leave the line blank to use the
-current one. The current shell is displayed between a pair of \fB[ ]\fR
-marks.
-.SH FILES
-\fI/etc/passwd\fR	\- user account information
-.br
-\fI/etc/shells\fR	\- list of valid login shells
-.SH SEE ALSO
-.BR chfn (1),
-.BR passwd (5)
-.SH AUTHOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+The options which apply to the
+\fBchsh\fR
+command are:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Display help message and exit\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shell\fR \fISHELL\fR
+.RS 4
+The name of the user\'s new login shell\&. Setting this field to blank causes the system to select the default login shell\&.
+.RE
+.PP
+If the
+\fB\-s\fR
+option is not selected,
+\fBchsh\fR
+operates in an interactive fashion, prompting the user with the current login shell\&. Enter the new value to change the shell, or leave the line blank to use the current one\&. The current shell is displayed between a pair of
+\fI[ ]\fR
+marks\&.
+.SH "NOTE"
+.PP
+The only restriction placed on the login shell is that the command name must be listed in
+/etc/shells, unless the invoker is the superuser, and then any value may be added\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
+/bin/rsh
+in
+/etc/shells
+is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBCHSH_AUTH\fR (boolean)
+.RS 4
+If
+\fIyes\fR, the
+\fBchsh\fR
+program will require authentication before making any changes, unless run by the superuser\&.
+.RE
+.PP
+\fBLOGIN_STRING\fR (string)
+.RS 4
+The string used for prompting a password\&. The default is to use "Password: ", or a translation of that string\&. If you set this variable, the prompt will no be translated\&.
+.sp
+If the string contains
+\fI%s\fR, this will be replaced by the user\'s name\&.
+.RE
+.SH "FILES"
+.PP
+/etc/passwd
+.RS 4
+User account information\&.
+.RE
+.PP
+/etc/shells
+.RS 4
+List of valid login shells\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Shadow password suite configuration\&.
+.RE
+.SH "SEE ALSO"
+.PP
+
+\fBchfn\fR(1),
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(5)\&.

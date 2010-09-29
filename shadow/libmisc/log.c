@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,37 +13,35 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: log.c,v 1.7 2003/12/17 12:52:25 kloczek Exp $")
+#ident "$Id: log.c 2820 2009-04-27 20:15:09Z nekral-guest $"
+
 #include <sys/types.h>
 #include <pwd.h>
 #include <fcntl.h>
 #include <time.h>
 #include "defines.h"
-#if HAVE_LASTLOG_H
 #include <lastlog.h>
-#else
-#include "lastlog_.h"
-#endif
+#include "prototypes.h"
+
 /* 
  * dolastlog - create lastlog entry
  *
@@ -48,9 +49,11 @@ RCSID ("$Id: log.c,v 1.7 2003/12/17 12:52:25 kloczek Exp $")
  *	UID is extracted from the global (struct passwd) entry and the
  *	TTY information is gotten from the (struct utmp).
  */
-void
-dolastlog (struct lastlog *ll, const struct passwd *pw, const char *line,
-	   const char *host)
+void dolastlog (
+	struct lastlog *ll,
+	const struct passwd *pw,
+	/*@unique@*/const char *line,
+	/*@unique@*/const char *host)
 {
 	int fd;
 	off_t offset;
@@ -61,18 +64,23 @@ dolastlog (struct lastlog *ll, const struct passwd *pw, const char *line,
 	 * If the file does not exist, don't create it.
 	 */
 
-	if ((fd = open (LASTLOG_FILE, O_RDWR)) == -1)
+	fd = open (LASTLOG_FILE, O_RDWR);
+	if (-1 == fd) {
 		return;
+	}
 
 	/*
 	 * The file is indexed by UID number.  Seek to the record
 	 * for this UID.  Negative UID's will create problems, but ...
 	 */
 
-	offset = (unsigned long) pw->pw_uid * sizeof newlog;
+	offset = (off_t) pw->pw_uid * sizeof newlog;
 
 	if (lseek (fd, offset, SEEK_SET) != offset) {
-		close (fd);
+		SYSLOG ((LOG_WARN,
+		         "Can't read last lastlog entry for UID %lu in %s. Entry not updated.",
+		         (unsigned long) pw->pw_uid, LASTLOG_FILE));
+		(void) close (fd);
 		return;
 	}
 
@@ -82,18 +90,27 @@ dolastlog (struct lastlog *ll, const struct passwd *pw, const char *line,
 	 * the way we read the old one in.
 	 */
 
-	if (read (fd, (char *) &newlog, sizeof newlog) != sizeof newlog)
+	if (read (fd, (void *) &newlog, sizeof newlog) != (ssize_t) sizeof newlog) {
 		memzero (&newlog, sizeof newlog);
-	if (ll)
+	}
+	if (NULL != ll) {
 		*ll = newlog;
+	}
 
 	ll_time = newlog.ll_time;
-	time (&ll_time);
+	(void) time (&ll_time);
+	newlog.ll_time = ll_time;
 	strncpy (newlog.ll_line, line, sizeof newlog.ll_line);
 #if HAVE_LL_HOST
 	strncpy (newlog.ll_host, host, sizeof newlog.ll_host);
 #endif
-	if (lseek (fd, offset, SEEK_SET) == offset)
-		write (fd, (char *) &newlog, sizeof newlog);
-	close (fd);
+	if (   (lseek (fd, offset, SEEK_SET) != offset)
+	    || (write (fd, (const void *) &newlog, sizeof newlog) != (ssize_t) sizeof newlog)
+	    || (close (fd) != 0)) {
+		SYSLOG ((LOG_WARN,
+		         "Can't write lastlog entry for UID %lu in %s.",
+		         (unsigned long) pw->pw_uid, LASTLOG_FILE));
+		(void) close (fd);
+	}
 }
+

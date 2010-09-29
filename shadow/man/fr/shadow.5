@@ -1,92 +1,139 @@
-.\" Copyright 1989 - 1990, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: shadow
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24/07/2009
+.\"    Manual: Formats et conversions de fichiers
+.\"    Source: Formats et conversions de fichiers
+.\"  Language: French
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"	$Id: shadow.5,v 1.2 2003/04/26 13:24:12 kloczek Exp $
-.\"
-.TH SHADOW 5
-.SH NOM
-shadow \- fichiers de mots de passe cryptés
-.SH DESCRIPTION
-.I /etc/shadow
-contient les mots de passe cryptés des utilisateurs [ Ndt : plus exactement, le résultat du cryptage d'une chaîne de longueur nulle
-avec le mot de passe comme clé de cryptage ] ainsi qu'éventuellement des informations sur l'âge des mots de passe :
-.IP "" .5i
-Nom de login
-.IP "" .5i
-mot de passe crypté
-.IP "" .5i
-Nombre de jours écoulés depuis le 1er janvier 1970 jusqu'au dernier changement de mot de passe
-.IP "" .5i
-Nombre de jours durant lesquels le mot de passe est encore valide
-.IP "" .5i
-Nombre de jours après lesquels le mot de passe doit être changé
-.IP "" .5i
-Nombre de jours avant l'expiration du mot de passe impliquant l'avertissement de l'utilisateur
-.IP "" .5i
-Nombre de jours après l'expiration provoquant la desactivation du compte
-.IP "" .5i
-Numéro du jour depuis le 1er janvier 1970 à partir duquel le compte a été désactivé
-.IP "" .5i
-Champs réservé
+.TH "SHADOW" "5" "24/07/2009" "Formats et conversions de fich" "Formats et conversions de fich"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOM"
+shadow \- shadowed password file
+.SH "DESCRIPTION"
 .PP
-Le champs 
-.I mot de passe
-doit être rempli.
-Le mot de passe crypté comprend 13 à 24 caractères pris dans 
-l'alphabet réduit a-z, A-Z, 0-9, \. et /.
-Consultez \fBcrypt\fR(3) pour plus d'information sur le traitement de cette chaîne.
+shadow
+est un fichier qui contient les informations cach\('ees concernant les mots de passe des utilisateurs et leurs dates de validit\('e\&.
 .PP
-La date de dernière modification du mot de passe est donné par le nNombre de jours écoulés depuis le 1er janvier 1970 jusqu'au dernier changement de mot de passe.
-Le mot de passe ne peut être changé jusqu'à ce que le nombre de jours indiqués soit écoulé, et doit être changé après que le nombre maximum de jours indiqué.
-Si le nomnre minimum de jours requis est plus grand que le nombre maximum de jours de vailidé, ce mot de passe
-.B ne peut pas
-être changé par l'utilisateur.
+Ce fichier ne doit pas \(^etre accessible en lecture par les utilisateurs normaux afin de maintenir la s\('ecurit\('e des mots de passe, en particuliers pour pr\('evenir les attaques par dictionnaires\&.
 .PP
-Un compte est considéré comme inactif et est désactivé si le mot de passe n'est pas changé dans l'intervalle spécifié après l'expiration du mot de passe.
-Un compte est également désactivé le jours indiqué quelque soit les autres informations d'expiration.
+Each line of this file contains 9 fields, separated by colons (\(Fo\ \&:\ \&\(Fc), in the following order:
 .PP
-Cette information est prioritaire sur toutes les autres champs présents dans \fI/etc/passwd\fR.
+\fBnom de connexion de l\'utilisateur (\(Fo\ \&login\ \&\(Fc)\fR
+.RS 4
+It must be a valid account name, which exist on the system\&.
+.RE
 .PP
-Ce fichier \fBne doit pas être\fR accessible en lecture par les utilisateurs normaux afin de maintenir la sécurité des mots de passe, en particuliers contre les attaques aux dictionnaires.
-.SH FICHIERS
-\fI/etc/passwd\fR - information sur les comptes des utilisateurs
-.br
-\fI/etc/shadow\fR - mots de passe cryptés des utilisateurs
-.SH VOIR AUSSI
-.BR chage (1),
-.BR login (1),
-.BR passwd (1),
-.BR su (1),
-.BR sulogin (8),
-.BR shadow (3),
-.BR passwd (5),
-.BR pwconv (8),
-.BR pwunconv (8)
-.SH AUTEUR
-Julianne Frances Haugh (jfh@tab.com)
-.SH TRADUCTION
-.RI "Thierry Vignaud <" tvignaud@mandrakesoft.com ">, 1999"
+\fBmot de passe chiffr\('e\fR
+.RS 4
+Consultez
+\fBcrypt\fR(3)
+pour plus d\'informations sur le traitement de cette cha\(^ine\&.
+.sp
+Si le champ du mot de passe contient une cha\(^ine qui ne peut pas \(^etre un r\('esultat valable de
+\fBcrypt\fR(3), par exemple si elle contient les caract\(`eres ! ou *, alors l\'utilisateur ne pourra pas utiliser son mot de passe UNIX pour se connecter (mais il se peut que l\'utilisateur puisse se connecter au syst\(`eme par d\'autres moyens)\&.
+.sp
+This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
+/etc/shadow
+file may decide not to permit any access at all if the password field is empty\&.
+.sp
+A password field which starts with a exclamation mark means that the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
+.RE
+.PP
+\fBdate du dernier changement de mot de passe\fR
+.RS 4
+The date of the last password change, expressed as the number of days since Jan 1, 1970\&.
+.sp
+The value 0 has a special meaning, which is that the user should change her pasword the next time she will log in the system\&.
+.sp
+An empty field means that password aging features are disabled\&.
+.RE
+.PP
+\fBage minimum du mot de passe\fR
+.RS 4
+The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again\&.
+.sp
+An empty field and value 0 mean that there are no minimum password age\&.
+.RE
+.PP
+\fBage maximum du mot de passe\fR
+.RS 4
+The maximum password age is the number of days after which the user will have to change her password\&.
+.sp
+After this number of days is elapsed, the password may still be valid\&. The user should be asked to change her password the next time she will log in\&.
+.sp
+An empty field means that there are no maximum password age, no password warning period, and no password inactivity period (see below)\&.
+.sp
+If the maximum password age is lower than the minimum password age, the user cannot change her password\&.
+.RE
+.PP
+\fBpassword warning period\fR
+.RS 4
+The number of days before a password is going to expire (see the maximum password age above) during which the user should be warned\&.
+.sp
+An empty field and value 0 mean that there are no password warning period\&.
+.RE
+.PP
+\fBpassword inactivity period\fR
+.RS 4
+The number of days after a password has expired (see the maximum password age above) during which the password should still be accepted (and the user should update her password during the next login)\&.
+.sp
+After expiration of the password and this expiration period is elapsed, no login is possible using the current user\'s password\&. The user should contact her administrator\&.
+.sp
+An empty field means that there are no enforcement of an inactivity period\&.
+.RE
+.PP
+\fBdate de fin de validit\('e du compte\fR
+.RS 4
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970\&.
+.sp
+Note that an account expiration differs from a password expiration\&. In case of an acount expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
+.sp
+An empty field means that the account will never expire\&.
+.sp
+The value 0 should not be used as it is interpreted as either an account with no expiration, or as an expiration on Jan 1, 1970\&.
+.RE
+.PP
+\fBchamp r\('eserv\('e\fR
+.RS 4
+Ce champ est r\('eserv\('e pour une utilisation future\&.
+.RE
+.SH "FICHIERS"
+.PP
+/etc/passwd
+.RS 4
+Informations sur les comptes des utilisateurs\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informations s\('ecuris\('ees sur les comptes utilisateurs\&.
+.RE
+.PP
+/etc/shadow\-
+.RS 4
+Backup file for /etc/shadow\&.
+.sp
+Note that this file is used by the tools of the shadow toolsuite, but not by all user and password management tools\&.
+.RE
+.SH "VOIR AUSSI"
+.PP
+\fBchage\fR(1),
+\fBlogin\fR(1),
+\fBpasswd\fR(1),
+\fBpasswd\fR(5),
+\fBpwck\fR(8),
+\fBpwconv\fR(8),
+\fBpwunconv\fR(8),
+\fBsu\fR(1),
+\fBsulogin\fR(8)\&.

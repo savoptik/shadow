@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1992, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1992, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,27 +13,28 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: env.c,v 1.10 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: env.c 2818 2009-04-27 20:07:59Z nekral-guest $"
+
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +47,7 @@ RCSID ("$Id: env.c,v 1.10 2003/04/22 10:59:22 kloczek Exp $")
  */
 #define NEWENVP_STEP 16
 size_t newenvc = 0;
-char **newenvp = NULL;
+/*@null@*/char **newenvp = NULL;
 extern char **environ;
 
 static const char *forbid[] = {
@@ -82,15 +86,18 @@ void initenv (void)
 }
 
 
-void addenv (const char *string, const char *value)
+void addenv (const char *string, /*@null@*/const char *value)
 {
 	char *cp, *newstring;
 	size_t i;
 	size_t n;
 
-	if (value) {
-		newstring = xmalloc (strlen (string) + strlen (value) + 2);
-		sprintf (newstring, "%s=%s", string, value);
+	if (NULL != value) {
+		size_t len = strlen (string) + strlen (value) + 2;
+		int wlen;
+		newstring = xmalloc (len);
+		wlen = snprintf (newstring, len, "%s=%s", string, value);
+		assert (wlen == (int) len -1);
 	} else {
 		newstring = xstrdup (string);
 	}
@@ -101,7 +108,7 @@ void addenv (const char *string, const char *value)
 	 */
 
 	cp = strchr (newstring, '=');
-	if (!cp) {
+	if (NULL == cp) {
 		free (newstring);
 		return;
 	}
@@ -109,9 +116,10 @@ void addenv (const char *string, const char *value)
 	n = (size_t) (cp - newstring);
 
 	for (i = 0; i < newenvc; i++) {
-		if (strncmp (newstring, newenvp[i], n) == 0 &&
-		    (newenvp[i][n] == '=' || newenvp[i][n] == '\0'))
+		if (   (strncmp (newstring, newenvp[i], n) == 0)
+		    && (('=' == newenvp[i][n]) || ('\0' == newenvp[i][n]))) {
 			break;
+		}
 	}
 
 	if (i < newenvc) {
@@ -148,12 +156,14 @@ void addenv (const char *string, const char *value)
 			 * environ so that it doesn't point to some
 			 * free memory area (realloc() could move it).
 			 */
-			if (environ == newenvp)
+			if (environ == newenvp) {
 				environ = __newenvp;
+			}
 			newenvp = __newenvp;
 		} else {
-			fprintf (stderr, _("Environment overflow\n"));
-			free (newenvp[--newenvc]);
+			(void) fputs (_("Environment overflow\n"), stderr);
+			newenvc--;
+			free (newenvp[newenvc]);
 		}
 	}
 
@@ -175,22 +185,28 @@ void set_env (int argc, char *const *argv)
 	char *cp;
 
 	for (; argc > 0; argc--, argv++) {
-		if (strlen (*argv) >= sizeof variable)
+		if (strlen (*argv) >= sizeof variable) {
 			continue;	/* ignore long entries */
+		}
 
-		if (!(cp = strchr (*argv, '='))) {
-			snprintf (variable, sizeof variable, "L%d",
-				  noname++);
+		cp = strchr (*argv, '=');
+		if (NULL == cp) {
+			int wlen;
+			wlen = snprintf (variable, sizeof variable, "L%d", noname);
+			assert (wlen < (int) sizeof(variable));
+			noname++;
 			addenv (variable, *argv);
 		} else {
 			const char **p;
 
-			for (p = forbid; *p; p++)
-				if (strncmp (*argv, *p, strlen (*p)) == 0)
+			for (p = forbid; NULL != *p; p++) {
+				if (strncmp (*argv, *p, strlen (*p)) == 0) {
 					break;
+				}
+			}
 
-			if (*p) {
-				strncpy (variable, *argv, cp - *argv);
+			if (NULL != *p) {
+				strncpy (variable, *argv, (size_t)(cp - *argv));
 				variable[cp - *argv] = '\0';
 				printf (_("You may not change $%s\n"),
 					variable);
@@ -218,27 +234,32 @@ void sanitize_env (void)
 	char **cur;
 	char **move;
 
-	for (cur = envp; *cur; cur++) {
-		for (bad = forbid; *bad; bad++) {
+	for (cur = envp; NULL != *cur; cur++) {
+		for (bad = forbid; NULL != *bad; bad++) {
 			if (strncmp (*cur, *bad, strlen (*bad)) == 0) {
-				for (move = cur; *move; move++)
+				for (move = cur; NULL != *move; move++) {
 					*move = *(move + 1);
+				}
 				cur--;
 				break;
 			}
 		}
 	}
 
-	for (cur = envp; *cur; cur++) {
-		for (bad = noslash; *bad; bad++) {
-			if (strncmp (*cur, *bad, strlen (*bad)) != 0)
+	for (cur = envp; NULL != *cur; cur++) {
+		for (bad = noslash; NULL != *bad; bad++) {
+			if (strncmp (*cur, *bad, strlen (*bad)) != 0) {
 				continue;
-			if (!strchr (*cur, '/'))
+			}
+			if (strchr (*cur, '/') != NULL) {
 				continue;	/* OK */
-			for (move = cur; *move; move++)
+			}
+			for (move = cur; NULL != *move; move++) {
 				*move = *(move + 1);
+			}
 			cur--;
 			break;
 		}
 	}
 }
+

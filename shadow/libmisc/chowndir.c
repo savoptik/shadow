@@ -1,5 +1,7 @@
 /*
- * Copyright 1992, 1993, Julianne Frances Haugh
+ * Copyright (c) 1992 - 1993, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,27 +12,27 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: chowndir.c,v 1.7 2003/04/22 10:59:21 kloczek Exp $")
+#ident "$Id: chowndir.c 2020 2008-05-25 21:23:28Z nekral-guest $"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "prototypes.h"
@@ -86,8 +88,7 @@ chown_tree (const char *root, uid_t old_uid, uid_t new_uid, gid_t old_gid,
 		 * destination files.
 		 */
 
-		if (strlen (root) + strlen (ent->d_name) + 2 >
-		    sizeof new_name)
+		if (strlen (root) + strlen (ent->d_name) + 2 > sizeof new_name)
 			break;
 
 		snprintf (new_name, sizeof new_name, "%s/%s", root,
@@ -103,9 +104,11 @@ chown_tree (const char *root, uid_t old_uid, uid_t new_uid, gid_t old_gid,
 			 * Do the entire subdirectory.
 			 */
 
-			if ((rc = chown_tree (new_name, old_uid, new_uid,
-					      old_gid, new_gid)))
+			rc = chown_tree (new_name, old_uid, new_uid,
+			                 old_gid, new_gid);
+			if (0 != rc) {
 				break;
+			}
 		}
 #ifndef HAVE_LCHOWN
 		/* don't use chown (follows symbolic links!) */
@@ -114,20 +117,20 @@ chown_tree (const char *root, uid_t old_uid, uid_t new_uid, gid_t old_gid,
 #endif
 		if (sb.st_uid == old_uid)
 			LCHOWN (new_name, new_uid,
-				sb.st_gid ==
-				old_gid ? new_gid : sb.st_gid);
+				sb.st_gid == old_gid ? new_gid : sb.st_gid);
 	}
-	closedir (dir);
+	(void) closedir (dir);
 
 	/*
 	 * Now do the root of the tree
 	 */
 
-	if (!stat (root, &sb)) {
-		if (sb.st_uid == old_uid)
+	if (stat (root, &sb) == 0) {
+		if (sb.st_uid == old_uid) {
 			LCHOWN (root, new_uid,
-				sb.st_gid ==
-				old_gid ? new_gid : sb.st_gid);
+			        sb.st_gid == old_gid ? new_gid : sb.st_gid);
+		}
 	}
 	return rc;
 }
+

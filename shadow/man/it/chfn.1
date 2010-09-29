@@ -1,74 +1,108 @@
-.\" $Id: chfn.1,v 1.1 2002/03/10 07:41:06 kloczek Exp $
+'\" t
+.\"     Title: chfn
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24/07/2009
+.\"    Manual: User Commands
+.\"    Source: User Commands
+.\"  Language: Italian
 .\"
-.\"  chfn.1 -- change your finger information
-.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
-.\"
-.\"
-.\"  Traduzione in italiano di Giovanni Bortolozzo <borto@dei.unipd.it>
-.\"  Agosto 1996
-.\"
-.\"  this program is free software.  you can redistribute it and
-.\"  modify it under the terms of the gnu general public license.
-.\"  there is no warranty.
-.\"
-.\"  $Author: kloczek $
-.\"  $Revision: 1.1 $
-.\"  $Date: 2002/03/10 07:41:06 $
-.\"
-.\" " for hilit19
-.TH CHFN 1 "13 ottobre 1994" "chfn" "Linux Reference Manual"
-.SH NOME
-chfn \- cambia le proprie "finger information"
-.SH SINTASSI
-.B chfn
-[\ \-f\ nome_vero\] [\ \-o\ ufficio\] [\ \-p\ telefono_ufficio\]
-[\ \-h\ telefono_casa\] [\ \-u\ ] [\ \-v\ ] [\ nome_utente\]
-.SH DESCRIZIONE
-.B chfn
-è usato per cambiare le proprie finger information. Queste informazioni sono
-salvate nel file
-.IR /etc/passwd ,
-e sono mostrate dal programma 
-.BR finger .
-Il comando
-.B finger
-di Linux mostra quattro porzioni di informazione che possono essere 
-cambiati tramite 
-.BR chfn :
-il proprio nome vero, l'ufficio e il numero di telefono di quest'ultimo, e il
-proprio numero di telefono di casa.
-.SS LINEA DI COMANDO
-Ognuno delle quattro porzioni può essere specificata nella linea di comando.
-Se non viene passata alcuna informazione sulla linea di comando,
-.B chfn
-entra in modo interattivo.
-.SS MODO INTERATTIVO
-Nel modo interattivo,
-.B chfn
-chiederà ognuno dei campi. Al prompt, possono essere immesse le nuove 
-informazioni, o premere return per non cambiare il campo. L'immissione della
-parola chiave "none" cancella il campo.
-.SH OPZIONI
-.TP
-.I "\-f, \-\-full-name"
-Specifica il proprio nome reale.
-.TP
-.I "\-o, \-\-office"
-Specifica il numero del proprio ufficio.
-.TP
-.I "\-p, \-\-office-phone"
-Specifica il numero di telefono del proprio ufficio.
-.TP
-.I "\-h, \-\-home-phone"
-Specifica il numero di telefono di casa.
-.TP
-.I "\-u, \-\-help"
-Mostra un messaggio d'aiuto ed esce.
-.TP
-.I "-v, \-\-version"
-Mostra informazioni sulla versione ed esce.
+.TH "CHFN" "1" "24/07/2009" "User Commands" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+chfn \- change real user name and information
+.SH "SINOSSI"
+.HP \w'\fBchfn\fR\ 'u
+\fBchfn\fR [\-f\ \fIfull_name\fR] [\-r\ \fIroom_no\fR] [\-w\ \fIwork_ph\fR] [\-h\ \fIhome_ph\fR] [\-o\ \fIother\fR] [\fIuser\fR]
+.SH "DESCRIZIONE"
+.PP
+The
+\fBchfn\fR
+command changes user fullname, office number, office extension, and home phone number information for a user\'s account\&. This information is typically printed by
+\fBfinger\fR(1)
+and similar programs\&. A normal user may only change the fields for her own account, subject to the restrictions in
+/etc/login\&.defs\&. (The default configuration is to prevent users from changing their fullname\&.) The superuser may change any field for any account\&. Additionally, only the superuser may use the
+\fB\-o\fR
+option to change the undefined portions of the GECOS field\&.
+.PP
+These fields must not contain any colons\&. Except for the
+\fIother\fR
+field, they should not contain any comma or equal sign\&. It is also recommended to avoid non\-US\-ASCII characters, but this is only enforced for the phone numbers\&. The
+\fIother\fR
+field is used to store accounting information used by other applications\&.
+.PP
+Se nessuna delle opzioni \(`e selezionata,
+\fBchfn\fR
+opera in maniera interattiva, chiedendo all\'utente il valore da impostare per ogni campo\&. Inserire un nuovo valore per sostituire il contenuto attuale, oppure lasciare la linea vuota per non cambiarlo\&. Il valore attuale \(`e mostrato tra le parentesi
+\fB[ ]\fR\&. Senza alcuna opzione,
+\fBchfn\fR, chiede l\'account sul quale operare\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBCHFN_AUTH\fR (boolean)
+.RS 4
+If
+\fIyes\fR, the
+\fBchfn\fR
+program will require authentication before making any changes, unless run by the superuser\&.
+.RE
+.PP
+\fBCHFN_RESTRICT\fR (string)
+.RS 4
+This parameter specifies which values in the
+\fIgecos\fR
+field of the
+/etc/passwd
+file may be changed by regular users using the
+\fBchfn\fR
+program\&. It can be any combination of letters
+\fIf\fR,
+\fIr\fR,
+\fIw\fR,
+\fIh\fR, for Full name, Room number, Work phone, and Home phone, respectively\&. For backward compatibility,
+\fIyes\fR
+is equivalent to
+\fIrwh\fR
+and
+\fIno\fR
+is equivalent to
+\fIfrwh\fR\&. If not specified, only the superuser can make any changes\&. The most restrictive setting is better achieved by not installing
+\fBchfn\fR
+SUID\&.
+.RE
+.PP
+\fBLOGIN_STRING\fR (string)
+.RS 4
+The string used for prompting a password\&. The default is to use "Password: ", or a translation of that string\&. If you set this variable, the prompt will no be translated\&.
+.sp
+If the string contains
+\fI%s\fR, this will be replaced by the user\'s name\&.
+.RE
+.SH "FILE"
+.PP
+/etc/login\&.defs
+.RS 4
+Shadow password suite configuration\&.
+.RE
+.PP
+/etc/passwd
+.RS 4
+informazioni sugli account utente\&.
+.RE
 .SH "VEDERE ANCHE"
-.BR finger (1),
-.BR passwd (5)
-.SH AUTORE
-Salvatore Valente <svalente@mit.edu>
+.PP
+\fBchsh\fR(1),
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(5)\&.

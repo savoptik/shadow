@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,35 +13,34 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
 #ifdef RLOGIN
 
-#include "rcsid.h"
-RCSID ("$Id: rlogin.c,v 1.6 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: rlogin.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+
 #include "prototypes.h"
 #include "defines.h"
 #include <stdio.h>
 #include <pwd.h>
-extern int ruserok ();
-
+#include <netdb.h>
 static struct {
 	int spd_name;
 	int spd_baud;
@@ -108,26 +110,30 @@ static struct {
 	-1, -1}
 };
 
-static void get_remote_string (char *buf, int size)
+static void get_remote_string (char *buf, size_t size)
 {
 	for (;;) {
-		if (read (0, buf, 1) != 1)
-			exit (1);
-		if (*buf == '\0')
+		if (read (0, buf, 1) != 1) {
+			exit (EXIT_FAILURE);
+		}
+		if ('\0' == *buf) {
 			return;
-		if (--size > 0)
+		}
+		--size;
+		if (size > 0) {
 			++buf;
+		}
 	}
  /*NOTREACHED*/}
 
 int
-do_rlogin (const char *remote_host, char *name, int namelen, char *term,
-	   int termlen)
+do_rlogin (const char *remote_host, char *name, size_t namelen, char *term,
+           size_t termlen)
 {
 	struct passwd *pwd;
 	char remote_name[32];
 	char *cp;
-	int remote_speed = 9600;
+	unsigned long remote_speed = 9600;
 	int speed_name = B9600;
 	int i;
 	TERMIO termio;
@@ -136,17 +142,23 @@ do_rlogin (const char *remote_host, char *name, int namelen, char *term,
 	get_remote_string (name, namelen);
 	get_remote_string (term, termlen);
 
-	if ((cp = strchr (term, '/'))) {
-		*cp++ = '\0';
+	cp = strchr (term, '/');
+	if (NULL != cp) {
+		*cp = '\0';
+		cp++;
 
-		if (!(remote_speed = atoi (cp)))
+		if (getulong (cp, &remote_speed) == 0) {
 			remote_speed = 9600;
+		}
 	}
-	for (i = 0; speed_table[i].spd_baud != remote_speed &&
-	     speed_table[i].spd_name != -1; i++);
+	for (i = 0;
+	     (   (speed_table[i].spd_baud != remote_speed)
+	      && (speed_table[i].spd_name != -1));
+	     i++);
 
-	if (speed_table[i].spd_name != -1)
+	if (-1 != speed_table[i].spd_name) {
 		speed_name = speed_table[i].spd_name;
+	}
 
 	/*
 	 * Put the terminal in cooked mode with echo turned on.
@@ -163,8 +175,10 @@ do_rlogin (const char *remote_host, char *name, int namelen, char *term,
 #endif
 	STTY (0, &termio);
 
-	if (!(pwd = getpwnam (name)))
+	pwd = getpwnam (name); /* local, no need for xgetpwnam */
+	if (NULL == pwd) {
 		return 0;
+	}
 
 	/*
 	 * ruserok() returns 0 for success on modern systems, and 1 on
@@ -181,3 +195,4 @@ do_rlogin (const char *remote_host, char *name, int namelen, char *term,
 #endif
 }
 #endif				/* RLOGIN */
+

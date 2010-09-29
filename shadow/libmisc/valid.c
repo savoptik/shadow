@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1993, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1993, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,27 +13,27 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: valid.c,v 1.5 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: valid.c 2116 2008-06-10 21:52:34Z nekral-guest $"
+
 #include <sys/types.h>
 #include <stdio.h>
 #include "prototypes.h"
@@ -46,7 +49,7 @@ RCSID ("$Id: valid.c,v 1.5 2003/04/22 10:59:22 kloczek Exp $")
  *	is used to indicate that a dummy salt must be used to encrypt the
  *	password anyway.
  */
-int valid (const char *password, const struct passwd *ent)
+bool valid (const char *password, const struct passwd *ent)
 {
 	const char *encrypted;
 	const char *salt;
@@ -58,18 +61,19 @@ int valid (const char *password, const struct passwd *ent)
 	 * routine is meant to waste CPU time.
 	 */
 
-	if (ent->pw_name && !ent->pw_passwd[0]) {
-		if (!password[0])
-			return (1);	/* user entered nothing */
-		else
-			return (0);	/* user entered something! */
+	if ((NULL != ent->pw_name) && ('\0' == ent->pw_passwd[0])) {
+		if ('\0' == password[0]) {
+			return true;	/* user entered nothing */
+		} else {
+			return false;	/* user entered something! */
+		}
 	}
 
 	/*
 	 * If there is no entry then we need a salt to use.
 	 */
 
-	if (ent->pw_name == (char *) 0 || ent->pw_passwd[0] == '\0') {
+	if ((NULL == ent->pw_name) || ('\0' == ent->pw_passwd[0])) {
 		salt = "xx";
 	} else {
 		salt = ent->pw_passwd;
@@ -90,8 +94,11 @@ int valid (const char *password, const struct passwd *ent)
 	 * cause non-existent users to not be validated.
 	 */
 
-	if (ent->pw_name && strcmp (encrypted, ent->pw_passwd) == 0)
-		return (1);
-	else
-		return (0);
+	if (   (NULL != ent->pw_name)
+	    && (strcmp (encrypted, ent->pw_passwd) == 0)) {
+		return true;
+	} else {
+		return false;
+	}
 }
+

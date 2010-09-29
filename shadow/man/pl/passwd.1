@@ -1,210 +1,384 @@
-.\" $Id: passwd.1,v 1.11 2003/04/28 17:52:15 kloczek Exp $
-.\" Translation (c) 1999 Wojtek Kotwica
-.\"             (c) 2002 Andrzej Krzysztofowicz
-.\" 
-.\" Copyright 1989 - 1994, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: passwd
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia uÅ¼ytkownik\('ow
+.\"    Source: Polecenia uÅ¼ytkownik\('ow
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH PASSWD 1
-.SH NAZWA
-passwd \- zmiana has³a u¿ytkownika
-.SH SK£ADNIA
-\fBpasswd\fR [\fB-f\fR|\fB-s\fR] [\fInazwa\fR]
-.br
-\fBpasswd\fR [\fB-g\fR] [\fB-r\fR|\fB-R\fR] \fIgrupa\fR
-.br
-\fBpasswd\fR [\fB-x \fImax\fR] [\fB-n \fImin\fR]
-[\fB-w \fIostrze¿\fR] [\fB-i \fInieakt\fR] \fIlogin\fR
-.br
-\fBpasswd\fR {\fB-l\fR|\fB-u\fR|\fB-d\fR|\fB-S\fR|\fB-e\fR} \fIlogin\fR
-.SH OPIS
-\fBpasswd\fR zmienia has³a kont u¿ytkowników i grup.
-Zwyk³y u¿ytkownik mo¿e zmieniæ wy³±cznie has³o w³asnego konta, superu¿ytkownik
-mo¿e zmieniaæ has³a dowolnych kont.
-Administrator grupy mo¿e zmieniæ has³o tej grupy.
-\fBpasswd\fR zmienia tak¿e informacje o koncie, takie jak pe³na nazwa
-u¿ytkownika, jego pow³oka zg³oszeniowa (logowania) czy daty i interwa³y dotycz±ce
-wa¿no¶ci has³a.
+.TH "PASSWD" "1" "07/24/2009" "Polecenia uÅ¼ytkownik\('ow" "Polecenia uÅ¼ytkownik\('ow"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+passwd \- zmiana has\(/la uÅ¼ytkownika
+.SH "SK\(/LADNIA"
+.HP \w'\fBpasswd\fR\ 'u
+\fBpasswd\fR [\fIopcje\fR] [\fILOGIN\fR]
+.SH "OPIS"
 .PP
-U¿ycie opcji \fB-s\fR powoduje wywo³anie przez passwd programu chsh w celu
-zmiany pow³oki u¿ytkownika, u¿ycie opcji \fB-f\fR powoduje wywo³anie przez
-passwd programu chfn w celu zmiany infirmacji o u¿ytkowniku. Te dwie opcje
-istniej± jedynie dla zgodno¶ci, gdy¿ wymienione programy mog± byæ wywo³ywane
-bezpo¶rednio.
-.SS Zmiany has³a
-Na pocz±tku u¿ytkownik pytany jest o stare, dotychczasowe has³o, je¶li takie
-istnieje. Has³o to jest kodowane i porównywane z przechowywanym has³em.
-U¿ytkownik ma tylko jedn± próbê na wprowadzenie poprawnego has³a.
-Superu¿ytkownikowi zezwala siê na pominiêcie tego kroku, aby mog³y byæ
-zmienione has³a, których zapomniano.
+The
+\fBpasswd\fR
+command changes passwords for user accounts\&. A normal user may only change the password for his/her own account, while the superuser may change the password for any account\&.
+\fBpasswd\fR
+also changes the account or associated password validity period\&.
+.SS "Password Changes"
 .PP
-Po wprowadzeniu has³a, sprawdzana jest informacja o jego wieku, by stwierdziæ
-czy u¿ytkownikowi wolno w danym czasie zmieniæ has³o.
-Je¿eli nie, to \fBpasswd\fR odmawia zmiany has³a i koñczy pracê.
+The user is first prompted for his/her old password, if one is present\&. This password is then encrypted and compared against the stored password\&. The user has only one chance to enter the correct password\&. The superuser is permitted to bypass this step so that forgotten passwords may be changed\&.
 .PP
-Nastêpnie u¿ytkownik proszony jest o nowe has³o, zastêpuj±ce dotychczasowe.
-Has³o podlega sprawdzeniu jego zawi³o¶ci. Jako ogóln± wskazówkê mo¿na podaæ,
-¿e has³a powinny sk³adaæ siê z 6 do 8 znaków, zawieraj±c po jednym lub wiêcej
-znaków z ka¿dej z poni¿szych kategorii:
-.IP "" .5i
-ma³e litery alfabetu
-.IP "" .5i
-du¿e litery alfabetu
-.IP "" .5i
-cyfry od 0 do 9
-.IP "" .5i
-znaki interpunkcyjne
+After the password has been entered, password aging information is checked to see if the user is permitted to change the password at this time\&. If not,
+\fBpasswd\fR
+refuses to change the password and exits\&.
 .PP
-Nale¿y uwa¿aæ, by nie u¿yæ domy¶lnych systemowych znaków akcji erase lub kill.
-\fBpasswd\fR odrzuci ka¿de niedostatecznie skomplikowane has³o.
+The user is then prompted twice for a replacement password\&. The second entry is compared against the first and both are required to match in order for the password to be changed\&.
 .PP
-Je¶li has³o zostanie przyjête, to \fBpasswd\fR prosi o jego powtórzenie
-i porównuje drugi wpis z pierwszym.
-Oba wpisy musz± byæ takie same, by has³o zosta³o zmienione.
-.SS Has³a grup
-Je¿eli pos³u¿ono siê opcj± \fB-g\fR, to zmieniane jest has³o podanej grupy.
-U¿ytkownik powinien byæ albo superu¿ytkownikiem albo administratorem tej grupy.
-Nie wystêpuje pytanie o bie¿±ce has³o grupy.
-Do usuwania bie¿±cego has³a danej grupy s³u¿y opcja \fB-g\fR w po³±czeniu
-z \fB-r\fR. Pozwala to na dostêp do grupy tylko jej cz³onkom.
-Opcja \fB-R\fR w po³±czeniu z \fR-g\fR ogranicza dostêp do grupy wszystkim
-u¿ytkownikom.
-.SS Informacja o wa¿no¶ci konta
-Superu¿ytkownik mo¿e zmieniaæ informacjê o wieku konta pos³uguj±c siê opcjami
-\fB-x\fR, \fB-n\fR, \fB-w\fR oraz \fB-i\fR.
-Opcja \fB-x\fR s³u¿y do ustawiania maksymalnej liczby dni, przez jakie has³o
-pozostaje wa¿ne.
-Po up³ywie \fImax\fR dni, has³o musi byæ zmienione.
-Opcja \fB-n\fR ustawia minimaln± liczbê dni, jakie musz± up³yn±æ zanim has³o
-bêdzie mog³o byæ zmienione.
-U¿ytkownik nie otrzyma zezwolenia na zmianê has³a przed up³ywem \fImin\fR dni.
-Opcja \fB-w\fR s³u¿y do ustawienia liczby dni przed up³ywem terminu wa¿no¶ci
-has³a, przez które u¿ytkownik bêdzie otrzymywa³ ostrze¿enie mówi±ce mu, ile dni
-pozosta³o do tej daty. Ostrze¿enia zaczn± pojawiaæ siê \fIostrze¿\fR dni przed
-up³ywem wa¿no¶ci has³a.
-Opcja \fB-i\fR (nieaktywno¶æ) s³u¿y do wy³±czania konta po up³ywie zadanej
-liczby dni po wyga¶niêciu has³a.
-Po up³ywie \fInieakt\fR dni od przeterminowania has³a u¿ytkownik nie mo¿e ju¿
-korzystaæ z konta.
+Then, the password is tested for complexity\&. As a general guideline, passwords should consist of 6 to 8 characters including one or more characters from each of the following sets:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+lower case alphabetics
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+digits 0 thru 9
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+punctuation marks
+.RE
 .PP
-Je¶li istnieje potrzeba natychmiastowego przeterminowania has³a dla danego
-konta, mo¿na pos³u¿yæ siê opcj± \fB-e\fR. Spowoduje to zmuszenie u¿ytkownika
-do zmiany has³a przy najbli¿szym logowaniu. Za pomoc± opcji \fB-d\fR mo¿na
-skasowaæ has³o u¿ytkownika (uczyniæ je pustym). Nale¿y zachowaæ szczególn±
-ostro¿no¶æ u¿ywaj±c tej opcji, gdy¿ mo¿e ona spowodowaæ, ¿e do zalogowania
-siê na konto nie bêdzie w ogóle potrzebne has³o, pozostawiaj±c system otwartym
-dla nieproszonych go¶ci.
-.SS Utrzymywanie i konserwacja konta
-Konta u¿ytkowników mog± byæ blokowane i odblokowywane przy pomocy opcji
-\fB-l\fR i \fB-u\fR.
-Opcja \fB-l\fR wy³±cza konto zmieniaj±c jego has³o na warto¶æ nieodpowiadaj±c±
-¿adnemu mo¿liwemu zakodowanemu has³u.
-Opcja \fB-u\fR ponownie udostêpnia konto przywracaj±c uprzedni± warto¶æ has³a.
+Care must be taken not to include the system default erase or kill characters\&.
+\fBpasswd\fR
+will reject any password which is not suitably complex\&.
+.SS "Hints for user passwords"
 .PP
-Stan konta mo¿na uzyskaæ przy pomocy opcji \fB-S\fR.
-Informacja o stanie sk³ada siê z 6 czê¶ci.
-Pierwsza wskazuje, czy konto u¿ytkownika jest zablokowane (L) (locked),
-nie posiada has³a (NP) (no password) lub ma funkcjonalne has³o (P) (password).
-Druga czê¶æ podaje datê ostatniej zmiany has³a.
-nastêpne cztery to minimalny wiek, maksymalny wiek, okres ostrzegania i okres
-nieaktywno¶ci has³a.
-.SS Podpowiedzi dotycz±ce hase³ u¿ytkownika
-Bezpieczeñstwo has³a zale¿y od si³y algorytmu koduj±cego oraz rozmiaru
-przestrzeni kluczy. Metoda kodowania u¿ywana w Systemie \fB\s-2UNIX\s+2\fR
-oparta jest o algorytm NBS DES i jest bardzo bezpieczna. Rozmiar przestrzeni
-kluczy zale¿y od losowo¶ci wybranego has³a.
+The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
+\fIUNIX\fR
+System encryption method is based on the NBS DES algorithm\&. More recent methods are now recommended (see
+\fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
 .PP
-Naruszenia bezpieczeñstwa hase³ wynikaj± zwykle z beztroski przy wyborze lub
-przechowywaniu has³a. Z tego powodu nie nale¿y wybieraæ has³a wystêpuj±cego
-w s³owniku ani takiego, które wymaga zanotowania. Has³o nie powinno te¿ byæ
-poprawn± nazw±, imieniem, nazwiskiem, numerem prawa jazdy, dat± urodzenia czy
-elementem adresu. Wszystkie z powy¿szych mog± byæ u¿yte do odgadniêcia has³a
-i naruszenia bezpieczeñstwa systemu.
+Compromises in password security normally result from careless password selection or handling\&. For this reason, you should not select a password which appears in a dictionary or which must be written down\&. The password should also not be a proper name, your license number, birth date, or street address\&. Any of these may be used as guesses to violate system security\&.
 .PP
-Has³o musi byæ ³atwe do zapamiêtania, tak by nie byæ zmuszonym do jego
-zapisywania na kartce. Mo¿na to osi±gn±æ sklejaj±c ze sob± dwa krótkie s³owa,
-ze wstawionym pomiêdzy nie znakiem specjalnym lub cyfr±.
-Na przyk³ad, Pass%word, Lew7konia.
+You can find advices on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+.SH "OPCJE"
 .PP
-Inna metoda konstrukcji has³a polega na wyborze ³atwego do zapamiêtania zdania
-(np. z literatury) i wyborze pierwszej b±d¼ ostatniej litery ka¿dego wyrazu.
-Przyk³adem tego jest
-.IP "" .5i
-Ask not for whom the bell tolls.
+Polecenie
+\fBpasswd\fR
+posiada nastÄ™pujÄ…ce opcje:
 .PP
-co daje
-.IP "" .5i
-An4wtbt,
+\fB\-a\fR, \fB\-\-all\fR
+.RS 4
+This option can be used only with
+\fB\-S\fR
+and causes show status for all users\&.
+.RE
 .PP
-albo te¿
-.IP "" .5i
-A czy znasz Ty, bracie m³ody
+\fB\-d\fR, \fB\-\-delete\fR
+.RS 4
+Delete a user\'s password (make it empty)\&. This is a quick way to disable a password for an account\&. It will set the named account passwordless\&.
+.RE
 .PP
-co daje
-.IP "" .5i
-A3zTbm.
+\fB\-e\fR, \fB\-\-expire\fR
+.RS 4
+Immediately expire an account\'s password\&. This in effect can force a user to change his/her password at the user\'s next login\&.
+.RE
 .PP
-W zasadzie mo¿na byæ pewnym, ¿e niewielu crackerów bêdzie mieæ takie has³o
-w swoich s³ownikach. Nale¿y jednak wybieraæ w³asne metody konstrukcji hase³
-a nie polegaæ wy³±cznie na opisanych tutaj.
-.SS Uwagi o has³ach grup
-Has³a grup s± nieod³±cznym problemem bezpieczeñstwa, gdy¿ do ich znajomo¶ci
-uprawniona jest wiêcej ni¿ jedna osoba.
-Grupy s± jednak u¿ytecznym narzêdziem pozwalaj±cym na wspó³pracê miêdzy
-ró¿nymi u¿ytkownikami.
-.SH PRZESTROGI
-Niektóre opcje mog± nie byæ obs³ugiwane. 
-Sprawdzanie z³o¿ono¶ci has³a mo¿e ró¿niæ siê w ró¿nych instalacjach. Zachêca
-siê u¿ytkownika do wyboru tak skomplikowanego has³a, z jakim bêdzie mu
-wygodnie.
-U¿ytkownicy mog± nie móc zmieniæ has³a w systemie przy w³±czonym NIS, je¶li
-nie s± zalogowani do serwera NIS.
-.SH PLIKI
-\fI/etc/passwd\fR	\- informacja o kontach u¿ytkowników
-.br
-\fI/etc/shadow\fR	\- zakodowane has³a u¿ytkowników
-.SH KOD ZAKOÑCZENIA
-.TP 2
-Polecenie \fBpasswd\fR koñczy dzia³anie z nastêpuj±cymi warto¶ciami kodów zakoñczenia:
-.br
-\fB0\fR	\- powodzenie
-.br
-\fB1\fR	\- permission denied
-.br
-\fB2\fR	\- niew³a¶ciwa sk³adnia parametrów polecenia
-.br
-\fB3\fR	\- nieoczekiwanie niepowodzenie, nic nie zosta³o wykonane
-.br
-\fB4\fR	\- nieoczekiwanie niepowodzenie, brakuje pliku passwd
-.br
-\fB5\fR	\- passwd file busy, try again later
-.br
-\fB6\fR	\- niew³a¶ciwe parametry opcji
-.SH "ZOBACZ TAK¯E"
-.BR group (5),
-.BR passwd (5)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+WyÅ›wietlenie komunikatu pomocy i zakoÅ„czenie dzia\(/lania\&.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-inactive\fR\fINIEAKTYWNE\fR
+.RS 4
+This option is used to disable an account after the password has been expired for a number of days\&. After a user account has had an expired password for
+\fIINACTIVE\fR
+days, the user may no longer sign on to the account\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-keep\-tokens\fR
+.RS 4
+Indicate password change should be performed only for expired authentication tokens (passwords)\&. The user wishes to keep their non\-expired tokens as before\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-lock\fR
+.RS 4
+Lock the password of the named account\&. This option disables a password by changing it to a value which matches no possible encrypted value (it adds a \(aa!\(aa at the beginning of the password)\&.
+.sp
+Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
+\fBusermod \-\-expiredate 1\fR
+(this set the account\'s expire date to Jan 2, 1970)\&.
+.sp
+Users with a locked password are not allowed to change their password\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-mindays\fR \fIMIN_DAYS\fR
+.RS 4
+Utawia minimalnÄ… liczbÄ™ dni pomiÄ™dzy zmianami has\(/la na
+\fIMIN_DAYS\fR\&. WartoÅ›Ä‡ zerowa oznacza, Å¼e uÅ¼ytkownik moÅ¼e je zmieniaÄ‡ w dowolnym czasie\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Cichy tryb pracy\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-repository\fR\fIREPOZYTORIUM\fR
+.RS 4
+change password in
+\fIREPOSITORY\fR
+repository
+.RE
+.PP
+\fB\-S\fR, \fB\-\-status\fR
+.RS 4
+Display account status information\&. The status information consists of 7 fields\&. The first field is the user\'s login name\&. The second field indicates if the user account has a locked password (L), has no password (NP), or has a usable password (P)\&. The third field gives the date of the last password change\&. The next four fields are the minimum age, maximum age, warning period, and inactivity period for the password\&. These ages are expressed in days\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-unlock\fR
+.RS 4
+Unlock the password of the named account\&. This option re\-enables a password by changing the password back to its previous value (to the value before using the
+\fB\-l\fR
+option)\&.
+.RE
+.PP
+\fB\-w\fR, \fB\-\-warndays\fR\fIDNI_OSTRZ\fR
+.RS 4
+Set the number of days of warning before a password change is required\&. The
+\fIWARN_DAYS\fR
+option is the number of days prior to the password expiring that a user will be warned that his/her password is about to expire\&.
+.RE
+.PP
+\fB\-x\fR, \fB\-\-maxdays\fR\fIMAX_DNI\fR
+.RS 4
+Set the maximum number of days a password remains valid\&. After
+\fIMAX_DAYS\fR, the password is required to be changed\&.
+.RE
+.SH "OSTRZEÅ»ENIA"
+.PP
+Password complexity checking may vary from site to site\&. The user is urged to select a password as complex as he or she feels comfortable with\&.
+.PP
+Users may not be able to change their password on a system if NIS is enabled and they are not logged into the NIS server\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENCRYPT_METHOD\fR (string)
+.RS 4
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+.sp
+It can take one of these values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIDES\fR
+(default)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIMD5\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fISHA256\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fISHA512\fR
+.RE
+.RS 4
+.sp
+Note: this parameter overrides the
+\fBMD5_CRYPT_ENAB\fR
+variable\&.
+.RE
+.PP
+\fBMD5_CRYPT_ENAB\fR (boolean)
+.RS 4
+Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
+\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
+\fIno\fR
+if you need to copy encrypted passwords to other systems which don\'t understand the new algorithm\&. Default is
+\fIno\fR\&.
+.sp
+This variable is superceded by the
+\fBENCRYPT_METHOD\fR
+variable or by any command line option used to configure the encryption algorithm\&.
+.sp
+This variable is deprecated\&. You should use
+\fBENCRYPT_METHOD\fR\&.
+.RE
+.PP
+\fBOBSCURE_CHECKS_ENAB\fR (boolean)
+.RS 4
+Enable additional checks upon password changes\&.
+.RE
+.PP
+\fBPASS_ALWAYS_WARN\fR (boolean)
+.RS 4
+Warn about weak passwords (but still allow them) if you are root\&.
+.RE
+.PP
+\fBPASS_CHANGE_TRIES\fR (number)
+.RS 4
+Maximum number of attempts to change password if rejected (too easy)\&.
+.RE
+.PP
+\fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
+.RS 4
+Number of significant characters in the password for crypt()\&.
+\fBPASS_MAX_LEN\fR
+is 8 by default\&. Don\'t change unless your crypt() is better\&. This is ignored if
+\fBMD5_CRYPT_ENAB\fR
+set to
+\fIyes\fR\&.
+.RE
+.PP
+\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
+.RS 4
+When
+\fBENCRYPT_METHOD\fR
+is set to
+\fISHA256\fR
+or
+\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
+.sp
+With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+.sp
+If not specified, the libc will choose the default number of rounds (5000)\&.
+.sp
+The values must be inside the 1000\-999999999 range\&.
+.sp
+If only one of the
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+or
+\fBSHA_CRYPT_MAX_ROUNDS\fR
+values is set, then this value will be used\&.
+.sp
+If
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+>
+\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguracja pakietu shadow\&.
+.RE
+.SH "KOD ZAKOÅƒCZENIA"
+.PP
+Polecenie
+\fBpasswd\fR
+koÅ„czy dzia\(/lanie z nastÄ™pujÄ…cymi wartoÅ›ciami kod\('ow zakoÅ„czenia:
+.PP
+\fI0\fR
+.RS 4
+poprawne zakoÅ„czenie dzia\(/lania programu
+.RE
+.PP
+\fI1\fR
+.RS 4
+brak dostÄ™pu
+.RE
+.PP
+\fI2\fR
+.RS 4
+nieprawid\(/lowa kombinacja opcji
+.RE
+.PP
+\fI3\fR
+.RS 4
+unexpected failure, nothing done
+.RE
+.PP
+\fI4\fR
+.RS 4
+unexpected failure,
+passwd
+file missing
+.RE
+.PP
+\fI5\fR
+.RS 4
+passwd
+file busy, try again
+.RE
+.PP
+\fI6\fR
+.RS 4
+nieprawid\(/lowy argument opcji
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+
+\fBpasswd\fR(5),
+\fBshadow\fR(5),
+\fBlogin.defs\fR(5),
+\fBusermod\fR(8)\&.

@@ -1,21 +1,22 @@
 
-EXTRA_DOST = .indent.pro
-
-DEFS = -DHAVE_CONFIG_H
+EXTRA_DIST = .indent.pro xgetXXbyYY.c
 
 INCLUDES = -I$(top_srcdir)/lib
 
-lib_LTLIBRARIES = libmisc.la
+noinst_LIBRARIES = libmisc.a
 
-libmisc_la_SOURCES = \
+libmisc_a_SOURCES = \
 	addgrps.c \
 	age.c \
+	audit_help.c \
 	basename.c \
 	chkname.c \
 	chkname.h \
-	chkshell.c \
 	chowndir.c \
 	chowntty.c \
+	cleanup.c \
+	cleanup_group.c \
+	cleanup_user.c \
 	console.c \
 	copydir.c \
 	entry.c \
@@ -23,38 +24,45 @@ libmisc_la_SOURCES = \
 	failure.c \
 	failure.h \
 	fields.c \
-	getdate.y \
+	find_new_gid.c \
+	find_new_uid.c \
 	getdate.h \
+	getdate.y \
+	getgr_nam_gid.c \
+	getrange.c \
 	hushed.c \
 	isexpired.c \
 	limits.c \
 	list.c log.c \
-	login_access.c \
-	login_desrpc.c \
-	login_krb.c \
 	loginprompt.c \
 	mail.c \
 	motd.c \
 	myname.c \
 	obscure.c \
 	pam_pass.c \
+	pam_pass_non_interractive.c \
 	pwd2spwd.c \
 	pwdcheck.c \
 	pwd_init.c \
 	rlogin.c \
 	salt.c \
 	setugid.c \
-	setup.c \
 	setupenv.c \
 	shell.c \
+	system.c \
 	strtoday.c \
 	sub.c \
 	sulog.c \
 	ttytype.c \
 	tz.c \
 	ulimit.c \
+	user_busy.c \
 	utmp.c \
 	valid.c \
-	xmalloc.c
-
-libmisc_la_LIBADD = $(LIBCRACK)
+	xgetpwnam.c \
+	xgetpwuid.c \
+	xgetgrnam.c \
+	xgetgrgid.c \
+	xgetspnam.c \
+	xmalloc.c \
+	yesno.c

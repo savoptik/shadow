@@ -1,64 +1,89 @@
-.\" Copyright 1992, Phillip Street and Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: lastlog
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24/07/2009
+.\"    Manual: System Management Commands
+.\"    Source: System Management Commands
+.\"  Language: Italian
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"	@(#)lastlog.8	3.3	08:24:58	29 Sep 1993 (National Guard Release)
-.\"	$Id: lastlog.8,v 1.5 2003/04/28 06:38:54 kloczek Exp $
-.\"
-.\" Traduzione in italiano a cura di Isabella Ruocco <isacher@nettaxi.com>
-.\" luglio 1999
-.\"
-.TH LASTLOG 8
-.SH NOME
-lastlog \- esamina il file lastlog 
-.SH SINTASSI
-.TP 8
-\fBlastlog\fR [(\fB-u\fR|\fB--user\fR) \fIutente\fR]
-[(\fB-t\fR|\fB--time\fR) \fIdays\fR] [(\fB-h\fR|\fB--help\fR)]
-.SH DESCRIZIONE
-\fBlastlog\fR formatta e stampa il contenuto dell'ultimo log di login,
-\fI/var/log/lastlog\fR.  Verranno stampati \fBnome-login\fR, \fBporta\fR,
-e \fBdata_ultima_connessione\fR.
-Il comportamento predefinito (senza opzioni) è quello di stampare le voci di
-lastlog in ordine di UID.
-Digitando l'opzione \fB-u \fInome-login\fR verrà stampato solo il
-record di \fInome-login\fR.
-Digitando \fB-t \fIgiorni\fR verranno stampate solo le ultime connessioni
-più recenti di \fIgiorni\fR.
-L'opzione \fB-t\fR sovrascrive l'uso di \fB-u\fR.
+.TH "LASTLOG" "8" "24/07/2009" "System Management Commands" "System Management Commands"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+lastlog \- reports the most recent login of all users or of a given user
+.SH "SINOSSI"
+.HP \w'\fBlastlog\fR\ 'u
+\fBlastlog\fR [\fIopzioni\fR]
+.SH "DESCRIZIONE"
 .PP
-Se l'utente non si è mai connesso verrà mostrato, al posto della porta e della
-data, il messaggio \fB"**Never logged in**"\fR (**Mai connesso**).
-.SH FILE
-\fI/var/log/lastlog\fR \- file di connessione lastlog 
-.SH CAVEAT
-Grandi lacune nei numeri di uid provocheranno una prolungata esecuzione del
-programma lastlog senza alcun output sullo schermo (i.e. se mmdf=800 e l'ultimo
-uid=170, sembrerà che il programma rimanga appeso mentre elabora gli uid 171-799).
-.SH AUTORI
-Julianne Frances Haugh (jfh@tab.com)
-.br
-Phillip Street
+\fBlastlog\fR
+mostra il log degli ultimi accessi, contenuto nel file
+/var/log/lastlog\&. Le informazioni mostrate sono il
+\fInome utente\fR, la
+\fIporta\fR, e la
+\fIdata dell\'ultimo accesso\fR\&. Il comportamento predefinito (nessuna opzione specificata) \(`e di mostrare i record di ultimo accesso per tutti gli utenti, nell\'ordine in cui compaiono in
+/etc/passwd\&.
+.SH "OPZIONI"
+.PP
+Il comando
+\fBlastlog\fR
+accetta le seguenti opzioni:
+.PP
+\fB\-b\fR, \fB\-\-before\fR \fIDAYS\fR
+.RS 4
+Print only lastlog records older than
+\fIDAYS\fR\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Mostra un messaggio di aiuto ed esce\&.
+.RE
+.PP
+\fB\-t\fR, \fB\-\-time\fR\fIGIORNI\fR
+.RS 4
+Mostra solo i record di ultimo accesso pi\(`u recenti di un numero di
+\fIGIORNI\fR\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-user\fR \fILOGIN\fR|\fIRANGE\fR
+.RS 4
+Print the lastlog record of the specified user(s)\&.
+.sp
+The users can be specified by a login name, a numerical user ID, or a
+\fIRANGE\fR
+of users\&. This
+\fIRANGE\fR
+of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
+.RE
+.PP
+If the user has never logged in the message
+\fI** Never logged in**\fR
+will be displayed instead of the port and time\&.
+.PP
+Only the entries for the current users of the system will be displayed\&. Other entries may exist for users that were deleted previously\&.
+.SH "NOTA"
+.PP
+The
+lastlog
+file is a database which contains info on the last login of each user\&. You should not rotate it\&. It is a sparse file, so its size on the disk is usually much smaller than the one shown by "\fBls \-l\fR" (which can indicate a really big file if you have in
+passwd
+users with a high UID)\&. You can display its real size with "\fBls \-s\fR"\&.
+.SH "FILE"
+.PP
+/var/log/lastlog
+.RS 4
+Database times of previous user logins\&.
+.RE
+.SH "AVVISI/CAVEAT"
+.PP
+Large gaps in UID numbers will cause the lastlog program to run longer with no output to the screen (i\&.e\&. if in lastlog database there is no entries for users with UID between 170 and 800 lastlog will appear to hang as it processes entries with UIDs 171\-799)\&.

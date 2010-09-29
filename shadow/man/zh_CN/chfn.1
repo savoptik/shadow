@@ -1,64 +1,58 @@
+.\" $Id: chfn.1 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" (c) 1994 by salvatore valente <svalente@athena.mit.edu>
 .\"
-.\"  chfn.1 -- change your finger information
-.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
-.\"
-.\"  this program is free software.  you can redistribute it and
-.\"  modify it under the terms of the gnu general public license.
+.\" this program is free software.  you can redistribute it and
+.\" modify it under the terms of the gnu general public license.
 .\"  there is no warranty.
-.\"
-.\"  $Author: kloczek $
-.\"  $Revision: 1.1 $
-.\"  $Date: 2003/04/28 02:14:04 $
-.\"
 .TH CHFN 1 "October 13 1994" "chfn" "Linux Reference Manual"
-.SH Ãû³Æ
-chfn \- ¸Ä ±ä Äã µÄ finger Ñ¶ Ï¢
-.SH Óï·¨
+.SH åç§°
+chfn \- æ”¹ å˜ ä½  çš„ finger è®¯ æ¯
+.SH è¯­æ³•
 .B chfn
-[\ \-f\ full-name\ ] [\ \-o\ office\ ] [\ \-p\ office-phone\ ]
-[\ \-h\ home-phone\ ] [\ \-u\ ] [\ \-v\ ] [\ username\ ]
-.SH ÃèÊö
+[\ \-f\ full\-name\ ] [\ \-o\ office\ ] [\ \-p\ office\-phone\ ]
+[\ \-h\ home\-phone\ ] [\ \-u\ ] [\ \-v\ ] [\ username\ ]
+.SH æè¿°
 .B chfn
-ÊÇ ÓÃ À´ ¸Ä ±ä Äã µÄ finger Ñ¶ Ï¢ ¡£ Ñ¶ Ï¢ ÊÇ ´æ ·Å ÔÚ
-.I /etc/passwd µµ ÄÚ ¡£ ¿É ½å ÓÉ
+æ˜¯ ç”¨ æ¥ æ”¹ å˜ ä½  çš„ finger è®¯ æ¯ ã€‚ è®¯ æ¯ æ˜¯ å­˜ æ”¾ åœ¨
+.I /etc/passwd æ¡£ å†… ã€‚ å¯ è—‰ ç”±
 .B finger
-À´ ÏÔ Ê¾ Äã µÄ Ñ¶ Ï¢ ¡£ Linux
+æ¥ æ˜¾ ç¤º ä½  çš„ è®¯ æ¯ ã€‚ Linux
 .B finger
-Ãü Áî »á ÏÔ Ê¾ ËÄ ¶Î Ñ¶ Ï¢ £¬ Õâ Ğ© Ñ¶ Ï¢ ¾ù ¿É ½å ÓÉ
+å‘½ ä»¤ ä¼š æ˜¾ ç¤º å›› æ®µ è®¯ æ¯ ï¼Œ è¿™ äº› è®¯ æ¯ å‡ å¯ è—‰ ç”±
 .B chfn
-¸Ä ±ä
-: Õæ Êµ ĞÕ Ãû £¬ ¹¤ ×÷ µØ µã µç »° £¬ ¼° Äã ¼Ò µÄ µç »° ¡£
-.SS ÃüÁîÁĞ
-Ã¿ Ò» ¶Î Ñ¶ Ï¢ ¾ù ¿É ÔÚ Ãü Áî ÁĞ ÉÏ Ö¸ ¶¨ ¡£ Èç Ã» ÓĞ ¸ø ¶¨ Ñ¶ Ï¢ £¬
+æ”¹ å˜
+: çœŸ å® å§“ å ï¼Œ å·¥ ä½œ åœ° ç‚¹ ç”µ è¯ ï¼Œ åŠ ä½  å®¶ çš„ ç”µ è¯ ã€‚
+.SS å‘½ä»¤åˆ—
+æ¯ ä¸€ æ®µ è®¯ æ¯ å‡ å¯ åœ¨ å‘½ ä»¤ åˆ— ä¸Š æŒ‡ å®š ã€‚ å¦‚ æ²¡ æœ‰ ç»™ å®š è®¯ æ¯ ï¼Œ
 .B chfn
-½ø Èë ½» Ì¸ Ä£ Ê½
+è¿› å…¥ äº¤ è°ˆ æ¨¡ å¼
 .SS INTERACTIVE MODE
-½»Ì¸Ä£Ê½
+äº¤è°ˆæ¨¡å¼
 .B chfn
-»á ÔÚ Ã¿ Ò» À¸ Ç° Ìá Ê¾ ¡£ ÔÚ Ìá Ê¾ ×´ Ì¬ ÏÂ £¬ Äã ¾Í ¿É Êä Èë ĞÂ µÄ Ñ¶ Ï¢ »ò 
-ÊÇ °´  return ¶ø ²» ¸Ä ±ä ¡£
-Êä Èë "none" Ôò ±í Ê¾ ¸Ã À¸ ¿Õ °× ¡£
-.SH Ñ¡Ïî
+ä¼š åœ¨ æ¯ ä¸€ æ  å‰ æ ç¤º ã€‚ åœ¨ æ ç¤º çŠ¶ æ€ ä¸‹ ï¼Œ ä½  å°± å¯ è¾“ å…¥ æ–° çš„ è®¯ æ¯ æˆ– 
+æ˜¯ æŒ‰  return è€Œ ä¸ æ”¹ å˜ ã€‚
+è¾“ å…¥ "none" åˆ™ è¡¨ ç¤º è¯¥ æ  ç©º ç™½ ã€‚
+.SH é€‰é¡¹
 .TP
-.I "\-f, \-\-full-name"
-Õæ Êµ ĞÕ Ãû
+.I "\-f, \-\-full\-name"
+çœŸ å® å§“ å
+.TP
+.I "\-h, \-\-home\-phone"
+å®¶ é‡Œ çš„ ç”µ è¯
 .TP
 .I "\-o, \-\-office"
-°ì ¹¤ ÊÒ ºÅ Âë
+åŠ å·¥ å®¤ å· ç 
 .TP
-.I "\-p, \-\-office-phone"
-°ì ¹« ÊÒ µç »°
-.TP
-.I "\-h, \-\-home-phone"
-¼Ò Àï µÄ µç »°
+.I "\-p, \-\-office\-phone"
+åŠ å…¬ å®¤ ç”µ è¯
 .TP
 .I "\-u, \-\-help"
-Ğã ³ö Ê¹ ÓÃ Ëµ Ã÷ ¶Ì Ñ¶ ¡£
+ç§€ å‡º ä½¿ ç”¨ è¯´ æ˜ çŸ­ è®¯ ã€‚
 .TP
-.I "-v, \-\-version"
-Ğã ³ö °æ ±¾ Ñ¶ Ï¢ ¡£
-.SH "Ïà¹ØÎÄ¼ş"
+.I "\-v, \-\-version"
+ç§€ å‡º ç‰ˆ æœ¬ è®¯ æ¯ ã€‚
+.SH "ç›¸å…³æ–‡ä»¶"
 .BR finger (1),
 .BR passwd (5)
-.SH ×÷Õß
+.SH ä½œè€…
 Salvatore Valente <svalente@mit.edu>

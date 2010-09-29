@@ -1,47 +1,78 @@
-/* $Id: defines.h,v 1.21 2003/05/03 16:14:23 kloczek Exp $ */
+/* $Id: defines.h 2844 2009-04-28 21:01:20Z nekral-guest $ */
 /* some useful defines */
 
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
+#if HAVE_STDBOOL_H
+# include <stdbool.h>
+#else
+# if ! HAVE__BOOL
+#  ifdef __cplusplus
+typedef bool _Bool;
+#  else
+typedef unsigned char _Bool;
+#  endif
+# endif
+# define bool _Bool
+# define false (0)
+# define true  (1)
+# define __bool_true_false_are_defined 1
+#endif
+
 #define ISDIGIT_LOCALE(c) (IN_CTYPE_DOMAIN (c) && isdigit (c))
 
 /* Take care of NLS matters.  */
-
-#if HAVE_LOCALE_H
+#ifdef S_SPLINT_S
+extern char *setlocale(int categorie, const char *locale);
+# define LC_ALL		(6)
+extern char * bindtextdomain (const char * domainname, const char * dirname);
+extern char * textdomain (const char * domainname);
+# define _(Text) Text
+# define ngettext(Msgid1, Msgid2, N) \
+    ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
+#else
+#ifdef HAVE_LOCALE_H
 # include <locale.h>
-#endif
-#if !HAVE_SETLOCALE
-# define setlocale(Category, Locale) /* empty */
+#else
+# undef setlocale
+# define setlocale(category, locale)	(NULL)
+# ifndef LC_ALL
+#  define LC_ALL	6
+# endif
 #endif
 
 #define gettext_noop(String) (String)
 /* #define gettext_def(String) "#define String" */
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
 # include <libintl.h>
 # define _(Text) gettext (Text)
 #else
 # undef bindtextdomain
-# define bindtextdomain(Domain, Directory) /* empty */
+# define bindtextdomain(Domain, Directory)	(NULL)
 # undef textdomain
-# define textdomain(Domain) /* empty */
+# define textdomain(Domain)	(NULL)
 # define _(Text) Text
+# define ngettext(Msgid1, Msgid2, N) \
+    ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
+#endif
 #endif
 
 #if STDC_HEADERS
 # include <stdlib.h>
 # include <string.h>
-#else  /* not STDC_HEADERS */
+#else				/* not STDC_HEADERS */
 # ifndef HAVE_STRCHR
 #  define strchr index
 #  define strrchr rindex
 # endif
-char *strchr(), *strrchr(), *strtok();
+char *strchr (), *strrchr (), *strtok ();
+
 # ifndef HAVE_MEMCPY
 #  define memcpy(d, s, n) bcopy((s), (d), (n))
 # endif
-#endif /* not STDC_HEADERS */
+#endif				/* not STDC_HEADERS */
 
 #if HAVE_ERRNO_H
 # include <errno.h>
@@ -66,56 +97,46 @@ char *strchr(), *strrchr(), *strtok();
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
-#else  /* not TIME_WITH_SYS_TIME */
+#else				/* not TIME_WITH_SYS_TIME */
 # if HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
 # endif
-#endif /* not TIME_WITH_SYS_TIME */
+#endif				/* not TIME_WITH_SYS_TIME */
 
 #ifdef HAVE_MEMSET
 # define memzero(ptr, size) memset((void *)(ptr), 0, (size))
 #else
 # define memzero(ptr, size) bzero((char *)(ptr), (size))
 #endif
-#define strzero(s) memzero(s, strlen(s))  /* warning: evaluates twice */
+#define strzero(s) memzero(s, strlen(s))	/* warning: evaluates twice */
 
-#ifdef HAVE_DIRENT_H  /* DIR_SYSV */
+#ifdef HAVE_DIRENT_H		/* DIR_SYSV */
 # include <dirent.h>
 # define DIRECT dirent
 #else
-# ifdef HAVE_SYS_NDIR_H  /* DIR_XENIX */
+# ifdef HAVE_SYS_NDIR_H		/* DIR_XENIX */
 #  include <sys/ndir.h>
 # endif
-# ifdef HAVE_SYS_DIR_H  /* DIR_??? */
+# ifdef HAVE_SYS_DIR_H		/* DIR_??? */
 #  include <sys/dir.h>
 # endif
-# ifdef HAVE_NDIR_H  /* DIR_BSD */
+# ifdef HAVE_NDIR_H		/* DIR_BSD */
 #  include <ndir.h>
 # endif
 # define DIRECT direct
 #endif
 
-#ifdef SHADOWPWD
 /*
  * Possible cases:
  * - /usr/include/shadow.h exists and includes the shadow group stuff.
  * - /usr/include/shadow.h exists, but we use our own gshadow.h.
- * - /usr/include/shadow.h doesn't exist, use our own shadow.h and gshadow.h.
  */
-#if HAVE_SHADOW_H
 #include <shadow.h>
 #if defined(SHADOWGRP) && !defined(GSHADOW)
 #include "gshadow_.h"
 #endif
-#else  /* not HAVE_SHADOW_H */
-#include "shadow_.h"
-#ifdef SHADOWGRP
-#include "gshadow_.h"
-#endif
-#endif  /* not HAVE_SHADOW_H */
-#endif  /* SHADOWPWD */
 
 #include <limits.h>
 
@@ -146,36 +167,41 @@ char *strchr(), *strrchr(), *strtok();
 
 /* cleaner than lots of #ifdefs everywhere - use this as follows:
    SYSLOG((LOG_CRIT, "user %s cracked root", user)); */
-#if HAVE_SETLOCALE
+#ifdef ENABLE_NLS
 /* Temporarily set LC_TIME to "C" to avoid strange dates in syslog.
    This is a workaround for a more general syslog(d) design problem -
    syslogd should log the current system time for each event, and not
    trust the formatted time received from the unix domain (or worse,
    UDP) socket.  -MM */
+/* Avoid translated PAM error messages: Set LC_ALL to "C".
+ * --Nekral */
 #define SYSLOG(x)							\
 	do {								\
-		char *saved_locale = setlocale(LC_ALL, NULL);		\
-		if (saved_locale)					\
-			saved_locale = strdup(saved_locale);		\
-		if (saved_locale)					\
-			setlocale(LC_TIME, "C");			\
-		syslog x ;						\
-		if (saved_locale) {					\
-			setlocale(LC_ALL, saved_locale);		\
-			free(saved_locale);				\
+		char *old_locale = setlocale(LC_ALL, NULL);		\
+		char *saved_locale = NULL;				\
+		if (NULL != old_locale) {				\
+			saved_locale = strdup (old_locale);		\
 		}							\
-	} while (0)
-#else  /* !HAVE_SETLOCALE */
+		if (NULL != saved_locale) {				\
+			(void) setlocale (LC_ALL, "C");			\
+		}							\
+		syslog x ;						\
+		if (NULL != saved_locale) {				\
+			(void) setlocale (LC_ALL, saved_locale);	\
+			free (saved_locale);				\
+		}							\
+	} while (false)
+#else				/* !ENABLE_NLS */
 #define SYSLOG(x) syslog x
-#endif /* !HAVE_SETLOCALE */
+#endif				/* !ENABLE_NLS */
 
-#else  /* !USE_SYSLOG */
+#else				/* !USE_SYSLOG */
 
-#define SYSLOG(x)  /* empty */
-#define openlog(a,b,c)  /* empty */
-#define closelog()  /* empty */
+#define SYSLOG(x)		/* empty */
+#define openlog(a,b,c)		/* empty */
+#define closelog()		/* empty */
 
-#endif  /* !USE_SYSLOG */
+#endif				/* !USE_SYSLOG */
 
 /* The default syslog settings can now be changed here,
    in just one place.  */
@@ -234,7 +260,7 @@ char *strchr(), *strrchr(), *strtok();
 # define GTTY(fd, termio) tcgetattr(fd, termio)
 # define TERMIO struct termios
 # define USE_TERMIOS
-#else  /* assumed HAVE_TERMIO_H */
+#else				/* assumed HAVE_TERMIO_H */
 # include <sys/ioctl.h>
 # include <termio.h>
 # define STTY(fd, termio) ioctl(fd, TCSETA, termio)
@@ -272,19 +298,6 @@ char *strchr(), *strrchr(), *strtok();
 #define STRFCPY(A,B) \
 	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
 
-/* get rid of a few ugly repeated #ifdefs in pwent.c and grent.c */
-/* XXX - this is ugly too, configure should test it and not check for
-   any hardcoded system names, if possible.  --marekm */
-#if defined(AIX) || defined(__linux__)
-#define SETXXENT_TYPE void
-#define SETXXENT_RET(x) return
-#define SETXXENT_TEST(x) x; if (0) /* compiler should optimize this away */
-#else
-#define SETXXENT_TYPE int
-#define SETXXENT_RET(x) return(x)
-#define SETXXENT_TEST(x) if (x)
-#endif
-
 #ifndef PASSWD_FILE
 #define PASSWD_FILE "/etc/passwd"
 #endif
@@ -293,10 +306,8 @@ char *strchr(), *strrchr(), *strtok();
 #define GROUP_FILE "/etc/group"
 #endif
 
-#ifdef SHADOWPWD
 #ifndef SHADOW_FILE
 #define SHADOW_FILE "/etc/shadow"
-#endif
 #endif
 
 #ifdef SHADOWGRP
@@ -305,25 +316,16 @@ char *strchr(), *strrchr(), *strtok();
 #endif
 #endif
 
-#define PASSWD_PAG_FILE  PASSWD_FILE ".pag"
-#define GROUP_PAG_FILE   GROUP_FILE  ".pag"
-#define SHADOW_PAG_FILE  SHADOW_FILE ".pag"
-#define SGROUP_PAG_FILE  SGROUP_FILE ".pag"
-
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
 
-#ifdef sun  /* hacks for compiling on SunOS */
+#ifdef sun			/* hacks for compiling on SunOS */
 # ifndef SOLARIS
-extern int fputs();
-extern char *strdup();
-extern char *strerror();
+extern int fputs ();
+extern char *strdup ();
+extern char *strerror ();
 # endif
-#endif
-
-#ifndef HAVE_SNPRINTF
-#include "snprintf.h"
 #endif
 
 /*
@@ -335,4 +337,49 @@ extern char *strerror();
 #define SHADOW_PASSWD_STRING "x"
 #endif
 
-#endif  /* _DEFINES_H_ */
+#define SHADOW_SP_FLAG_UNSET ((unsigned long int)-1)
+
+#ifdef WITH_AUDIT
+#ifdef __u8			/* in case we use pam < 0.80 */
+#undef __u8
+#endif
+#ifdef __u32
+#undef __u32
+#endif
+
+#include <libaudit.h>
+#endif
+
+/* To be used for verified unused parameters */
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+# define unused __attribute__((unused))
+#else
+# define unused
+#endif
+
+/* ! Arguments evaluated twice ! */
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(x,y) (((x) > (y)) ? (x) : (y))
+#endif
+
+/* Maximum length of usernames */
+#ifdef HAVE_UTMPX_H
+# include <utmpx.h>
+# define USER_NAME_MAX_LENGTH (sizeof (((struct utmpx *)NULL)->ut_user))
+#else
+# include <utmp.h>
+# ifdef HAVE_STRUCT_UTMP_UT_USER
+#  define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_user))
+# else
+#  ifdef HAVE_STRUCT_UTMP_UT_NAME
+#   define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_name))
+#  else
+#   define USER_NAME_MAX_LENGTH 32
+#  endif
+# endif
+#endif
+
+#endif				/* _DEFINES_H_ */

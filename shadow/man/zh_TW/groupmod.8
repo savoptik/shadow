@@ -1,3 +1,4 @@
+.\" $Id: groupmod.8 1342 2007-11-10 23:46:11Z nekral-guest $
 .\" Copyright 1991, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
@@ -24,38 +25,32 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: groupmod.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
-.\"
 .TH GROUPMOD 8
-.SH ¦WºÙ
-groupmod \- ­× §ï ¸s ²Õ
-.SH »yªk
-.B groupmod
-[\fB-g\fI gid \fR[\fB-o\fR]]
-[\fB-n\fI group_name \fR]
-.I group
-.SH ´y­z
+.SH åç¨±
+groupmod \- ä¿® æ”¹ ç¾¤ çµ„
+.SH èªžæ³•
+\fBgroupmod\fR [\fB\-g\fR \fIgid \fR[\fB\-o\fR]] [\fB\-n\fR \fIgroup_name \fR] \fIgroup\fR
+.SH æè¿°
 
-\fBgroupmod\fR ©R ¥O ·| °Ñ ·Ó §A ©R ¥O ¦C ¤W «ü ©w ªº ³¡ ¥÷ 
-­× §ï ¨t ²Î ±b ¸¹ ÀÉ ¡C ¤U ¦C ¬° \fIgroupmod\fR ¥i ¿ï ¥Î ªº °Ñ ¼Æ ¡C
+\fBgroupmod\fR å‘½ ä»¤ æœƒ åƒ ç…§ ä½  å‘½ ä»¤ åˆ— ä¸Š æŒ‡ å®š çš„ éƒ¨ ä»½ 
+ä¿® æ”¹ ç³» çµ± å¸³ è™Ÿ æª” ã€‚ ä¸‹ åˆ— ç‚º \fIgroupmod\fR å¯ é¸ ç”¨ çš„ åƒ æ•¸ ã€‚
 
-.IP "\fB-g \fIgid\fR"
-¸s ²Õ I D ­È ¡C
-¥² ¶· ¬° °ß ¤@ ªº ID ­È ¡A °£ «D ¥Î -o ¿ï ¶µ ¡C
-¼Æ ¦r ¤£ ¥i ¬° ­t ­È¡C¹w ³] ¬° ³Ì
-¤p ¤£ ±o ¤p ©ó 99 ¦Ó ³v ¦¸ ¼W ¥[ ¡C 0~99 ¶Ç ²Î ¤W
-¬O «O ¯d µ¹ ¨t ²Î ±b ¸¹ ¨Ï ¥Î ¡C
-¦p ªG ¦³ ÀÉ ®× ¨Ï ¥Î ÂÂ ªº ¸s ²Õ ID ¡A ¦Ó ³o ®É ­Ô §A ·s ¼W ªº ¸s ²Õ ID
-«ê ¦n »P ÂÂ ªº ¬Û ¦P ¡A ³o ¼Ë ªº ¸Ü
-§A ­n ¤â °Ê §ï ¤@ ¤U ³o ¨Ç ÀÉ ®× ªº ¸s ²Õ ID ¡C
-.IP "\fB-n \fIgroup_name\fR"
-§ó §ï ¸s ²Õ ¦W ¡C
-.SH ÀÉ®×
-\fI/etc/group\fR \- ¸s ²Õ ¸ê °T 
+.IP "\fB\-g\fR \fIgid\fR"
+ç¾¤ çµ„ I D å€¼ ã€‚
+å¿… é ˆ ç‚º å”¯ ä¸€ çš„ ID å€¼ ï¼Œ é™¤ éž ç”¨ \-o é¸ é … ã€‚
+æ•¸ å­— ä¸ å¯ ç‚º è²  å€¼ã€‚é  è¨­ ç‚º æœ€
+å° ä¸ å¾— å° æ–¼ 999 è€Œ é€ æ¬¡ å¢ž åŠ  ã€‚ 0~ 499 å‚³ çµ± ä¸Š
+æ˜¯ ä¿ ç•™ çµ¦ ç³» çµ± å¸³ è™Ÿ ä½¿ ç”¨ ã€‚
+å¦‚ æžœ æœ‰ æª” æ¡ˆ ä½¿ ç”¨ èˆŠ çš„ ç¾¤ çµ„ ID ï¼Œ è€Œ é€™ æ™‚ å€™ ä½  æ–° å¢ž çš„ ç¾¤ çµ„ ID
+æ° å¥½ èˆ‡ èˆŠ çš„ ç›¸ åŒ ï¼Œ é€™ æ¨£ çš„ è©±
+ä½  è¦ æ‰‹ å‹• æ”¹ ä¸€ ä¸‹ é€™ äº› æª” æ¡ˆ çš„ ç¾¤ çµ„ ID ã€‚
+.IP "\fB\-n\fR \fIgroup_name\fR"
+æ›´ æ”¹ ç¾¤ çµ„ å ã€‚
+.SH æª”æ¡ˆ
+\fI/etc/group\fR \- ç¾¤ çµ„ è³‡ è¨Š 
 .br
-\fI/etc/gshadow\fR \- ¸s ²Õ ¸ê °T ¥[ ±K
-.SH ¬ÛÃö¤å¥ó
+\fI/etc/gshadow\fR \- ç¾¤ çµ„ è³‡ è¨Š åŠ  å¯†
+.SH ç›¸é—œæ–‡ä»¶
 .BR chfn (1),
 .BR chsh (1),
 .BR useradd (8),
@@ -64,5 +59,5 @@ groupmod \- ­× §ï ¸s ²Õ
 .BR passwd (1),
 .BR groupadd (8),
 .BR groupdel (8)
-.SH §@ªÌ
+.SH ä½œè€…
 Julianne Frances Haugh (jfh@tab.com)

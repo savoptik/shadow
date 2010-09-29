@@ -4,78 +4,78 @@
 .\" published by the Free Software Foundation; either version 2 of the
 .\" License, or (at your option) any later version.
 .\"
-.\"	$Id: gpasswd.1,v 1.2 2003/04/26 13:24:13 kloczek Exp $
+.\"	$Id: gpasswd.1 1342 2007-11-10 23:46:11Z nekral-guest $
 .\"
 .TH GPASSWD 1
-.SH N…V
-gpasswd \- az /etc/group f·jlt adminisztr·lja
+.SH N√âV
+gpasswd \- az /etc/group f√°jlt adminisztr√°lja
 .br
-.SH ¡TTEKINT…S
+.SH √ÅTTEKINT√âS
 .B gpasswd \fIcsoport\fR
 .br
 .B gpasswd
-.B -a
-\fIfelhaszn·lÛ\fR \fIcsoport\fR
+.B \-a
+\fIfelhaszn√°l√≥\fR \fIcsoport\fR
 .br
 .B gpasswd
-.B -d
-\fIfelhaszn·lÛ\fR \fIcsoport\fR
+.B \-d
+\fIfelhaszn√°l√≥\fR \fIcsoport\fR
 .br
 .B gpasswd
-.B -R
+.B \-R
 \fIcsoport\fR
 .br
 .B gpasswd
-.B -r
+.B \-r
 \fIcsoport\fR
 .br
 .B gpasswd
-.RB [ -A
-\fIfelhaszn·lÛ\fR,...]
-.RB [ -M
-\fIfelhaszn·lÛ\fR,...]
+.RB [ \-A
+\fIfelhaszn√°l√≥\fR,...]
+.RB [ \-M
+\fIfelhaszn√°l√≥\fR,...]
 \fIcsoport\fR
 .br
-.SH LEÕR¡S
+.SH LE√çR√ÅS
 A
 .B gpasswd
-program segÌtsÈgÈvel adminisztr·lhatjuk az /etc/group f·jlt
-illetve az /etc/gshadow f·jlt amennyiben a SHADOWGPR defini·lva
-volt a fordÌt·s alatt. Minden csoportban lehetnek adminisztr·torok,
-tagok Ès egy jelszÛ. A rendszeradminisztr·tor a \fB-A\fR opciÛ
-segÌtsÈgÈvel defini·lhat csoportadminisztr·tor(oka)t Ès a \fB-M\fR
-opciÛval tagokat. A rendszeradminiszt·tor minden joggal rendelkezik,
-amellyel a csoportadminisztr·tor Ès a csoport tagjai.
+program seg√≠ts√©g√©vel adminisztr√°lhatjuk az /etc/group f√°jlt
+illetve az /etc/gshadow f√°jlt amennyiben a SHADOWGPR defini√°lva
+volt a ford√≠t√°s alatt. Minden csoportban lehetnek adminisztr√°torok,
+tagok √©s egy jelsz√≥. A rendszeradminisztr√°tor a \fB\-A\fR opci√≥
+seg√≠ts√©g√©vel defini√°lhat csoportadminisztr√°tor(oka)t √©s a \fB\-M\fR
+opci√≥val tagokat. A rendszeradminiszt√°tor minden joggal rendelkezik,
+amellyel a csoportadminisztr√°tor √©s a csoport tagjai.
 .PP
-A csoportadminisztr·tor a \fB-a\fR kapcsolÛval hozhat lÈtre
-felhaszn·lÛkat, Ès a \fB-d\fR opciÛval tˆrˆlheti ıket. Az 
-adminisztr·torok a \fB-r\fR opciÛval tˆrˆlhetik a csoport
-jelszav·t. Ha nincs jelszÛ be·llÌtva, akkor csak a csoport
-tagjai haszn·lhatj·k a 
+A csoportadminisztr√°tor a \fB\-a\fR kapcsol√≥val hozhat l√©tre
+felhaszn√°l√≥kat, √©s a \fB\-d\fR opci√≥val t√∂r√∂lheti ≈ëket. Az 
+adminisztr√°torok a \fB\-r\fR opci√≥val t√∂r√∂lhetik a csoport
+jelszav√°t. Ha nincs jelsz√≥ be√°ll√≠tva, akkor csak a csoport
+tagjai haszn√°lhatj√°k a 
 .BR newgrp (1)
-parancsot a csatlakoz·shoz. A \fB-R\fR opciÛ
-megg·tolja a csoport elÈrÈsÈt a 
+parancsot a csatlakoz√°shoz. A \fB\-R\fR opci√≥
+megg√°tolja a csoport el√©r√©s√©t a 
 .BR newgrp (1)
-parancson kereszt¸l.
+parancson kereszt√ºl.
 .PP
 Ha
 .B gpasswd
-parancsot a csoportadminisztr·tor adja ki a csoport nevÈvel,
-akkor csak a jelszÛt kell beÌrnia. Ha van jelszÛ, akkor a tagok
-be tudnak lÈpni a 
+parancsot a csoportadminisztr√°tor adja ki a csoport nev√©vel,
+akkor csak a jelsz√≥t kell be√≠rnia. Ha van jelsz√≥, akkor a tagok
+be tudnak l√©pni a 
 .BR newgrp (1)
-paranccsal jelszÛ nÈlk¸l is, csak a csoporton kÌv¸li felhaszn·lÛknak
-kell megadniuk a jelszÛt.
+paranccsal jelsz√≥ n√©lk√ºl is, csak a csoporton k√≠v√ºli felhaszn√°l√≥knak
+kell megadniuk a jelsz√≥t.
 
-.SH F¡JLOK
-\fI/etc/group\fR \- inform·ciÛ a csoportrÛl
+.SH F√ÅJLOK
+\fI/etc/group\fR \- inform√°ci√≥ a csoportr√≥l
 .br
-\fI/etc/gshadow\fR \- inform·ciÛ a shadow csoportrÛl
-.SH L¡SD M…G
+\fI/etc/gshadow\fR \- inform√°ci√≥ a shadow csoportr√≥l
+.SH L√ÅSD M√âG
 .BR newgrp (1),
 .BR groupadd (8),
 .BR groupdel (8),
 .BR groupmod (8),
 .BR grpck (8)
-.SH MAGYAR FORDÕT¡S
-TÌm·r Andr·s <timar_a@freemail.hu>
+.SH MAGYAR FORD√çT√ÅS
+T√≠m√°r Andr√°s <timar_a@freemail.hu>

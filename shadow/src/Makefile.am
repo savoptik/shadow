@@ -1,10 +1,10 @@
 
-EXTRA_DIST = .indent.pro
+EXTRA_DIST = \
+	.indent.pro
 
 ubindir = ${prefix}/bin
 usbindir = ${prefix}/sbin
-
-DEFS = -D_HAVE_CONFIG_H -DLOCALEDIR=\"$(datadir)/locale\"
+suidperms = 4755
 
 INCLUDES = \
 	-I${top_srcdir}/lib \
@@ -21,18 +21,20 @@ INCLUDES = \
 # and installation would be much simpler (just two directories,
 # $prefix/bin and $prefix/sbin, no install-data hacks...)
 
-bin_PROGRAMS = groups login su
-ubin_PROGRAMS = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
+bin_PROGRAMS   = groups login su
+sbin_PROGRAMS  = nologin
+ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
 usbin_PROGRAMS = \
+	chgpasswd \
 	chpasswd \
 	groupadd \
 	groupdel \
+	groupmems \
 	groupmod \
 	grpck \
 	grpconv \
 	grpunconv \
 	logoutd \
-	mkpasswd \
 	newusers \
 	pwck \
 	pwconv \
@@ -42,40 +44,73 @@ usbin_PROGRAMS = \
 	usermod \
 	vipw
 
+# id and groups are from gnu, sulogin from sysvinit
 noinst_PROGRAMS = id sulogin
 
-# id and groups are from gnu, sulogin from sysvinit
+suidbins       = su
+suidubins      = chage chfn chsh expiry gpasswd newgrp passwd
+if ACCT_TOOLS_SETUID
+	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+endif
 
-suidbins = su
-suidubins = chage chfn chsh expiry gpasswd newgrp passwd
+LDADD          = $(INTLLIBS) \
+		 $(top_builddir)/libmisc/libmisc.a \
+		 $(top_builddir)/lib/libshadow.la
+AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
 
-LDADD = $(top_builddir)/libmisc/libmisc.la \
-	$(top_builddir)/lib/libshadow.la
+if ACCT_TOOLS_SETUID
+LIBPAM_SUID  = $(LIBPAM)
+else
+LIBPAM_SUID  =
+endif
 
-chpasswd_LDADD = $(LDADD) $(LIBPAM)
-chage_LDADD    = $(LDADD) $(LIBPAM)
-chfn_LDADD     = $(LDADD) $(LIBPAM)
-chsh_LDADD     = $(LDADD) $(LIBPAM)
-groupadd_LDADD = $(LDADD) $(LIBPAM)
-groupdel_LDADD = $(LDADD) $(LIBPAM)
-groupmod_LDADD = $(LDADD) $(LIBPAM)
-login_LDADD    = $(LDADD) $(LIBPAM)
-newusers_LDADD = $(LDADD) $(LIBPAM)
-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK)
-su_SOURCES     = su.c suauth.c
-su_LDADD       = $(LDADD) $(LIBPAM)
-useradd_LDADD  = $(LDADD) $(LIBPAM)
-userdel_LDADD  = $(LDADD) $(LIBPAM)
-usermod_LDADD  = $(LDADD) $(LIBPAM)
+if USE_PAM
+LIBCRYPT_NOPAM =
+else
+LIBCRYPT_NOPAM = $(LIBCRYPT)
+endif
 
-install-exec-hook:
-	ln -sf newgrp	$(DESTDIR)$(bindir)/sg
-	ln -sf vipw	$(DESTDIR)$(bindir)/vigr
+chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
+chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
+chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
+gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT)
+groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+groupmems_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX)
+groupmod_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+grpck_LDADD    = $(LDADD) $(LIBSELINUX)
+grpconv_LDADD  = $(LDADD) $(LIBSELINUX)
+grpunconv_LDADD = $(LDADD) $(LIBSELINUX)
+login_SOURCES  = \
+	login.c \
+	login_nopam.c
+login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
+newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT)
+newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
+nologin_LDADD  =
+passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM)
+pwck_LDADD     = $(LDADD) $(LIBSELINUX)
+pwconv_LDADD   = $(LDADD) $(LIBSELINUX)
+pwunconv_LDADD = $(LDADD) $(LIBSELINUX)
+su_SOURCES     = \
+	su.c \
+	suauth.c
+su_LDADD       = $(LDADD) $(LIBPAM) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
+sulogin_LDADD  = $(LDADD) $(LIBCRYPT)
+useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+usermod_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+vipw_LDADD     = $(LDADD) $(LIBSELINUX)
+
+install-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+	ln -sf newgrp	$(DESTDIR)$(ubindir)/sg
+	ln -sf vipw	$(DESTDIR)$(usbindir)/vigr
 	for i in $(suidbins); do \
-		chmod 4755 $(DESTDIR)$(bindir)/$$i; \
+		chmod -f $(suidperms) $(DESTDIR)$(bindir)/$$i; \
 	done
-
-install-data-hook:
 	for i in $(suidubins); do \
-		chmod 4755 $(DESTDIR)$(ubindir)/$$i; \
+		chmod -f $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done

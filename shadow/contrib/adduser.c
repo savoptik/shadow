@@ -169,7 +169,7 @@ main (void)
   if (geteuid () != 0)
     {
       printf ("It seems you don't have access to add a new user.  Try\n");
-      printf ("logging in as root or su root to gain super-user access.\n");
+      printf ("logging in as root or su root to gain superuser access.\n");
       exit (1);
     }
 
@@ -296,7 +296,7 @@ main (void)
 	      sprintf (dir, "%s/%s", DEFAULT_HOME, usrname);
 	    }
 	  else if (dir[strlen (dir) - 1] == '/')
-	    sprintf (dir, "%s%s", dir, usrname);
+	    sprintf (dir+strlen(dir), "%s", usrname);
 	}
       else
 	{

@@ -2,29 +2,31 @@
 AUTOMAKE_OPTIONS = 1.0 foreign
 
 DEFS = 
-INCLUDES =
 
-lib_LTLIBRARIES = libshadow.la
+noinst_LTLIBRARIES = libshadow.la
 
 libshadow_la_LDFLAGS = -version-info 0:0:0
-libshadow_la_LIBADD = $(INTLLIBS) $(LIBCRYPT) $(LIBSKEY) $(LIBMD) \
-	$(top_builddir)/libmisc/libmisc.la
 
 libshadow_la_SOURCES = \
 	commonio.c \
 	commonio.h \
 	defines.h \
 	encrypt.c \
+	exitcodes.h \
 	faillog.h \
 	fputsx.c \
 	getdef.c \
 	getdef.h \
-	getpass.c \
+	get_gid.c \
+	getlong.c \
+	get_pid.c \
+	get_uid.c \
+	getulong.c \
 	groupio.c \
+	groupmem.c \
 	groupio.h \
 	gshadow.c \
 	lockpw.c \
-	md5.h \
 	nscd.c \
 	nscd.h \
 	pam_defs.h \
@@ -35,33 +37,23 @@ libshadow_la_SOURCES = \
 	pwauth.h \
 	pwio.c \
 	pwio.h \
-	rad64.c \
-	rcsid.h \
+	pwmem.c \
 	sgetgrent.c \
 	sgetpwent.c \
+	sgetspent.c \
 	sgroupio.c \
 	sgroupio.h\
 	shadow.c \
 	shadowio.c \
 	shadowio.h \
-	snprintf.h \
+	shadowmem.c \
 	utent.c
-
-EXTRA_libshadow_la_SOURCESS = grent.c pwent.c mkdir.c rename.c rmdir.c \
-	strdup.c strcasecmp.c strerror.c strstr.c putgrent.c \
-	putpwent.c putspent.c sgetgrent.c sgetpwent.c sgetspent.c \
-	snprintf.c md5.c md5crypt.c
 
 # These files are unneeded for some reason, listed in
 # order of appearance:
 #
-# sources which are not really needed (are they in libc???)
 # sources for dbm support (not yet used)
-# sources for LIBOBJS (which are normally in libc)
-# misc header sources
 
 EXTRA_DIST = \
 	.indent.pro \
-	grdbm.c gsdbm.c pwdbm.c spdbm.c \
-	grpack.c gspack.c pwpack.c sppack.c \
-	gshadow_.h shadow_.h lastlog_.h snprintf.h
+	gshadow_.h

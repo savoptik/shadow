@@ -1,5 +1,8 @@
 /*
- * Copyright 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2000 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,62 +13,61 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID (PKG_VER "$Id: groupdel.c,v 1.17 2003/06/19 18:11:01 kloczek Exp $")
-#include <sys/types.h>
-#include <stdio.h>
-#include <grp.h>
+#ident "$Id: groupdel.c 2851 2009-04-30 21:39:38Z nekral-guest $"
+
 #include <ctype.h>
 #include <fcntl.h>
+#include <grp.h>
 #include <pwd.h>
+#ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
-#include <security/pam_appl.h>
-#include <security/pam_misc.h>
-#include <pwd.h>
+#include "pam_defs.h"
 #endif				/* USE_PAM */
+#endif				/* ACCT_TOOLS_SETUID */
+#include <stdio.h>
+#include <sys/types.h>
+#include "defines.h"
+#include "groupio.h"
 #include "nscd.h"
 #include "prototypes.h"
-#include "defines.h"
-static char *group_name;
-static char *Prog;
-static int errors;
-
-#ifdef	NDBM
-extern int gr_dbm_mode;
-extern int sg_dbm_mode;
-#endif
-
-#include "groupio.h"
-
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
+#endif
+/*
+ * Global variables
+ */
+char *Prog;
 
-static int is_shadow_grp;
+static char *group_name;
+static gid_t group_id = -1;
+
+#ifdef	SHADOWGRP
+static bool is_shadow_grp;
 #endif
 
 /*
  * exit status values
  */
-
+/*@-exitarg@*/
 #define E_SUCCESS	0	/* success */
 #define E_USAGE		2	/* invalid command syntax */
 #define E_NOTFOUND	6	/* specified group doesn't exist */
@@ -82,10 +84,9 @@ static void group_busy (gid_t);
 /*
  * usage - display usage message and exit
  */
-
 static void usage (void)
 {
-	fprintf (stderr, _("Usage: groupdel group\n"));
+	fputs (_("Usage: groupdel group\n"), stderr);
 	exit (E_USAGE);
 }
 
@@ -94,68 +95,43 @@ static void usage (void)
  *
  *	grp_update() writes the new records to the group files.
  */
-
 static void grp_update (void)
 {
-#ifdef	NDBM
-	struct group *ogrp;
+	/*
+	 * To add the group, we need to update /etc/group.
+	 * Make sure failures will be reported.
+	 */
+	add_cleanup (cleanup_report_del_group_group, group_name);
+#ifdef	SHADOWGRP
+	if (is_shadow_grp) {
+		/* We also need to update /etc/gshadow */
+		add_cleanup (cleanup_report_del_group_gshadow, group_name);
+	}
 #endif
 
-	if (!gr_remove (group_name)) {
-		fprintf (stderr, _("%s: error removing group entry\n"),
-			 Prog);
-		errors++;
-	}
-#ifdef	NDBM
-
 	/*
-	 * Update the DBM group file
+	 * Delete the group entry.
 	 */
-
-	if (gr_dbm_present ()) {
-		if ((ogrp = getgrnam (group_name)) &&
-		    !gr_dbm_remove (ogrp)) {
-			fprintf (stderr,
-				 _("%s: error removing group dbm entry\n"),
-				 Prog);
-			errors++;
-		}
+	if (gr_remove (group_name) == 0) {
+		fprintf (stderr,
+		         _("%s: cannot remove entry '%s' from %s\n"),
+		         Prog, group_name, gr_dbname ());
+		exit (E_GRP_UPDATE);
 	}
-	endgrent ();
-#endif				/* NDBM */
 
 #ifdef	SHADOWGRP
-
 	/*
 	 * Delete the shadow group entries as well.
 	 */
-
-	if (is_shadow_grp && !sgr_remove (group_name)) {
-		fprintf (stderr,
-			 _("%s: error removing shadow group entry\n"),
-			 Prog);
-		errors++;
-	}
-#ifdef	NDBM
-
-	/*
-	 * Update the DBM shadow group file
-	 */
-
-	if (is_shadow_grp && sg_dbm_present ()) {
-		if (!sg_dbm_remove (group_name)) {
+	if (is_shadow_grp && (sgr_locate (group_name) != NULL)) {
+		if (sgr_remove (group_name) == 0) {
 			fprintf (stderr,
-				 _
-				 ("%s: error removing shadow group dbm entry\n"),
-				 Prog);
-			errors++;
+			         _("%s: cannot remove entry '%s' from %s\n"),
+			         Prog, group_name, sgr_dbname ());
+			exit (E_GRP_UPDATE);
 		}
 	}
-	endsgent ();
-#endif				/* NDBM */
 #endif				/* SHADOWGRP */
-	SYSLOG ((LOG_INFO, "remove group `%s'\n", group_name));
-	return;
 }
 
 /*
@@ -164,25 +140,66 @@ static void grp_update (void)
  *	close_files() closes all of the files that were opened for this
  *	new group.  This causes any modified entries to be written out.
  */
-
 static void close_files (void)
 {
-	if (!gr_close ()) {
-		fprintf (stderr, _("%s: cannot rewrite group file\n"),
-			 Prog);
-		errors++;
-	}
-	gr_unlock ();
-#ifdef	SHADOWGRP
-	if (is_shadow_grp && !sgr_close ()) {
+	/* First, write the changes in the regular group database */
+	if (gr_close () == 0) {
 		fprintf (stderr,
-			 _("%s: cannot rewrite shadow group file\n"),
-			 Prog);
-		errors++;
+		         _("%s: failure while writing changes to %s\n"),
+		         Prog, gr_dbname ());
+		exit (E_GRP_UPDATE);
 	}
-	if (is_shadow_grp)
-		sgr_unlock ();
+
+#ifdef WITH_AUDIT
+	audit_logger (AUDIT_DEL_GROUP, Prog,
+	              "removing group from /etc/group",
+	              group_name, (unsigned int) group_id,
+	              SHADOW_AUDIT_SUCCESS);
+#endif
+	SYSLOG ((LOG_INFO,
+	         "group '%s' removed from %s",
+	         group_name, gr_dbname ()));
+	del_cleanup (cleanup_report_del_group_group);
+
+	cleanup_unlock_group (NULL);
+	del_cleanup (cleanup_unlock_group);
+
+
+	/* Then, write the changes in the shadow database */
+#ifdef	SHADOWGRP
+	if (is_shadow_grp) {
+		if (sgr_close () == 0) {
+			fprintf (stderr,
+			         _("%s: failure while writing changes to %s\n"),
+			         Prog, sgr_dbname ());
+			exit (E_GRP_UPDATE);
+		}
+
+#ifdef WITH_AUDIT
+		audit_logger (AUDIT_DEL_GROUP, Prog,
+		              "removing group from /etc/gshadow",
+		              group_name, (unsigned int) group_id,
+		              SHADOW_AUDIT_SUCCESS);
+#endif
+		SYSLOG ((LOG_INFO,
+		         "group '%s' removed from %s",
+		         group_name, sgr_dbname ()));
+		del_cleanup (cleanup_report_del_group_gshadow);
+
+		cleanup_unlock_gshadow (NULL);
+		del_cleanup (cleanup_unlock_gshadow);
+	}
 #endif				/* SHADOWGRP */
+
+	/* Report success at the system level */
+#ifdef WITH_AUDIT
+	audit_logger (AUDIT_DEL_GROUP, Prog,
+	              "",
+	              group_name, (unsigned int) group_id,
+	              SHADOW_AUDIT_SUCCESS);
+#endif
+	SYSLOG ((LOG_INFO, "group '%s' removed\n", group_name));
+	del_cleanup (cleanup_report_del_group);
 }
 
 /*
@@ -190,31 +207,51 @@ static void close_files (void)
  *
  *	open_files() opens the two group files.
  */
-
 static void open_files (void)
 {
-	if (!gr_lock ()) {
-		fprintf (stderr, _("%s: unable to lock group file\n"),
-			 Prog);
+	/* First, lock the databases */
+	if (gr_lock () == 0) {
+		fprintf (stderr,
+		         _("%s: cannot lock %s; try again later.\n"),
+		         Prog, gr_dbname ());
 		exit (E_GRP_UPDATE);
 	}
-	if (!gr_open (O_RDWR)) {
-		fprintf (stderr, _("%s: unable to open group file\n"),
-			 Prog);
+	add_cleanup (cleanup_unlock_group, NULL);
+#ifdef	SHADOWGRP
+	if (is_shadow_grp) {
+		if (sgr_lock () == 0) {
+			fprintf (stderr,
+			         _("%s: cannot lock %s; try again later.\n"),
+			         Prog, sgr_dbname ());
+			exit (E_GRP_UPDATE);
+		}
+		add_cleanup (cleanup_unlock_gshadow, NULL);
+	}
+#endif
+
+	/*
+	 * Now, if the group is not removed, it's our fault.
+	 * Make sure failures will be reported.
+	 */
+	add_cleanup (cleanup_report_del_group, group_name);
+
+	/* An now open the databases */
+	if (gr_open (O_RDWR) == 0) {
+		fprintf (stderr,
+		         _("%s: cannot open %s\n"),
+		         Prog, gr_dbname ());
+		SYSLOG ((LOG_WARN, "cannot open %s", gr_dbname ()));
 		exit (E_GRP_UPDATE);
 	}
 #ifdef	SHADOWGRP
-	if (is_shadow_grp && !sgr_lock ()) {
-		fprintf (stderr,
-			 _("%s: unable to lock shadow group file\n"),
-			 Prog);
-		exit (E_GRP_UPDATE);
-	}
-	if (is_shadow_grp && !sgr_open (O_RDWR)) {
-		fprintf (stderr,
-			 _("%s: unable to open shadow group file\n"),
-			 Prog);
-		exit (E_GRP_UPDATE);
+	if (is_shadow_grp) {
+		if (sgr_open (O_RDWR) == 0) {
+			fprintf (stderr,
+			         _("%s: cannot open %s\n"),
+			         Prog, sgr_dbname ());
+			SYSLOG ((LOG_WARN, "cannot open %s", sgr_dbname ()));
+			exit (E_GRP_UPDATE);
+		}
 	}
 #endif				/* SHADOWGRP */
 }
@@ -226,7 +263,6 @@ static void open_files (void)
  *	for any user.  You must remove all users before you remove
  *	the group.
  */
-
 static void group_busy (gid_t gid)
 {
 	struct passwd *pwd;
@@ -237,32 +273,26 @@ static void group_busy (gid_t gid)
 
 	setpwent ();
 
-	while ((pwd = getpwent ()) && pwd->pw_gid != gid);
+	while ( ((pwd = getpwent ()) != NULL) && (pwd->pw_gid != gid) );
 
 	endpwent ();
 
 	/*
-	 * If pwd isn't NULL, it stopped becaues the gid's matched.
+	 * If pwd isn't NULL, it stopped because the gid's matched.
 	 */
 
-	if (pwd == (struct passwd *) 0)
+	if (pwd == (struct passwd *) 0) {
 		return;
+	}
 
 	/*
 	 * Can't remove the group.
 	 */
-
-	fprintf (stderr, _("%s: cannot remove user's primary group.\n"),
-		 Prog);
+	fprintf (stderr,
+	         _("%s: cannot remove the primary group of user '%s'\n"),
+	         Prog, pwd->pw_name);
 	exit (E_GROUP_BUSY);
 }
-
-#ifdef USE_PAM
-static struct pam_conv conv = {
-	misc_conv,
-	NULL
-};
-#endif				/* USE_PAM */
 
 /*
  * main - groupdel command
@@ -276,13 +306,17 @@ static struct pam_conv conv = {
 
 int main (int argc, char **argv)
 {
-	struct group *grp;
-
+#ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 	pam_handle_t *pamh = NULL;
-	struct passwd *pampw;
 	int retval;
+#endif				/* USE_PAM */
+#endif				/* ACCT_TOOLS_SETUID */
+
+#ifdef WITH_AUDIT
+	audit_help_open ();
 #endif
+	atexit (do_cleanups);
 
 	/*
 	 * Get my name so that I can use it to report errors.
@@ -290,133 +324,110 @@ int main (int argc, char **argv)
 
 	Prog = Basename (argv[0]);
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	(void) setlocale (LC_ALL, "");
+	(void) bindtextdomain (PACKAGE, LOCALEDIR);
+	(void) textdomain (PACKAGE);
 
-#ifdef USE_PAM
-	retval = PAM_SUCCESS;
-
-	pampw = getpwuid (getuid ());
-	if (pampw == NULL) {
-		retval = PAM_USER_UNKNOWN;
-	}
-
-	if (retval == PAM_SUCCESS) {
-		retval =
-		    pam_start ("shadow", pampw->pw_name, &conv, &pamh);
-	}
-
-	if (retval == PAM_SUCCESS) {
-		retval = pam_authenticate (pamh, 0);
-		if (retval != PAM_SUCCESS) {
-			pam_end (pamh, retval);
-		}
-	}
-
-	if (retval == PAM_SUCCESS) {
-		retval = pam_acct_mgmt (pamh, 0);
-		if (retval != PAM_SUCCESS) {
-			pam_end (pamh, retval);
-		}
-	}
-
-	if (retval != PAM_SUCCESS) {
-		fprintf (stderr, _("%s: PAM authentication failed\n"),
-			 Prog);
-		exit (1);
-	}
-#endif				/* USE_PAM */
-
-	if (argc != 2)
+	if (argc != 2) {
 		usage ();
+	}
 
 	group_name = argv[1];
 
-	OPENLOG (Prog);
+	OPENLOG ("groupdel");
+
+#ifdef ACCT_TOOLS_SETUID
+#ifdef USE_PAM
+	{
+		struct passwd *pampw;
+		pampw = getpwuid (getuid ()); /* local, no need for xgetpwuid */
+		if (pampw == NULL) {
+			fprintf (stderr,
+			         _("%s: Cannot determine your user name.\n"),
+			         Prog);
+			exit (1);
+		}
+
+		retval = pam_start ("groupdel", pampw->pw_name, &conv, &pamh);
+	}
+
+	if (PAM_SUCCESS == retval) {
+		retval = pam_authenticate (pamh, 0);
+	}
+
+	if (PAM_SUCCESS == retval) {
+		retval = pam_acct_mgmt (pamh, 0);
+	}
+
+	if (NULL != pamh) {
+		(void) pam_end (pamh, retval);
+	}
+	if (PAM_SUCCESS != retval) {
+		fprintf (stderr, _("%s: PAM authentication failed\n"), Prog);
+		exit (1);
+	}
+#endif				/* USE_PAM */
+#endif				/* ACCT_TOOLS_SETUID */
 
 #ifdef SHADOWGRP
 	is_shadow_grp = sgr_file_present ();
 #endif
 
-	/*
-	 * The open routines for the DBM files don't use read-write
-	 * as the mode, so we have to clue them in.
-	 */
+	{
+		struct group *grp;
+		/*
+		 * Start with a quick check to see if the group exists.
+		 */
+		grp = getgrnam (group_name); /* local, no need for xgetgrnam */
+		if (NULL == grp) {
+			fprintf (stderr,
+			         _("%s: group '%s' does not exist\n"),
+			         Prog, group_name);
+			exit (E_NOTFOUND);
+		}
 
-#ifdef	NDBM
-	gr_dbm_mode = O_RDWR;
-#ifdef	SHADOWGRP
-	sg_dbm_mode = O_RDWR;
-#endif				/* SHADOWGRP */
-#endif				/* NDBM */
-
-	/*
-	 * Start with a quick check to see if the group exists.
-	 */
-
-	if (!(grp = getgrnam (group_name))) {
-		fprintf (stderr, _("%s: group %s does not exist\n"),
-			 Prog, group_name);
-		exit (E_NOTFOUND);
+		group_id = grp->gr_gid;
 	}
-#ifdef	USE_NIS
 
+#ifdef	USE_NIS
 	/*
 	 * Make sure this isn't a NIS group
 	 */
-
 	if (__isgrNIS ()) {
 		char *nis_domain;
 		char *nis_master;
 
-		fprintf (stderr, _("%s: group %s is a NIS group\n"),
-			 Prog, group_name);
+		fprintf (stderr,
+		         _("%s: group '%s' is a NIS group\n"),
+		         Prog, group_name);
 
 		if (!yp_get_default_domain (&nis_domain) &&
 		    !yp_master (nis_domain, "group.byname", &nis_master)) {
-			fprintf (stderr, _("%s: %s is the NIS master\n"),
-				 Prog, nis_master);
+			fprintf (stderr,
+			         _("%s: %s is the NIS master\n"),
+			         Prog, nis_master);
 		}
 		exit (E_NOTFOUND);
 	}
 #endif
 
 	/*
-	 * Now check to insure that this isn't the primary group of
-	 * anyone.
+	 * Make sure this isn't the primary group of anyone.
 	 */
-
-	group_busy (grp->gr_gid);
+	group_busy (group_id);
 
 	/*
 	 * Do the hard stuff - open the files, delete the group entries,
 	 * then close and update the files.
 	 */
-
 	open_files ();
 
 	grp_update ();
-	nscd_flush_cache ("group");
 
 	close_files ();
 
-#ifdef USE_PAM
-	if (retval == PAM_SUCCESS) {
-		retval = pam_chauthtok (pamh, 0);
-		if (retval != PAM_SUCCESS) {
-			pam_end (pamh, retval);
-		}
-	}
+	nscd_flush_cache ("group");
 
-	if (retval != PAM_SUCCESS) {
-		fprintf (stderr, _("%s: PAM chauthtok failed\n"), Prog);
-		exit (1);
-	}
-
-	if (retval == PAM_SUCCESS)
-		pam_end (pamh, PAM_SUCCESS);
-#endif				/* USE_PAM */
-	exit (errors == 0 ? E_SUCCESS : E_GRP_UPDATE);
-	/* NOT REACHED */
+	return E_SUCCESS;
 }
+

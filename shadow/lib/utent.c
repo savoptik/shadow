@@ -1,5 +1,7 @@
 /*
- * Copyright 1993 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1993 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2005       , Tomasz Kłoczko
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +12,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
@@ -37,18 +39,17 @@
 #include <utmp.h>
 
 #ifndef	lint
-static char rcsid[] = "$Id: utent.c,v 1.4 1998/01/29 23:22:32 marekm Exp $";
+static char rcsid[] = "$Id: utent.c 1980 2008-04-27 00:40:09Z nekral-guest $";
 #endif
 
-static	int	utmp_fd = -1;
-static	struct	utmp	utmp_buf;
+static int utmp_fd = -1;
+static struct utmp utmp_buf;
 
 /*
  * setutent - open or rewind the utmp file
  */
 
-void
-setutent(void)
+void setutent (void)
 {
 	if (utmp_fd == -1)
 		if ((utmp_fd = open (_UTMP_FILE, O_RDWR)) == -1)
@@ -62,8 +63,7 @@ setutent(void)
  * endutent - close the utmp file
  */
 
-void
-endutent(void)
+void endutent (void)
 {
 	if (utmp_fd != -1)
 		close (utmp_fd);
@@ -75,8 +75,7 @@ endutent(void)
  * getutent - get the next record from the utmp file
  */
 
-struct utmp *
-getutent(void)
+struct utmp *getutent (void)
 {
 	if (utmp_fd == -1)
 		setutent ();
@@ -94,11 +93,10 @@ getutent(void)
  * getutline - get the utmp entry matching ut_line
  */
 
-struct utmp *
-getutline(const struct utmp *utent)
+struct utmp *getutline (const struct utmp *utent)
 {
-	struct	utmp	save;
-	struct	utmp	*new;
+	struct utmp save;
+	struct utmp *new;
 
 	save = *utent;
 	while (new = getutent ())
@@ -110,5 +108,5 @@ getutline(const struct utmp *utent)
 	return (struct utmp *) 0;
 }
 #else
-extern int errno;  /* warning: ANSI C forbids an empty source file */
+extern int errno;		/* warning: ANSI C forbids an empty source file */
 #endif

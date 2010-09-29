@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2001 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +13,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*
@@ -33,8 +36,9 @@
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: setupenv.c,v 1.13 2003/05/05 21:44:15 kloczek Exp $")
+#ident "$Id: setupenv.c 3034 2009-07-22 13:30:06Z nekral-guest $"
+
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -43,20 +47,23 @@ RCSID ("$Id: setupenv.c,v 1.13 2003/05/05 21:44:15 kloczek Exp $")
 #include "defines.h"
 #include <pwd.h>
 #include "getdef.h"
+
+#ifndef USE_PAM
 static void
-addenv_path (const char *varname, const char *dirname,
-	     const char *filename)
+addenv_path (const char *varname, const char *dirname, const char *filename)
 {
 	char *buf;
+	size_t len = strlen (dirname) + strlen (filename) + 2;
+	int wlen;
 
-	buf = xmalloc (strlen (dirname) + strlen (filename) + 2);
-	sprintf (buf, "%s/%s", dirname, filename);
+	buf = xmalloc (len);
+	wlen = snprintf (buf, len, "%s/%s", dirname, filename);
+	assert (wlen == (int) len - 1);
+
 	addenv (varname, buf);
 	free (buf);
 }
 
-
-#ifndef USE_PAM
 static void read_env_file (const char *filename)
 {
 	FILE *fp;
@@ -64,31 +71,38 @@ static void read_env_file (const char *filename)
 	char *cp, *name, *val;
 
 	fp = fopen (filename, "r");
-	if (!fp)
+	if (NULL == fp) {
 		return;
+	}
 	while (fgets (buf, sizeof buf, fp) == buf) {
 		cp = strrchr (buf, '\n');
-		if (!cp)
+		if (NULL == cp) {
 			break;
+		}
 		*cp = '\0';
 
 		cp = buf;
 		/* ignore whitespace and comments */
-		while (*cp && isspace (*cp))
+		while (('\0' != *cp) && isspace (*cp)) {
 			cp++;
-		if (*cp == '\0' || *cp == '#')
+		}
+		if (('\0' == *cp) || ('#' == *cp)) {
 			continue;
+		}
 		/*
 		 * ignore lines which don't follow the name=value format
 		 * (for example, the "export NAME" shell commands)
 		 */
 		name = cp;
-		while (*cp && !isspace (*cp) && *cp != '=')
+		while (('\0' != *cp) && !isspace (*cp) && ('=' != *cp)) {
 			cp++;
-		if (*cp != '=')
+		}
+		if ('=' != *cp) {
 			continue;
+		}
 		/* NUL-terminate the name */
-		*cp++ = '\0';
+		*cp = '\0';
+		cp++;
 		val = cp;
 #if 0				/* XXX untested, and needs rewrite with fewer goto's :-) */
 /*
@@ -172,7 +186,7 @@ static void read_env_file (const char *filename)
 		 */
 		addenv (name, val);
 	}
-	fclose (fp);
+	(void) fclose (fp);
 }
 #endif				/* USE_PAM */
 
@@ -205,15 +219,15 @@ void setup_env (struct passwd *info)
 		static char temp_pw_dir[] = "/";
 
 		if (!getdef_bool ("DEFAULT_HOME") || chdir ("/") == -1) {
-			fprintf (stderr, _("Unable to cd to \"%s\"\n"),
+			fprintf (stderr, _("Unable to cd to '%s'\n"),
 				 info->pw_dir);
 			SYSLOG ((LOG_WARN,
 				 "unable to cd to `%s' for user `%s'\n",
 				 info->pw_dir, info->pw_name));
 			closelog ();
-			exit (1);
+			exit (EXIT_FAILURE);
 		}
-		puts (_("No directory, logging in with HOME=/"));
+		(void) puts (_("No directory, logging in with HOME=/"));
 		info->pw_dir = temp_pw_dir;
 	}
 
@@ -227,29 +241,13 @@ void setup_env (struct passwd *info)
 	 * Create the SHELL environmental variable and export it.
 	 */
 
-	if (info->pw_shell == (char *) 0 || !*info->pw_shell) {
-		static char temp_pw_shell[] = "/bin/sh";
+	if ((NULL == info->pw_shell) || ('\0' == *info->pw_shell)) {
+		static char temp_pw_shell[] = SHELL;
 
 		info->pw_shell = temp_pw_shell;
 	}
 
 	addenv ("SHELL", info->pw_shell);
-
-	/*
-	 * Create the PATH environmental variable and export it.
-	 */
-
-	cp = getdef_str ((info->pw_uid == 0) ? "ENV_SUPATH" : "ENV_PATH");
-	if (!cp) {
-		/* not specified, use a minimal default */
-		addenv ("PATH=/bin:/usr/bin", NULL);
-	} else if (strchr (cp, '=')) {
-		/* specified as name=value (PATH=...) */
-		addenv (cp, NULL);
-	} else {
-		/* only value specified without "PATH=" */
-		addenv ("PATH", cp);
-	}
 
 	/*
 	 * Export the user name.  For BSD derived systems, it's "USER", for
@@ -260,33 +258,53 @@ void setup_env (struct passwd *info)
 	addenv ("LOGNAME", info->pw_name);
 
 	/*
-	 * MAILDIR environment variable for Qmail
+	 * Create the PATH environmental variable and export it.
 	 */
-	if ((cp = getdef_str ("QMAIL_DIR")))
-		addenv_path ("MAILDIR", info->pw_dir, cp);
 
+	cp = getdef_str ((info->pw_uid == 0) ? "ENV_SUPATH" : "ENV_PATH");
+
+	if (NULL == cp) {
+		/* not specified, use a minimal default */
+		addenv ("PATH=/bin:/usr/bin", NULL);
+	} else if (strchr (cp, '=')) {
+		/* specified as name=value (PATH=...) */
+		addenv (cp, NULL);
+	} else {
+		/* only value specified without "PATH=" */
+		addenv ("PATH", cp);
+	}
+
+#ifndef USE_PAM
 	/*
 	 * Create the MAIL environmental variable and export it.  login.defs
 	 * knows the prefix.
 	 */
 
-	if ((cp = getdef_str ("MAIL_DIR")))
-		addenv_path ("MAIL", cp, info->pw_name);
-	else if ((cp = getdef_str ("MAIL_FILE")))
-		addenv_path ("MAIL", info->pw_dir, cp);
-	else {
+	if (getdef_bool ("MAIL_CHECK_ENAB")) {
+		cp = getdef_str ("MAIL_DIR");
+		if (NULL != cp) {
+			addenv_path ("MAIL", cp, info->pw_name);
+		} else {
+			cp = getdef_str ("MAIL_FILE");
+			if (NULL != cp) {
+				addenv_path ("MAIL", info->pw_dir, cp);
+			} else {
 #if defined(MAIL_SPOOL_FILE)
-		addenv_path ("MAIL", info->pw_dir, MAIL_SPOOL_FILE);
+				addenv_path ("MAIL", info->pw_dir, MAIL_SPOOL_FILE);
 #elif defined(MAIL_SPOOL_DIR)
-		addenv_path ("MAIL", MAIL_SPOOL_DIR, info->pw_name);
+				addenv_path ("MAIL", MAIL_SPOOL_DIR, info->pw_name);
 #endif
+			}
+		}
 	}
 
-#ifndef USE_PAM
 	/*
 	 * Read environment from optional config file.  --marekm
 	 */
-	if ((envf = getdef_str ("ENVIRON_FILE")))
+	envf = getdef_str ("ENVIRON_FILE");
+	if (NULL != envf) {
 		read_env_file (envf);
-#endif
+	}
+#endif				/* !USE_PAM */
 }
+
