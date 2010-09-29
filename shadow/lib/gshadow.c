@@ -1,5 +1,8 @@
 /*
- * Copyright 1990 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1990 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2005       , Tomasz Kłoczko
+ * Copyright (c) 2008 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,192 +13,159 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
 /* Newer versions of Linux libc already have shadow support.  */
-#if defined(SHADOWGRP) && !defined(HAVE_SHADOWGRP)	/*{*/
+#if defined(SHADOWGRP) && !defined(HAVE_SHADOWGRP)	/*{ */
 
-#include "rcsid.h"
-RCSID("$Id: gshadow.c,v 1.6 1998/04/02 21:51:43 marekm Exp $")
+#ident "$Id: gshadow.c 3020 2009-06-12 17:50:24Z nekral-guest $"
 
 #include <stdio.h>
 #include "prototypes.h"
 #include "defines.h"
-
-#ifdef	NDBM
-#include <ndbm.h>
-#include <fcntl.h>
-DBM	*sg_dbm;
-int	sg_dbm_mode = -1;
-static	int	dbmopened;
-static	int	dbmerror;
-#endif
-
-#define	MAXMEM	1024
-
-static	FILE	*shadow;
-static	char	sgrbuf[BUFSIZ*4];
-static	char	*members[MAXMEM+1];
-static	char	*admins[MAXMEM+1];
-static	struct	sgrp	sgroup;
-
-extern	char	*fgetsx();
-extern	int	fputsx();
+static /*@null@*/FILE *shadow;
+static /*@null@*//*@only@*/char **members = NULL;
+static size_t nmembers = 0;
+static /*@null@*//*@only@*/char **admins = NULL;
+static size_t nadmins = 0;
+static struct sgrp sgroup;
 
 #define	FIELDS	4
 
 #ifdef	USE_NIS
-static	int	nis_used;
-static	int	nis_ignore;
-static	enum	{ native, start, middle, native2 } nis_state;
-static	int	nis_bound;
-static	char	*nis_domain;
-static	char	*nis_key;
-static	int	nis_keylen;
-static	char	*nis_val;
-static	int	nis_vallen;
+static bool nis_used;
+static bool nis_ignore;
+static enum { native, start, middle, native2 } nis_state;
+static bool nis_bound;
+static char *nis_domain;
+static char *nis_key;
+static int nis_keylen;
+static char *nis_val;
+static int nis_vallen;
+
 #define	IS_NISCHAR(c) ((c)=='+')
 #endif
 
 #ifdef	USE_NIS
-
-/*
- * __setsgNIS - turn on or off NIS searches
- */
-
-void
-__setsgNIS(int flag)
-{
-	nis_ignore = ! flag;
-
-	if (nis_ignore)
-		nis_used = 0;
-}
-
 /*
  * bind_nis - bind to NIS server
  */
 
-static int
-bind_nis(void)
+static int bind_nis (void)
 {
 	if (yp_get_default_domain (&nis_domain))
 		return -1;
 
-	nis_bound = 1;
+	nis_bound = true;
 	return 0;
 }
 #endif
 
-static char **
-list(char *s, char **l)
+static /*@null@*/char **build_list (char *s, char **list[], size_t * nlist)
 {
-	int	nmembers = 0;
+	char **ptr = *list;
+	size_t nelem = *nlist, size;
 
-	while (s && *s) {
-		l[nmembers++] = s;
-		if ((s = strchr (s, ',')))
-			*s++ = '\0';
+	while (s != NULL && *s != '\0') {
+		size = (nelem + 1) * sizeof (ptr);
+		ptr = realloc (*list, size);
+		if (NULL != ptr) {
+			ptr[nelem] = s;
+			nelem++;
+			*list = ptr;
+			*nlist = nelem;
+			s = strchr (s, ',');
+			if (NULL != s) {
+				*s = '\0';
+				s++;
+			}
+		}
 	}
-	l[nmembers] = (char *) 0;
-	return l;
+	size = (nelem + 1) * sizeof (ptr);
+	ptr = realloc (*list, size);
+	if (NULL != ptr) {
+		ptr[nelem] = NULL;
+		*list = ptr;
+	}
+	return ptr;
 }
 
-void
-setsgent(void)
+void setsgent (void)
 {
-#ifdef	NDBM
-	int	mode;
-#endif	/* NDBM */
-
 #ifdef	USE_NIS
 	nis_state = native;
 #endif
-	if (shadow)
+	if (NULL != shadow) {
 		rewind (shadow);
-	else
-		shadow = fopen(SGROUP_FILE, "r");
-
-	/*
-	 * Attempt to open the DBM files if they have never been opened
-	 * and an error has never been returned.
-	 */
-
-#ifdef NDBM
-	if (! dbmerror && ! dbmopened) {
-		char	dbmfiles[BUFSIZ];
-
-		strcpy (dbmfiles, SGROUP_PAG_FILE);
-
-		if (sg_dbm_mode == -1)
-			mode = O_RDWR;
-		else
-			mode = (sg_dbm_mode == O_RDWR) ? O_RDWR:O_RDONLY;
-
-		if (access(dbmfiles, F_OK) ||
-			(! (sg_dbm = dbm_open(SGROUP_FILE, mode, 0))))
-			dbmerror = 1;
-		else
-			dbmopened = 1;
+	} else {
+		shadow = fopen (SGROUP_FILE, "r");
 	}
-#endif	/* NDBM */
 }
 
-void
-endsgent(void)
+void endsgent (void)
 {
-	if (shadow)
+	if (NULL != shadow) {
 		(void) fclose (shadow);
+	}
 
 	shadow = (FILE *) 0;
-#ifdef	NDBM
-	if (dbmopened && sg_dbm) {
-		dbm_close (sg_dbm);
-		dbmopened = 0;
-		sg_dbm = 0;
-	}
-#endif
 }
 
-struct sgrp *
-sgetsgent(const char *string)
+/*@observer@*//*@null@*/struct sgrp *sgetsgent (const char *string)
 {
-	char	*fields[FIELDS];
-	char	*cp;
-	int	i;
+	static char *sgrbuf = NULL;
+	static size_t sgrbuflen = 0;
 
-	strncpy (sgrbuf, string, (int) sizeof sgrbuf - 1);
-	sgrbuf[sizeof sgrbuf - 1] = '\0';
+	char *fields[FIELDS];
+	char *cp;
+	int i;
+	size_t len = strlen (string) + 1;
 
-	if ((cp = strrchr (sgrbuf, '\n')))
+	if (len > sgrbuflen) {
+		char *buf = (char *) realloc (sgrbuf, sizeof (char) * len);
+		if (NULL == buf) {
+			return NULL;
+		}
+		sgrbuf = buf;
+		sgrbuflen = len;
+	}
+
+	strncpy (sgrbuf, string, len);
+	sgrbuf[len-1] = '\0';
+
+	cp = strrchr (sgrbuf, '\n');
+	if (NULL != cp) {
 		*cp = '\0';
+	}
 
 	/*
 	 * There should be exactly 4 colon separated fields.  Find
 	 * all 4 of them and save the starting addresses in fields[].
 	 */
 
-	for (cp = sgrbuf, i = 0;i < FIELDS && cp;i++) {
+	for (cp = sgrbuf, i = 0; (i < FIELDS) && (NULL != cp); i++) {
 		fields[i] = cp;
-		if ((cp = strchr (cp, ':')))
+		cp = strchr (cp, ':');
+		if (NULL != cp) {
 			*cp++ = '\0';
+		}
 	}
 
 	/*
@@ -203,20 +173,32 @@ sgetsgent(const char *string)
 	 * the line is invalid.
 	 */
 
-	if (cp || i != FIELDS)
+	if ((NULL != cp) || (i != FIELDS)) {
 #ifdef	USE_NIS
-		if (! IS_NISCHAR (fields[0][0]))
+		if (!IS_NISCHAR (fields[0][0])) {
 			return 0;
-		else
-			nis_used = 1;
+		} else {
+			nis_used = true;
+		}
 #else
 		return 0;
 #endif
+	}
 
 	sgroup.sg_name = fields[0];
 	sgroup.sg_passwd = fields[1];
-	sgroup.sg_adm = list (fields[2], admins);
-	sgroup.sg_mem = list (fields[3], members);
+	if (0 != nadmins) {
+		nadmins = 0;
+		free (admins);
+		admins = NULL;
+	}
+	if (0 != nmembers) {
+		nmembers = 0;
+		free (members);
+		members = NULL;
+	}
+	sgroup.sg_adm = build_list (fields[2], &admins, &nadmins);
+	sgroup.sg_mem = build_list (fields[3], &members, &nmembers);
 
 	return &sgroup;
 }
@@ -228,49 +210,79 @@ sgetsgent(const char *string)
  * converts it to a (struct sgrp).  NULL is returned on EOF.
  */
 
-struct sgrp *
-fgetsgent(FILE *fp)
+/*@observer@*//*@null@*/struct sgrp *fgetsgent (/*@null@*/FILE * fp)
 {
-	char	buf[sizeof sgrbuf];
-	char	*cp;
+	static size_t buflen = 0;
+	static char *buf = NULL;
 
-	if (! fp)
-		return (0);
+	char *cp;
+	struct sgrp *ret;
+
+	if (0 == buflen) {
+		buf = (char *) malloc (BUFSIZ);
+		if (NULL == buf) {
+			return NULL;
+		}
+	}
+
+	if (NULL == fp) {
+		return NULL;
+	}
 
 #ifdef	USE_NIS
-	while (fgetsx (buf, sizeof buf, fp) != (char *) 0)
+	while (fgetsx (buf, (int) sizeof buf, fp) == buf)
 #else
-	if (fgetsx (buf, sizeof buf, fp) != (char *) 0)
+	if (fgetsx (buf, (int) sizeof buf, fp) == buf)
 #endif
 	{
-		if ((cp = strchr (buf, '\n')))
+		while (   ((cp = strrchr (buf, '\n')) == NULL)
+		       && (feof (fp) == 0)) {
+			size_t len;
+
+			cp = (char *) realloc (buf, buflen*2);
+			if (NULL == cp) {
+				return NULL;
+			}
+			buf = cp;
+			buflen *= 2;
+
+			len = strlen (buf);
+			if (fgetsx (&buf[len],
+			            (int) (buflen - len),
+			            fp) != &buf[len]) {
+				return NULL;
+			}
+		}
+		cp = strrchr (buf, '\n');
+		if (NULL != cp) {
 			*cp = '\0';
+		}
 #ifdef	USE_NIS
-		if (nis_ignore && IS_NISCHAR (buf[0]))
+		if (nis_ignore && IS_NISCHAR (buf[0])) {
 			continue;
+		}
 #endif
 		return (sgetsgent (buf));
 	}
-	return 0;
+	return NULL;
 }
 
 /*
  * getsgent - get a single shadow group entry
  */
 
-struct sgrp *
-getsgent(void)
+/*@observer@*//*@null@*/struct sgrp *getsgent (void)
 {
 #ifdef	USE_NIS
-	int	nis_1_group = 0;
-	struct	sgrp	*val;
-	char	buf[BUFSIZ];
+	bool nis_1_group = false;
+	struct sgrp *val;
 #endif
-	if (! shadow)
+	if (NULL == shadow) {
 		setsgent ();
+	}
 
 #ifdef	USE_NIS
-again:
+      again:
 	/*
 	 * See if we are reading from the local file.
 	 */
@@ -282,8 +294,10 @@ again:
 		 * NULL right away if there is none.
 		 */
 
-		if (! (val = fgetsgent (shadow)))
+		val = fgetsgent (shadow);
+		if (NULL == val) {
 			return 0;
+		}
 
 		/*
 		 * If this entry began with a NIS escape character, we have
@@ -292,10 +306,11 @@ again:
 		 */
 
 		if (IS_NISCHAR (val->sg_name[0])) {
-			if (val->sg_name[1])
-				nis_1_group = 1;
-			else
+			if ('\0' != val->sg_name[1]) {
+				nis_1_group = true;
+			} else {
 				nis_state = start;
+			}
 		}
 
 		/*
@@ -303,16 +318,18 @@ again:
 		 * use a NIS map, it must be a regular local group.
 		 */
 
-		if (nis_1_group == 0 && nis_state != start)
+		if (!nis_1_group && (nis_state != start)) {
 			return val;
+		}
 
 		/*
 		 * If this is an escape to use an NIS map, switch over to
 		 * that bunch of code.
 		 */
 
-		if (nis_state == start)
+		if (nis_state == start) {
 			goto again;
+		}
 
 		/*
 		 * NEEDSWORK.  Here we substitute pieces-parts of this entry.
@@ -320,7 +337,7 @@ again:
 
 		return 0;
 	} else {
-		if (nis_bound == 0) {
+		if (!nis_bound) {
 			if (bind_nis ()) {
 				nis_state = native2;
 				goto again;
@@ -328,15 +345,15 @@ again:
 		}
 		if (nis_state == start) {
 			if (yp_first (nis_domain, "gshadow.byname", &nis_key,
-				&nis_keylen, &nis_val, &nis_vallen)) {
+				      &nis_keylen, &nis_val, &nis_vallen)) {
 				nis_state = native2;
 				goto again;
 			}
 			nis_state = middle;
 		} else if (nis_state == middle) {
 			if (yp_next (nis_domain, "gshadow.byname", nis_key,
-				nis_keylen, &nis_key, &nis_keylen,
-				&nis_val, &nis_vallen)) {
+				     nis_keylen, &nis_key, &nis_keylen,
+				     &nis_val, &nis_vallen)) {
 				nis_state = native2;
 				goto again;
 			}
@@ -352,66 +369,43 @@ again:
  * getsgnam - get a shadow group entry by name
  */
 
-struct sgrp *
-getsgnam(const char *name)
+/*@observer@*//*@null@*/struct sgrp *getsgnam (const char *name)
 {
-	struct	sgrp	*sgrp;
-#ifdef NDBM
-	datum	key;
-	datum	content;
-#endif
+	struct sgrp *sgrp;
+
 #ifdef	USE_NIS
-	char	buf[BUFSIZ];
-	static	char	save_name[16];
-	int	nis_disabled = 0;
+	static char save_name[16];
+	int nis_disabled = 0;
 #endif
 
 	setsgent ();
 
-#ifdef NDBM
-
-	/*
-	 * If the DBM file are now open, create a key for this group and
-	 * try to fetch the entry from the database.  A matching record
-	 * will be unpacked into a static structure and returned to
-	 * the user.
-	 */
-
-	if (dbmopened) {
-		key.dsize = strlen (name);
-		key.dptr = (void *) name;
-
-		content = dbm_fetch (sg_dbm, key);
-		if (content.dptr != 0) {
-			memcpy (sgrbuf, content.dptr, content.dsize);
-			sgroup.sg_mem = members;
-			sgroup.sg_adm = admins;
-			sgr_unpack (sgrbuf, content.dsize, &sgroup);
-			return &sgroup;
-		}
-	}
-#endif
 #ifdef	USE_NIS
 	if (nis_used) {
-again:
+	      again:
 
 		/*
 		 * Search the gshadow.byname map for this group.
 		 */
 
-		if (! nis_bound)
+		if (!nis_bound) {
 			bind_nis ();
+		}
 
 		if (nis_bound) {
-			char	*cp;
+			char *cp;
 
 			if (yp_match (nis_domain, "gshadow.byname", name,
-					strlen (name), &nis_val, &nis_vallen) == 0) {
-				if (cp = strchr (nis_val, '\n'))
+				      strlen (name), &nis_val,
+				      &nis_vallen) == 0) {
+				cp = strchr (nis_val, '\n');
+				if (NULL != cp) {
 					*cp = '\0';
+				}
 
 				nis_state = middle;
-				if (sgrp = sgetsgent (nis_val)) {
+				sgrp = sgetsgent (nis_val);
+				if (NULL != sgrp) {
 					strcpy (save_name, sgrp->sg_name);
 					nis_key = save_name;
 					nis_keylen = strlen (save_name);
@@ -424,20 +418,19 @@ again:
 #endif
 #ifdef	USE_NIS
 	if (nis_used) {
-		nis_ignore++;
-		nis_disabled++;
+		nis_ignore = true;
+		nis_disabled = true;
 	}
 #endif
 	while ((sgrp = getsgent ()) != (struct sgrp *) 0) {
-		if (strcmp (name, sgrp->sg_name) == 0)
+		if (strcmp (name, sgrp->sg_name) == 0) {
 			break;
+		}
 	}
 #ifdef	USE_NIS
-	nis_ignore--;
+	nis_ignore = false;
 #endif
-	if (sgrp)
-		return sgrp;
-	return (0);
+	return sgrp;
 }
 
 /*
@@ -448,26 +441,29 @@ again:
  * opposite of fgetsgent.
  */
 
-int
-putsgent(const struct sgrp *sgrp, FILE *fp)
+int putsgent (const struct sgrp *sgrp, FILE * fp)
 {
 	char *buf, *cp;
 	int i;
 	size_t size;
 
-	if (! fp || ! sgrp)
+	if ((NULL == fp) || (NULL == sgrp)) {
 		return -1;
+	}
 
 	/* calculate the required buffer size */
-	size = strlen(sgrp->sg_name) + strlen(sgrp->sg_passwd) + 10;
-	for (i = 0; sgrp->sg_adm && sgrp->sg_adm[i]; i++)
-		size += strlen(sgrp->sg_adm[i]) + 1;
-	for (i = 0; sgrp->sg_mem && sgrp->sg_mem[i]; i++)
-		size += strlen(sgrp->sg_mem[i]) + 1;
+	size = strlen (sgrp->sg_name) + strlen (sgrp->sg_passwd) + 10;
+	for (i = 0; (NULL != sgrp->sg_adm) && (NULL != sgrp->sg_adm[i]); i++) {
+		size += strlen (sgrp->sg_adm[i]) + 1;
+	}
+	for (i = 0; (NULL != sgrp->sg_mem) && (NULL != sgrp->sg_mem[i]); i++) {
+		size += strlen (sgrp->sg_mem[i]) + 1;
+	}
 
-	buf = malloc(size);
-	if (!buf)
+	buf = malloc (size);
+	if (NULL == buf) {
 		return -1;
+	}
 	cp = buf;
 
 	/*
@@ -487,27 +483,32 @@ putsgent(const struct sgrp *sgrp, FILE *fp)
 	 * with a ",".
 	 */
 
-	for (i = 0;sgrp->sg_adm[i];i++) {
-		if (i > 0)
+	for (i = 0; NULL != sgrp->sg_adm[i]; i++) {
+		if (i > 0) {
 			*cp++ = ',';
+		}
 
 		strcpy (cp, sgrp->sg_adm[i]);
 		cp += strlen (cp);
 	}
-	*cp++ = ':';
+	*cp = ':';
+	cp++;
 
 	/*
 	 * Now do likewise with the group members.
 	 */
 
-	for (i = 0;sgrp->sg_mem[i];i++) {
-		if (i > 0)
-			*cp++ = ',';
+	for (i = 0; NULL != sgrp->sg_mem[i]; i++) {
+		if (i > 0) {
+			*cp = ',';
+			cp++;
+		}
 
 		strcpy (cp, sgrp->sg_mem[i]);
 		cp += strlen (cp);
 	}
-	*cp++ = '\n';
+	*cp = '\n';
+	cp++;
 	*cp = '\0';
 
 	/*
@@ -515,14 +516,14 @@ putsgent(const struct sgrp *sgrp, FILE *fp)
 	 * continuation conventions.
 	 */
 
-	if (fputsx(buf, fp) == EOF) {
-		free(buf);
+	if (fputsx (buf, fp) == EOF) {
+		free (buf);
 		return -1;
 	}
 
-	free(buf);
+	free (buf);
 	return 0;
 }
 #else
-extern int errno;  /* warning: ANSI C forbids an empty source file */
-#endif	/*} SHADOWGRP */
+extern int errno;		/* warning: ANSI C forbids an empty source file */
+#endif				/*} SHADOWGRP */

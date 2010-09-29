@@ -1,89 +1,141 @@
-.\" $Id: shadow.5,v 1.3 2001/01/25 10:43:54 kloczek Exp $
-.\" 1999 PTM Przemek Borys
-.\" Copyright 1989 - 1990, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: shadow
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: File Formats and Conversions
+.\"    Source: File Formats and Conversions
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH SHADOW 5
-.SH NAZWA
-shadow \- zakodowany plik z has³ami
-.SH OPIS
-.I shadow
-zawiera zakodowane dane o has³ach dla kont u¿ytkowników oraz opcjonalne
-informacje o wieku (aging) has³a.
-Zawarte s± w nim
-.IP "" .5i
-Nazwa u¿ytkownika (nazwa logowania)
-.IP "" .5i
-Zakodowane has³o
-.IP "" .5i
-Dni, licz±c od 1 stycznia 1970, kiedy has³o by³o ostatni raz zmienione
-.IP "" .5i
-Dni przed których up³yniêciem niemo¿liwa jest zmiany has³a
-.IP "" .5i
-Dni, po których up³yniêciu konieczna jest zmiana has³a
-.IP "" .5i
-Ilo¶æ dni, jaka musi dzieliæ has³o od przedawnienia, by u¿ytkownik by³
-ostrzegany
-.IP "" .5i
-Ilo¶æ dni po przedawnieniu has³a, po których konto jest wy³±czane
-.IP "" .5i
-Dni od 1 stycznia 1970, okre¶laj±ce datê, kiedy konto jest wy³±czane
-.IP "" .5i
-Pole zarezerwowane
+.TH "SHADOW" "5" "07/24/2009" "File Formats and Conversions" "File Formats and Conversions"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+shadow \- shadowed password file
+.SH "OPIS"
 .PP
-Pole has³a musi byæ wype³nione. Zakodowane has³o sk³ada siê z 13-24 znaków z
-64 znakowego alfabetu a-z, A-Z, 0-9, \. i /.
-Dla szczegó³ów interpretacji tego napisu, odsy³amy do \fIcrypt(3)\fR.
+
+shadow
+is a file which contains the password information for the system\'s accounts and optional aging information\&.
 .PP
-Data ostatniej zmiany has³a jest podawana jako liczba dni od 1 stycznia
-1970. Has³a nie mog± byæ zmieniane przed up³ywem odpowiedniej ilo¶ci dni, a
-musz± byæ zmieniane po up³ywie maksymalnej ilo¶ci dni.
-Je¶li minimalna liczba dni jest wiêksza od maksymalnej, has³o nie mo¿e byæ
-przez u¿ytkownika zmienione.
+This file must not be readable by regular users if password security is to be maintained\&.
 .PP
-Je¶li has³o pozostaje niezmienione po up³ywie jego wa¿no¶ci, to konto jest
-uwa¿ane za nieaktywne i zostanie wy³±czone po ustalonej liczbie dni
-nieaktywno¶ci. Konto zostanie równie¿ wy³±czone w zadanym dniu wa¿no¶ci
-konta bez wzglêdu na informacjê o terminie wa¿no¶ci has³a.
+Each line of this file contains 9 fields, separated by colons (\(Bq:\(rq), in the following order:
 .PP
-Informacja w pliku \fIshadow\fR zastêpuje wszelkie has³a lub dane o ich
-wieku znajduj±ce siê w \fI/etc/passwd\fR.
+\fBlogin name\fR
+.RS 4
+It must be a valid account name, which exist on the system\&.
+.RE
 .PP
-Je¶li ma byæ utrzymywane bezpieczeñstwo hase³, to plik ten nie mo¿e byæ
-odczytywalny dla zwyk³ych u¿ytkowników.
-.SH Pliki
-.IR /etc/passwd " - informacje o kontach u¿ytkowników"
-.br
-.IR /etc/shadow " - zakodowane has³a u¿ytkowników"
-.SH ZOBACZ TAK¯E
-chage(1),
-login(1),
-passwd(1),
-su(1),
-sulogin(1),
-passwd(5),
-pwconv(8),
-pwunconv(8)
+\fBencrypted password\fR
+.RS 4
+Refer to
+\fBcrypt\fR(3)
+for details on how this string is interpreted\&.
+.sp
+If the password field contains some string that is not a valid result of
+\fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
+.sp
+This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
+/etc/shadow
+file may decide not to permit any access at all if the password field is empty\&.
+.sp
+A password field which starts with a exclamation mark means that the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
+.RE
+.PP
+\fBdate of last password change\fR
+.RS 4
+The date of the last password change, expressed as the number of days since Jan 1, 1970\&.
+.sp
+The value 0 has a special meaning, which is that the user should change her pasword the next time she will log in the system\&.
+.sp
+An empty field means that password aging features are disabled\&.
+.RE
+.PP
+\fBminimum password age\fR
+.RS 4
+The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again\&.
+.sp
+An empty field and value 0 mean that there are no minimum password age\&.
+.RE
+.PP
+\fBmaximum password age\fR
+.RS 4
+The maximum password age is the number of days after which the user will have to change her password\&.
+.sp
+After this number of days is elapsed, the password may still be valid\&. The user should be asked to change her password the next time she will log in\&.
+.sp
+An empty field means that there are no maximum password age, no password warning period, and no password inactivity period (see below)\&.
+.sp
+If the maximum password age is lower than the minimum password age, the user cannot change her password\&.
+.RE
+.PP
+\fBpassword warning period\fR
+.RS 4
+The number of days before a password is going to expire (see the maximum password age above) during which the user should be warned\&.
+.sp
+An empty field and value 0 mean that there are no password warning period\&.
+.RE
+.PP
+\fBpassword inactivity period\fR
+.RS 4
+The number of days after a password has expired (see the maximum password age above) during which the password should still be accepted (and the user should update her password during the next login)\&.
+.sp
+After expiration of the password and this expiration period is elapsed, no login is possible using the current user\'s password\&. The user should contact her administrator\&.
+.sp
+An empty field means that there are no enforcement of an inactivity period\&.
+.RE
+.PP
+\fBaccount expiration date\fR
+.RS 4
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970\&.
+.sp
+Note that an account expiration differs from a password expiration\&. In case of an acount expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
+.sp
+An empty field means that the account will never expire\&.
+.sp
+The value 0 should not be used as it is interpreted as either an account with no expiration, or as an expiration on Jan 1, 1970\&.
+.RE
+.PP
+\fBreserved field\fR
+.RS 4
+This field is reserved for future use\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.PP
+/etc/shadow\-
+.RS 4
+Backup file for /etc/shadow\&.
+.sp
+Note that this file is used by the tools of the shadow toolsuite, but not by all user and password management tools\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+
+\fBchage\fR(1),
+\fBlogin\fR(1),
+\fBpasswd\fR(1),
+\fBpasswd\fR(5),
+\fBpwck\fR(8),
+\fBpwconv\fR(8),
+\fBpwunconv\fR(8),
+\fBsu\fR(1),
+\fBsulogin\fR(8)\&.

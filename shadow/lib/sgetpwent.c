@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,32 +13,32 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID("$Id: sgetpwent.c,v 1.6 2003/05/03 16:14:23 kloczek Exp $")
+#ident "$Id: sgetpwent.c 2581 2009-03-21 20:45:35Z nekral-guest $"
 
 #include <sys/types.h>
 #include "defines.h"
 #include <stdio.h>
 #include <pwd.h>
+#include "prototypes.h"
 
 #define	NFIELDS	7
 
@@ -51,15 +54,12 @@ RCSID("$Id: sgetpwent.c,v 1.6 2003/05/03 16:14:23 kloczek Exp $")
  *	performance reasons.  I am going to come up with some conditional
  *	compilation glarp to improve on this in the future.
  */
-
-struct passwd *
-sgetpwent(const char *buf)
+struct passwd *sgetpwent (const char *buf)
 {
 	static struct passwd pwent;
 	static char pwdbuf[1024];
-	register int	i;
-	register char	*cp;
-	char	*ep;
+	register int i;
+	register char *cp;
 	char *fields[NFIELDS];
 
 	/*
@@ -67,24 +67,27 @@ sgetpwent(const char *buf)
 	 * the password structure remain valid.
 	 */
 
-	if (strlen(buf) >= sizeof pwdbuf)
-		return 0;  /* fail if too long */
-	strcpy(pwdbuf, buf);
+	if (strlen (buf) >= sizeof pwdbuf)
+		return 0;	/* fail if too long */
+	strcpy (pwdbuf, buf);
 
 	/*
 	 * Save a pointer to the start of each colon separated
 	 * field.  The fields are converted into NUL terminated strings.
 	 */
 
-	for (cp = pwdbuf, i = 0;i < NFIELDS && cp;i++) {
+	for (cp = pwdbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++) {
 		fields[i] = cp;
-		while (*cp && *cp != ':')
-			++cp;
-	
-		if (*cp)
-			*cp++ = '\0';
-		else
-			cp = 0;
+		while (('\0' != *cp) && (':' != *cp)) {
+			cp++;
+		}
+
+		if ('\0' != *cp) {
+			*cp = '\0';
+			cp++;
+		} else {
+			cp = NULL;
+		}
 	}
 
 	/*
@@ -93,7 +96,7 @@ sgetpwent(const char *buf)
 	 */
 
 	if (i != NFIELDS || *fields[2] == '\0' || *fields[3] == '\0')
-		return 0;
+		return NULL;
 
 	/*
 	 * Each of the fields is converted the appropriate data type
@@ -104,13 +107,11 @@ sgetpwent(const char *buf)
 
 	pwent.pw_name = fields[0];
 	pwent.pw_passwd = fields[1];
-	if (fields[2][0] == '\0' ||
-		((pwent.pw_uid = strtol (fields[2], &ep, 10)) == 0 && *ep)) {
-		return 0;
+	if (get_uid (fields[2], &pwent.pw_uid) == 0) {
+		return NULL;
 	}
-	if (fields[3][0] == '\0' ||
-		((pwent.pw_gid = strtol (fields[3], &ep, 10)) == 0 && *ep)) {
-		return 0;
+	if (get_gid (fields[3], &pwent.pw_gid) == 0) {
+		return NULL;
 	}
 	pwent.pw_gecos = fields[4];
 	pwent.pw_dir = fields[5];
@@ -118,3 +119,4 @@ sgetpwent(const char *buf)
 
 	return &pwent;
 }
+

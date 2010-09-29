@@ -1,69 +1,92 @@
-.\" $Id: lastlog.8,v 1.8 2003/04/28 06:38:54 kloczek Exp $
-.\" {PTM/WK/1999-09-18}
-.\" Copyright 1992, Phillip Street and Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: lastlog
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"	@(#)lastlog.8	3.3	08:24:58	29 Sep 1993 (National Guard Release)
-.TH LASTLOG 8
-.SH NAZWA
-lastlog \- sprawd¼ plik ostatnich logowañ (lastlog)
-.SH SK£ADNIA
-.TP 8
-\fBlastlog\fR [(\fB-u\fR|\fB--user\fR) \fIlogin\fR]
-[(\fB-t\fR|\fB--time\fR) \fIdni\fR] [(\fB-h\fR|\fB--help\fR)]
-.SH OPIS
-\fBlastlog\fR formatuje i wy¶wietla zawarto¶æ dziennika ostatnich logowañ
-zapisanych w pliku \fI/var/log/lastlog\fR. Wy¶wietlone zostan± \fBnazwa
-u¿ytkownika\fR, \fBport\fR i \fBczas ostatniego logowania\fR. Domy¶lnie (bez
-flag) pozycje pliku wy¶wietlane s± w kolejno¶ci w jakiej s± w pliku
-\fB/etc/passwd\fR.
-.TP
-\fB-u\fR, \fB--user\fR \fIlogin-u¿ytkownika\fR spowoduje wy¶wietlenie tylko
-pozycji opisuj±cej ostatnie rozpoczêcie sesji tylko dla u¿ytkownika
-\fIlogin-u¿ytkownika\fR.
-.TP
-\fB-t\fR, \fB--time\fR \fIdni\fR spowoduje, ¿e bêd± wy¶wietlone ostatnie
-logowania u¿ytkowników nowsze ni¿ sprzed zadanej liczby \fIdni\fR.
-.TP
-\fB-h\fR, \fB--help\fR wietl krótk± informacjê o tym jak u¿ywaæ
-programu i zakoñcz pracê.
-.TP
-Opcja \fB-t\fR przes³ania u¿ycie opcji \fB-u\fR.
+.TH "LASTLOG" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+lastlog \- wyÅ›wietla informacje o ostanim logowaniu dla wybranego lub wszystkich uÅ¼ytkowanik\('ow
+.SH "SK\(/LADNIA"
+.HP \w'\fBlastlog\fR\ 'u
+\fBlastlog\fR [\fIopcje\fR]
+.SH "OPIS"
 .PP
-Je¿eli u¿ytkownik nigdy siê nie logowa³ to zamiast portu i czasu logowania
-zostanie wy¶wietlony komunikat \fB"**Never logged in**"\fR (nigdy siê nie
-logowa³).
-.SH PLIKI
-\fI/var/log/lastlog\fR \- dziennik ostatnich logowañ
-.SH PRZESTROGI
-Du¿e luki w numeracji UID powoduj±, ¿e program bêdzie pracowa³ d³u¿ej, nie
-wy¶wietlaj±c wyników (np. je¶li mmdf=800, za¶ ostatni uid=170, to program
-bêdzie sprawia³ wra¿enie zawieszonego w trakcie przetwarzania uid 171-799).
-.SH AUTORZY
-Julianne Frances Haugh (jockgrrl@ix.netcom.com)
-.br
-Phillip Street
+Polecenie
+\fBlastlog\fR
+formatuje i wyÅ›wietla zawartoÅ›Ä‡ bazy ostatnich logowaÅ„ zapisanych w pliku
+/var/log/lastlog\&. WyÅ›wietlone zostanÄ…
+\fInazwa uÅ¼ytkownika\fR,
+\fIport\fR
+i
+\fIczas\fR
+ostatniego logowania\&. DomyÅ›lnie (bez flag) pozycje wyÅ›wietlane sÄ… w kolejnoÅ›ci w jakiej sÄ… w pliku
+/etc/passwd\&.
+.SH "OPCJE"
+.PP
+Polecenie
+\fBlastlog\fR
+posiada nastÄ™pujÄ…ce opcje:
+.PP
+\fB\-b\fR, \fB\-\-before\fR\fIDNI\fR
+.RS 4
+WyÅ›wietlenie rekord\('ow lastlog starszych niÅ¼ zadana
+\fIDNI\fR\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+WyÅ›wietlenie komunikatu pomocy i zakoÅ„czenie dzia\(/lania\&.
+.RE
+.PP
+\fB\-t\fR, \fB\-\-time\fR\fIDNI\fR
+.RS 4
+WyÅ›wietlenie rekord\('ow lastlog nie starszych niÅ¼ zadana iloÅ›Ä‡
+\fIDNI\fR\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-user\fR \fILOGIN\fR|\fIRANGE\fR
+.RS 4
+Print the lastlog record of the specified user(s)\&.
+.sp
+The users can be specified by a login name, a numerical user ID, or a
+\fIRANGE\fR
+of users\&. This
+\fIRANGE\fR
+of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
+.RE
+.PP
+JeÅ¼eli uÅ¼ytkownik nigdy siÄ™ nie logowa\(/l to zamiast portu i czasu logowania wyÅ›wietlany jest komunikat
+\fI**Nigdy nie zalogowany**\fR
+(uÅ¼ytkownik nigdy siÄ™ nie logowa\(/l)\&.
+.PP
+Only the entries for the current users of the system will be displayed\&. Other entries may exist for users that were deleted previously\&.
+.SH "UWAGI"
+.PP
+Baza danych
+lastlog
+jest plikiem zawierajacym informacje o ostanim logowaniu kaÅ¼dego uÅ¼ytkowanika\&. Pliku tego nie powinnoa siÄ™ okresowo kasowaÄ‡ i zakÄ…\(/ldaÄ‡ od nowa (rotacja)\&. Plik ten jest plikiem z dziurami tak wiÄ™c jego rozmiar jest zwykle znacznie mniejszy pokazywany przez polecenie "\fBls \-l\fR" (pokazujÄ…ce Å¼e jest on duÅ¼ych rozmiar\('ow jeÅ¼eli masz w
+passwd
+uÅ¼ytkowanik\('ow z wysokimi wartoÅ›ciami UID)\&. Mozesz wyÅ›wietliÄ‡ rzeczywisty rozmiar tego pliku uÅ¼ywajÄ…c polecenia "\fBls \-s\fR"\&.
+.SH "PLIKI"
+.PP
+/var/log/lastlog
+.RS 4
+Baza danych ostatnich logowaÅ„ uÅ¼ytkownik\('ow\&.
+.RE
+.SH "OSTRZEÅ»ENIA"
+.PP
+DuÅ¼e luki w numeracji UID powodujÄ…, Å¼e program bÄ™dzie pracowa\(/l d\(/luÅ¼ej, nie wyÅ›wietlajÄ…c wynik\('ow (np\&. jeÅ›li w bazie lastlog nie ma wpis\('ow dla o UID pomiedzy 170, a 800, to program bÄ™dzie sprawia\(/l wraÅ¼enie zawieszonego w trakcie przetwarzania wpis\('ow dla uÅ¼ytkowanik\('o\(/l o UID 171\-799)\&.

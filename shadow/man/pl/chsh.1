@@ -1,63 +1,100 @@
-.\" $Id: chsh.1,v 1.7 2003/04/26 13:24:15 kloczek Exp $
-.\" {PTM/WK/1999-09-25}
-.\" Copyright 1990, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: chsh
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia uÅ¼ytkownik\('ow
+.\"    Source: Polecenia uÅ¼ytkownik\('ow
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH CHSH 1
-.SH NAZWA
-chsh \- zmiana pow³oki zg³oszeniowej
-.SH SK£ADNIA
-.TP 5
+.TH "CHSH" "1" "07/24/2009" "Polecenia uÅ¼ytkownik\('ow" "Polecenia uÅ¼ytkownik\('ow"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+chsh \- zmiana pow\(/loki zg\(/loszeniowej
+.SH "SK\(/LADNIA"
+.HP \w'\fBchsh\fR\ 'u
+\fBchsh\fR [\fIopcje\fR] [\fILOGIN\fR]
+.SH "OPIS"
+.PP
+Polecenie
 \fBchsh\fR
-[\fB-s \fIpow³oka\fR] [\fIu¿ytkownik\fR]
-.SH OPIS
-\fBchsh\fR zmienia pow³okê zg³oszeniow± u¿ytkownika.
-Okre¶la nazwê pocz±tkowego polecenia zg³oszeniowego u¿ytkownika.
-Zwyk³y u¿ytkownik mo¿e zmieniæ wy³±cznie pow³okê zg³oszeniow± w³asnego konta,
-superu¿ytkownik mo¿e zmieniæ pow³okê zg³oszeniow± dla dowolnego konta.
+zmienia pow\(/lokÄ™ zg\(/loszeniowÄ… uÅ¼ytkownika, kt\('ora okreÅ›la nazwÄ™ poczÄ…tkowego polecenia zg\(/loszeniowego uÅ¼ytkownika\&. Zwyk\(/ly uÅ¼ytkownik moÅ¼e zmieniÄ‡ wy\(/lÄ…cznie pow\(/lokÄ™ zg\(/loszeniowÄ… w\(/lasnego konta, superuÅ¼ytkownik moÅ¼e zmieniÄ‡ pow\(/lokÄ™ zg\(/loszeniowÄ… dla dowolnego konta\&.
+.SH "OPCJE"
 .PP
-Jedynym ograniczeniem na³o¿onym na pow³okê zg³oszeniow± jest to, ¿e jej nazwa
-musi byæ wymieniona w \fI/etc/shells\fR, chyba ¿e polecenie \fBchsh\fR
-wywo³ywane jest przez superu¿ytkownika - wówczas mo¿e byæ podana dowolna
-nazwa. U¿ytkownicy kont z ograniczon± pow³ok± logowania nie mog± jej zmieniaæ.
-Odradza siê z tego powodu umieszczanie \fB/bin/rsh\fR w pliku
-\fI/etc/shells\fR, gdy¿ przypadkowa zmiana na pow³okê ograniczon± uniemo¿liwi
-u¿ytkownikowi jak±kolwiek zmianê pow³oki logowania, nawet z powrotem na
-dotychczasow±.
+Polecenie
+\fBchsh\fR
+posiada nastÄ™pujÄ…ce opcje:
 .PP
-Je¿eli nie podano opcji \fB-s\fR, to \fBchsh\fR dzia³a w trybie interaktywnym,
-proponuj±c u¿ytkownikowi bie¿±c± pow³okê logowania. Wprowadzenie nowej
-warto¶ci powoduje zmianê pow³oki, a podanie warto¶ci pustej pozostawia bie¿±c±
-pow³okê. Bie¿±ca pow³oka wy¶wietlana jest w nawiasach \fB[ ]\fR.
-.SH PLIKI
-\fI/etc/passwd\fR \- informacja o kontach u¿ytkowników
-.br
-\fI/etc/shells\fR \- lista dozwolonych pow³ok zg³oszeniowych
-.SH ZOBACZ TAK¯E
-.BR chfn (1),
-.BR passwd (5)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+WyÅ›wietlenie komunikatu pomocy i zakoÅ„czenie dzia\(/lania\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shell\fR\fISHELL\fR
+.RS 4
+Nazwa nowej pow\(/loki (shell) uÅ¼ytkownika\&. Ustawienie tego pola na puste powoduje, Å¼e system wybierze domyÅ›lnÄ… pow\(/lokÄ™ logowania\&.
+.RE
+.PP
+JeÅ¼eli nie podano opcji
+\fB\-s\fR, to polecenie
+\fBchsh\fR
+dzia\(/la w trybie interaktywnym, proponujÄ…c uÅ¼ytkownikowi bieÅ¼Ä…cÄ… pow\(/lokÄ™ logowania\&. Wprowadzenie nowej wartoÅ›ci powoduje zmianÄ™ pow\(/loki, a podanie wartoÅ›ci pustej pozostawia bieÅ¼Ä…cÄ… pow\(/lokÄ™\&. BieÅ¼Ä…ca pow\(/loka wyÅ›wietlana jest w nawiasach
+\fI[ ]\fR
+.SH "UWAGI"
+.PP
+Jedynym ograniczeniem na\(/loÅ¼onym na pow\(/lokÄ™ zg\(/loszeniowÄ… jest to, Å¼e jej nazwa musi byÄ‡ wymieniona w
+/etc/shells, chyba Å¼e polecenie chsh zosta\(/lo uruchomione przez superuÅ¼ytkownika w\('owczas moÅ¼e byÄ‡ podana dowolna nazwa\&. UÅ¼ytkownicy kont z ograniczonÄ… pow\(/lokÄ… logowania nie mogÄ… jej zmieniaÄ‡\&. Odradza siÄ™ z tego powodu umieszczanie
+/bin/rsh
+w pliku
+/etc/shells, gdyÅ¼ przypadkowa zmiana na pow\(/lokÄ™ ograniczonÄ… uniemoÅ¼liwi uÅ¼ytkownikowi jakÄ…kolwiek zmianÄ™ pow\(/loki logowania, nawet z powrotem na dotychczasowÄ…\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBCHSH_AUTH\fR (boolean)
+.RS 4
+If
+\fIyes\fR, the
+\fBchsh\fR
+program will require authentication before making any changes, unless run by the superuser\&.
+.RE
+.PP
+\fBLOGIN_STRING\fR (string)
+.RS 4
+The string used for prompting a password\&. The default is to use "Password: ", or a translation of that string\&. If you set this variable, the prompt will no be translated\&.
+.sp
+If the string contains
+\fI%s\fR, this will be replaced by the user\'s name\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shells
+.RS 4
+Lista dozwolonych pow\(/lok zg\(/loszeniowych\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguracja pakietu shadow\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBchfn\fR(1),
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(5)\&.

@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2002 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,34 +13,34 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: failure.c,v 1.9 2003/04/25 21:11:08 kloczek Exp $")
+#ident "$Id: failure.c 2829 2009-04-28 19:14:50Z nekral-guest $"
+
 #include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "defines.h"
 #include "faillog.h"
 #include "getdef.h"
 #include "failure.h"
-
 #define	YEAR	(365L*DAY)
 /*
  * failure - make failure entry
@@ -48,23 +51,41 @@ RCSID ("$Id: failure.c,v 1.9 2003/04/25 21:11:08 kloczek Exp $")
 void failure (uid_t uid, const char *tty, struct faillog *fl)
 {
 	int fd;
+	off_t offset_uid = (off_t) (sizeof *fl) * uid;
 
 	/*
 	 * Don't do anything if failure logging isn't set up.
 	 */
 
-	if ((fd = open (FAILLOG_FILE, O_RDWR)) < 0)
+	if (access (FAILLOG_FILE, F_OK) != 0) {
 		return;
+	}
+
+	fd = open (FAILLOG_FILE, O_RDWR);
+	if (fd < 0) {
+		SYSLOG ((LOG_WARN,
+		         "Can't write faillog entry for UID %lu in %s.",
+		         (unsigned long) uid, FAILLOG_FILE));
+		return;
+	}
 
 	/*
-	 * The file is indexed by uid value meaning that shared UID's
+	 * The file is indexed by UID value meaning that shared UID's
 	 * share failure log records.  That's OK since they really
 	 * share just about everything else ...
 	 */
 
-	lseek (fd, (off_t) (sizeof *fl) * uid, SEEK_SET);
-	if (read (fd, (char *) fl, sizeof *fl) != sizeof *fl)
+	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
+	    || (read (fd, (char *) fl, sizeof *fl) != (ssize_t) sizeof *fl)) {
+		/* This is not necessarily a failure. The file is
+		 * initially zero length.
+		 *
+		 * If lseek() or read() failed for any other reason, this
+		 * might reset the counter. But the new failure will be
+		 * logged.
+		 */
 		memzero (fl, sizeof *fl);
+	}
 
 	/*
 	 * Update the record.  We increment the failure count to log the
@@ -73,11 +94,12 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 	 * updated as well.
 	 */
 
-	if (fl->fail_cnt + 1 > 0)
+	if (fl->fail_cnt + 1 > 0) {
 		fl->fail_cnt++;
+	}
 
 	strncpy (fl->fail_line, tty, sizeof fl->fail_line);
-	time (&fl->fail_time);
+	(void) time (&fl->fail_time);
 
 	/*
 	 * Seek back to the correct position in the file and write the
@@ -86,26 +108,34 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 	 * seem that great.
 	 */
 
-	lseek (fd, (off_t) (sizeof *fl) * uid, SEEK_SET);
-	write (fd, (char *) fl, sizeof *fl);
-	close (fd);
+	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
+	    || (write (fd, (char *) fl, sizeof *fl) != (ssize_t) sizeof *fl)
+	    || (close (fd) != 0)) {
+		SYSLOG ((LOG_WARN,
+		         "Can't write faillog entry for UID %lu in %s.",
+		         (unsigned long) uid, FAILLOG_FILE));
+		(void) close (fd);
+	}
 }
 
-static int too_many_failures (const struct faillog *fl)
+static bool too_many_failures (const struct faillog *fl)
 {
 	time_t now;
 
-	if (fl->fail_max == 0 || fl->fail_cnt < fl->fail_max)
-		return 0;
+	if ((0 == fl->fail_max) || (fl->fail_cnt < fl->fail_max)) {
+		return false;
+	}
 
-	if (fl->fail_locktime == 0)
-		return 1;	/* locked until reset manually */
+	if (0 == fl->fail_locktime) {
+		return true;	/* locked until reset manually */
+	}
 
-	time (&now);
-	if (fl->fail_time + fl->fail_locktime < now)
-		return 0;	/* enough time since last failure */
+	(void) time (&now);
+	if ((fl->fail_time + fl->fail_locktime) < now) {
+		return false;	/* enough time since last failure */
+	}
 
-	return 1;
+	return true;
 }
 
 /*
@@ -113,21 +143,35 @@ static int too_many_failures (const struct faillog *fl)
  *
  *	failcheck() is called AFTER the password has been validated.  If the
  *	account has been "attacked" with too many login failures, failcheck()
- *	returns FALSE to indicate that the login should be denied even though
+ *	returns 0 to indicate that the login should be denied even though
  *	the password is valid.
+ *
+ *	failed indicates if the login failed AFTER the password has been
+ *	       validated.
  */
 
-int failcheck (uid_t uid, struct faillog *fl, int failed)
+int failcheck (uid_t uid, struct faillog *fl, bool failed)
 {
 	int fd;
 	struct faillog fail;
+	off_t offset_uid = (off_t) (sizeof *fl) * uid;
 
 	/*
 	 * Suppress the check if the log file isn't there.
 	 */
 
-	if ((fd = open (FAILLOG_FILE, O_RDWR)) < 0)
+	if (access (FAILLOG_FILE, F_OK) != 0) {
 		return 1;
+	}
+
+	fd = open (FAILLOG_FILE, failed?O_RDONLY:O_RDWR);
+	if (fd < 0) {
+		SYSLOG ((LOG_WARN,
+		         "Can't open the faillog file (%s) to check UID %lu. "
+		         "User access authorized.",
+		         FAILLOG_FILE, (unsigned long) uid));
+		return 1;
+	}
 
 	/*
 	 * Get the record from the file and determine if the user has
@@ -141,14 +185,14 @@ int failcheck (uid_t uid, struct faillog *fl, int failed)
 	 * no need to reset the count.
 	 */
 
-	lseek (fd, (off_t) (sizeof *fl) * uid, SEEK_SET);
-	if (read (fd, (char *) fl, sizeof *fl) != sizeof *fl) {
-		close (fd);
+	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
+	    || (read (fd, (char *) fl, sizeof *fl) != (ssize_t) sizeof *fl)) {
+		(void) close (fd);
 		return 1;
 	}
 
 	if (too_many_failures (fl)) {
-		close (fd);
+		(void) close (fd);
 		return 0;
 	}
 
@@ -163,10 +207,18 @@ int failcheck (uid_t uid, struct faillog *fl, int failed)
 		fail = *fl;
 		fail.fail_cnt = 0;
 
-		lseek (fd, (off_t) sizeof fail * uid, SEEK_SET);
-		write (fd, (char *) &fail, sizeof fail);
+		if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
+		    || (write (fd, (const void *) &fail, sizeof fail) != (ssize_t) sizeof fail)
+		    || (close (fd) != 0)) {
+			SYSLOG ((LOG_WARN,
+			         "Can't reset faillog entry for UID %lu in %s.",
+			         (unsigned long) uid, FAILLOG_FILE));
+			(void) close (fd);
+		}
+	} else {
+		(void) close (fd);
 	}
-	close (fd);
+
 	return 1;
 }
 
@@ -184,63 +236,65 @@ void failprint (const struct faillog *fail)
 #if HAVE_STRFTIME
 	char lasttimeb[256];
 	char *lasttime = lasttimeb;
-	const char *fmt;
 #else
 	char *lasttime;
 #endif
 	time_t NOW;
 
-	if (fail->fail_cnt == 0)
+	if (0 == fail->fail_cnt) {
 		return;
+	}
 
 	tp = localtime (&(fail->fail_time));
-	time (&NOW);
+	(void) time (&NOW);
 
 #if HAVE_STRFTIME
 	/*
-	 * Only print as much date and time info as it needed to
-	 * know when the failure was.
+	 * Print all information we have.
 	 */
-
-	if (NOW - fail->fail_time >= YEAR)
-		fmt = "%Y";
-	else if (NOW - fail->fail_time >= DAY)
-		fmt = "%A %T";
-	else
-		fmt = "%T";
-	strftime (lasttimeb, sizeof lasttimeb, fmt, tp);
+	(void) strftime (lasttimeb, sizeof lasttimeb, "%c", tp);
 #else
 
 	/*
 	 * Do the same thing, but don't use strftime since it
 	 * probably doesn't exist on this system
 	 */
-
 	lasttime = asctime (tp);
 	lasttime[24] = '\0';
 
-	if (NOW - fail->fail_time < YEAR)
+	if ((NOW - fail->fail_time) < YEAR) {
 		lasttime[19] = '\0';
-	if (NOW - fail->fail_time < DAY)
+	}
+	if ((NOW - fail->fail_time) < DAY) {
 		lasttime = lasttime + 11;
+	}
 
-	if (*lasttime == ' ')
+	if (' ' == *lasttime) {
 		lasttime++;
+	}
 #endif
-	printf (_("%d %s since last login.  Last was %s on %s.\n"),
-		fail->fail_cnt,
-		fail->fail_cnt > 1 ? _("failures") : _("failure"),
-		lasttime, fail->fail_line);
+	(void) printf (ngettext ("%d failure since last login.\n"
+	                         "Last was %s on %s.\n",
+	                         "%d failures since last login.\n"
+	                         "Last was %s on %s.\n",
+	                         (unsigned long) fail->fail_cnt),
+	               fail->fail_cnt, lasttime, fail->fail_line);
 }
 
 /*
- * failtmp - update the cummulative failure log
+ * failtmp - update the cumulative failure log
  *
  *	failtmp updates the (struct utmp) formatted failure log which
  *	maintains a record of all login failures.
  */
 
-void failtmp (const struct utmp *failent)
+void failtmp (const char *username,
+#ifdef USE_UTMPX
+		     const struct utmpx *failent
+#else				/* !USE_UTMPX */
+		     const struct utmp *failent
+#endif				/* !USE_UTMPX */
+    )
 {
 	char *ftmp;
 	int fd;
@@ -250,21 +304,38 @@ void failtmp (const struct utmp *failent)
 	 * in login.defs, don't do this.
 	 */
 
-	if (!(ftmp = getdef_str ("FTMP_FILE")))
+	ftmp = getdef_str ("FTMP_FILE");
+	if (NULL == ftmp) {
 		return;
+	}
 
 	/*
 	 * Open the file for append.  It must already exist for this
 	 * feature to be used.
 	 */
 
-	if ((fd = open (ftmp, O_WRONLY | O_APPEND)) == -1)
+	if (access (ftmp, F_OK) != 0) {
 		return;
+	}
+
+	fd = open (ftmp, O_WRONLY | O_APPEND);
+	if (-1 == fd) {
+		SYSLOG ((LOG_WARN,
+		         "Can't append failure of user %s to %s.",
+		         username, ftmp));
+		return;
+	}
 
 	/*
-	 * Output the new failure record and close the log file.
+	 * Append the new failure record and close the log file.
 	 */
 
-	write (fd, (const char *) failent, sizeof *failent);
-	close (fd);
+	if (   (write (fd, (const void *) failent, sizeof *failent) != (ssize_t) sizeof *failent)
+	    || (close (fd) != 0)) {
+		SYSLOG ((LOG_WARN,
+		         "Can't append failure of user %s to %s.",
+		         username, ftmp));
+		(void) close (fd);
+	}
 }
+

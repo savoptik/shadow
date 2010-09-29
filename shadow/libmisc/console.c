@@ -1,5 +1,9 @@
 /*
- * Copyright 1991, Julianne Frances Haugh and Chip Rosenthal
+ * Copyright (c) 1991       , Julianne Frances Haugh
+ * Copyright (c) 1991       , Chip Rosenthal
+ * Copyright (c) 1996 - 1998, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,37 +14,40 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 #include "defines.h"
 #include <stdio.h>
 #include "getdef.h"
+#include "prototypes.h"
 
-#include "rcsid.h"
-RCSID ("$Id: console.c,v 1.6 2003/04/22 10:59:21 kloczek Exp $")
+#ident "$Id: console.c 2929 2009-05-16 18:19:24Z nekral-guest $"
+
+/* local function prototypes */
+static bool is_listed (const char *cfgin, const char *tty, bool def);
 
 /*
  * This is now rather generic function which decides if "tty" is listed
  * under "cfgin" in config (directly or indirectly). Fallback to default if
  * something is bad.
  */
-int is_listed (const char *cfgin, const char *tty, int def)
+static bool is_listed (const char *cfgin, const char *tty, bool def)
 {
 	FILE *fp;
 	char buf[200], *cons, *s;
@@ -50,8 +57,10 @@ int is_listed (const char *cfgin, const char *tty, int def)
 	 * fallback to default.
 	 */
 
-	if ((cons = getdef_str (cfgin)) == NULL)
+	cons = getdef_str (cfgin);
+	if (NULL == cons) {
 		return def;
+	}
 
 	/*
 	 * If this isn't a filename, then it is a ":" delimited list of
@@ -59,14 +68,15 @@ int is_listed (const char *cfgin, const char *tty, int def)
 	 */
 
 	if (*cons != '/') {
-		cons = strcpy (buf, cons);
-		while ((s = strtok (cons, ":")) != NULL) {
-			if (strcmp (s, tty) == 0)
-				return 1;
+		strcpy (buf, cons);
+		while ((s = strtok (buf, ":")) != NULL) {
+			if (strcmp (s, tty) == 0) {
+				return true;
+			}
 
 			cons = NULL;
 		}
-		return 0;
+		return false;
 	}
 
 	/*
@@ -74,18 +84,20 @@ int is_listed (const char *cfgin, const char *tty, int def)
 	 * console - otherwise root will never be allowed to login.
 	 */
 
-	if ((fp = fopen (cons, "r")) == NULL)
+	fp = fopen (cons, "r");
+	if (NULL == fp) {
 		return def;
+	}
 
 	/*
 	 * See if this tty is listed in the console file.
 	 */
 
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	while (fgets (buf, (int) sizeof (buf), fp) != NULL) {
 		buf[strlen (buf) - 1] = '\0';
 		if (strcmp (buf, tty) == 0) {
 			(void) fclose (fp);
-			return 1;
+			return true;
 		}
 	}
 
@@ -94,7 +106,7 @@ int is_listed (const char *cfgin, const char *tty, int def)
 	 */
 
 	(void) fclose (fp);
-	return 0;
+	return false;
 }
 
 /*
@@ -107,7 +119,12 @@ int is_listed (const char *cfgin, const char *tty, int def)
  * that would allow an unauthorized root login.
  */
 
-int console (const char *tty)
+bool console (const char *tty)
 {
-	return is_listed ("CONSOLE", tty, 1);
+	if (strncmp (tty, "/dev/", 5) == 0) {
+		tty += 5;
+	}
+
+	return is_listed ("CONSOLE", tty, true);
 }
+

@@ -1,71 +1,91 @@
-.\" $Id: newgrp.1,v 1.8 2003/04/26 13:24:15 kloczek Exp $
-.\" {PTM/WK/1999-09-15}
-.\" Copyright 1991, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: newgrp
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia uÅ¼ytkownik\('ow
+.\"    Source: Polecenia uÅ¼ytkownik\('ow
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH NEWGRP 1
-.SH NAZWA
-newgrp \- zalogowanie do nowej grupy
-.br
-sg \- wykonanie polecenia z innym ID grupy
-.SH SK£ADNIA
-\fBnewgrp\fR [\fB-\fR] [\fIgrupa\fR]
-.br
-\fBsg\fR [\fB-\fR] [\fIgrupa\fR [[\fB-c\fR] \fIpolecenie\fR]]
-.SH OPIS
-.B newgrp
-s³u¿y do zmiany bie¿±cego identyfikatora grupy (GID) podczas sesji.
-W przypadku podania opcji \fB\-\fR ¶rodowisko u¿ytkownika zostanie
-ponownie zainicjowane, tak jak wówczas, gdy u¿ytkownik siê loguje. Je¿eli
-opcja \fB\-\fR nie zostanie u¿yta, to bie¿±ce ¶rodowisko, ³±cznie z bie¿±cym
-katalogiem roboczym, pozostaje niezmienione.
+.TH "NEWGRP" "1" "07/24/2009" "Polecenia uÅ¼ytkownik\('ow" "Polecenia uÅ¼ytkownik\('ow"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+newgrp \- log in to a new group
+.SH "SK\(/LADNIA"
+.HP \w'\fBnewgrp\fR\ 'u
+\fBnewgrp\fR [\-] [\fIgroup\fR]
+.SH "OPIS"
 .PP
-\fBnewgrp\fR zmienia bie¿±cy rzeczywisty identyfikator grupy na identyfikator
-podanej grupy lub, je¶li nie podano nazwy grupy, na identyfikator grupy
-domy¶lnej, wyszczególnionej w \fI/etc/passwd\fR. Je¿eli grupa posiada has³o,
-za¶ u¿ytkownik nie ma has³a b±d¼ nie jest jej cz³onkiem, to zostanie poproszony
-o podanie has³a. Je¿eli has³o grupy jest puste za¶ u¿ytkownik nie jest jej
-cz³onkiem, to efektem bêdzie odmowa dostêpu.
+The
+\fBnewgrp\fR
+command is used to change the current group ID during a login session\&. If the optional
+\fB\-\fR
+flag is given, the user\'s environment will be reinitialized as though the user had logged in, otherwise the current environment, including current working directory, remains unchanged\&.
 .PP
-Polecenie fBsg\fR dzia³a podobnie do \fBnewgrp\fR, z tym ¿e mo¿na mu podaæ
-polecenie. Podane polecenie zostanie wykonane przy u¿yciu pow³oki Bourne'a.
-W przypadku wiêkszo¶ci pow³ok, z których \fBsg\fR mo¿e zostaæ uruchomione,
-polecenie sk³adaj±ce siê z wielu s³ów nale¿y umie¶ciæ w cudzys³owach. 
-Inna ró¿nica pomiêdzy \fBnewgrp\fR a \fBsg\fR polega na tym, ¿e niektóre
-pow³oki traktuj± \fBnewgrp\fR w sposób specjalny, zastêpuj±c siebie przez
-now± kopiê pow³oki, któr± tworzy \fBnewgrp\fR. Nie zdarza siê to w przypadku
-\fBsg\fR, wiêc po zakoñczeniu \fBsg\fR u¿ytkownik powraca do swego
-poprzedniego identyfikatora grupy.
-.SH PLIKI
-\fI/etc/passwd\fR \- informacja o kontach u¿ytkowników
-.br
-\fI/etc/group\fR \- informacja o grupach
-.SH ZOBACZ TAK¯E
-.BR id (1),
-.BR login (1),
-.BR su (1)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+
+\fBnewgrp\fR
+changes the current real group ID to the named group, or to the default group listed in
+/etc/passwd
+if no group name is given\&.
+\fBnewgrp\fR
+also tries to add the group to the user groupset\&. If not root, the user will be prompted for a password if she does not have a password (in
+/etc/shadow
+if this user has an entry in the shadowed password file, or in
+/etc/passwd
+otherwise) and the group does, or if the user is not listed as a member and the group has a password\&. The user will be denied access if the group password is empty and the user is not listed as a member\&.
+.PP
+If there is an entry for this group in
+/etc/gshadow, then the list of members and the password of this group will be taken from this file, otherwise, the entry in
+/etc/group
+is considered\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBSYSLOG_SG_ENAB\fR (boolean)
+.RS 4
+Enable "syslog" logging of
+\fBsg\fR
+activity\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.PP
+/etc/group
+.RS 4
+Informacje o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informacje chronione o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+
+\fBid\fR(1),
+\fBlogin\fR(1),
+\fBsu\fR(1),
+\fBsg\fR(1),
+\fBgpasswd\fR(1),
+\fBgroup\fR(5), \fBgshadow\fR(5)\&.

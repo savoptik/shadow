@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2001, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,27 +13,27 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 4. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: chowntty.c,v 1.10 2003/04/22 10:59:21 kloczek Exp $")
+#ident "$Id: chowntty.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -40,31 +43,14 @@ RCSID ("$Id: chowntty.c,v 1.10 2003/04/22 10:59:21 kloczek Exp $")
 #include "defines.h"
 #include <pwd.h>
 #include "getdef.h"
-/*
- * is_my_tty -- determine if "tty" is the same as TTY stdin is using
- */
-static int is_my_tty (const char *tty)
-{
-	struct stat by_name, by_fd;
-
-	if (stat (tty, &by_name) || fstat (0, &by_fd))
-		return 0;
-
-	if (by_name.st_rdev != by_fd.st_rdev)
-		return 0;
-	else
-		return 1;
-}
 
 /*
  *	chown_tty() sets the login tty to be owned by the new user ID
  *	with TTYPERM modes
  */
 
-void chown_tty (const char *tty, const struct passwd *info)
+void chown_tty (const struct passwd *info)
 {
-	char buf[200], full_tty[200];
-	char *group;		/* TTY group name or number */
 	struct group *grent;
 	gid_t gid;
 
@@ -73,46 +59,32 @@ void chown_tty (const char *tty, const struct passwd *info)
 	 * ID.  Otherwise, use the user's primary group ID.
 	 */
 
-	if (!(group = getdef_str ("TTYGROUP")))
-		gid = info->pw_gid;
-	else if (group[0] >= '0' && group[0] <= '9')
-		gid = atoi (group);
-	else if ((grent = getgrnam (group)))
+	grent = getgr_nam_gid (getdef_str ("TTYGROUP"));
+	if (NULL != grent) {
 		gid = grent->gr_gid;
-	else
+	} else {
 		gid = info->pw_gid;
+	}
 
 	/*
 	 * Change the permissions on the TTY to be owned by the user with
 	 * the group as determined above.
 	 */
 
-	if (*tty != '/') {
-		snprintf (full_tty, sizeof full_tty, "/dev/%s", tty);
-		tty = full_tty;
-	}
-
-	if (!is_my_tty (tty)) {
-		SYSLOG ((LOG_WARN,
-			 "unable to determine TTY name, got %s\n", tty));
-		closelog ();
-		exit (1);
-	}
-
-	if (chown (tty, info->pw_uid, gid) ||
-	    chmod (tty, getdef_num ("TTYPERM", 0600))) {
+	if (   (fchown (STDIN_FILENO, info->pw_uid, gid) != 0)
+	    || (fchmod (STDIN_FILENO, getdef_num ("TTYPERM", 0600)) != 0)) {
 		int err = errno;
 
-		snprintf (buf, sizeof buf, _("Unable to change tty %s"),
-			  tty);
-		perror (buf);
+		fprintf (stderr,
+		         _("Unable to change owner or mode of tty stdin: %s"),
+		         strerror (err));
 		SYSLOG ((LOG_WARN,
-			 "unable to change tty `%s' for user `%s'\n", tty,
-			 info->pw_name));
-		closelog ();
-
-		if (!(err == EROFS && info->pw_uid == 0))
-			exit (1);
+		         "unable to change owner or mode of tty stdin for user `%s': %s\n",
+		         info->pw_name, strerror (err)));
+		if (EROFS != err) {
+			closelog ();
+			exit (EXIT_FAILURE);
+		}
 	}
 #ifdef __linux__
 	/*
@@ -124,3 +96,4 @@ void chown_tty (const char *tty, const struct passwd *info)
 	 */
 #endif
 }
+

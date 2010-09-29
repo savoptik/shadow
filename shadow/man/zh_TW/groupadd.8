@@ -1,3 +1,4 @@
+.\" $Id: groupadd.8 1342 2007-11-10 23:46:11Z nekral-guest $
 .\" Copyright 1991, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
@@ -24,62 +25,57 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: groupadd.8,v 1.3 2004/01/05 01:08:38 kloczek Exp $
-.\"
 .TH GROUPADD 8
-.SH ¦WºÙ
-groupadd \- «Ø ¥ß ·s ¸s ²Õ
-.SH »yªk
-\fBgroupadd\fR [\fB-g\fI gid \fR[\fB-o\fR]] [\fB-f\fR] \fIgroup\fR
-.SH ´y­z
+.SH åç¨±
+groupadd \- å»º ç«‹ æ–° ç¾¤ çµ„
+.SH èªžæ³•
+\fBgroupadd\fR [\fB\-g\fR \fIgid\fR [\fB\-o\fR]] [\fB\-f\fR] \fIgroup\fR
+.SH æè¿°
 \fBgroupadd\fR
-¥i «ü ©w ¸s ²Õ ¦W ºÙ ¨Ó «Ø ¥ß ·s ªº ¸s ²Õ ±b ¸¹ ¡C
-»Ý ­n ®É ¥i ±q ¨t ²Î ¤¤ ¨ú ±o ·s ¸s ²Õ ­È ¡C
-\fBgroupadd\fR ¦³ ¤U ¦C ¿ï ¶µ ¥i ¥Î ¡C
-.IP "\fB-g \fIgid\fR"
-group's ID ­È ¡C
-°£  «D ¨Ï ¥Î \fB-o\fR °Ñ ¼Æ ¤£ µM ¸Ó ­È ¥² ¶· ¬O °ß ¤@ ¡A ¤£ ¥i ¬Û ¦P ¡C
-¼Æ ­È ¤£ ¥i ¬° ­t ¡C
-¹w ³] ¬° ³Ì ¤p  ¤£  ±o ¤p ©ó 500 ¦Ó ³v ¦¸ ¼W ¥[ ¡C 0~499 ¶Ç ²Î ¤W
-¬O «O ¯d µ¹ \fI¨t²Î±b¸¹\fR ¨Ï ¥Î ¡C
-.IP \fB-r\fR
-
-
-¦¹ °Ñ ¼Æ ¬O ¥Î ¨Ó «Ø ¥ß \fI¨t²Î±b¸¹\fR ¡C
-ªº  UID ·| ¤ñ ©w ¸q ¦b ¨t ²Î ÀÉ ¤W /etc/login.defs.
-ªº UID_MIN ¨Ó ªº ¤p ¡C ª` ·N useradd ¦¹ ¥Î ªk ©Ò «Ø
-¥ß  ªº ±b ¸¹ ¤£ ·| «Ø ¥ß ¨Ï ¥Î ªÌ ¥Ø ¿ý ¡A ¤] ¤£ ·|
-¦b ¥G ¬ö ¿ý ¦b /etc/login.defs. ªº ©w ¸q ­È  ¡C  ¦p
-ªG  §A ·Q ­n ¦³ ¨Ï ¥Î ªÌ ¥Ø ¿ý ¶· ÃB ¥~ «ü ©w -m °Ñ
-¼Æ ¨Ó «Ø ¥ß ¨t ²Î ±b ¸¹ ¡C ³o ¬O RED HAT ÃB  ¥~  ¼W
-³] ªº ¿ï ¶µ ¡C
-¥¦ ·| ¦Û °Ê À° §A ¿ï ©w ¤@ ­Ó ¤p ©ó 499 ªº \fIgif\fR
-¤£ »Ý ­n ¦A ¥[ ¤W \fB-g\fR °Ñ ¼Æ ¡C
-.br
-³o ¬O RED HAT ÃB  ¥~  ¼W ³] ªº ¿ï ¶µ ¡C
-
-.IP \fB-f\fR
+å¯ æŒ‡ å®š ç¾¤ çµ„ å ç¨± ä¾† å»º ç«‹ æ–° çš„ ç¾¤ çµ„ å¸³ è™Ÿ ã€‚
+éœ€ è¦ æ™‚ å¯ å¾ž ç³» çµ± ä¸­ å– å¾— æ–° ç¾¤ çµ„ å€¼ ã€‚
+\fBgroupadd\fR æœ‰ ä¸‹ åˆ— é¸ é … å¯ ç”¨ ã€‚
+.IP \fB\-f\fR
 This is \fIforce\fR flag. 
-·s ¼W ¤@ ­Ó ¤w ¸g ¦s ¦b ªº ¸s ²Õ ±b ¸¹ ¡A ¨t ²Î ·| ¥X
-²{ ¿ù »~ °T ®§ µM «á µ² §ô \fBgroupadd\fR ¡C
- ¦p ªG ¬O ³o ¼Ë ªº ±¡ ªp ¡A ¤£ ·| ·s ¼W ³o ­Ó ¸s ²Õ 
-( ¦p ªG ¬O ³o ­Ó ±¡ ªp ¤U ¡A ¨t ²Î ¤£ ·| ¦A ·s ¼W ¤@ ¦¸ )
+æ–° å¢ž ä¸€ å€‹ å·² ç¶“ å­˜ åœ¨ çš„ ç¾¤ çµ„ å¸³ è™Ÿ ï¼Œ ç³» çµ± æœƒ å‡º
+ç¾ éŒ¯ èª¤ è¨Š æ¯ ç„¶ å¾Œ çµ æŸ \fBgroupadd\fR ã€‚
+ å¦‚ æžœ æ˜¯ é€™ æ¨£ çš„ æƒ… æ³ ï¼Œ ä¸ æœƒ æ–° å¢ž é€™ å€‹ ç¾¤ çµ„ 
+( å¦‚ æžœ æ˜¯ é€™ å€‹ æƒ… æ³ ä¸‹ ï¼Œ ç³» çµ± ä¸ æœƒ å† æ–° å¢ž ä¸€ æ¬¡ )
 .br
-¤] ¥i ¦P ®É ¥[ ¤W \fB-g\fR ¿ï ¶µ
-·í §A ¥[ ¤W ¤@ ­Ó \fIgid\fR ¡A ¦¹ ®É  \fIgid\fR
-´N ¤£ ¥Î ¬O °ß ¤@ ­È ¡A ¥i ¤£ ¥[ \fB-o\fR °Ñ ¼Æ ¡A
-«Ø ¦n ¸s ²Õ «á ·| Åã µ² ªG  
-(adding a group as neither \fB-g\fR or \fB-o\fR options were
+ä¹Ÿ å¯ åŒ æ™‚ åŠ  ä¸Š \fB\-g\fR é¸ é …
+ç•¶ ä½  åŠ  ä¸Š ä¸€ å€‹ \fIgid\fR ï¼Œ æ­¤ æ™‚  \fIgid\fR
+å°± ä¸ ç”¨ æ˜¯ å”¯ ä¸€ å€¼ ï¼Œ å¯ ä¸ åŠ  \fB\-o\fR åƒ æ•¸ ï¼Œ
+å»º å¥½ ç¾¤ çµ„ å¾Œ æœƒ é¡¯ çµ æžœ  
+(adding a group as neither \fB\-g\fR or \fB\-o\fR options were
 specified).
 
+.IP "\fB\-g \fIgid\fR"
+group's ID å€¼ ã€‚
+é™¤  éž ä½¿ ç”¨ \fB\-o\fR åƒ æ•¸ ä¸ ç„¶ è©² å€¼ å¿… é ˆ æ˜¯ å”¯ ä¸€ ï¼Œ ä¸ å¯ ç›¸ åŒ ã€‚
+æ•¸ å€¼ ä¸ å¯ ç‚º è²  ã€‚
+é  è¨­ ç‚º æœ€ å°  ä¸  å¾— å° æ–¼ 500 è€Œ é€ æ¬¡ å¢ž åŠ  ã€‚ 0~999 å‚³ çµ± ä¸Š
+æ˜¯ ä¿ ç•™ çµ¦ \fIç³»çµ±å¸³è™Ÿ\fR ä½¿ ç”¨ ã€‚
+.IP \fB\-r\fR
+æ­¤ åƒ æ•¸ æ˜¯ ç”¨ ä¾† å»º ç«‹ \fIç³»çµ±å¸³è™Ÿ\fR ã€‚
+çš„  UID æœƒ æ¯” å®š ç¾© åœ¨ ç³» çµ± æª” ä¸Š /etc/login.defs.
+çš„ UID_MIN ä¾† çš„ å° ã€‚ æ³¨ æ„ useradd æ­¤ ç”¨ æ³• æ‰€ å»º
+ç«‹  çš„ å¸³ è™Ÿ ä¸ æœƒ å»º ç«‹ ä½¿ ç”¨ è€… ç›® éŒ„ ï¼Œ ä¹Ÿ ä¸ æœƒ
+åœ¨ ä¹Ž ç´€ éŒ„ åœ¨ /etc/login.defs. çš„ å®š ç¾© å€¼  ã€‚  å¦‚
+æžœ  ä½  æƒ³ è¦ æœ‰ ä½¿ ç”¨ è€… ç›® éŒ„ é ˆ é¡ å¤– æŒ‡ å®š \-m åƒ
+æ•¸ ä¾† å»º ç«‹ ç³» çµ± å¸³ è™Ÿ ã€‚ é€™ æ˜¯ RED HAT é¡  å¤–  å¢ž
+è¨­ çš„ é¸ é … ã€‚
+å®ƒ æœƒ è‡ª å‹• å¹« ä½  é¸ å®š ä¸€ å€‹ å° æ–¼ 999 çš„ \fIgif\fR
+ä¸ éœ€ è¦ å† åŠ  ä¸Š \fB\-g\fR åƒ æ•¸ ã€‚
 .br
-³o ¬O RED HAT ÃB  ¥~  ¼W ³] ªº ¿ï ¶µ ¡C
-.SH ÀÉ®×
-\fI/etc/group\fR \- ¸s ²Õ ¸ê °T
+é€™ æ˜¯ RED HAT é¡  å¤–  å¢ž è¨­ çš„ é¸ é … ã€‚
+
 .br
-\fI/etc/gshadow\fR \- ¸s ²Õ ¸ê °T ¥[ ±K
-.SH ¬ÛÃö¤å¥ó
+é€™ æ˜¯ RED HAT é¡  å¤–  å¢ž è¨­ çš„ é¸ é … ã€‚
+.SH æª”æ¡ˆ
+\fI/etc/group\fR \- ç¾¤ çµ„ è³‡ è¨Š
+.br
+\fI/etc/gshadow\fR \- ç¾¤ çµ„ è³‡ è¨Š åŠ  å¯†
+.SH ç›¸é—œæ–‡ä»¶
 .BR chfn (1),
 .BR chsh (1),
 .BR useradd (8),
@@ -88,5 +84,5 @@ specified).
 .BR passwd (1),
 .BR groupdel (8),
 .BR groupmod (8)
-.SH §@ªÌ
+.SH ä½œè€…
 Julianne Frances Haugh (jfh@tab.com)

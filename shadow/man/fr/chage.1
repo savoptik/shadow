@@ -1,113 +1,158 @@
-.\" Copyright 1990 - 1994 Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: chage
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24/07/2009
+.\"    Manual: Commandes utilisateur
+.\"    Source: Commandes utilisateur
+.\"  Language: French
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"	$Id: chage.1,v 1.2 2003/04/26 13:24:12 kloczek Exp $
-.\"
-.TH CHAGE 1 "1 Novembre 2001"
-.SH NOM
-chage \- Changer les informations d'expiration du mot de passe d'un
-utilisateur.
-.SH SYNOPSIS
-.TP 6
+.TH "CHAGE" "1" "24/07/2009" "Commandes utilisateur" "Commandes utilisateur"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOM"
+chage \- Modifier les informations de validit\('e d\'un mot de passe
+.SH "SYNOPSIS"
+.HP \w'\fBchage\fR\ 'u
+\fBchage\fR [\fIoptions\fR] [\fILOGIN\fR]
+.SH "DESCRIPTION"
+.PP
+La commande
 \fBchage\fR
-[\fB-m \fImin\fR] [\fB-M \fImax\fR]
-[\fB-d \fIdernier\fR] [\fB-I \fIinactive\fR]
-.br
-[\fB-E \fIexpire\fR] [\fB-W \fIalerte\fR] \fIutilisateur\fR
-.TP 6
+modifie le nombre de jours entre les changements de mot de passe et la date du dernier changement\&. Ces informations sont utilis\('ees par le syst\(`eme pour d\('eterminer si un utilisateur doit changer son mot de passe\&.
+.SH "OPTIONS"
+.PP
+Les options disponibles pour la commande
 \fBchage\fR
-\fB-l\fR \fIutilisateur\fR
-.SH DESCRIPTION
-\fBchage\fR modifie le nombre de jours entre les changements de mot de passe
-ainsi que la date du dernier changement.
-Cette information est utilisée par le système pour déterminer quand un
-utilisateur doit changer son mot de passe.
-La commande \fBchage\fR est réservée au Super-utilisateur, sauf pour l'option
-\fB-l\fR, qui peut être utilisée par un utilisateur non privilégié pour savoir
-quand son mot de passe ou sont compte doit expirer.
+sont\ \&:
 .PP
-Avec l'option \fB-m\fR, la valeur de \fImin\fR représente le nombre minimum
-de jours entre chaque changement de mot de passe.
-Une valeur de zéro pour ce champ indique que l'utilisateur peut changer
-son mot de passe n'importe quand.
+\fB\-d\fR, \fB\-\-lastday\fR \fIDERNIER_JOUR\fR
+.RS 4
+Fixer le nombre du jour, \(`a compter du 1er janvier 1970, o\(`u le mot de passe a \('et\('e chang\('e la derni\(`ere fois\&. La date peut aussi \(^etre exprim\('ee dans le format AAAA\-MM\-JJ (ou le format utilis\('e plus commun\('ement dans votre r\('egion)\&.
+.RE
 .PP
-Avec l'option \fB-M\fR, la valeur de \fImax\fR représente le nombre maximum
-de jours pendant lesquels un mot de passe est valide.
-Quand \fImax\fR plus \fIdernier\fR est inférieur à la date courante,
-l'utilisateur est obligé de changer son mot de passe avant de pouvoir
-utiliser son compte.
-Cet évènement peut être déclenché plus tôt grâce à l'option \fB-W\fR
-qui prévient l'utilisateur à l'avance avec un message d'alerte.
+\fB\-E\fR, \fB\-\-expiredate\fR \fIDATE_FIN_VALIDIT\('E\fR
+.RS 4
+Fixer la date, ou le nombre de jours \(`a compter du 1er janvier 1970, \(`a partir de laquelle le compte de l\'utilisateur ne sera plus accessible\&. La date peut aussi \(^etre exprim\('ee dans le format AAAA\-MM\-JJ (ou le format plus commun\('ement utilis\('e dans votre r\('egion)\&. Un utilisateur dont le compte est bloqu\('e doit contacter l\'administrateur syst\(`eme pour pouvoir utiliser \(`a nouveau le syst\(`eme\&.
+.sp
+Une valeur de
+\fI\-1\fR
+pour
+\fIDATE_FIN_VALIDIT\('E\fR
+aura pour effet de supprimer la date de fin de validit\('e\&.
+.RE
 .PP
-Avec l'option \fB-d\fR, la valeur \fIdernier\fR est le numéro du
-jour depuis le 1er Janvier 1970, où le mot de passe a été changé la
-dernière fois.
-La date peut aussi être exprimée dans le format YYYY-MM-DD (ou le format
-utilisé plus communément dans votre région).
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Afficher un message d\'aide et quitter\&.
+.RE
 .PP
-L'option \fB-E\fR est utilisée pour définir une date à partir de laquelle
-le compte de l'utilisateur ne sera plus accessible.
-La valeur \fIexpire\fR est le numéro du jour depuis le 1er Janvier 1970
-après lequel le compte sera bloqué.
-La date peut aussi être exprimée dans un format YYYY-MM-DD (ou le format
-plus communément utilisé dans votre région).
-Un utilisateur dont le compte est bloqué doit contacter l'administrateur
-système pour pouvoir utiliser le système à nouveau.
+\fB\-I\fR, \fB\-\-inactive\fR \fIDUR\('EE_INACTIVIT\('E\fR
+.RS 4
+Fixer le nombre de jours d\'inactivit\('e, apr\(`es qu\'un mot de passe ait d\('epass\('e la date de fin de validit\('e, avant que le compte ne soit bloqu\('e\&. La valeur
+\fIDUR\('EE_INACTIVIT\('E\fR
+est le nombre de jours d\'inactivit\('e\&. Un utilisateur dont le compte est bloqu\('e doit contacter l\'administrateur syst\(`eme avant de pouvoir utiliser de nouveau le syst\(`eme\&.
+.sp
+Une valeur de
+\fI\-1\fR
+pour
+\fIDUR\('EE_INACTIVIT\('E\fR
+supprime la dur\('ee d\'inactivit\('e pour un compte\&.
+.RE
 .PP
-L'option \fB-I\fR est utilisée pour définir le nombre de jours d'inactivité,
-après qu'un mot de passe a expiré, avant que le compte ne soit bloqué.
-Un utilisateur dont le compte est bloqué doit contacter l'administrateur
-système avant de pouvoir utiliser le système à nouveau.
-La valeur \fIinactive\fR est le nombre de jours d'inactivité. Une valeur
-de 0 désactive cette fonction.
+\fB\-l\fR, \fB\-\-list\fR
+.RS 4
+Afficher les informations sur l\'\(^age des comptes\&.
+.RE
 .PP
-L'option \fB-W\fR est utilisée pour définir le nombre de jours d'alerte
-avant que le changement de mot de passe ne soit obligatoire.
-La valeur \fIalerte\fR est le nombre de jours précédent l'expiration
-pendant lesquels un utilisateur sera prévenu que son mot de passe est
-sur le point d'expirer.
+\fB\-m\fR, \fB\-\-mindays\fR \fIJOURS_MIN\fR
+.RS 4
+D\('efinit le nombre minimum de jours entre chaque changement de mot de passe \(`a
+\fIMIN_DAYS\fR\&. Une valeur de z\('ero pour ce champ indique que l\'utilisateur peut changer son mot de passe quand il le souhaite\&.
+.RE
 .PP
-Toutes les valeurs ci-dessus sont stockées au jour près quand le fichier
-«\~shadow password\~» est utilisé, mais sont converties en semaines
-quand le fichier de mots de passe standard est utilisé.
-À cause de cette conversion, des erreurs d'arrondis peuvent apparaître.
+\fB\-M\fR, \fB\-\-maxdays\fR \fIJOURS_MAX\fR
+.RS 4
+Fixer le nombre maximum de jours pendant lesquels un mot de passe est valable\&. Quand
+\fIJOURS_MAX\fR
+plus
+\fIDERNIER_JOUR\fR
+est inf\('erieur \(`a la date actuelle, l\'utilisateur est oblig\('e de changer son mot de passe avant de pouvoir utiliser son compte\&. Cet \('ev\('enement peut \(^etre d\('eclench\('e plus t\(^ot gr\(^ace \(`a l\'option
+\fB\-W\fR
+qui pr\('evient l\'utilisateur \(`a l\'avance par un message d\'alerte\&.
+.sp
+Une valeur de
+\fI\-1\fR
+pour
+\fIJOURS_MAX\fR
+supprime la v\('erification de validit\('e\&.
+.RE
 .PP
-Si aucune de ces options n'est donnée, \fBchage\fR utilise un mode
-interactif, demandant confirmation à l'utilisateur pour les valeurs de tous
-les champs. Entrez la nouvelle valeur pour changer la valeur du champ, ou
-laissez la ligne vide pour utiliser la valeur courante.
-La valeur courante est affichée entre crochets.
-.SH FICHIERS
-\fI/etc/passwd\fR \- informations des comptes utilisateurs.
-.br
-\fI/etc/shadow\fR \- fichier «\~shadow password\~».
-.SH VOIR AUSSI
-.BR passwd (5),
-.BR shadow (5)
-.SH TRADUCTION
-Olivier Marin, 2001.
-
+\fB\-W\fR, \fB\-\-warndays\fR \fIDUR\('EE_AVERTISSEMENT\fR
+.RS 4
+Fixer le nombre de jours d\'avertissement avant que le changement de mot de passe ne soit obligatoire\&. La valeur
+\fIDUR\('EE_AVERTISSEMENT\fR
+est le nombre de jours pr\('ec\('edant la fin de validit\('e pendant lesquels un utilisateur sera pr\('evenu que son mot de passe est sur le point d\'arriver en fin de validit\('e\&.
+.RE
+.PP
+Si aucune de ces options n\'est donn\('ee,
+\fBchage\fR
+utilise un mode interactif, demandant confirmation \(`a l\'utilisateur pour les valeurs de tous les champs\&. Entrez la nouvelle valeur pour modifier la valeur du champ, ou laissez la ligne vide pour conserver la valeur actuelle\&. La valeur actuelle est affich\('ee entre crochets\&.
+.SH "NOTE"
+.PP
+Le programme
+\fBchage\fR
+n\('ecessite l\'utilisation d\'un fichier de mots de passe cach\('es (\(Fo\ \&shadow password file\ \&\(Fc)\&.
+.PP
+La commande
+\fBchage\fR
+est r\('eserv\('ee \(`a l\'utilisateur root, sauf pour l\'option
+\fB\-l\fR, qui peut \(^etre utilis\('ee par un utilisateur non privil\('egi\('e pour lui permettre de savoir quand son mot de passe ou son compte arrivera en fin de validit\('e\&.
+.SH "FICHIERS"
+.PP
+/etc/passwd
+.RS 4
+Informations sur les comptes des utilisateurs\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informations s\('ecuris\('ees sur les comptes utilisateurs\&.
+.RE
+.SH "VALEURS DE RETOUR"
+.PP
+La commande
+\fBchage\fR
+retourne les valeurs suivantes en quittant\ \&:
+.PP
+\fI0\fR
+.RS 4
+succ\(`es
+.RE
+.PP
+\fI1\fR
+.RS 4
+permission refus\('ee
+.RE
+.PP
+\fI2\fR
+.RS 4
+erreur de syntaxe
+.RE
+.PP
+\fI15\fR
+.RS 4
+impossible de trouver le fichier des mots de passe cach\('es
+.RE
+.SH "VOIR AUSSI"
+.PP
+\fBpasswd\fR(5),
+\fBshadow\fR(5)\&.

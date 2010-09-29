@@ -1,4 +1,5 @@
-.\" Copyright 1991 - 1994, Julianne Frances Haugh
+.\" $Id: useradd.8 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" Copyright 1991 \- 1994, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -24,167 +25,152 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: useradd.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
-.\"
 .TH USERADD 8
-.SH ¦W ºÙ
-useradd \- ±b ¸¹ «Ø ¥ß ©Î §ó ·s ·s ¨Ï ¥Î ªÌ ªº ¸ê °T
-.SH »y ªk
+.SH å ç¨±
+useradd \- å¸³ è™Ÿ å»º ç«‹ æˆ– æ›´ æ–° æ–° ä½¿ ç”¨ è€… çš„ è³‡ è¨Š
+.SH èªž æ³•
 .TP 8
 .B useradd
-.\" .RB [ -A
+.\" .RB [ \-A
 .\" .RI { method | \fBDEFAULT\fR "},... ]"
-.RB [ -c
+.RB [ \-c
 .IR comment ]
-.RB [ -d
+.RB [ \-d
 .IR home_dir ]
 .br
-.RB [ -e
+.RB [ \-e
 .IR expire_date ]
-.RB [ -f
+.RB [ \-f
 .IR inactive_time ]
 .br
-.RB [ -g
+.RB [ \-g
 .IR initial_group ]
-.RB [ -G
+.RB [ \-G
 .IR group [,...]]
 .br
-.RB [ -m " [" -k
-.IR skeleton_dir ] " |" " " -M ]
-.RB [ -s
+.RB [ \-m " [" \-k
+.IR skeleton_dir ] " |" " " \-M ]
+.RB [ \-s
 .IR shell ]
 .br
-.RB [ -u
+.RB [ \-u
 .IR uid " ["
-.BR -o ]]
-.RB [ -n ]
-.RB [ -r ]
+.BR \-o ]]
+.RB [ \-n ]
+.RB [ \-r ]
 .I login
 .TP 8
-.B useradd
-\fB-D\fR
-[\fB-g\fI default_group\fR]
-[\fB-b\fI default_home\fR]
+\fBuseradd\fR \fB\-D\fR [\fB\-g\fR \fIdefault_group\fR] [\fB\-b\fR \fIdefault_home\fR]
 .br
-[\fB-f\fI default_inactive\fR]
-[\fB-e\fI default_expire_date\fR]
+[\fB\-f\fR \fIdefault_inactive\fR] [\fB\-e\fR \fIdefault_expire_date\fR]
 .br
-[\fB-s\fI default_shell\fR]
-.SH ´y ­z
-.SS ·s ±b ¸¹ «Ø ¥ß
-·í ¤£ ¥[ \fB-D\fR °Ñ ¼Æ , \fBuseradd\fR «ü ¥O ¨Ï ¥Î ©R ¥O ¦C ¨Ó «ü ©w
-·s ±b ¸¹ ªº ³] ©w ­È and ¨Ï ¥Î ¨t ²Î ¤W ªº ¹w ³] ­È .
-·s ¨Ï ¥Î ªÌ ±b ¸¹ ±N ²£ ¥Í ¤@ ¨Ç ¨t ²Î ÀÉ ®× ¡A ¨Ï ¥Î ªÌ ¥Ø ¿ý «Ø ¥ß ¡A
-«þ ³Æ °_ ©l ÀÉ ®× µ¥
-¡A ³o ¨Ç §¡ ¥i ¥H §Q ¥Î ©R ¥O¦C ¿ï ¶µ «ü ©w ¡C ¦¹ ª© ¥» ¬° Red Hat Linux ´£ ¨Ñ
-¡A ¥i À° ¨C ­Ó ·s ¥[ ¤J ªº ¨Ï ¥Î ªÌ «Ø ¥ß ­Ó §O ªº group , ¤ð ¶· ²K ¥[ \fB-n\fR
-¿ï ¶µ ¡C  
-\fBuseradd\fR ¥i ¨Ï ¥Î ªº ¿ï ¶µ ¬°
-.\" .IP "\fB-A {\fImethod\fR|\fBDEFAULT\fR},..."
-.\" The value of the user's authentication method.
-.\" The authentication method is the name of a program which is responsible
-.\" for validating the user's identity.
-.\" The string \fBDEFAULT\fR may be used to change the user's authentication
-.\" method to the standard system password method.
-.\" This is a comma-separated list of program names.
-.\" It may include \fBDEFAULT\fR exactly once.
-.IP "\fB-c \fIcomment\fR"
-·s ±b ¸¹ password ÀÉ ªº »¡ ©ú Äæ ¡C 
-.IP "\fB-d \fIhome_dir\fR"
-·s ±b ¸¹ ¨C ¦¸ µn ¤J ®É ©Ò ¨Ï ¥Î ªº \fIhome_dir\fR ¡C 
-¹w ³] ­È ¬° \fIdefault_home\fR ¤º \fIlogin\fR ¦W ºÙ ¡A ¨Ã ·í ¦¨ µn ¤J ®É ¥Ø ¿ý 
-¦W ºÙ ¡C
-.IP "\fB-e \fIexpire_date\fR"
-±b ¸¹ ²× ¤î ¤é ´Á ¡C ¤é ´Á ªº «ü ©w ®æ ¦¡ ¬° \fIMM/DD/YY\fR ¡C
-.IP "\fB-f \fIinactive_days\fR"
-±b ¸¹ ¹L ´Á ´X ¤é «á ¥Ã ¤[ °± Åv ¡C
-·í ­È ¬° 0 ®É ±b ¸¹ «h ¥ß ¨è ³Q °± Åv ¡C
-¦Ó ·í ­È ¬° -1 ®É «h Ãö ³¬ ¦¹ ¥\\ ¯à ¡A ¹w ³] ­È ¬° -1
-.IP "\fB-g \fIinitial_group\fR"
-group ¦W ºÙ ©Î ¥H ¼Æ ¦r ¨Ó °µ ¬° ¨Ï ¥Î ªÌ µn ¤J °_ ©l ¸s ²Õ (group) ¡C
-¸s ²Õ ¦W ¶· ¬° ²{ ¦³ ¦s ¦b ªº ¦W ºÙ ¡C
-¸s ²Õ ¼Æ ¦r ¤] ¶· ¬° ²{ ¦³ ¦s ¦b ªº ¸s ²Õ ¡C
-¹w ³] ªº ¸s ²Õ ¼Æ ¦r ¬° 1 ¡C
-.IP "\fB-G \fIgroup,[...]\fR"
-©w ¸q ¦¹ ¨Ï ¥Î ªÌ ¬° ¦¹ ¤@ °ï groups ªº ¦¨ ­û ¡C
-¨C ­Ó ¸s ²Õ ¨Ï ¥Î "," °Ï ®æ ¶} ¨Ó ¡A ¤£ ¥i ¥H §¨ Âø ªÅ ¥Õ ¦r ¤¸ ¡C
- ¸s ²Õ ¦W ¦P \fB-g\fR ¿ï ¶µ ªº ­­ ¨î ¡C
-©w ¸q ­È ¬° ¨Ï¥Î ªÌ ªº °_ ©l ¸s ²Õ ¡C
-.IP \fB-m\fR
-¨Ï ¥Î ªÌ ¥Ø ¿ý ¦p ¤£ ¦s ¦b «h ¦Û °Ê «Ø ¥ß ¡C
-¦p ¨Ï ¥Î \fB-k\fR ¿ï ¶µ \fIskeleton_dir\fR ¤º ªº ÀÉ ®× ±N ½Æ »s ¦Ü ¨Ï ¥Î ªÌ ¥Ø 
-¿ý ¤U ¡C
-µM ¦Ó ¦b \fI/etc/skel\fR ¥Ø ¿ý ¤U ªº ÀÉ ®× ¤] ·| ½Æ »s ¹L ¥h ¨ú ¥N ¡C
-¥ô ¦ó ¦b \fIskeleton_dir\fR or \fI/etc/skel\fR ªº ¥Ø ¿ý ¤] ¬Û ¦P ·| ¦b ¨Ï ¥Î ªÌ
-¥Ø ¿ý ¤U ¤@ ¤@ «Ø ¥ß ¡C
-The \fB-k\fR ¦P \fB-m\fR
-¤£ «Ø ¥ß ¥Ø ¿ý ¥H ¤Î ¤£ ½Æ »s ¥ô ¦ó ÀÉ ®× ¬° ¹w ³] ­È ¡C
-.IP \fB-M\fR
-¤£ «Ø ¥ß ¨Ï ¥Î ªÌ ¥Ø ¿ý ¡A §Y ¨Ï \fI/etc/login.defs\fR ¨t ²Î ÀÉ ³] ©w ­n «Ø 
-¥ß ¨Ï ¥Î ªÌ ¥Ø ¿ý ¡C
-.IP \fB-n\fR
-¹w ³] ­È ¨Ï ¥Î ªÌ ¸s ²Õ »P ¨Ï ¥Î ªÌ ¦W ºÙ ·| ¬Û ¦P ¡C ¦¹ ¿ï ¶µ ±N ¨ú ®ø ¦¹ ¹w 
-³] ­È ¡C
-.IP \fB-r\fR
-¦¹ °Ñ ¼Æ ¬O ¥Î ¨Ó «Ø ¥ß ¨t ²Î ±b ¸¹ ¡C ¨t ²Î ±b ¸¹ ªº UID ·| ¤ñ ©w ¸q ¦b ¨t
-²Î ÀÉ ¤W \fI/etc/login.defs\fR.
-ªº UID_MIN ¨Ó ªº ¤p ¡C ª` ·N \fBuseradd\fR ¦¹ ¥Î ªk ©Ò «Ø ¥ß ªº ±b ¸¹ ¤£ ·|
-«Ø ¥ß ¨Ï ¥Î ªÌ ¥Ø ¿ý
-¡A ¤] ¤£ ·| ¦b ¥G ¬ö ¿ý ¦b \fI/etc/login.defs\fR. ªº ©w ¸q ­È ¡C
-¦p ªG §A ·Q ­n ¦³ ¨Ï ¥Î ªÌ ¥Ø ¿ý ¶· ÃB ¥~ «ü ©w \fB-m\fR °Ñ ¼Æ ¨Ó «Ø ¥ß ¨t 
-²Î ±b ¸¹ ¡C
-³o ¬O RED HAT ÃB ¥~ ¼W ³] ªº ¿ï ¶µ ¡C
-.IP "\fB-s \fIshell\fR"
-¨Ï ¥Î ªÌ µn ¤J «á ¨Ï ¥Î ªº shell ¦W ºÙ ¡C
-¹w ³] ¬° ¤£ ¶ñ ¼g ¡A ³o ¼Ë ¨t ²Î ·| À° §A «ü ©w ¹w ³] ªº µn ¤J shell ¡C
-.IP "\fB-u \fIuid\fR"
-¨Ï ¥Î ªÌ ªº ID ­È ¡C ¥² ¶· ¬° °ß ¤@ ªº ID ­È ¡A °£ «D ¥Î \fI-o\fR ¿ï ¶µ ¡C
-¼Æ ¦r ¤£ ¥i ¬° ­t ­È¡C¹w ³] ¬° ³Ì ¤p ¤£ ±o ¤p ©ó 99 ¦Ó ³v ¦¸ ¼W ¥[ ¡C
-0~99 ¶Ç ²Î ¤W ¬O «O ¯d µ¹ ¨t ²Î ±b ¸¹ ¨Ï ¥Î ¡C
+[\fB\-s\fR \fIdefault_shell\fR]
+.SH æ è¿°
+.SS æ–° å¸³ è™Ÿ å»º ç«‹
+ç•¶ ä¸ åŠ  \fB\-D\fR åƒ æ•¸ , \fBuseradd\fR æŒ‡ ä»¤ ä½¿ ç”¨ å‘½ ä»¤ åˆ— ä¾† æŒ‡ å®š
+æ–° å¸³ è™Ÿ çš„ è¨­ å®š å€¼ and ä½¿ ç”¨ ç³» çµ± ä¸Š çš„ é  è¨­ å€¼ .
+æ–° ä½¿ ç”¨ è€… å¸³ è™Ÿ å°‡ ç”¢ ç”Ÿ ä¸€ äº› ç³» çµ± æª” æ¡ˆ ï¼Œ ä½¿ ç”¨ è€… ç›® éŒ„ å»º ç«‹ ï¼Œ
+æ‹· å‚™ èµ· å§‹ æª” æ¡ˆ ç­‰
+ï¼Œ é€™ äº› å‡ å¯ ä»¥ åˆ© ç”¨ å‘½ ä»¤åˆ— é¸ é … æŒ‡ å®š ã€‚ æ­¤ ç‰ˆ æœ¬ ç‚º Red Hat Linux æ ä¾›
+ï¼Œ å¯ å¹« æ¯ å€‹ æ–° åŠ  å…¥ çš„ ä½¿ ç”¨ è€… å»º ç«‹ å€‹ åˆ¥ çš„ group , æ¯‹ é ˆ æ·» åŠ  \fB\-n\fR
+é¸ é … ã€‚  
+\fBuseradd\fR å¯ ä½¿ ç”¨ çš„ é¸ é … ç‚º
+.IP "\fB\-c\fR \fIcomment\fR"
+æ–° å¸³ è™Ÿ password æª” çš„ èªª æ˜Ž æ¬„ ã€‚ 
+.IP "\fB\-d\fR \fIhome_dir\fR"
+æ–° å¸³ è™Ÿ æ¯ æ¬¡ ç™» å…¥ æ™‚ æ‰€ ä½¿ ç”¨ çš„ \fIhome_dir\fR ã€‚ 
+é  è¨­ å€¼ ç‚º \fIdefault_home\fR å…§ \fIlogin\fR å ç¨± ï¼Œ ä¸¦ ç•¶ æˆ ç™» å…¥ æ™‚ ç›® éŒ„ 
+å ç¨± ã€‚
+.IP "\fB\-e\fR \fIexpire_date\fR"
+å¸³ è™Ÿ çµ‚ æ­¢ æ—¥ æœŸ ã€‚ æ—¥ æœŸ çš„ æŒ‡ å®š æ ¼ å¼ ç‚º \fIMM/DD/YY\fR ã€‚
+.IP "\fB\-f\fR \fIinactive_days\fR"
+å¸³ è™Ÿ éŽ æœŸ å¹¾ æ—¥ å¾Œ æ°¸ ä¹… åœ æ¬Š ã€‚
+ç•¶ å€¼ ç‚º 0 æ™‚ å¸³ è™Ÿ å‰‡ ç«‹ åˆ» è¢« åœ æ¬Š ã€‚
+è€Œ ç•¶ å€¼ ç‚º \-1 æ™‚ å‰‡ é—œ é–‰ æ­¤ åŠŸ\ èƒ½ ï¼Œ é  è¨­ å€¼ ç‚º \-1
+.IP "\fB\-g\fR \fIinitial_group\fR"
+group å ç¨± æˆ– ä»¥ æ•¸ å­— ä¾† åš ç‚º ä½¿ ç”¨ è€… ç™» å…¥ èµ· å§‹ ç¾¤ çµ„ (group) ã€‚
+ç¾¤ çµ„ å é ˆ ç‚º ç¾ æœ‰ å­˜ åœ¨ çš„ å ç¨± ã€‚
+ç¾¤ çµ„ æ•¸ å­— ä¹Ÿ é ˆ ç‚º ç¾ æœ‰ å­˜ åœ¨ çš„ ç¾¤ çµ„ ã€‚
+é  è¨­ çš„ ç¾¤ çµ„ æ•¸ å­— ç‚º 1 ã€‚
+.IP "\fB\-G\fR \fIgroup,[...]\fR"
+å®š ç¾© æ­¤ ä½¿ ç”¨ è€… ç‚º æ­¤ ä¸€ å † groups çš„ æˆ å“¡ ã€‚
+æ¯ å€‹ ç¾¤ çµ„ ä½¿ ç”¨ "," å€ æ ¼ é–‹ ä¾† ï¼Œ ä¸ å¯ ä»¥ å¤¾ é›œ ç©º ç™½ å­— å…ƒ ã€‚
+ ç¾¤ çµ„ å åŒ \fB\-g\fR é¸ é … çš„ é™ åˆ¶ ã€‚
+å®š ç¾© å€¼ ç‚º ä½¿ç”¨ è€… çš„ èµ· å§‹ ç¾¤ çµ„ ã€‚
+.IP \fB\-m\fR
+ä½¿ ç”¨ è€… ç›® éŒ„ å¦‚ ä¸ å­˜ åœ¨ å‰‡ è‡ª å‹• å»º ç«‹ ã€‚
+å¦‚ ä½¿ ç”¨ \fB\-k\fR é¸ é … \fIskeleton_dir\fR å…§ çš„ æª” æ¡ˆ å°‡ è¤‡ è£½ è‡³ ä½¿ ç”¨ è€… ç›® 
+éŒ„ ä¸‹ ã€‚
+ç„¶ è€Œ åœ¨ \fI/etc/skel\fR ç›® éŒ„ ä¸‹ çš„ æª” æ¡ˆ ä¹Ÿ æœƒ è¤‡ è£½ éŽ åŽ» å– ä»£ ã€‚
+ä»» ä½• åœ¨ \fIskeleton_dir\fR or \fI/etc/skel\fR çš„ ç›® éŒ„ ä¹Ÿ ç›¸ åŒ æœƒ åœ¨ ä½¿ ç”¨ è€…
+ç›® éŒ„ ä¸‹ ä¸€ ä¸€ å»º ç«‹ ã€‚
+The \fB\-k\fR åŒ \fB\-m\fR
+ä¸ å»º ç«‹ ç›® éŒ„ ä»¥ åŠ ä¸ è¤‡ è£½ ä»» ä½• æª” æ¡ˆ ç‚º é  è¨­ å€¼ ã€‚
+.IP \fB\-M\fR
+ä¸ å»º ç«‹ ä½¿ ç”¨ è€… ç›® éŒ„ ï¼Œ å³ ä½¿ \fI/etc/login.defs\fR ç³» çµ± æª” è¨­ å®š è¦ å»º 
+ç«‹ ä½¿ ç”¨ è€… ç›® éŒ„ ã€‚
+.IP \fB\-n\fR
+é  è¨­ å€¼ ä½¿ ç”¨ è€… ç¾¤ çµ„ èˆ‡ ä½¿ ç”¨ è€… å ç¨± æœƒ ç›¸ åŒ ã€‚ æ­¤ é¸ é … å°‡ å– æ¶ˆ æ­¤ é  
+è¨­ å€¼ ã€‚
+.IP \fB\-r\fR
+æ­¤ åƒ æ•¸ æ˜¯ ç”¨ ä¾† å»º ç«‹ ç³» çµ± å¸³ è™Ÿ ã€‚ ç³» çµ± å¸³ è™Ÿ çš„ UID æœƒ æ¯” å®š ç¾© åœ¨ ç³»
+çµ± æª” ä¸Š \fI/etc/login.defs\fR.
+çš„ UID_MIN ä¾† çš„ å° ã€‚ æ³¨ æ„ \fBuseradd\fR æ­¤ ç”¨ æ³• æ‰€ å»º ç«‹ çš„ å¸³ è™Ÿ ä¸ æœƒ
+å»º ç«‹ ä½¿ ç”¨ è€… ç›® éŒ„
+ï¼Œ ä¹Ÿ ä¸ æœƒ åœ¨ ä¹Ž ç´€ éŒ„ åœ¨ \fI/etc/login.defs\fR. çš„ å®š ç¾© å€¼ ã€‚
+å¦‚ æžœ ä½  æƒ³ è¦ æœ‰ ä½¿ ç”¨ è€… ç›® éŒ„ é ˆ é¡ å¤– æŒ‡ å®š \fB\-m\fR åƒ æ•¸ ä¾† å»º ç«‹ ç³» 
+çµ± å¸³ è™Ÿ ã€‚
+é€™ æ˜¯ RED HAT é¡ å¤– å¢ž è¨­ çš„ é¸ é … ã€‚
+.IP "\fB\-s\fR \fIshell\fR"
+ä½¿ ç”¨ è€… ç™» å…¥ å¾Œ ä½¿ ç”¨ çš„ shell å ç¨± ã€‚
+é  è¨­ ç‚º ä¸ å¡« å¯« ï¼Œ é€™ æ¨£ ç³» çµ± æœƒ å¹« ä½  æŒ‡ å®š é  è¨­ çš„ ç™» å…¥ shell ã€‚
+.IP "\fB\-u\fR \fIuid\fR"
+ä½¿ ç”¨ è€… çš„ ID å€¼ ã€‚ å¿… é ˆ ç‚º å”¯ ä¸€ çš„ ID å€¼ ï¼Œ é™¤ éž ç”¨ \fI\-o\fR é¸ é … ã€‚
+æ•¸ å­— ä¸ å¯ ç‚º è²  å€¼ã€‚é  è¨­ ç‚º æœ€ å° ä¸ å¾— å° æ–¼ 999 è€Œ é€ æ¬¡ å¢ž åŠ  ã€‚
+0~ 999 å‚³ çµ± ä¸Š æ˜¯ ä¿ ç•™ çµ¦ ç³» çµ± å¸³ è™Ÿ ä½¿ ç”¨ ã€‚
 
-.SS §ï ÅÜ ¹w ³] ­È
-·í \fB-D\fR ¿ï ¶µ ¥X ²{ ®É ¡A \fBuseradd\fR ¨q ¥X ²{ ¦b ªº ¹w ³] ­È ¡A ©Î ¬O ÂÇ 
-¥Ñ
-©R ¥O ¦C ªº ¤è ¦¡ §ó ·s ¹w ³] ­È ¡C
-¥i ¥Î ¿ï ¶µ ¬° ¡G
-.IP "\fB-b \fIdefault_home\fR"
-©w ¸q ¨Ï ¥Î ªÌ ©Ò ÄÝ ¥Ø ¿ý ªº «e ¤@ ­Ó ¥Ø ¿ý ¡C
-¨Ï ¥Î ªÌ ¦W ºÙ ·| ªþ ¥[ ¦b \fIdefault_home\fR «á ­±
-¥Î ¨Ó «Ø ¥ß ·s ¨Ï ¥Î ªÌ ªº ¥Ø ¿ý ¡C
-·í µM ¨Ï ¥Î \fB-d\fI «á «h ¦¹ ¿ï ¶µ µL ®Ä ¡C
-.IP "\fB-e \fIdefault_expire_date\fR"
-¨Ï ¥Î ªÌ ±b ¸¹ °± ¤î ¤é ´Á ¡C
-.IP "\fB-f \fIdefault_inactive\fR"
-±b ¸¹ ¹L ´Á ´X ¤é «á °± Åv ¡C
-.IP "\fB-g \fIdefault_group\fR"
-·s ±b ¸¹ °_ ©l ¸s ²Õ ¦W ©Î ID ¡C
-¸s ²Õ ¦W ¶· ¬° ²{ ¦³ ¦s ¦b ªº ¦W ºÙ ¡C
-¸s ²Õ I D ¤] ¶· ¬° ²{ ¦³ ¦s ¦b ªº ¸s ²Õ ¡C
-.IP "\fB-s \fIdefault_shell\fR"
-¨Ï ¥Î ªÌ µn ¤J «á ¨Ï ¥Î ªº shell ¦W ºÙ ¡C
-©¹ «á ·s ¥[ ¤J ªº ±b ¸¹ ³£ ±N ¨Ï ¥Î ¦¹ shell.
+.SS æ”¹ è®Š é  è¨­ å€¼
+ç•¶ \fB\-D\fR é¸ é … å‡º ç¾ æ™‚ ï¼Œ \fBuseradd\fR ç§€ å‡º ç¾ åœ¨ çš„ é  è¨­ å€¼ ï¼Œ æˆ– æ˜¯ è—‰ 
+ç”±
+å‘½ ä»¤ åˆ— çš„ æ–¹ å¼ æ›´ æ–° é  è¨­ å€¼ ã€‚
+å¯ ç”¨ é¸ é … ç‚º ï¼š
+.IP "\fB\-b\fR \fIdefault_home\fR"
+å®š ç¾© ä½¿ ç”¨ è€… æ‰€ å±¬ ç›® éŒ„ çš„ å‰ ä¸€ å€‹ ç›® éŒ„ ã€‚
+ä½¿ ç”¨ è€… å ç¨± æœƒ é™„ åŠ  åœ¨ \fIdefault_home\fR å¾Œ é¢
+ç”¨ ä¾† å»º ç«‹ æ–° ä½¿ ç”¨ è€… çš„ ç›® éŒ„ ã€‚
+ç•¶ ç„¶ ä½¿ ç”¨ \fB\-d\fI å¾Œ å‰‡ æ­¤ é¸ é … ç„¡ æ•ˆ ã€‚
+.IP "\fB\-e\fR \fIdefault_expire_date\fR"
+ä½¿ ç”¨ è€… å¸³ è™Ÿ åœ æ­¢ æ—¥ æœŸ ã€‚
+.IP "\fB\-f\fR \fIdefault_inactive\fR"
+å¸³ è™Ÿ éŽ æœŸ å¹¾ æ—¥ å¾Œ åœ æ¬Š ã€‚
+.IP "\fB\-g\fR \fIdefault_group\fR"
+æ–° å¸³ è™Ÿ èµ· å§‹ ç¾¤ çµ„ å æˆ– ID ã€‚
+ç¾¤ çµ„ å é ˆ ç‚º ç¾ æœ‰ å­˜ åœ¨ çš„ å ç¨± ã€‚
+ç¾¤ çµ„ I D ä¹Ÿ é ˆ ç‚º ç¾ æœ‰ å­˜ åœ¨ çš„ ç¾¤ çµ„ ã€‚
+.IP "\fB\-s\fR \fIdefault_shell\fR"
+ä½¿ ç”¨ è€… ç™» å…¥ å¾Œ ä½¿ ç”¨ çš„ shell å ç¨± ã€‚
+å¾€ å¾Œ æ–° åŠ  å…¥ çš„ å¸³ è™Ÿ éƒ½ å°‡ ä½¿ ç”¨ æ­¤ shell.
 .PP
-¦p ¤£ «ü ©w ¥ô ¦ó °Ñ ¼Æ ¡A \fBuseradd\fR Åã ¥Ü ¥Ø «e ¹w ³] ªº ­È ¡C
-.SH ª` °O 
-¨t ²Î ºÞ ²z ªÌ ¦³ ¸q °È ¦b \fI/etc/skel\fR ¥Ø ¿ý ¤U ©ñ ¸m ¨Ï ¥Î ªÌ ©w ¸q ÀÉ ¡C
+å¦‚ ä¸ æŒ‡ å®š ä»» ä½• åƒ æ•¸ ï¼Œ \fBuseradd\fR é¡¯ ç¤º ç›® å‰ é  è¨­ çš„ å€¼ ã€‚
+.SH æ³¨ è¨˜ 
+ç³» çµ± ç®¡ ç† è€… æœ‰ ç¾© å‹™ åœ¨ \fI/etc/skel\fR ç›® éŒ„ ä¸‹ æ”¾ ç½® ä½¿ ç”¨ è€… å®š ç¾© æª” ã€‚
 .br
-¦¹ ª© ¥» ¡yuseradd¡z ¥Ñ Red Hat ­× §ï ¡C
-.SH Äµ §i
-¤£ ¥i ·s ¼W ¨Ï ¥Î ªÌ ©ó NIS ¸s ²Õ ¤¤ ¡C
-§A ¥² ¶· ¦b NIS ¦ø ªA ¾¹ ¤W °õ ¦æ ¡C
-.SH ÀÉ ®×
-\fI/etc/passwd\fR \- ¨Ï ¥Î ªÌ ±b ¸¹ ¸ê °T
+æ­¤ ç‰ˆ æœ¬ ã€Žuseraddã€ ç”± Red Hat ä¿® æ”¹ ã€‚
+.SH è­¦ å‘Š
+ä¸ å¯ æ–° å¢ž ä½¿ ç”¨ è€… æ–¼ NIS ç¾¤ çµ„ ä¸­ ã€‚
+ä½  å¿… é ˆ åœ¨ NIS ä¼º æœ å™¨ ä¸Š åŸ· è¡Œ ã€‚
+.SH æª” æ¡ˆ
+\fI/etc/passwd\fR \- ä½¿ ç”¨ è€… å¸³ è™Ÿ è³‡ è¨Š
 .br
-\fI/etc/shadow\fR \- ¨Ï ¥Î ªÌ ±b ¸¹ ¸ê °T ¥[ ±K
+\fI/etc/shadow\fR \- ä½¿ ç”¨ è€… å¸³ è™Ÿ è³‡ è¨Š åŠ  å¯†
 .br
-\fI/etc/group\fR \- ¸s ²Õ ¸ê °T
+\fI/etc/group\fR \- ç¾¤ çµ„ è³‡ è¨Š
 .br
-\fI/etc/default/useradd\fR \- ©w ¸q ¸ê °T
+\fI/etc/default/useradd\fR \- å®š ç¾© è³‡ è¨Š
 .br
-\fI/etc/login.defs\fR \- ¨t ²Î ¼s ¸q ³] ©w
+\fI/etc/login.defs\fR \- ç³» çµ± å»£ ç¾© è¨­ å®š
 .br
-\fI/etc/skel/\fR \- ¤º §t ©w ¸q ÀÉ ªº ¥Ø ¿ý
+\fI/etc/skel/\fR \- å…§ å« å®š ç¾© æª” çš„ ç›® éŒ„
 .SH SEE ALSO
 .BR chfn (1),
 .BR chsh (1),

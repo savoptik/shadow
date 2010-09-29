@@ -1,80 +1,251 @@
-.\" $Id: limits.5,v 1.2 2001/01/25 10:43:54 kloczek Exp $
-.\" {PTM/WK/1999-09-18}
-.TH LIMITS 5
-.SH NAZWA
-limits \- definicja ograniczeñ zasobów
-.SH OPIS
-Plik
-.I limits
-(domy¶lnie /etc/limits lub LIMITS_FILE zdefiniowane w config.h)
-opisuje ograniczenia zasobów, jakie chcia³by¶ narzuciæ u¿ytkownikom.
-W³a¶cicielem tego pliku powinien byæ u¿ytkownik root i wy³±cznie dla niego
-plik ten powinien byæ dostêpny do odczytu.
+'\" t
+.\"     Title: limits
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: File Formats and Conversions
+.\"    Source: File Formats and Conversions
+.\"  Language: Polish
+.\"
+.TH "LIMITS" "5" "07/24/2009" "File Formats and Conversions" "File Formats and Conversions"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+limits \- resource limits definition
+.SH "OPIS"
 .PP
-Domy¶lnie u¿ytkownikowi 'root' nie s± narzucane ¿adne ograniczenia.
-W rzeczywisto¶ci, przy u¿yciu tego sposobu nie jest mo¿liwe narzucenie limitów
-dla kont równowa¿nych root (kont z UID równym 0).
+The
+\fIlimits\fR
+file (/etc/limits
+by default or LIMITS_FILE defined
+config\&.h) describes the resource limits you wish to impose\&. It should be owned by root and readable by root account only\&.
 .PP
-Ka¿dy wiersz definiuje ograniczenie dla u¿ytkownika w postaci:
+By default no quota is imposed on \'root\'\&. In fact, there is no way to impose limits via this procedure to root\-equiv accounts (accounts with UID 0)\&.
+.PP
+Each line describes a limit for a user in the form:
+.PP
+
+\fIuser LIMITS_STRING\fR
+.PP
+The
+\fILIMITS_STRING\fR
+is a string of a concatenated list of resource limits\&. Each limit consists of a letter identifier followed by a numerical limit\&.
+.PP
+The valid identifiers are:
 .sp
-.I	u¿ytkownik £AÑCUCH_OGRANICZEÑ
-.PP
-\fB£AÑCUCH OGRANICZEÑ\fP sk³ada siê z po³±czonych definicji ograniczeñ zasobów.
-Ka¿de ograniczenie opisywane jest liter± z nastêpuj±c± po niej warto¶ci±
-numeryczn± limitu.
-.PP
-Dozwolone s± nastêpuj±ce identyfikatory:
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A: max address space (KB)
+.RE
 .sp
-A: max. przestrzeñ adresowa (KB)
-.br
-C: max. rozmiar pliku core (KB)
-.br
-D: max. rozmiar danych (KB)
-.br
-F: maksymalny rozmiar pliku (KB)
-.br
-M: max. locked-in-memory address space (KB)
-.br
-N: max. liczba otwartych plików
-.br
-R: max. resident set size (KB)
-.br
-S: max. rozmiar stosu (KB)
-.br
-T: max. czas procesora (CPU) (MIN)
-.br
-U: max. liczba procesów
-.br
-L: max. liczba sesji pracy dla tego u¿ytkownika
-.br
-P: priorytet procesu, ustawiany przez \fBsetpriority\fR(2).
-.PP
-Na przyk³ad, \fIL2D2048N5\fP jest poprawnym \fB£AÑCUCHEM OGRANICZEÑ\fP.
-Z uwagi na lepsz± czytelno¶ci przyjêto, ¿e poni¿sze zapisy s± równowa¿ne:
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+C: max core file size (KB)
+.RE
 .sp
-nazwa_u¿ytkownika L2D2048N5
-.br
-nazwa_u¿ytkownika L2 D2048 N5
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+D: max data size (KB)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+F: maximum filesize (KB)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+M: max locked\-in\-memory address space (KB)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+N: max number of open files
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+R: max resident set size (KB)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+S: max stack size (KB)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+T: max CPU time (MIN)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+U: max number of processes
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+K: file creation mask, set by
+\fBumask\fR(2)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+L: max number of logins for this user
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+P: process priority, set by
+\fBsetpriority\fR(2)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+I: max nice value (0\&.\&.39 which translates to 20\&.\&.\-19)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+O: max real time priority
+.RE
 .PP
-Nale¿y podkre¶liæ, ¿e reszta wiersza po \fInazwie_u¿ytkownika\fP traktowana
-jest jako ³añcuch ograniczeñ, zatem komentarze nie s± dozwolone. Nieprawid³owy
-³añcuch ograniczeñ zostanie odrzucony (nie bêdzie brany pod uwagê) przez
-program login.
+For example,
+\fIL2D2048N5\fR
+is a valid
+\fILIMITS_STRING\fR\&. For reading convenience, the following entries are equivalent:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+      username L2D2048N5
+      username L2 D2048 N5
+    
+.fi
+.if n \{\
+.RE
+.\}
 .PP
-Nazwa u¿ytkownika równa "\fB*\fP" oznacza wpis domy¶lny.
-Je¿eli w pliku \fBLIMITS_FILE\fP posiadasz wiele takich wpisów, to jako
-domy¶lny zostanie u¿yty ostatni z nich.
+Be aware that after
+\fIusername\fR
+the rest of the line is considered a limit string, thus comments are not allowed\&. A invalid limits string will be rejected (not considered) by the
+\fBlogin\fR
+program\&.
 .PP
-Pojedyncza kreska "\fB-\fP" ca³kowicie wy³±cza ograniczenia dla u¿ytkownika.
+The default entry is denoted by username "\fI*\fR"\&. If you have multiple
+\fIdefault\fR
+entries in your
+\fILIMITS_FILE\fR, then the last one will be used as the default entry\&.
 .PP
-Zauwa¿ te¿, proszê, ¿e wszystkie te ograniczenia definiowane s± w odniesieniu
-do pojedynczej sesji (per login). Nie s± one globalne ani sta³e. Byæ mo¿e bêd±
-kiedy¶ ograniczenia globalne, ale na razie tyle musi wystarczyæ ;)
-.SH PLIKI
-.I /etc/limits
-.SH ZOBACZ TAK¯E
-.BR login (1),
-.BR setpriority (2),
-.BR setrlimit (2)
-.SH AUTOR
-Cristian Gafton (gafton@sorosis.ro)
+To completely disable limits for a user, a single dash "\fI\-\fR" will do\&.
+.PP
+Also, please note that all limit settings are set PER LOGIN\&. They are not global, nor are they permanent\&. Perhaps global limits will come, but for now this will have to do ;)
+.SH "PLIKI"
+.PP
+/etc/limits
+.RS 4
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBlogin\fR(1),
+\fBsetpriority\fR(2),
+\fBsetrlimit\fR(2)\&.

@@ -1,90 +1,107 @@
-.\" $Id: sulogin.8,v 1.5 2003/04/26 13:24:15 kloczek Exp $
-.\" {PTM/WK/1999-09-14}
-.\" Copyright 1989 - 1992, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: sulogin
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH SULOGIN 8
-.SH NAZWA
-sulogin - login w trybie jednou¿ytkownikowym
-.SH SK£ADNIA
-\fBsulogin\fR [\fIurz±dzenie-tty\fR]
-.SH OPIS
-.B sulogin
-wywo³ywane jest przez \fBinit\fR przed zezwoleniem u¿ytkownikowi
-na dostêp do systemu w trybie jednou¿ytkownikowym (single user mode).
-Funkcja ta mo¿e byæ dostêpna tylko w niektórych systemach, w których
-odpowiednio zmieniono \fBinit\fR lub plik \fB/etc/inittab\fR posiada
-pozycjê dla logowania siê w trybie jednou¿ytkownikowym.
+.TH "SULOGIN" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+sulogin \- Single\-user login
+.SH "SK\(/LADNIA"
 .PP
-Wy¶wietlany jest symbol zachêty
-.IP "" .5i
-Type control-d to proceed with normal startup,
-.br
-(or give root password for system maintenance):
-.br
-Naci¶nij control-d by kontynuowaæ zwyk³y start,
-.br
-(lub podaj has³o u¿ytkownika root do konserwacji systemu):
+\fBsulogin\fR
+[\fItty\-device\fR]
+.SH "OPIS"
 .PP
-Wej¶cie i wyj¶cie bêd± obs³ugiwane przy u¿yciu standardowych deskryptorów
-plików, chyba ¿e u¿yto opcjonalnego argumentu - nazwy urz±dzenia.
+The
+\fBsulogin\fR
+command is invoked by
+\fBinit\fR
+prior to allowing the user access to the system when in single user mode\&. This feature may only be available on certain systems where
+\fBinit\fR
+has been modified accordingly, or where the
+/etc/inittab
+has an entry for a single user login\&.
 .PP
-Je¶li u¿ytkownik wprowadzi poprawne has³o superu¿ytkownika root,
-to rozpoczynana jest sesja pracy na koncie root.
-Je¿eli natomiast naci¶niêto \fBEOF\fR, to system przechodzi
-do wielou¿ytkownikowego trybu pracy.
+The user is prompted
 .PP
-Po opuszczeniu przez u¿ytkownika pow³oki przypisanej do
-jednou¿ytkownikowego trybu pracy lub po naci¶niêciu \fBEOF\fR, system
-wykonuje proces inicjacji wymagany do przej¶cia w tryb wielou¿ytkownikowy.
-.SH OSTRZE¯ENIA
+Type control\-d to proceed with normal startup, (or give root password for system maintenance):
 .PP
-Polecenie to mo¿e byæ u¿ywane wy³±cznie wtedy, gdy \fBinit\fR zosta³ zmieniony
-tak, by wywo³ywaæ \fBsulogin\fR zamiast \fB/bin/sh\fR,
-albo gdy u¿ytkownik skonfigurowa³ plik \fIinittab\fR tak, by obs³ugiwa³
-logowanie w trybie jednou¿ytkownikowym.
-Na przyk³ad, wiersz
-.br
-.sp 1
+Input and output will be performed with the standard file descriptors unless the optional device name argument is provided\&.
+.PP
+If the user enters the correct root password, a login session is initiated\&. When
+\fIEOF\fR
+is pressed instead, the system enters multi\-user mode\&.
+.PP
+After the user exits the single\-user shell, or presses
+\fIEOF\fR, the system begins the initialization process required to enter multi\-user mode\&.
+.SH "OSTRZEÅ»ENIA"
+.PP
+This command can only be used if
+\fBinit\fR
+has been modified to call
+\fBsulogin\fR
+instead of
+/bin/sh, or if the user has set the
+\fIinittab\fR
+to support a single user login\&. For example, the line:
+.PP
 co:s:respawn:/etc/sulogin /dev/console
-.br
-.sp 1
-powinien wykonaæ polecenie sulogin w trybie jednou¿ytkownikowym.
 .PP
-Na ile jest to mo¿liwe, tworzone jest pe³ne ¶rodowisko.
-Jednak¿e w efekcie mog± nie byæ do³±czone czy zainicjowane ró¿ne
-urz±dzenia, za¶ wiele poleceñ u¿ytkownika mo¿e byæ niedostêpnych lub
-nie funkcjonowaæ.
-.SH PLIKI
-.IR /etc/passwd " - informacja o kontach u¿ytkowników"
-.br
-.IR /etc/shadow " - zakodowane has³a i informacja o ich wa¿no¶ci"
-.SH ZOBACZ TAK¯E
-.BR login (1),
-.BR sh (1),
-.BR init (8)
-.SH AUTOR
-Julianne Frances Haugh (jockgrrl@ix.netcom.com)
+should execute the sulogin command in single user mode\&.
+.PP
+As complete an environment as possible is created\&. However, various devices may be unmounted or uninitialized and many of the user commands may be unavailable or nonfunctional as a result\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENV_HZ\fR (string)
+.RS 4
+If set, it will be used to define the HZ environment variable when a user login\&. The value must be preceded by
+\fIHZ=\fR\&. A common value on Linux is
+\fIHZ=100\fR\&.
+.RE
+.PP
+\fBENV_TZ\fR (string)
+.RS 4
+If set, it will be used to define the TZ environment variable when a user login\&. The value can be the name of a timezone preceded by
+\fITZ=\fR
+(for example
+\fITZ=CST6CDT\fR), or the full path to the file containing the timezone specification (for example
+/etc/tzname)\&.
+.sp
+If a full path is specified but the file does not exist or cannot be read, the default is to use
+\fITZ=CST6CDT\fR\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+
+\fBlogin\fR(1),
+\fBsh\fR(1),
+\fBinit\fR(8)\&.

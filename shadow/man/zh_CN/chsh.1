@@ -1,51 +1,45 @@
+.\" $Id: chsh.1 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" (c) 1994 by salvatore valente <svalente@athena.mit.edu>
 .\"
-.\"  chsh.1 -- change your login shell
-.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
-.\"
-.\"  this program is free software.  you can redistribute it and
-.\"  modify it under the terms of the gnu general public license.
-.\"  there is no warranty.
-.\"
-.\"  $Author: kloczek $
-.\"  $Revision: 1.1 $
-.\"  $Date: 2003/04/28 02:14:04 $
-.\"
+.\" this program is free software.  you can redistribute it and
+.\" modify it under the terms of the gnu general public license.
+.\" there is no warranty.
 .TH CHSH 1 "October 13 1994" "chsh" "Linux Reference Manual"
-.SH Ãû³Æ
-chsh \- ¸ü»»ÄãµÇÈëÊ±ËùÓÃµÄshell
-.SH Óï·¨
+.SH åç§°
+chsh \- æ›´æ¢ä½ ç™»å…¥æ—¶æ‰€ç”¨çš„shell
+.SH è¯­æ³•
 .B chsh
 [\ \-s\ shell\ ] [\ \-l\ ] [\ \-u\ ] [\ \-v\ ] [\ username\ ]
-.SH ÃèÊö
+.SH æè¿°
 .B chsh
-ÓÃÀ´¸ü»»ÄãµÇÈëÊ±ËùÓÃµÄshell
-¡£ÔÚÃüÁîÁĞÃ»Ö¸¶¨shell¡£
+ç”¨æ¥æ›´æ¢ä½ ç™»å…¥æ—¶æ‰€ç”¨çš„shell
+ã€‚åœ¨å‘½ä»¤åˆ—æ²¡æŒ‡å®šshellã€‚
 .B chsh
-»áÌáÊ¾Ò»¸ö¸øÄã¡£
-.SS ÓĞĞ§µÄshell
+ä¼šæç¤ºä¸€ä¸ªç»™ä½ ã€‚
+.SS æœ‰æ•ˆçš„shell
 .B chsh
-¿ÉÓÃÖ¸¶¨Â·¾¶È«ÃûµÄ·½Ê½À´Ö¸¶¨ÈÎºÎÒ»¸ö¿ÉÖ´ĞĞµÄµµ°¸¡£
-È»¶ø£¬Èç¹û´Ë shell²¢Ã»¼ÍÂ¼ÔÚ
+å¯ç”¨æŒ‡å®šè·¯å¾„å…¨åçš„æ–¹å¼æ¥æŒ‡å®šä»»ä½•ä¸€ä¸ªå¯æ‰§è¡Œçš„æ¡£æ¡ˆã€‚
+ç„¶è€Œï¼Œå¦‚æœæ­¤ shellå¹¶æ²¡çºªå½•åœ¨
 .I /etc/shells
-µµÉÏ£¬Ôòchsh»áÌá³ö¾¯¸æÑ¶Ï¢¡£
-.SH Ñ¡Ïî
+æ¡£ä¸Šï¼Œåˆ™chshä¼šæå‡ºè­¦å‘Šè®¯æ¯ã€‚
+.SH é€‰é¡¹
+.TP
+.I "\-l, \-\-list\-shells"
+åˆ—å‡ºçºªå½•åœ¨
+.I /etc/shells
+çš„shellã€‚
 .TP
 .I "\-s, \-\-shell"
-±ä¸üÄãµÄµÇÈëshell.
-.TP
-.I "\-l, \-\-list-shells"
-ÁĞ³ö¼ÍÂ¼ÔÚ
-.I /etc/shells
-µÄshell¡£
+å˜æ›´ä½ çš„ç™»å…¥shell.
 .TP
 .I "\-u, \-\-help"
-Ê¹ÓÃ¶ÌÑ¶¡£
+ä½¿ç”¨çŸ­è®¯ã€‚
 .TP
-.I "-v, \-\-version"
-°æ±¾×ÊÑ¶
-.SH "Ïà¹ØÎÄ¼ş"
+.I "\-v, \-\-version"
+ç‰ˆæœ¬èµ„è®¯
+.SH "ç›¸å…³æ–‡ä»¶"
 .BR login (1),
 .BR passwd (5),
 .BR shells (5)
-.SH ×÷Õß
+.SH ä½œè€…
 Salvatore Valente <svalente@mit.edu>

@@ -1,105 +1,220 @@
-.\" $Id: grpck.8,v 1.7 2003/04/28 17:52:15 kloczek Exp $
-.\" {PTM/WK/1999-09-17}
-.\" Copyright 1992 - 1993, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: grpck
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH GRPCK 1
-.SH NAZWA
-grpck \- weryfikacja spójno¶ci plików grup
-.SH SK£ADNIA
-\fBgrpck\fR [\fB-r\fR] [\fIgroup shadow\fR]
-.SH OPIS
-\fBgrpck\fR weryfikuje integralno¶æ informacji autentykacji systemowej.
-Sprawdzane s± wszystkie pozycje w plikach \fI/etc/group\fR
-i \fI/etc/gshadow\fR, by upewniæ siê, ¿e ka¿da z nich posiada w³a¶ciwy format
-i poprawne dane w ka¿dym z pól. U¿ytkownik monitowany jest o usuniêcie
-pozycji, które s± sformatowane niepoprawnie lub posiadaj± inne nie daj±ce
-siê skorygowaæ b³êdy.
-.P
-Kontrolowane jest czy ka¿da pozycja posiada:
+.TH "GRPCK" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+grpck \- verify integrity of group files
+.SH "SK\(/LADNIA"
+.HP \w'\fBgrpck\fR\ 'u
+\fBgrpck\fR [\-r] [\fIgroup\fR\ [\ \fIshadow\fR\ ]]
+.HP \w'\fBgrpck\fR\ 'u
+\fBgrpck\fR [\-s] [\fIgroup\fR\ [\ \fIshadow\fR\ ]]
+.SH "OPIS"
+.PP
+The
+\fBgrpck\fR
+command verifies the integrity of the groups information\&. It checks that all entries in
+/etc/group
+and /etc/gshadow
+have the proper format and contain valid data\&. The user is prompted to delete entries that are improperly formatted or which have other uncorrectable errors\&.
+.PP
+Checks are made to verify that each entry has:
 .sp
-.in +.5i
-- w³a¶ciw± liczbê pól
-.br
-- unikaln± nazwê grupy
-.br
-- poprawn± listê cz³onków i administratorów
-.in -.5i
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+the correct number of fields
+.RE
 .sp
-.P
-Kontrola w³a¶ciwej liczby pól i niepowtarzalnej nazwy grupy jest
-decyduj±ca. Je¿eli pozycja posiada b³êdn± liczbê pól, to u¿ytkownik jest
-proszony o usuniêcie ca³ej pozycji (wiersza).
-Je¿eli u¿ytkownik nie potwierdzi decyzji o usuniêciu, to pomijane s± wszelkie
-dalsze sprawdzenia.
-Pozycja z powtórzon± nazw± grupy powoduje monit o usuniêcie, ale nadal
-bêd± wykonywane pozosta³e sprawdzenia.
-Wszystkie inne b³êdy daj± ostrze¿enia a u¿ytkownik jest zachêcany
-do uruchomienia polecenia \fBgroupmod\fR, by je poprawiæ.
-.P
-Polecenia dzia³aj±ce na pliku \fI/etc/group\fR nie potrafi± zmieniaæ
-uszkodzonych lub powielonych pozycji. W takich okoliczno¶ciach powinien byæ
-u¿ywany \fBgrpck\fR, by usun±æ nieprawid³ow± pozycjê.
-.SH OPCJE
-Domy¶lnie \fBgrpck\fR dzia³a na plikach \fI/etc/group\fR oraz \fI/etc/gshadow\fR.
-Przy pomocy parametrów \fIgroup\fR i \fIshadow\fR u¿ytkownik mo¿e wybraæ inne
-pliki.
-Dodatkowo, u¿ytkownik mo¿e wykonaæ polecenie w trybie tylko-do-odczytu, poprzez
-podanie flagi \fB-r\fR.
-Powoduje to, ¿e na wszystkie pytania dotycz±ce zmian zostanie, bez ingerencji
-u¿ytkownika, u¿yta odpowied¼ \fBnie\fR.
-\fBgrpck\fR mo¿e byæ równie¿ u¿yty do sortowania pozycji w plikach \fI/etc/group\fR 
-oraz \fI/etc/gshadow\fR wed³ug GID. By w³±czyæ tryb sortowania nale¿y przekazaæ
-opcjê \fB-s\fR. Nie s± wtedy przeprowadzane ¿adne kontrole, tylko sortowanie.
-.SH PLIKI
-\fI/etc/group\fR	\- informacja o kontach grup
-.br
-\fI/etc/gshadow\fR	\- zakodowana informacja o has³ach i administratorach grup 
-.br
-\fI/etc/passwd\fR	\-informacja o u¿ytkownikach
-.SH KOD ZAKOÑCZENIA
-.TP 2
-Polecenie \fBgrpck\fR koñczy dzia³anie z nastêpuj±cymi warto¶ciami kodów zakoñczenia:
-.br
-\fB0\fR	\- powodzenie
-.br
-\fB1\fR	\- niew³a¶ciwa sk³adnia parametrów polecenia
-.br
-\fB2\fR	\- jedna lub wiêcej z³ych pozycji pliku grup
-.br
-\fB3\fR	\- niemo¿liwe otwarcie plików grup
-.br
-\fB4\fR	\- niemo¿liwa blokada plików grup
-.br
-\fB5\fR	\- niemo¿liwa aktualizacja plików grup
-.br
-.SH ZOBACZ TAK¯E
-.BR group (5),
-.BR passwd (5),
-.BR shadow (5),
-.BR groupmod (8)
-.SH AUTOR
-Julianne Frances Haugh (jockgrrl@ix.netcom.com)
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a unique and valid group name
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a valid group identifier
+(/etc/group only)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a valid list of members
+and administrators
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a corresponding entry in the
+/etc/gshadow
+file (respectively
+/etc/group
+for the
+gshadow
+checks)
+.RE
+.PP
+The checks for correct number of fields and unique group name are fatal\&. If an entry has the wrong number of fields, the user will be prompted to delete the entire line\&. If the user does not answer affirmatively, all further checks are bypassed\&. An entry with a duplicated group name is prompted for deletion, but the remaining checks will still be made\&. All other errors are warnings and the user is encouraged to run the
+\fBgroupmod\fR
+command to correct the error\&.
+.PP
+The commands which operate on the
+/etc/group
+and /etc/gshadow files
+are not able to alter corrupted or duplicated entries\&.
+\fBgrpck\fR
+should be used in those circumstances to remove the offending entries\&.
+.SH "OPCJE"
+.PP
+The options which apply to the
+\fBgrpck\fR
+command are:
+.PP
+\fB\-r\fR
+.RS 4
+Execute the
+\fBgrpck\fR
+command in read\-only mode\&. This causes all questions regarding changes to be answered
+\fIno\fR
+without user intervention\&.
+.RE
+.PP
+\fB\-s\fR
+.RS 4
+Sort entries in
+/etc/group
+and /etc/gshadow
+by GID\&.
+.RE
+.PP
+By default,
+\fBgrpck\fR
+operates on
+/etc/groupand /etc/gshadow\&. The user may select alternate files with the
+\fIgroup\fR
+and \fIshadow\fR parameters\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+The default value is 0, meaning that there are no limits in the number of members in a group\&.
+.sp
+This feature (split group) permits to limit the length of lines in the group file\&. This is useful to make sure that lines for NIS groups are not larger than 1024 characters\&.
+.sp
+If you need to enforce such limit, you can use 25\&.
+.sp
+Note: split groups may not be supported by all tools (even in the Shadow toolsuite)\&. You should not use this variable unless you really need it\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/group
+.RS 4
+Informacje o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informacje chronione o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.SH "KOD ZAKOÅƒCZENIA"
+.PP
+Polecenie
+\fBgrpckl\fR
+koÅ„czy dzia\(/lanie z nastÄ™pujÄ…cymi wartoÅ›ciami kod\('ow zakoÅ„czenia:
+.PP
+\fI0\fR
+.RS 4
+poprawne zakoÅ„czenie dzia\(/lania programu
+.RE
+.PP
+\fI1\fR
+.RS 4
+niepoprawna sk\(/ladnia polecenia
+.RE
+.PP
+\fI2\fR
+.RS 4
+one or more bad group entries
+.RE
+.PP
+\fI3\fR
+.RS 4
+can\'t open group files
+.RE
+.PP
+\fI4\fR
+.RS 4
+can\'t lock group files
+.RE
+.PP
+\fI5\fR
+.RS 4
+can\'t update group files
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+
+\fBgroup\fR(5),
+\fBgroupmod\fR(8),
+\fBgshadow\fR(5),
+\fBpasswd\fR(5),
+\fBpwck\fR(8),
+\fBshadow\fR(5)\&.

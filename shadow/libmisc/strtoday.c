@@ -1,5 +1,8 @@
 /*
- * Copyright 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +13,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #if !defined(__GLIBC__)
@@ -33,9 +36,11 @@
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: strtoday.c,v 1.9 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: strtoday.c 2139 2008-06-13 19:48:11Z nekral-guest $"
+
 #include "defines.h"
+#include "prototypes.h"
+
 #ifndef USE_GETDATE
 #define USE_GETDATE 1
 #endif
@@ -64,14 +69,16 @@ long strtoday (const char *str)
 	 * which is not what we expect, unless you're a BOFH :-).
 	 * (useradd sets sp_expire = current date for new lusers)
 	 */
-	if (!str || *str == '\0')
+	if ((NULL == str) || ('\0' == *str)) {
 		return -1;
+	}
 
 	t = get_date (str, (time_t *) 0);
-	if (t == (time_t) - 1)
+	if ((time_t) - 1 == t) {
 		return -1;
+	}
 	/* convert seconds to days since 1970-01-01 */
-	return (t + DAY / 2) / DAY;
+	return (long) (t + DAY / 2) / DAY;
 }
 
 #else				/* !USE_GETDATE */
@@ -124,14 +131,16 @@ long strtoday (const char *str)
 	memzero (&tp, sizeof tp);
 	for (fmt = date_formats; *fmt; fmt++) {
 		cp = strptime ((char *) str, *fmt, &tp);
-		if (!cp || *cp != '\0')
+		if ((NULL == cp) || ('\0' != *cp)) {
 			continue;
+		}
 
 		result = mktime (&tp);
-		if (result == (time_t) - 1)
+		if ((time_t) - 1 == result) {
 			continue;
+		}
 
-		return result / DAY;	/* success */
+		return (long) (result / DAY);	/* success */
 	}
 	return -1;
 #else
@@ -146,8 +155,9 @@ long strtoday (const char *str)
 	 * is compiled in ...
 	 */
 
-	if (sscanf (str, "%d/%d/%d%c", &year, &month, &day, slop) != 3)
+	if (sscanf (str, "%d/%d/%d%c", &year, &month, &day, slop) != 3) {
 		return -1;
+	}
 
 	/*
 	 * the month, day of the month, and year are checked for
@@ -155,23 +165,28 @@ long strtoday (const char *str)
 	 * 1970 and 2069.
 	 */
 
-	if (month < 1 || month > 12)
+	if ((month < 1) || (month > 12)) {
 		return -1;
+	}
 
-	if (day < 1)
+	if (day < 1) {
 		return -1;
+	}
 
-	if ((month != 2 || (year % 4) != 0) && day > days[month])
+	if (   ((2 != month) || ((year % 4) != 0))
+	    && (day > days[month])) {
 		return -1;
-	else if ((month == 2 && (year % 4) == 0) && day > 29)
+	} else if ((month == 2) && ((year % 4) == 0) && (day > 29)) {
 		return -1;
+	}
 
-	if (year < 0)
+	if (year < 0) {
 		return -1;
-	else if (year <= 69)
+	} else if (year <= 69) {
 		year += 2000;
-	else if (year <= 99)
+	} else if (year <= 99) {
 		year += 1900;
+	}
 
 	/*
 	 * On systems with 32-bit signed time_t, time wraps around in 2038
@@ -179,8 +194,9 @@ long strtoday (const char *str)
 	 * This limit can be removed once no one is using 32-bit systems
 	 * anymore :-).  --marekm
 	 */
-	if (year < 1970 || year > 2037)
+	if ((year < 1970) || (year > 2037)) {
 		return -1;
+	}
 
 	/*
 	 * the total number of days is the total number of days in all
@@ -190,8 +206,7 @@ long strtoday (const char *str)
 	 */
 
 	total = (long) ((year - 1970) * 365L) + (((year + 1) - 1970) / 4);
-	total += (long) juldays[month] + (month > 2
-					  && (year % 4) == 0 ? 1 : 0);
+	total += (long) juldays[month] + (month > 2 && (year % 4) == 0 ? 1 : 0);
 	total += (long) day - 1;
 
 	return total;

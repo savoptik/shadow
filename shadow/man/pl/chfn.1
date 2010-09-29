@@ -1,65 +1,110 @@
-.\" $Id: chfn.1,v 1.7 2003/04/26 13:24:15 kloczek Exp $
-.\" {PTM/WK/1999-09-25}
-.\" Copyright 1990 - 1994 Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: chfn
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia uÅ¼ytkownik\('ow
+.\"    Source: Polecenia uÅ¼ytkownik\('ow
+.\"  Language: Polish
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.TH CHFN 1
-.SH NAZWA
-chfn \- zmiana rzeczywistej nazwy u¿ytkownika i informacji o nim
-.SH SK£ADNIA
-.TP 5
+.TH "CHFN" "1" "07/24/2009" "Polecenia uÅ¼ytkownik\('ow" "Polecenia uÅ¼ytkownik\('ow"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+chfn \- change real user name and information
+.SH "SK\(/LADNIA"
+.HP \w'\fBchfn\fR\ 'u
+\fBchfn\fR [\-f\ \fIfull_name\fR] [\-r\ \fIroom_no\fR] [\-w\ \fIwork_ph\fR] [\-h\ \fIhome_ph\fR] [\-o\ \fIother\fR] [\fIuser\fR]
+.SH "OPIS"
+.PP
+The
 \fBchfn\fR
-[\fB-f \fIpe³na_nazwa\fR] [\fB-r \fInr_pokoju\fR]
-.br
-[\fB-w \fR \fItel_s³u¿b\fR] [\fB-h \fItel_dom\fR] [\fB-o \fIinne\fR]
-[\fIu¿ytkownik\fR]
-.SH OPIS
-\fBchfn\fR zmienia pe³n± nazwê (imiê i nazwisko), telefon s³u¿bowy i domowy
-dla danego konta u¿ytkownika. Informacja ta jest zwykle wypisywana przez
-\fBfinger\fR(1) i podobne mu programy.
-Zwyk³y u¿ytkownik mo¿e zmieniaæ wy³±cznie pola opisuj±ce w³asne konto.
-Tylko superu¿ytkownik mo¿e zmieniaæ pola dla dowolnego konta.
-Równie¿ tylko superu¿ytkownik mo¿e pos³u¿yæ siê opcj± \fB-o\fR by zmieniæ
-niezdefiniowane czê¶ci pola GECOS.
+command changes user fullname, office number, office extension, and home phone number information for a user\'s account\&. This information is typically printed by
+\fBfinger\fR(1)
+and similar programs\&. A normal user may only change the fields for her own account, subject to the restrictions in
+/etc/login\&.defs\&. (The default configuration is to prevent users from changing their fullname\&.) The superuser may change any field for any account\&. Additionally, only the superuser may use the
+\fB\-o\fR
+option to change the undefined portions of the GECOS field\&.
 .PP
-Jedynym ograniczeniem nak³adanym na zawarto¶æ pól jest zakaz u¿ywania w nich
-znaków steruj±cych oraz przecinka, dwukropka i znaku równo¶ci.
-Pola \fIinne\fR (other) nie obowi±zuje to ograniczenie. Pole to s³u¿y do
-przechowywania informacji rozliczeniowej u¿ywanej przez inne aplikacje.
+These fields must not contain any colons\&. Except for the
+\fIother\fR
+field, they should not contain any comma or equal sign\&. It is also recommended to avoid non\-US\-ASCII characters, but this is only enforced for the phone numbers\&. The
+\fIother\fR
+field is used to store accounting information used by other applications\&.
 .PP
-Je¶li nie wybrano ¿adnej z opcji, to \fBchfn\fR dzia³a w trybie interaktywnym,
-proponuj±c u¿ytkownikowi warto¶ci bie¿±ce dla ka¿dego z pól. Wprowadzenie
-nowej warto¶ci powoduje zmianê warto¶ci pola, a podanie warto¶ci pustej
-pozostawia warto¶æ bie¿±c±.
-Bie¿±ca warto¶æ pola wy¶wietlana jest w nawiasach \fB[ ]\fR.
-Je¶li nie podano ¿adnej opcji, \fBchfn\fR pyta o konto u¿ytkownika, które ma
-podlegaæ zmianie.
-.SH PLIKI
-\fI/etc/passwd\fR \- informacja o kontach u¿ytkowników
-.SH ZOBACZ TAK¯E
-.BR passwd (5)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
+If none of the options are selected,
+\fBchfn\fR
+operates in an interactive fashion, prompting the user with the current values for all of the fields\&. Enter the new value to change the field, or leave the line blank to use the current value\&. The current value is displayed between a pair of
+\fB[ ]\fR
+marks\&. Without options,
+\fBchfn\fR
+prompts for the current user account\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBCHFN_AUTH\fR (boolean)
+.RS 4
+If
+\fIyes\fR, the
+\fBchfn\fR
+program will require authentication before making any changes, unless run by the superuser\&.
+.RE
+.PP
+\fBCHFN_RESTRICT\fR (string)
+.RS 4
+This parameter specifies which values in the
+\fIgecos\fR
+field of the
+/etc/passwd
+file may be changed by regular users using the
+\fBchfn\fR
+program\&. It can be any combination of letters
+\fIf\fR,
+\fIr\fR,
+\fIw\fR,
+\fIh\fR, for Full name, Room number, Work phone, and Home phone, respectively\&. For backward compatibility,
+\fIyes\fR
+is equivalent to
+\fIrwh\fR
+and
+\fIno\fR
+is equivalent to
+\fIfrwh\fR\&. If not specified, only the superuser can make any changes\&. The most restrictive setting is better achieved by not installing
+\fBchfn\fR
+SUID\&.
+.RE
+.PP
+\fBLOGIN_STRING\fR (string)
+.RS 4
+The string used for prompting a password\&. The default is to use "Password: ", or a translation of that string\&. If you set this variable, the prompt will no be translated\&.
+.sp
+If the string contains
+\fI%s\fR, this will be replaced by the user\'s name\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguracja pakietu shadow\&.
+.RE
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBchsh\fR(1),
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(5)\&.

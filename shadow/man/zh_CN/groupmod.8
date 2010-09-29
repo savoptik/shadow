@@ -25,37 +25,37 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	$Id: groupmod.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
+.\"	$Id: groupmod.8 1342 2007-11-10 23:46:11Z nekral-guest $
 .\"
 .TH GROUPMOD 8
-.SH Ãû³Æ
-groupmod \- ÐÞ ¸Ä Èº ×é
-.SH Óï·¨
+.SH åç§°
+groupmod \- ä¿® æ”¹ ç¾¤ ç»„
+.SH è¯­æ³•
 .B groupmod
-[\fB-g\fI gid \fR[\fB-o\fR]]
-[\fB-n\fI group_name \fR]
+[\fB\-g\fR \fIgid\fR [\fB\-o\fR]]
+[\fB\-n\fR \fIgroup_name\fR]
 .I group
-.SH ÃèÊö
+.SH æè¿°
 
-\fBgroupmod\fR Ãü Áî »á ²Î ÕÕ Äã Ãü Áî ÁÐ ÉÏ Ö¸ ¶¨ µÄ ²¿ ·Ý 
-ÐÞ ¸Ä Ïµ Í³ ÕÊ ºÅ µµ ¡£ ÏÂ ÁÐ Îª \fIgroupmod\fR ¿É Ñ¡ ÓÃ µÄ ²Î Êý ¡£
+\fBgroupmod\fR å‘½ ä»¤ ä¼š å‚ ç…§ ä½  å‘½ ä»¤ åˆ— ä¸Š æŒ‡ å®š çš„ éƒ¨ ä»½ 
+ä¿® æ”¹ ç³» ç»Ÿ å¸ å· æ¡£ ã€‚ ä¸‹ åˆ— ä¸º \fIgroupmod\fR å¯ é€‰ ç”¨ çš„ å‚ æ•° ã€‚
 
-.IP "\fB-g \fIgid\fR"
-Èº ×é I D Öµ ¡£
-±Ø Ðë Îª Î¨ Ò» µÄ ID Öµ £¬ ³ý ·Ç ÓÃ -o Ñ¡ Ïî ¡£
-Êý ×Ö ²» ¿É Îª ¸º Öµ¡£Ô¤ Éè Îª ×î
-Ð¡ ²» µÃ Ð¡ ÓÚ 99 ¶ø Öð ´Î Ôö ¼Ó ¡£ 0~99 ´« Í³ ÉÏ
-ÊÇ ±£ Áô ¸ø Ïµ Í³ ÕÊ ºÅ Ê¹ ÓÃ ¡£
-Èç ¹û ÓÐ µµ °¸ Ê¹ ÓÃ ¾É µÄ Èº ×é ID £¬ ¶ø Õâ Ê± ºò Äã ÐÂ Ôö µÄ Èº ×é ID
-Ç¡ ºÃ Óë ¾É µÄ Ïà Í¬ £¬ Õâ Ñù µÄ »°
-Äã Òª ÊÖ ¶¯ ¸Ä Ò» ÏÂ Õâ Ð© µµ °¸ µÄ Èº ×é ID ¡£
-.IP "\fB-n \fIgroup_name\fR"
-¸ü ¸Ä Èº ×é Ãû ¡£
-.SH µµ°¸
-\fI/etc/group\fR \- Èº ×é ×Ê Ñ¶ 
+.IP "\fB\-g\fR \fIgid\fR"
+ç¾¤ ç»„ I D å€¼ ã€‚
+å¿… é¡» ä¸º å”¯ ä¸€ çš„ ID å€¼ ï¼Œ é™¤ éž ç”¨ \-o é€‰ é¡¹ ã€‚
+æ•° å­— ä¸ å¯ ä¸º è´Ÿ å€¼ã€‚é¢„ è®¾ ä¸º æœ€
+å° ä¸ å¾— å° äºŽ 999 è€Œ é€ æ¬¡ å¢ž åŠ  ã€‚ 0~ 499 ä¼  ç»Ÿ ä¸Š
+æ˜¯ ä¿ ç•™ ç»™ ç³» ç»Ÿ å¸ å· ä½¿ ç”¨ ã€‚
+å¦‚ æžœ æœ‰ æ¡£ æ¡ˆ ä½¿ ç”¨ æ—§ çš„ ç¾¤ ç»„ ID ï¼Œ è€Œ è¿™ æ—¶ å€™ ä½  æ–° å¢ž çš„ ç¾¤ ç»„ ID
+æ° å¥½ ä¸Ž æ—§ çš„ ç›¸ åŒ ï¼Œ è¿™ æ · çš„ è¯
+ä½  è¦ æ‰‹ åŠ¨ æ”¹ ä¸€ ä¸‹ è¿™ äº› æ¡£ æ¡ˆ çš„ ç¾¤ ç»„ ID ã€‚
+.IP "\fB\-n\fR \fIgroup_name\fR"
+æ›´ æ”¹ ç¾¤ ç»„ å ã€‚
+.SH æ¡£æ¡ˆ
+\fI/etc/group\fR \- ç¾¤ ç»„ èµ„ è®¯ 
 .br
-\fI/etc/gshadow\fR \- Èº ×é ×Ê Ñ¶ ¼Ó ÃÜ
-.SH Ïà¹ØÎÄ¼þ
+\fI/etc/gshadow\fR \- ç¾¤ ç»„ èµ„ è®¯ åŠ  å¯†
+.SH ç›¸å…³æ–‡ä»¶
 .BR chfn (1),
 .BR chsh (1),
 .BR useradd (8),
@@ -64,5 +64,5 @@ groupmod \- ÐÞ ¸Ä Èº ×é
 .BR passwd (1),
 .BR groupadd (8),
 .BR groupdel (8)
-.SH ×÷Õß
+.SH ä½œè€…
 Julianne Frances Haugh (jfh@tab.com)

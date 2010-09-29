@@ -1,33 +1,108 @@
-.\" $Id: vipw.8,v 1.5 2001/12/22 03:28:52 kloczek Exp $
-.\" {PTM\WK\1999-09-14}
-.TH VIPW 8 "26 wrze¶nia 1997"
-.SH NAZWA
-vipw, vigr - edycja plików hase³, grup i ich wersji dodatkowych (shadow)
-.SH SK£ADNIA
-\fBvipw\fR [\fB-s\fR]
-.br
-\fBvigr\fR [\fB-s\fR]
-.SH OPIS
-.BR vipw " i " vigr
-umo¿liwiaj± modyfikacjê plików odpowiednio
-.IR /etc/passwd " i " /etc/group .
-Przy zastosowaniu flagi
-.BR -s,
-modyfikuj± tak¿e dodatkowe wersje chronione (shadow) tych plików - odpowiednio
-.IR /etc/shadow " i " /etc/gshadow " .
-Dla ochrony przed uszkodzeniem plików programy te ustawiaj± odpowiednie
-blokady.
-
-Szukaj±c edytora, programy
-.BR vipw " i " vigr
-u¿ywaj± w pierwszej kolejno¶ci zmiennej ¶rodowiskowej
-.BR VISUAL ,
-nastêpnie zmiennej
-.BR EDITOR ,
-a na koñcu domy¶lnego edytora,
-.BR vi .
-.SH ZOBACZ TAK¯E
-.BR passwd (5),
-.BR group (5),
-.BR shadow (5)
-.\" {PTM\WK\1999-09-14}
+'\" t
+.\"     Title: vipw
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: Polecenia ZarzÄ…dzania Systemem
+.\"    Source: Polecenia ZarzÄ…dzania Systemem
+.\"  Language: Polish
+.\"
+.TH "VIPW" "8" "07/24/2009" "Polecenia ZarzÄ…dzania Systemem" "Polecenia ZarzÄ…dzania Systemem"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+vipw, vigr \- edytuj plik hase\(/l, grup lub ich wersji chronionych
+.SH "SK\(/LADNIA"
+.HP \w'\fBvipw\fR\ 'u
+\fBvipw\fR [\fIopcje\fR]
+.HP \w'\fBvigr\fR\ 'u
+\fBvigr\fR [\fIopcje\fR]
+.SH "OPIS"
+.PP
+Polecenia
+\fBvipw\fR
+i
+\fBvigr\fR
+umoÅ¼liwiajÄ… modyfikacjÄ™ plik\('ow odpowiednio
+/etc/passwd
+i
+/etc/group\&. Przy zastosowaniu flagi
+\fB\-s\fR
+modyfikujÄ… takÅ¼e dodatkowe wersje chronione tych plik\('ow \- odpowiednio
+/etc/shadow
+i
+/etc/gshadow\&. Dla ochrony przed uszkodzeniem w trakcie modyfikacji tych plik\('ow programy te ustawiajÄ… odpowiednie blokady\&. SzukajÄ…c edytora programy te uÅ¼ywajÄ… w pierwszej kolejnoÅ›ci zmiennej Å›rodowiska
+\fB$VISUAL\fR, a nastÄ™pnie
+\fB$EDITOR\fR, a na koÅ„cu a na koÅ„cu domyÅ›lnego edytora
+\fBvi\fR(1)\&.
+.SH "OPCJE"
+.PP
+Polecenia
+\fBvipw\fR
+i
+\fBvigr\fR
+posiadajÄ… nastÄ™pujÄ…ce opcje:Polecenia
+\fBvipw\fR
+i
+\fBvigr\fR
+posiadajÄ… nastÄ™pujÄ…ce opcje:
+.PP
+\fB\-g\fR, \fB\-\-group\fR
+.RS 4
+Edycja bazy grup\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+WyÅ›wietlenie komunikatu pomocy i zakoÅ„czenie dzia\(/lania\&.
+.RE
+.PP
+\fB\-p\fR, \fB\-\-passwd\fR
+.RS 4
+Edycja bazy passwd\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Cichy tryb pracy\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shadow\fR
+.RS 4
+Edycja bazy shadow lub gshadow\&.
+.RE
+.SH "PLIKI"
+.PP
+/etc/group
+.RS 4
+Informacje o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informacje chronione o grupach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/passwd
+.RS 4
+Informacja o kontach uÅ¼ytkownik\('ow\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informacje chronione o uÅ¼ytkownikach\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBvi\fR(1),
+\fBgroup\fR(5),
+\fBgshadow\fR(5)\fBpasswd\fR(5),
+\fBshadow\fR(5)\&.

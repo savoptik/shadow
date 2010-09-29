@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1997, Marek Michałkiewicz
+ * Copyright (c) 2001 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +13,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*
@@ -39,26 +42,32 @@
 #include "defines.h"
 #include <pwd.h>
 #include <time.h>
-#include "rcsid.h"
 
-RCSID ("$Id: isexpired.c,v 1.11 2003/05/03 16:14:33 kloczek Exp $")
+#ident "$Id: isexpired.c 2777 2009-04-23 17:43:27Z nekral-guest $"
+
 
 /*
  * isexpired - determine if account is expired yet
  *
  *	isexpired calculates the expiration date based on the
  *	password expiration criteria.
+ *
+ * Return value:
+ *	0: The password is still valid
+ *	1: The password has expired, it must be changed
+ *	2: The password has expired since a long time and the account is
+ *	   now disabled. (password cannot be changed)
+ *	3: The account has expired
  */
-     /*ARGSUSED*/
-#ifdef	SHADOWPWD
-int isexpired (const struct passwd *pw, const struct spwd *sp)
+int isexpired (const struct passwd *pw, /*@null@*/const struct spwd *sp)
 {
 	long now;
 
-	now = time ((time_t *) 0) / SCALE;
+	now = (long) time ((time_t *) 0) / SCALE;
 
-	if (!sp)
-		sp = pwd_to_spwd (pw);
+	if (NULL == sp) {
+		return 0;
+	}
 
 	/*
 	 * Quick and easy - there is an expired account field
@@ -66,8 +75,9 @@ int isexpired (const struct passwd *pw, const struct spwd *sp)
 	 * one first since it is worse.
 	 */
 
-	if (sp->sp_expire > 0 && now >= sp->sp_expire)
+	if ((sp->sp_expire > 0) && (now >= sp->sp_expire)) {
 		return 3;
+	}
 
 	/*
 	 * Last changed date 1970-01-01 (not very likely) means that
@@ -77,13 +87,17 @@ int isexpired (const struct passwd *pw, const struct spwd *sp)
 	 * if /etc/shadow doesn't exist, getspnam() still succeeds and
 	 * returns sp_lstchg==0 (must change password) instead of -1!
 	 */
-	if (sp->sp_lstchg == 0
-	    && !strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING))
+	if (   (0 == sp->sp_lstchg)
+	    && (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0)) {
 		return 1;
+	}
 
-	if (sp->sp_lstchg > 0 && sp->sp_max >= 0 && sp->sp_inact >= 0 &&
-	    now >= sp->sp_lstchg + sp->sp_max + sp->sp_inact)
+	if (   (sp->sp_lstchg > 0)
+	    && (sp->sp_max >= 0)
+	    && (sp->sp_inact >= 0)
+	    && (now >= (sp->sp_lstchg + sp->sp_max + sp->sp_inact))) {
 		return 2;
+	}
 
 	/*
 	 * The last and max fields must be present for an account
@@ -91,9 +105,11 @@ int isexpired (const struct passwd *pw, const struct spwd *sp)
 	 * is considered to be infinite.
 	 */
 
-	if (sp->sp_lstchg == -1 ||
-	    sp->sp_max == -1 || sp->sp_max >= (10000L * DAY / SCALE))
+	if (   (-1 == sp->sp_lstchg)
+	    || (-1 == sp->sp_max)
+	    || (sp->sp_max >= (10000L * DAY / SCALE))) {
 		return 0;
+	}
 
 	/*
 	 * Calculate today's day and the day on which the password
@@ -101,8 +117,9 @@ int isexpired (const struct passwd *pw, const struct spwd *sp)
 	 * the password has expired.
 	 */
 
-	if (now >= sp->sp_lstchg + sp->sp_max)
+	if (now >= (sp->sp_lstchg + sp->sp_max)) {
 		return 1;
+	}
 	return 0;
 }
-#endif				/* SHADOWPWD */
+

@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2001 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,55 +13,53 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID (PKG_VER "$Id: passwd.c,v 1.30 2003/12/17 09:43:30 kloczek Exp $")
-#include "prototypes.h"
-#include "defines.h"
-#include <sys/types.h>
-#include <time.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <signal.h>
+#ident "$Id: passwd.c 2996 2009-05-22 13:32:26Z nekral-guest $"
+
 #include <errno.h>
-#ifndef GPASSWD_PROGRAM
-#define GPASSWD_PROGRAM "gpasswd"
-#endif
-#ifndef CHFN_PROGRAM
-#define CHFN_PROGRAM "chfn"
-#endif
-#ifndef CHSH_PROGRAM
-#define CHSH_PROGRAM "chsh"
-#endif
+#include <fcntl.h>
+#include <getopt.h>
 #include <pwd.h>
-#include "pwauth.h"
-#ifdef SHADOWPWD
-#include "shadowio.h"
-#endif
-#include "pwio.h"
-#include "nscd.h"
+#include <signal.h>
+#include <stdio.h>
+#include <sys/types.h>
+#ifdef WITH_SELINUX
+#include <selinux/selinux.h>
+#include <selinux/flask.h>
+#include <selinux/av_permissions.h>
+#include <selinux/context.h>
+#endif				/* WITH_SELINUX */
+#include <time.h>
+#include "defines.h"
 #include "getdef.h"
+#include "nscd.h"
+#include "prototypes.h"
+#include "pwauth.h"
+#include "pwio.h"
+#include "shadowio.h"
+
 /*
  * exit status values
  */
+/*@-exitarg@*/
 #define E_SUCCESS	0	/* success */
 #define E_NOPERM	1	/* permission denied */
 #define E_USAGE		2	/* invalid combination of options */
@@ -69,55 +70,65 @@ RCSID (PKG_VER "$Id: passwd.c,v 1.30 2003/12/17 09:43:30 kloczek Exp $")
 /*
  * Global variables
  */
+char *Prog;			/* Program name */
+
 static char *name;		/* The name of user whose password is being changed */
 static char *myname;		/* The current user's name */
-static char *Prog;		/* Program name */
-static int amroot;		/* The real UID was 0 */
+static bool amroot;		/* The caller's real UID was 0 */
 
-static int
-#ifdef SHADOWPWD
- eflg = 0,			/* -e - force password change */
- iflg = 0,			/* -i - set inactive days */
- kflg = 0,			/* -k - change only if expired */
- nflg = 0,			/* -n - set minimum days */
- wflg = 0,			/* -w - set warning days */
- xflg = 0,			/* -x - set maximum days */
-#endif
- aflg = 0,			/* -a - show status for all users */
- dflg = 0,			/* -d - delete password */
- lflg = 0,			/* -l - lock account */
- qflg = 0,			/* -q - quiet mode */
- Sflg = 0,			/* -S - show password status */
- uflg = 0;			/* -u - unlock account */
+static bool
+    aflg = false,			/* -a - show status for all users */
+    dflg = false,			/* -d - delete password */
+    eflg = false,			/* -e - force password change */
+    iflg = false,			/* -i - set inactive days */
+    kflg = false,			/* -k - change only if expired */
+    lflg = false,			/* -l - lock the user's password */
+    nflg = false,			/* -n - set minimum days */
+    qflg = false,			/* -q - quiet mode */
+    Sflg = false,			/* -S - show password status */
+    uflg = false,			/* -u - unlock the user's password */
+    wflg = false,			/* -w - set warning days */
+    xflg = false;			/* -x - set maximum days */
 
 /*
  * set to 1 if there are any flags which require root privileges,
  * and require username to be specified
  */
-static int anyflag = 0;
+static bool anyflag = false;
 
-#ifdef SHADOWPWD
 static long age_min = 0;	/* Minimum days before change   */
 static long age_max = 0;	/* Maximum days until change     */
 static long warn = 0;		/* Warning days before change   */
 static long inact = 0;		/* Days without change before locked */
-#endif
-
-static int do_update_age = 0;
 
 #ifndef USE_PAM
-static char crypt_passwd[128];	/* The "old-style" password, if present */
-static int do_update_pwd = 0;
-#endif
+static bool do_update_age = false;
+#endif				/* ! USE_PAM */
+
+static bool pw_locked = false;
+static bool spw_locked = false;
+
+#ifndef USE_PAM
+/*
+ * Size of the biggest passwd:
+ *   $6$	3
+ *   rounds=	7
+ *   999999999	9
+ *   $		1
+ *   salt	16
+ *   $		1
+ *   SHA512	123
+ *   nul	1
+ *
+ *   total	161
+ */
+static char crypt_passwd[256];
+static bool do_update_pwd = false;
+#endif				/* !USE_PAM */
 
 /*
  * External identifiers
  */
-
-#ifdef	NDBM
-extern int sp_dbm_mode;
-extern int pw_dbm_mode;
-#endif
 
 /* local function prototypes */
 static void usage (int);
@@ -126,11 +137,7 @@ static void usage (int);
 static int reuse (const char *, const struct passwd *);
 static int new_password (const struct passwd *);
 
-#ifdef SHADOWPWD
 static void check_password (const struct passwd *, const struct spwd *);
-#else				/* !SHADOWPWD */
-static void check_password (const struct passwd *);
-#endif				/* !SHADOWPWD */
 static char *insert_crypt_passwd (const char *, const char *);
 #endif				/* !USE_PAM */
 static char *date_to_str (time_t);
@@ -141,26 +148,39 @@ static void oom (void);
 static char *update_crypt_pw (char *);
 static void update_noshadow (void);
 
-#ifdef SHADOWPWD
 static void update_shadow (void);
-#endif
-static long getnumber (const char *);
+#ifdef WITH_SELINUX
+static int check_selinux_access (const char *changed_user,
+                                 uid_t changed_uid,
+                                 access_vector_t requested_access);
+#endif				/* WITH_SELINUX */
 
 /*
  * usage - print command usage and exit
  */
-
 static void usage (int status)
 {
-	fprintf (stderr, _("Usage: %s [-f|-s] [name]\n"), Prog);
-	if (amroot) {
-		fprintf (stderr,
-			 _
-			 ("       %s [-x max] [-n min] [-w warn] [-i inact] name\n"),
-			 Prog);
-		fprintf (stderr, _("       %s {-l|-u|-d|-S|-e} name\n"),
-			 Prog);
-	}
+	fputs (_("Usage: passwd [options] [LOGIN]\n"
+	         "\n"
+	         "Options:\n"
+	         "  -a, --all                     report password status on all accounts\n"
+	         "  -d, --delete                  delete the password for the named account\n"
+	         "  -e, --expire                  force expire the password for the named account\n"
+	         "  -h, --help                    display this help message and exit\n"
+	         "  -k, --keep-tokens             change password only if expired\n"
+	         "  -i, --inactive INACTIVE       set password inactive after expiration\n"
+	         "                                to INACTIVE\n"
+	         "  -l, --lock                    lock the password of the named account\n"
+	         "  -n, --mindays MIN_DAYS        set minimum number of days before password\n"
+	         "                                change to MIN_DAYS\n"
+	         "  -q, --quiet                   quiet mode\n"
+	         "  -r, --repository REPOSITORY   change password in REPOSITORY repository\n"
+	         "  -S, --status                  report password status on the named account\n"
+	         "  -u, --unlock                  unlock the password of the named account\n"
+	         "  -w, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
+	         "  -x, --maxdays MAX_DAYS        set maximum number of days before password\n"
+	         "                                change to MAX_DAYS\n"
+	         "\n"), stderr);
 	exit (status);
 }
 
@@ -174,16 +194,16 @@ static int reuse (const char *pass, const struct passwd *pw)
 	const char *FascistHistoryPw (const char *, const struct passwd *);
 
 	reason = FascistHistory (pass, pw);
-#else
+#else				/* !HAVE_LIBCRACK_PW */
 	const char *FascistHistory (const char *, int);
 
 	reason = FascistHistory (pass, pw->pw_uid);
-#endif
-	if (reason) {
+#endif				/* !HAVE_LIBCRACK_PW */
+	if (NULL != reason) {
 		printf (_("Bad password: %s.  "), reason);
 		return 1;
 	}
-#endif
+#endif				/* HAVE_LIBCRACK_HIST */
 	return 0;
 }
 
@@ -191,8 +211,7 @@ static int reuse (const char *pass, const struct passwd *pw)
  * new_password - validate old password and replace with new (both old and
  * new in global "char crypt_passwd[128]")
  */
-
- /*ARGSUSED*/ static int new_password (const struct passwd *pw)
+static int new_password (const struct passwd *pw)
 {
 	char *clear;		/* Pointer to clear text */
 	char *cipher;		/* Pointer to cipher text */
@@ -201,11 +220,12 @@ static int reuse (const char *pass, const struct passwd *pw)
 	char pass[200];		/* New password */
 	int i;			/* Counter for retries */
 	int warned;
-	int pass_max_len;
+	int pass_max_len = -1;
+	char *method;
 
 #ifdef HAVE_LIBCRACK_HIST
 	int HistUpdate (const char *, const char *);
-#endif
+#endif				/* HAVE_LIBCRACK_HIST */
 
 	/*
 	 * Authenticate the user. The user will be prompted for their own
@@ -213,16 +233,18 @@ static int reuse (const char *pass, const struct passwd *pw)
 	 */
 
 	if (!amroot && crypt_passwd[0]) {
-		if (!(clear = getpass (_("Old password: "))))
+		clear = getpass (_("Old password: "));
+		if (NULL == clear) {
 			return -1;
+		}
 
 		cipher = pw_encrypt (clear, crypt_passwd);
 		if (strcmp (cipher, crypt_passwd) != 0) {
-			SYSLOG ((LOG_WARN, "incorrect password for `%s'",
+			SYSLOG ((LOG_WARN, "incorrect password for %s",
 				 pw->pw_name));
 			sleep (1);
 			fprintf (stderr,
-				 _("Incorrect password for `%s'\n"),
+				 _("Incorrect password for %s.\n"),
 				 pw->pw_name);
 			return -1;
 		}
@@ -239,33 +261,54 @@ static int reuse (const char *pass, const struct passwd *pw)
 	 * for strength, unless it is the root user. This provides an escape
 	 * for initial login passwords.
 	 */
-
-	if (getdef_bool ("MD5_CRYPT_ENAB"))
-		pass_max_len = 127;
-	else
-		pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
-
-	if (!qflg)
-		printf (_("\
-Enter the new password (minimum of %d, maximum of %d characters)\n\
-Please use a combination of upper and lower case letters and numbers.\n"), getdef_num ("PASS_MIN_LEN", 5), pass_max_len);
+	if ((method = getdef_str ("ENCRYPT_METHOD")) == NULL) {
+		if (!getdef_bool ("MD5_CRYPT_ENAB")) {
+			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
+		}
+	} else {
+		if (   (strcmp (method, "MD5")    == 0)
+#ifdef USE_SHA_CRYPT
+		    || (strcmp (method, "SHA256") == 0)
+		    || (strcmp (method, "SHA512") == 0)
+#endif				/* USE_SHA_CRYPT */
+		    ) {
+			pass_max_len = -1;
+		} else {
+			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
+		}
+	}
+	if (!qflg) {
+		if (pass_max_len == -1) {
+			printf (_(
+"Enter the new password (minimum of %d characters)\n"
+"Please use a combination of upper and lower case letters and numbers.\n"),
+				getdef_num ("PASS_MIN_LEN", 5));
+		} else {
+			printf (_(
+"Enter the new password (minimum of %d, maximum of %d characters)\n"
+"Please use a combination of upper and lower case letters and numbers.\n"),
+				getdef_num ("PASS_MIN_LEN", 5), pass_max_len);
+		}
+	}
 
 	warned = 0;
 	for (i = getdef_num ("PASS_CHANGE_TRIES", 5); i > 0; i--) {
-		if (!(cp = getpass (_("New password: ")))) {
+		cp = getpass (_("New password: "));
+		if (NULL == cp) {
 			memzero (orig, sizeof orig);
 			return -1;
 		}
-		if (warned && strcmp (pass, cp) != 0)
+		if (warned && (strcmp (pass, cp) != 0)) {
 			warned = 0;
+		}
 		STRFCPY (pass, cp);
 		strzero (cp);
 
-		if (!amroot
-		    && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
-			printf (_("Try again.\n"));
+		if (!amroot && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
+			puts (_("Try again."));
 			continue;
 		}
+
 		/*
 		 * If enabled, warn about weak passwords even if you are
 		 * root (enter this password again to use it anyway). 
@@ -273,19 +316,18 @@ Please use a combination of upper and lower case letters and numbers.\n"), getde
 		 */
 		if (amroot && !warned && getdef_bool ("PASS_ALWAYS_WARN")
 		    && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
-			printf (_
-				("\nWarning: weak password (enter it again to use it anyway).\n"));
+			puts (_("\nWarning: weak password (enter it again to use it anyway)."));
 			warned++;
 			continue;
 		}
-		if (!(cp = getpass (_("Re-enter new password: ")))) {
+		cp = getpass (_("Re-enter new password: "));
+		if (NULL == cp) {
 			memzero (orig, sizeof orig);
 			return -1;
 		}
-		if (strcmp (cp, pass))
-			fprintf (stderr,
-				 _("They don't match; try again.\n"));
-		else {
+		if (strcmp (cp, pass) != 0) {
+			fputs (_("They don't match; try again.\n"), stderr);
+		} else {
 			strzero (cp);
 			break;
 		}
@@ -300,13 +342,12 @@ Please use a combination of upper and lower case letters and numbers.\n"), getde
 	/*
 	 * Encrypt the password, then wipe the cleartext password.
 	 */
-
-	cp = pw_encrypt (pass, crypt_make_salt ());
+	cp = pw_encrypt (pass, crypt_make_salt (NULL, NULL));
 	memzero (pass, sizeof pass);
 
 #ifdef HAVE_LIBCRACK_HIST
 	HistUpdate (pw->pw_name, crypt_passwd);
-#endif
+#endif				/* HAVE_LIBCRACK_HIST */
 	STRFCPY (crypt_passwd, cp);
 	return 0;
 }
@@ -317,54 +358,44 @@ Please use a combination of upper and lower case letters and numbers.\n"), getde
  *	check_password() sees if the invoker has permission to change the
  *	password for the given user.
  */
-
-#ifdef SHADOWPWD
 static void check_password (const struct passwd *pw, const struct spwd *sp)
 {
-#else
-static void check_password (const struct passwd *pw)
-{
-#endif
 	time_t now, last, ok;
 	int exp_status;
 
-#ifdef SHADOWPWD
 	exp_status = isexpired (pw, sp);
-#else
-	exp_status = isexpired (pw);
-#endif
 
 	/*
 	 * If not expired and the "change only if expired" option (idea from
 	 * PAM) was specified, do nothing. --marekm
 	 */
-	if (kflg && exp_status == 0)
+	if (kflg && (0 == exp_status)) {
 		exit (E_SUCCESS);
+	}
 
 	/*
 	 * Root can change any password any time.
 	 */
-
-	if (amroot)
+	if (amroot) {
 		return;
+	}
 
-	time (&now);
+	(void) time (&now);
 
-#ifdef SHADOWPWD
 	/*
 	 * Expired accounts cannot be changed ever. Passwords which are
 	 * locked may not be changed. Passwords where min > max may not be
 	 * changed. Passwords which have been inactive too long cannot be
 	 * changed.
 	 */
-
-	if (sp->sp_pwdp[0] == '!' || exp_status > 1 ||
-	    (sp->sp_max >= 0 && sp->sp_min > sp->sp_max)) {
+	if (   (sp->sp_pwdp[0] == '!')
+	    || (exp_status > 1)
+	    || (   (sp->sp_max >= 0)
+	        && (sp->sp_min > sp->sp_max))) {
 		fprintf (stderr,
-			 _("The password for %s cannot be changed.\n"),
-			 sp->sp_namp);
-		SYSLOG ((LOG_WARN, "password locked for `%s'",
-			 sp->sp_namp));
+		         _("The password for %s cannot be changed.\n"),
+		         sp->sp_namp);
+		SYSLOG ((LOG_WARN, "password locked for '%s'", sp->sp_namp));
 		closelog ();
 		exit (E_NOPERM);
 	}
@@ -372,33 +403,18 @@ static void check_password (const struct passwd *pw)
 	/*
 	 * Passwords may only be changed after sp_min time is up.
 	 */
+	if (sp->sp_lstchg > 0) {
+		last = sp->sp_lstchg * SCALE;
+		ok = last + (sp->sp_min > 0 ? sp->sp_min * SCALE : 0);
 
-	last = sp->sp_lstchg * SCALE;
-	ok = last + (sp->sp_min > 0 ? sp->sp_min * SCALE : 0);
-
-#else				/* !SHADOWPWD */
-	if (pw->pw_passwd[0] == '!' || exp_status > 1) {
-		fprintf (stderr,
-			 _("The password for %s cannot be changed.\n"),
-			 pw->pw_name);
-		SYSLOG ((LOG_WARN, "password locked for `%s'",
-			 pw->pw_name));
-		closelog ();
-		exit (E_NOPERM);
-	}
-
-	last = 0;
-	ok = 0;
-#endif				/* !SHADOWPWD */
-	if (now < ok) {
-		fprintf (stderr,
-			 _
-			 ("Sorry, the password for %s cannot be changed yet.\n"),
-			 pw->pw_name);
-		SYSLOG ((LOG_WARN, "now < minimum age for `%s'",
-			 pw->pw_name));
-		closelog ();
-		exit (E_NOPERM);
+		if (now < ok) {
+			fprintf (stderr,
+			         _("The password for %s cannot be changed yet.\n"),
+			         pw->pw_name);
+			SYSLOG ((LOG_WARN, "now < minimum age for '%s'", pw->pw_name));
+			closelog ();
+			exit (E_NOPERM);
+		}
 	}
 }
 
@@ -420,35 +436,33 @@ static char *date_to_str (time_t t)
 	tm = gmtime (&t);
 #ifdef HAVE_STRFTIME
 	strftime (buf, sizeof buf, "%m/%d/%Y", tm);
-#else
+#else				/* !HAVE_STRFTIME */
 	snprintf (buf, sizeof buf, "%02d/%02d/%04d",
 		  tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
-#endif
+#endif				/* !HAVE_STRFTIME */
 	return buf;
 }
 
 static const char *pw_status (const char *pass)
 {
-	if (*pass == '*' || *pass == '!')
+	if (*pass == '*' || *pass == '!') {
 		return "L";
-	if (*pass == '\0')
+	}
+	if (*pass == '\0') {
 		return "NP";
+	}
 	return "P";
 }
 
 /*
  * print_status - print current password status
  */
-
 static void print_status (const struct passwd *pw)
 {
-#ifdef SHADOWPWD
 	struct spwd *sp;
-#endif
 
-#ifdef SHADOWPWD
-	sp = getspnam (pw->pw_name);
-	if (sp) {
+	sp = getspnam (pw->pw_name); /* local, no need for xgetspnam */
+	if (NULL != sp) {
 		printf ("%s %s %s %ld %ld %ld %ld\n",
 			pw->pw_name,
 			pw_status (sp->sp_pwdp),
@@ -457,9 +471,7 @@ static void print_status (const struct passwd *pw)
 			(sp->sp_max * SCALE) / DAY,
 			(sp->sp_warn * SCALE) / DAY,
 			(sp->sp_inact * SCALE) / DAY);
-	} else
-#endif
-	{
+	} else {
 		printf ("%s %s\n", pw->pw_name, pw_status (pw->pw_passwd));
 	}
 }
@@ -467,10 +479,22 @@ static void print_status (const struct passwd *pw)
 
 static void fail_exit (int status)
 {
-	pw_unlock ();
-#ifdef SHADOWPWD
-	spw_unlock ();
-#endif
+	if (pw_locked) {
+		if (pw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+			/* continue */
+		}
+	}
+
+	if (spw_locked) {
+		if (spw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+			/* continue */
+		}
+	}
+
 	exit (status);
 }
 
@@ -483,15 +507,26 @@ static void oom (void)
 static char *update_crypt_pw (char *cp)
 {
 #ifndef USE_PAM
-	if (do_update_pwd)
+	if (do_update_pwd) {
 		cp = insert_crypt_passwd (cp, crypt_passwd);
-#endif
+	}
+#endif				/* !USE_PAM */
 
-	if (dflg)
-		cp = "";	/* XXX warning: const */
+	if (dflg) {
+		*cp = '\0';
+	}
 
-	if (uflg && *cp == '!')
-		cp++;
+	if (uflg && *cp == '!') {
+		if (cp[1] == '\0') {
+			fprintf (stderr,
+			         _("%s: unlocking the password would result in a passwordless account.\n"
+			           "You should set a password with usermod -p to unlock the password of this account.\n"),
+			         Prog);
+			fail_exit (E_FAILURE);
+		} else {
+			cp++;
+		}
+	}
 
 	if (lflg && *cp != '!') {
 		char *newpw = xmalloc (strlen (cp) + 2);
@@ -509,135 +544,189 @@ static void update_noshadow (void)
 	const struct passwd *pw;
 	struct passwd *npw;
 
-	if (!pw_lock ()) {
+	if (pw_lock () == 0) {
 		fprintf (stderr,
-			 _
-			 ("Cannot lock the password file; try again later.\n"));
-		SYSLOG ((LOG_WARN, "can't lock password file"));
+		         _("%s: cannot lock %s; try again later.\n"),
+		         Prog, pw_dbname ());
 		exit (E_PWDBUSY);
 	}
-	if (!pw_open (O_RDWR)) {
-		fprintf (stderr, _("Cannot open the password file.\n"));
-		SYSLOG ((LOG_ERR, "can't open password file"));
+	pw_locked = true;
+	if (pw_open (O_RDWR) == 0) {
+		fprintf (stderr,
+		         _("%s: cannot open %s\n"),
+		         Prog, pw_dbname ());
+		SYSLOG ((LOG_WARN, "cannot open %s", pw_dbname ()));
 		fail_exit (E_MISSING);
 	}
 	pw = pw_locate (name);
-	if (!pw) {
-		fprintf (stderr, _("%s: %s not found in /etc/passwd\n"),
-			 Prog, name);
+	if (NULL == pw) {
+		fprintf (stderr,
+		         _("%s: user '%s' does not exist in %s\n"),
+		         Prog, name, pw_dbname ());
 		fail_exit (E_NOPERM);
 	}
 	npw = __pw_dup (pw);
-	if (!npw)
+	if (NULL == npw) {
 		oom ();
+	}
 	npw->pw_passwd = update_crypt_pw (npw->pw_passwd);
-	if (!pw_update (npw)) {
+	if (pw_update (npw) == 0) {
 		fprintf (stderr,
-			 _("Error updating the password entry.\n"));
-		SYSLOG ((LOG_ERR, "error updating password entry"));
+		         _("%s: failed to prepare the new %s entry '%s'\n"),
+		         Prog, pw_dbname (), npw->pw_name);
 		fail_exit (E_FAILURE);
 	}
-#ifdef NDBM
-	if (pw_dbm_present () && !pw_dbm_update (npw)) {
+	if (pw_close () == 0) {
 		fprintf (stderr,
-			 _("Error updating the DBM password entry.\n"));
-		SYSLOG ((LOG_ERR, "error updaring dbm password entry"));
+		         _("%s: failure while writing changes to %s\n"),
+		         Prog, pw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
 		fail_exit (E_FAILURE);
 	}
-	endpwent ();
-#endif
-	if (!pw_close ()) {
-		fprintf (stderr,
-			 _("Cannot commit password file changes.\n"));
-		SYSLOG ((LOG_ERR, "can't rewrite password file"));
-		fail_exit (E_FAILURE);
+	if (pw_unlock () == 0) {
+		fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
+		SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+		/* continue */
 	}
-	pw_unlock ();
+	pw_locked = false;
 }
 
-#ifdef SHADOWPWD
 static void update_shadow (void)
 {
 	const struct spwd *sp;
 	struct spwd *nsp;
 
-	if (!spw_lock ()) {
+	if (spw_lock () == 0) {
 		fprintf (stderr,
-			 _
-			 ("Cannot lock the password file; try again later.\n"));
-		SYSLOG ((LOG_WARN, "can't lock password file"));
+		         _("%s: cannot lock %s; try again later.\n"),
+		         Prog, spw_dbname ());
 		exit (E_PWDBUSY);
 	}
-	if (!spw_open (O_RDWR)) {
-		fprintf (stderr, _("Cannot open the password file.\n"));
-		SYSLOG ((LOG_ERR, "can't open password file"));
+	spw_locked = true;
+	if (spw_open (O_RDWR) == 0) {
+		fprintf (stderr, _("%s: cannot open %s\n"), Prog, spw_dbname ());
+		SYSLOG ((LOG_WARN, "cannot open %s", spw_dbname ()));
 		fail_exit (E_FAILURE);
 	}
 	sp = spw_locate (name);
-	if (!sp) {
+	if (NULL == sp) {
 		/* Try to update the password in /etc/passwd instead. */
-		spw_close ();
+		(void) spw_close ();
 		update_noshadow ();
-		spw_unlock ();
+		if (spw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+			/* continue */
+		}
+		spw_locked = false;
 		return;
 	}
 	nsp = __spw_dup (sp);
-	if (!nsp)
+	if (NULL == nsp) {
 		oom ();
+	}
 	nsp->sp_pwdp = update_crypt_pw (nsp->sp_pwdp);
-	if (xflg)
+	if (xflg) {
 		nsp->sp_max = (age_max * DAY) / SCALE;
-	if (nflg)
+	}
+	if (nflg) {
 		nsp->sp_min = (age_min * DAY) / SCALE;
-	if (wflg)
+	}
+	if (wflg) {
 		nsp->sp_warn = (warn * DAY) / SCALE;
-	if (iflg)
+	}
+	if (iflg) {
 		nsp->sp_inact = (inact * DAY) / SCALE;
-	if (do_update_age)
-		nsp->sp_lstchg = time ((time_t *) 0) / SCALE;
+	}
+#ifndef USE_PAM
+	if (do_update_age) {
+		nsp->sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+		if (0 == nsp->sp_lstchg) {
+			/* Better disable aging than requiring a password
+			 * change */
+			nsp->sp_lstchg = -1;
+		}
+	}
+#endif				/* !USE_PAM */
+
 	/*
 	 * Force change on next login, like SunOS 4.x passwd -e or Solaris
 	 * 2.x passwd -f. Solaris 2.x seems to do the same thing (set
 	 * sp_lstchg to 0).
 	 */
-	if (eflg)
+	if (eflg) {
 		nsp->sp_lstchg = 0;
+	}
 
-	if (!spw_update (nsp)) {
+	if (spw_update (nsp) == 0) {
 		fprintf (stderr,
-			 _("Error updating the password entry.\n"));
-		SYSLOG ((LOG_ERR, "error updating password entry"));
+		         _("%s: failed to prepare the new %s entry '%s'\n"),
+		         Prog, spw_dbname (), nsp->sp_namp);
 		fail_exit (E_FAILURE);
 	}
-#ifdef NDBM
-	if (sp_dbm_present () && !sp_dbm_update (nsp)) {
+	if (spw_close () == 0) {
 		fprintf (stderr,
-			 _("Error updating the DBM password entry.\n"));
-		SYSLOG ((LOG_ERR, "error updaring dbm password entry"));
+		         _("%s: failure while writing changes to %s\n"),
+		         Prog, spw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
 		fail_exit (E_FAILURE);
 	}
-	endspent ();
-#endif
-	if (!spw_close ()) {
-		fprintf (stderr,
-			 _("Cannot commit password file changes.\n"));
-		SYSLOG ((LOG_ERR, "can't rewrite password file"));
-		fail_exit (E_FAILURE);
+	if (spw_unlock () == 0) {
+		fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+		SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+		/* continue */
 	}
-	spw_unlock ();
+	spw_locked = false;
 }
-#endif				/* SHADOWPWD */
 
-static long getnumber (const char *str)
+#ifdef WITH_SELINUX
+static int check_selinux_access (const char *changed_user,
+                                 uid_t changed_uid,
+                                 access_vector_t requested_access)
 {
-	long val;
-	char *cp;
+	int status = -1;
+	security_context_t user_context;
+	context_t c;
+	const char *user;
 
-	val = strtol (str, &cp, 10);
-	if (*cp)
-		usage (E_BAD_ARG);
-	return val;
+	/* if in permissive mode then allow the operation */
+	if (security_getenforce() == 0) {
+		return 0;
+	}
+
+	/* get the context of the process which executed passwd */
+	if (getprevcon(&user_context) != 0) {
+		return -1;
+	}
+
+	/* get the "user" portion of the context (the part before the first
+	   colon) */
+	c = context_new(user_context);
+	user = context_user_get(c);
+
+	/* if changing a password for an account with UID==0 or for an account
+	   where the identity matches then return success */
+	if (changed_uid != 0 && strcmp(changed_user, user) == 0) {
+		status = 0;
+	} else {
+		struct av_decision avd;
+		int retval;
+		retval = security_compute_av(user_context,
+		                             user_context,
+		                             SECCLASS_PASSWD,
+		                             requested_access,
+		                             &avd);
+		if ((retval == 0) &&
+		    ((requested_access & avd.allowed) == requested_access)) {
+			status = 0;
+		}
+	}
+	context_free(c);
+	freecon(user_context);
+	return status;
 }
+
+#endif				/* WITH_SELINUX */
 
 /*
  * passwd - change a user's password file information
@@ -647,19 +736,20 @@ static long getnumber (const char *str)
  *
  *	The valid options are
  *
- *	-l	lock the named account (*)
- *	-u	unlock the named account (*)
  *	-d	delete the password for the named account (*)
  *	-e	expire the password for the named account (*)
- *	-x #	set sp_max to # days (*)
- *	-n #	set sp_min to # days (*)
- *	-w #	set sp_warn to # days (*)
- *	-i #	set sp_inact to # days (*)
- *	-S	show password status of named account
- *	-g	execute gpasswd command to interpret flags
  *	-f	execute chfn command to interpret flags
- *	-s	execute chsh command to interpret flags
+ *	-g	execute gpasswd command to interpret flags
+ *	-i #	set sp_inact to # days (*)
  *	-k	change password only if expired
+ *	-l	lock the password of the named account (*)
+ *	-n #	set sp_min to # days (*)
+ *	-r #	change password in # repository
+ *	-s	execute chsh command to interpret flags
+ *	-S	show password status of named account
+ *	-u	unlock the password of the named account (*)
+ *	-w #	set sp_warn to # days (*)
+ *	-x #	set sp_max to # days (*)
  *
  *	(*) requires root permission to execute.
  *
@@ -667,23 +757,19 @@ static long getnumber (const char *str)
  * 	appropriate internal format. For finer resolute the chage
  *	command must be used.
  */
-
 int main (int argc, char **argv)
 {
-	int flag;		/* Current option to process     */
 	const struct passwd *pw;	/* Password file entry for user      */
 
 #ifndef USE_PAM
 	char *cp;		/* Miscellaneous character pointing  */
 
-#ifdef SHADOWPWD
 	const struct spwd *sp;	/* Shadow file entry for user   */
-#endif
-#endif
+#endif				/* !USE_PAM */
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	(void) setlocale (LC_ALL, "");
+	(void) bindtextdomain (PACKAGE, LOCALEDIR);
+	(void) textdomain (PACKAGE);
 
 	/*
 	 * The program behaves differently when executed by root than when
@@ -701,124 +787,119 @@ int main (int argc, char **argv)
 
 	OPENLOG ("passwd");
 
-	/*
-	 * Start with the flags which cause another command to be executed.
-	 * The effective UID will be set back to the real UID and the new
-	 * command executed with the flags
-	 *
-	 * These flags are deprecated, may change in a future release.
-	 * Please run these programs directly.  --marekm
-	 */
+	{
+		/*
+		 * Parse the command line options.
+		 */
+		int option_index = 0;
+		int c;
+		static struct option long_options[] = {
+			{"all", no_argument, NULL, 'a'},
+			{"delete", no_argument, NULL, 'd'},
+			{"expire", no_argument, NULL, 'e'},
+			{"help", no_argument, NULL, 'h'},
+			{"inactive", required_argument, NULL, 'i'},
+			{"keep-tokens", no_argument, NULL, 'k'},
+			{"lock", no_argument, NULL, 'l'},
+			{"mindays", required_argument, NULL, 'n'},
+			{"quiet", no_argument, NULL, 'q'},
+			{"repository", required_argument, NULL, 'r'},
+			{"status", no_argument, NULL, 'S'},
+			{"unlock", no_argument, NULL, 'u'},
+			{"warndays", required_argument, NULL, 'w'},
+			{"maxdays", required_argument, NULL, 'x'},
+			{NULL, 0, NULL, '\0'}
+		};
 
-	if (argc > 1 && argv[1][0] == '-' && strchr ("gfs", argv[1][1])) {
-		char buf[200];
-
-		setuid (getuid ());
-		switch (argv[1][1]) {
-		case 'g':
-			argv[1] = GPASSWD_PROGRAM;	/* XXX warning: const */
-			break;
-		case 'f':
-			argv[1] = CHFN_PROGRAM;	/* XXX warning: const */
-			break;
-		case 's':
-			argv[1] = CHSH_PROGRAM;	/* XXX warning: const */
-			break;
-		default:
-			usage (E_BAD_ARG);
-		}
-		snprintf (buf, sizeof buf, _("%s: Cannot execute %s"),
-			  Prog, argv[1]);
-		execvp (argv[1], &argv[1]);
-		perror (buf);
-		SYSLOG ((LOG_ERR, "cannot execute %s", argv[1]));
-		closelog ();
-		exit (E_FAILURE);
-	}
-
-	/* 
-	 * The remaining arguments will be processed one by one and executed
-	 * by this command. The name is the last argument if it does not
-	 * begin with a "-", otherwise the name is determined from the
-	 * environment and must agree with the real UID. Also, the UID will
-	 * be checked for any commands which are restricted to root only.
-	 */
-
-#ifdef SHADOWPWD
-#define FLAGS "adlqr:uSekn:x:i:w:"
-#else
-# define FLAGS "adlqr:uS"
-#endif
-
-	while ((flag = getopt (argc, argv, FLAGS)) != EOF) {
-#undef FLAGS
-		switch (flag) {
-#ifdef	SHADOWPWD
-		case 'x':
-			age_max = getnumber (optarg);
-			xflg++;
-			anyflag = 1;
-			break;
-		case 'n':
-			age_min = getnumber (optarg);
-			nflg++;
-			anyflag = 1;
-			break;
-		case 'w':
-			warn = getnumber (optarg);
-			if (warn >= -1)
-				wflg++;
-			anyflag = 1;
-			break;
-		case 'i':
-			inact = getnumber (optarg);
-			if (inact >= -1)
-				iflg++;
-			anyflag = 1;
-			break;
-		case 'e':
-			eflg++;
-			anyflag = 1;
-			break;
-		case 'k':
-			/* change only if expired, like Linux-PAM passwd -k. */
-			kflg++;	/* ok for users */
-			break;
-#endif				/* SHADOWPWD */
-		case 'a':
-			aflg++;
-			break;
-		case 'q':
-			qflg++;	/* ok for users */
-			break;
-		case 'S':
-			Sflg++;	/* ok for users */
-			break;
-		case 'd':
-			dflg++;
-			anyflag = 1;
-			break;
-		case 'l':
-			lflg++;
-			anyflag = 1;
-			break;
-		case 'u':
-			uflg++;
-			anyflag = 1;
-			break;
-		case 'r':
-			/* -r repository (files|nis|nisplus) */
-			/* only "files" supported for now */
-			if (strcmp (optarg, "files") != 0) {
-				fprintf (stderr,
-					 _
-					 ("%s: repository %s not supported\n"),
-					 Prog, optarg);
-				exit (E_BAD_ARG);
+		while ((c = getopt_long (argc, argv, "adei:kln:qr:Suw:x:",
+		                         long_options, &option_index)) != -1) {
+			switch (c) {
+			case 'a':
+				aflg = true;
+				break;
+			case 'd':
+				dflg = true;
+				anyflag = true;
+				break;
+			case 'e':
+				eflg = true;
+				anyflag = true;
+				break;
+			case 'i':
+				if (   (getlong (optarg, &inact) == 0)
+				    || (inact < -1)) {
+					fprintf (stderr,
+					         _("%s: invalid numeric argument '%s'\n"),
+					         Prog, optarg);
+					usage (E_BAD_ARG);
+				}
+				iflg = true;
+				anyflag = true;
+				break;
+			case 'k':
+				/* change only if expired, like Linux-PAM passwd -k. */
+				kflg = true;	/* ok for users */
+				break;
+			case 'l':
+				lflg = true;
+				anyflag = true;
+				break;
+			case 'n':
+				if (   (getlong (optarg, &age_min) == 0)
+				    || (age_min < -1)) {
+					fprintf (stderr,
+					         _("%s: invalid numeric argument '%s'\n"),
+					         Prog, optarg);
+					usage (E_BAD_ARG);
+				}
+				nflg = true;
+				anyflag = true;
+				break;
+			case 'q':
+				qflg = true;	/* ok for users */
+				break;
+			case 'r':
+				/* -r repository (files|nis|nisplus) */
+				/* only "files" supported for now */
+				if (strcmp (optarg, "files") != 0) {
+					fprintf (stderr,
+					         _("%s: repository %s not supported\n"),
+						 Prog, optarg);
+					exit (E_BAD_ARG);
+				}
+				break;
+			case 'S':
+				Sflg = true;	/* ok for users */
+				break;
+			case 'u':
+				uflg = true;
+				anyflag = true;
+				break;
+			case 'w':
+				if (   (getlong (optarg, &warn) == 0)
+				    || (warn < -1)) {
+					fprintf (stderr,
+					         _("%s: invalid numeric argument '%s'\n"),
+					         Prog, optarg);
+					usage (E_BAD_ARG);
+				}
+				wflg = true;
+				anyflag = true;
+				break;
+			case 'x':
+				if (   (getlong (optarg, &age_max) == 0)
+				    || (age_max < -1)) {
+					fprintf (stderr,
+					         _("%s: invalid numeric argument '%s'\n"),
+					         Prog, optarg);
+					usage (E_BAD_ARG);
+				}
+				xflg = true;
+				anyflag = true;
+				break;
+			default:
+				usage (E_BAD_ARG);
 			}
-			break;
-		default:
-			usage (E_BAD_ARG);
 		}
 	}
 
@@ -827,36 +908,45 @@ int main (int argc, char **argv)
 	 * command line if possible. Otherwise it is figured out from the
 	 * environment.
 	 */
-
 	pw = get_my_pwent ();
-	if (!pw) {
+	if (NULL == pw) {
 		fprintf (stderr,
-			 _("%s: Cannot determine your user name.\n"),
-			 Prog);
+		         _("%s: Cannot determine your user name.\n"), Prog);
+		SYSLOG ((LOG_WARN, "Cannot determine the user name of the caller (UID %lu)",
+		         (unsigned long) getuid ()));
 		exit (E_NOPERM);
 	}
 	myname = xstrdup (pw->pw_name);
-	if (optind < argc)
+	if (optind < argc) {
 		name = argv[optind];
-	else
+	} else {
 		name = myname;
+	}
+
+	/*
+	 * Make sure that at most one username was specified.
+	 */
+	if (argc > (optind+1)) {
+		usage (E_USAGE);
+	}
 
 	/*
 	 * The -a flag requires -S, no other flags, no username, and
 	 * you must be root.  --marekm
 	 */
-
 	if (aflg) {
-		if (anyflag || !Sflg || (optind < argc))
+		if (anyflag || !Sflg || (optind < argc)) {
 			usage (E_USAGE);
+		}
 		if (!amroot) {
-			fprintf (stderr, _("%s: Permission denied.\n"),
-				 Prog);
+			fprintf (stderr, _("%s: Permission denied.\n"), Prog);
 			exit (E_NOPERM);
 		}
 		setpwent ();
-		while ((pw = getpwent ()))
+		while ( (pw = getpwent ()) != NULL ) {
 			print_status (pw);
+		}
+		endpwent ();
 		exit (E_SUCCESS);
 	}
 #if 0
@@ -879,41 +969,59 @@ int main (int argc, char **argv)
 	 * -S now ok for normal users (check status of my own account), and
 	 * doesn't require username.  --marekm
 	 */
-
-	if (anyflag && optind >= argc)
+	if (anyflag && optind >= argc) {
 		usage (E_USAGE);
+	}
 
-	if (anyflag + Sflg + kflg > 1)
+	if (   (Sflg && kflg)
+	    || (anyflag && (Sflg || kflg))) {
 		usage (E_USAGE);
+	}
 
 	if (anyflag && !amroot) {
-		fprintf (stderr, _("%s: Permission denied\n"), Prog);
+		fprintf (stderr, _("%s: Permission denied.\n"), Prog);
 		exit (E_NOPERM);
 	}
-#ifdef NDBM
-	endpwent ();
-	pw_dbm_mode = O_RDWR;
-#ifdef SHADOWPWD
-	sp_dbm_mode = O_RDWR;
-#endif
-#endif
 
-	pw = getpwnam (name);
-	if (!pw) {
-		fprintf (stderr, _("%s: Unknown user %s\n"), Prog, name);
+	pw = xgetpwnam (name);
+	if (NULL == pw) {
+		fprintf (stderr, _("%s: user '%s' does not exist\n"), Prog, name);
 		exit (E_NOPERM);
 	}
+#ifdef WITH_SELINUX
+	/* only do this check when getuid()==0 because it's a pre-condition for
+	   changing a password without entering the old one */
+	if ((is_selinux_enabled() > 0) && (getuid() == 0) &&
+	    (check_selinux_access (name, pw->pw_uid, PASSWD__PASSWD) != 0)) {
+		security_context_t user_context = NULL;
+		const char *user = "Unknown user context";
+		if (getprevcon (&user_context) == 0) {
+			user = user_context;
+		}
+		SYSLOG ((LOG_ALERT,
+		         "%s is not authorized to change the password of %s",
+		         user, name));
+		fprintf(stderr,
+		        _("%s: %s is not authorized to change the password of %s\n"),
+		        Prog, user, name);
+		if (NULL != user_context) {
+			freecon (user_context);
+		}
+		exit (E_NOPERM);
+	}
+#endif				/* WITH_SELINUX */
 
 	/*
-	 * Now I have a name, let's see if the UID for the name matches the
-	 * current real UID.
+	 * If the UID of the user does not match the current real UID,
+	 * check if I'm root.
 	 */
-
-	if (!amroot && pw->pw_uid != getuid ()) {
+	if (!amroot && (pw->pw_uid != getuid ())) {
 		fprintf (stderr,
-			 _("You may not change the password for %s.\n"),
-			 name);
-		SYSLOG ((LOG_WARN, "can't change pwd for `%s'", name));
+		         _("%s: You may not view or modify password information for %s.\n"),
+		         Prog, name);
+		SYSLOG ((LOG_WARN,
+			 "%s: can't view or modify password information for %s",
+			 Prog, name));
 		closelog ();
 		exit (E_NOPERM);
 	}
@@ -923,24 +1031,19 @@ int main (int argc, char **argv)
 		exit (E_SUCCESS);
 	}
 #ifndef USE_PAM
-#ifdef SHADOWPWD
 	/*
 	 * The user name is valid, so let's get the shadow file entry.
 	 */
-
-	sp = getspnam (name);
-	if (!sp)
+	sp = getspnam (name); /* !USE_PAM, no need for xgetspnam */
+	if (NULL == sp) {
 		sp = pwd_to_spwd (pw);
+	}
 
 	cp = sp->sp_pwdp;
-#else
-	cp = pw->pw_passwd;
-#endif
 
 	/*
 	 * If there are no other flags, just change the password.
 	 */
-
 	if (!anyflag) {
 		STRFCPY (crypt_passwd, cp);
 
@@ -948,18 +1051,14 @@ int main (int argc, char **argv)
 		 * See if the user is permitted to change the password. 
 		 * Otherwise, go ahead and set a new password.
 		 */
-
-#ifdef SHADOWPWD
 		check_password (pw, sp);
-#else
-		check_password (pw);
-#endif
 
 		/*
 		 * Let the user know whose password is being changed.
 		 */
-		if (!qflg)
+		if (!qflg) {
 			printf (_("Changing password for %s\n"), name);
+		}
 
 		if (new_password (pw)) {
 			fprintf (stderr,
@@ -968,8 +1067,8 @@ int main (int argc, char **argv)
 			closelog ();
 			exit (E_NOPERM);
 		}
-		do_update_pwd = 1;
-		do_update_age = 1;
+		do_update_pwd = true;
+		do_update_age = true;
 	}
 #endif				/* !USE_PAM */
 	/*
@@ -978,42 +1077,44 @@ int main (int argc, char **argv)
 	 * against unexpected signals. Any keyboard signals are set to be
 	 * ignored.
 	 */
-
 	pwd_init ();
 
+#ifdef USE_PAM
 	/*
 	 * Don't set the real UID for PAM...
 	 */
-#ifdef USE_PAM
 	if (!anyflag) {
 		do_pam_passwd (name, qflg, kflg);
 		exit (E_SUCCESS);
 	}
-#endif				/* SHADOWPWD */
-	if (setuid (0)) {
-		fprintf (stderr, _("Cannot change ID to root.\n"));
+#endif				/* USE_PAM */
+	if (setuid (0) != 0) {
+		fputs (_("Cannot change ID to root.\n"), stderr);
 		SYSLOG ((LOG_ERR, "can't setuid(0)"));
 		closelog ();
 		exit (E_NOPERM);
 	}
-#ifdef SHADOWPWD
-	if (spw_file_present ())
+	if (spw_file_present ()) {
 		update_shadow ();
-	else
-#endif
+	} else {
 		update_noshadow ();
+	}
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
-#ifdef SHADOWPWD
-	nscd_flush_cache ("shadow");
-#endif
 
-	SYSLOG ((LOG_INFO, "password for `%s' changed by `%s'", name,
-		 myname));
+	SYSLOG ((LOG_INFO, "password for '%s' changed by '%s'", name, myname));
 	closelog ();
-	if (!qflg)
-		printf (_("Password changed.\n"));
-	exit (E_SUCCESS);
-	/* NOT REACHED */
+	if (!qflg) {
+		if (!anyflag) {
+#ifndef USE_PAM
+			printf (_("%s: password changed.\n"), Prog);
+#endif				/* USE_PAM */
+		} else {
+			printf (_("%s: password expiry information changed.\n"), Prog);
+		}
+	}
+
+	return E_SUCCESS;
 }
+

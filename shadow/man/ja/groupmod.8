@@ -1,4 +1,4 @@
-.\"$Id: groupmod.8,v 1.6 2003/04/28 02:14:00 kloczek Exp $
+.\"$Id: groupmod.8 1342 2007-11-10 23:46:11Z nekral-guest $
 .\" Copyright 1991, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
@@ -33,31 +33,31 @@
 .\" Updated & Modified Sat 21 Sep 2002 by NAKANO Takeo <nakano@apm.seikei.ac.jp>
 .\"
 .TH GROUPMOD 8
-.SH ̾��
-groupmod \- ���롼�פ�������
-.SH ��
-\fBgroupmod\fR [\fB-g\fI gid \fR[\fB-o\fR]] [\fB-n\fI group_name \fR]
+.SH 名前
+groupmod \- グループを修正する
+.SH 書式
+\fBgroupmod\fR [\fB\-g\fR \fIgid\fR [\fB\-o\fR]] [\fB\-n\fR \fIgroup_name\fR]
 \fIgroup\fR
-.SH ����
-\fBgroupmod\fR ���ޥ�ɤϡ�
-���ޥ�ɥ饤�󤫤�λ���ˤ�äơ�
-�����ƥॢ������ȥե�����������롣
-\fIgroupmod\fR ���ޥ�ɤ˻���Ǥ��륪�ץ����ϼ����̤ꡣ
-.IP "\fB-g \fIgid\fR"
-�ѹ�������륰�롼�פ� ID �ֹ档
-�����ͤϡ�\fB-o\fR ���ץ������Ѥ�����������¾�Ƚ�ʣ���ƤϤʤ�ʤ���
-�ޤ������ͤǤʤ��ƤϤʤ�ʤ���
-�ǥե���Ȥϡ�99 �����¾�Τ������¸���롼�פ� ID �����礭����
-�Ǿ��ο��ͤȤʤ롣
-�ѹ����Υ��롼�� ID ��������ƤΥե�����ϡ�
-���Ȥǿ��������롼�� ID �ؤ��ѹ����ʤ���Фʤ�ʤ���
-.IP "\fB-n \fIgroup_name\fR"
-���롼�פ�̾���� \fIgroup\fR ���� \fIgroup_name\fR ���ѹ�����롣
-.SH �ե�����
-\fI/etc/group\fR \- ���롼�׾���
+.SH 説明
+\fBgroupmod\fR コマンドは、
+コマンドラインからの指定によって、
+システムアカウントファイルを修正する。
+\fIgroupmod\fR コマンドに指定できるオプションは次の通り。
+.IP "\fB\-g \fIgid\fR"
+変更を受けるグループの ID 番号。
+この値は、\fB\-o\fR オプションを用いる場合を除き、他と重複してはならない。
+また非負値でなくてはならない。
+デフォルトは、999 および他のあらゆる既存グループの ID よりも大きい、
+最小の数値となる。
+変更前のグループ ID を持つ全てのファイルは、
+手作業で新しいグループ ID へと変更しなければならない。
+.IP "\fB\-n \fIgroup_name\fR"
+グループの名前が \fIgroup\fR から \fIgroup_name\fR に変更される。
+.SH ファイル
+\fI/etc/group\fR \- グループ情報
 .br
-\fR/etc/gshadow\I \- �����ʥ��롼�׾���
-.SH ��Ϣ����
+\fR/etc/gshadow\I \- 安全なグループ情報
+.SH 関連項目
 .BR chfn (1),
 .BR chsh (1),
 .BR passwd (1),
@@ -66,5 +66,5 @@ groupmod \- ���롼�פ�������
 .BR useradd (8),
 .BR userdel (8),
 .BR usermod (8)
-.SH ����
+.SH 著者
 Julianne Frances Haugh (jockgrrl@ix.netcom.com)

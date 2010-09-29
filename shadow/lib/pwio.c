@@ -1,79 +1,78 @@
+/*
+ * Copyright (c) 1990 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2001       , Michał Moskal
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2009, Nicolas François
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID("$Id: pwio.c,v 1.13 2003/05/03 16:14:23 kloczek Exp $")
+#ident "$Id: pwio.c 2783 2009-04-23 21:19:02Z nekral-guest $"
 
 #include "prototypes.h"
 #include "defines.h"
 #include <pwd.h>
 #include <stdio.h>
-
 #include "commonio.h"
 #include "pwio.h"
 
-extern struct passwd *sgetpwent(const char *);
-extern int putpwent(const struct passwd *, FILE *);
-
-struct passwd *
-__pw_dup(const struct passwd *pwent)
-{
-	struct passwd *pw;
-
-	if (!(pw = (struct passwd *) malloc(sizeof *pw)))
-		return NULL;
-	*pw = *pwent;
-	if (!(pw->pw_name = strdup(pwent->pw_name)))
-		return NULL;
-	if (!(pw->pw_passwd = strdup(pwent->pw_passwd)))
-		return NULL;
-	if (!(pw->pw_gecos = strdup(pwent->pw_gecos)))
-		return NULL;
-	if (!(pw->pw_dir = strdup(pwent->pw_dir)))
-		return NULL;
-	if (!(pw->pw_shell = strdup(pwent->pw_shell)))
-		return NULL;
-	return pw;
-}
-
-static void *
-passwd_dup(const void *ent)
+static /*@null@*/ /*@only@*/void *passwd_dup (const void *ent)
 {
 	const struct passwd *pw = ent;
-	return __pw_dup(pw);
+
+	return __pw_dup (pw);
 }
 
-static void
-passwd_free(void *ent)
+static void passwd_free (/*@out@*/ /*@only@*/void *ent)
 {
 	struct passwd *pw = ent;
 
-	free(pw->pw_name);
-	free(pw->pw_passwd);
-	free(pw->pw_gecos);
-	free(pw->pw_dir);
-	free(pw->pw_shell);
-	free(pw);
+	pw_free (pw);
 }
 
-static const char *
-passwd_getname(const void *ent)
+static const char *passwd_getname (const void *ent)
 {
 	const struct passwd *pw = ent;
+
 	return pw->pw_name;
 }
 
-static void *
-passwd_parse(const char *line)
+static void *passwd_parse (const char *line)
 {
-	return (void *) sgetpwent(line);
+	return (void *) sgetpwent (line);
 }
 
-static int
-passwd_put(const void *ent, FILE *file)
+static int passwd_put (const void *ent, FILE * file)
 {
 	const struct passwd *pw = ent;
-	return (putpwent(pw, file) == -1) ? -1 : 0;
+
+	return (putpwent (pw, file) == -1) ? -1 : 0;
 }
 
 static struct commonio_ops passwd_ops = {
@@ -83,112 +82,120 @@ static struct commonio_ops passwd_ops = {
 	passwd_parse,
 	passwd_put,
 	fgets,
-	fputs
+	fputs,
+	NULL,			/* open_hook */
+	NULL			/* close_hook */
 };
 
 static struct commonio_db passwd_db = {
-	PASSWD_FILE,	/* filename */
-	&passwd_ops,	/* ops */
-	NULL,		/* fp */
-	NULL,		/* head */
-	NULL,		/* tail */
-	NULL,		/* cursor */
-	0,		/* changed */
-	0,		/* isopen */
-	0,		/* locked */
-	0		/* readonly */
+	PASSWD_FILE,		/* filename */
+	&passwd_ops,		/* ops */
+	NULL,			/* fp */
+#ifdef WITH_SELINUX
+	NULL,			/* scontext */
+#endif
+	NULL,			/* head */
+	NULL,			/* tail */
+	NULL,			/* cursor */
+	false,			/* changed */
+	false,			/* isopen */
+	false,			/* locked */
+	false			/* readonly */
 };
 
-int
-pw_name(const char *filename)
+int pw_setdbname (const char *filename)
 {
-	return commonio_setname(&passwd_db, filename);
+	return commonio_setname (&passwd_db, filename);
 }
 
-int
-pw_lock(void)
+/*@observer@*/const char *pw_dbname (void)
 {
-	return commonio_lock(&passwd_db);
+	return passwd_db.filename;
 }
 
-int
-pw_open(int mode)
+int pw_lock (void)
 {
-	return commonio_open(&passwd_db, mode);
+	return commonio_lock (&passwd_db);
 }
 
-const struct passwd *
-pw_locate(const char *name)
+int pw_open (int mode)
 {
-	return commonio_locate(&passwd_db, name);
+	return commonio_open (&passwd_db, mode);
 }
 
-int
-pw_update(const struct passwd *pw)
+/*@observer@*/ /*@null@*/const struct passwd *pw_locate (const char *name)
 {
-	return commonio_update(&passwd_db, (const void *) pw);
+	return commonio_locate (&passwd_db, name);
 }
 
-int
-pw_remove(const char *name)
+/*@observer@*/ /*@null@*/const struct passwd *pw_locate_uid (uid_t uid)
 {
-	return commonio_remove(&passwd_db, name);
+	const struct passwd *pwd;
+
+	pw_rewind ();
+	while (   ((pwd = pw_next ()) != NULL)
+	       && (pwd->pw_uid != uid)) {
+	}
+
+	return pwd;
 }
 
-int
-pw_rewind(void)
+int pw_update (const struct passwd *pw)
 {
-	return commonio_rewind(&passwd_db);
+	return commonio_update (&passwd_db, (const void *) pw);
 }
 
-const struct passwd *
-pw_next(void)
+int pw_remove (const char *name)
 {
-	return commonio_next(&passwd_db);
+	return commonio_remove (&passwd_db, name);
 }
 
-int
-pw_close(void)
+int pw_rewind (void)
 {
-	return commonio_close(&passwd_db);
+	return commonio_rewind (&passwd_db);
 }
 
-int
-pw_unlock(void)
+/*@observer@*/ /*@null@*/const struct passwd *pw_next (void)
 {
-	return commonio_unlock(&passwd_db);
+	return commonio_next (&passwd_db);
 }
 
-struct commonio_entry *
-__pw_get_head(void)
+int pw_close (void)
+{
+	return commonio_close (&passwd_db);
+}
+
+int pw_unlock (void)
+{
+	return commonio_unlock (&passwd_db);
+}
+
+/*@null@*/struct commonio_entry *__pw_get_head (void)
 {
 	return passwd_db.head;
 }
 
-void
-__pw_del_entry(const struct commonio_entry *ent)
+void __pw_del_entry (const struct commonio_entry *ent)
 {
-	commonio_del_entry(&passwd_db, ent);
+	commonio_del_entry (&passwd_db, ent);
 }
 
-struct commonio_db *
-__pw_get_db(void)
+struct commonio_db *__pw_get_db (void)
 {
 	return &passwd_db;
 }
 
-static int
-pw_cmp(const void *p1, const void *p2)
+static int pw_cmp (const void *p1, const void *p2)
 {
 	uid_t u1, u2;
 
-	if ((*(struct commonio_entry**)p1)->eptr == NULL)
+	if ((*(struct commonio_entry **) p1)->eptr == NULL)
 		return 1;
-	if ((*(struct commonio_entry**)p2)->eptr == NULL)
+	if ((*(struct commonio_entry **) p2)->eptr == NULL)
 		return -1;
-	
-	u1 = ((struct passwd *)(*(struct commonio_entry**)p1)->eptr)->pw_uid;
-	u2 = ((struct passwd *)(*(struct commonio_entry**)p2)->eptr)->pw_uid;
+
+	u1 = ((struct passwd *) (*(struct commonio_entry **) p1)->eptr)->pw_uid;
+	u2 = ((struct passwd *) (*(struct commonio_entry **) p2)->eptr)->pw_uid;
 
 	if (u1 < u2)
 		return -1;
@@ -198,9 +205,8 @@ pw_cmp(const void *p1, const void *p2)
 		return 0;
 }
 
-/* Sort entries by uid */
-int
-pw_sort()
+/* Sort entries by UID */
+int pw_sort ()
 {
-	return commonio_sort(&passwd_db, pw_cmp);
+	return commonio_sort (&passwd_db, pw_cmp);
 }

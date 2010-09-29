@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1997, Marek Michałkiewicz
+ * Copyright (c) 2005       , Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,37 +13,35 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID("$Id: port.c,v 1.3 1997/12/07 23:26:54 marekm Exp $")
+#ident "$Id: port.c 2130 2008-06-13 18:11:09Z nekral-guest $"
 
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
 #include "defines.h"
+#include "prototypes.h"
 #include "port.h"
 
-extern	int	errno;
-
-static	FILE	*ports;
+static FILE *ports;
 
 /*
  * portcmp - compare the name of a port to a /etc/porttime entry
@@ -52,20 +53,23 @@ static	FILE	*ports;
  *	A match returns 0, failure returns non-zero.
  */
 
-static int
-portcmp(const char *pattern, const char *port)
+static int portcmp (const char *pattern, const char *port)
 {
 	const char *orig = port;
 
-	while (*pattern && *pattern == *port)
-		pattern++, port++;
+	while (('\0' != *pattern) && (*pattern == *port)) {
+		pattern++;
+		port++;
+	}
 
-	if (*pattern == 0 && *port == 0)
+	if (('\0' == *pattern) && ('\0' == *port)) {
 		return 0;
-	if (orig[0] == 'S' && orig[1] == 'U' && orig[2] == '\0')
+	}
+	if (('S' == orig[0]) && ('U' == orig[1]) && ('\0' == orig[2])) {
 		return 1;
+	}
 
-	return *pattern == '*' ? 0:1;
+	return (*pattern == '*') ? 0 : 1;
 }
 
 /*
@@ -75,13 +79,13 @@ portcmp(const char *pattern, const char *port)
  *	opened for reading.
  */
 
-static void
-setportent(void)
+static void setportent (void)
 {
-	if (ports)
+	if (NULL != ports) {
 		rewind (ports);
-	else 
+	} else {
 		ports = fopen (PORTS, "r");
+	}
 }
 
 /*
@@ -92,11 +96,11 @@ setportent(void)
  *	open.
  */
 
-static void
-endportent(void)
+static void endportent (void)
 {
-	if (ports)
-		fclose (ports);
+	if (NULL != ports) {
+		(void) fclose (ports);
+	}
 
 	ports = (FILE *) 0;
 }
@@ -110,28 +114,28 @@ endportent(void)
  *	set to EINVAL on error to distinguish the two conditions.
  */
 
-static struct port *
-getportent(void)
+static struct port *getportent (void)
 {
-	static	struct	port	port;	/* static struct to point to         */
-	static	char	buf[BUFSIZ];	/* some space for stuff              */
-	static	char	*ttys[PORT_TTY+1]; /* some pointers to tty names     */
-	static	char	*users[PORT_IDS+1]; /* some pointers to user ids     */
-	static	struct	pt_time	ptimes[PORT_TIMES+1]; /* time ranges         */
-	char	*cp;			/* pointer into line                 */
-	int	dtime;			/* scratch time of day               */
-	int	i, j;
-	int	saveerr = errno;	/* errno value on entry              */
+	static struct port port;	/* static struct to point to         */
+	static char buf[BUFSIZ];	/* some space for stuff              */
+	static char *ttys[PORT_TTY + 1];	/* some pointers to tty names     */
+	static char *users[PORT_IDS + 1];	/* some pointers to user ids     */
+	static struct pt_time ptimes[PORT_TIMES + 1];	/* time ranges         */
+	char *cp;		/* pointer into line                 */
+	int dtime;		/* scratch time of day               */
+	int i, j;
+	int saveerr = errno;	/* errno value on entry              */
 
 	/*
 	 * If the ports file is not open, open the file.  Do not rewind
 	 * since we want to search from the beginning each time.
 	 */
 
-	if (! ports)
+	if (NULL == ports) {
 		setportent ();
+	}
 
-	if (! ports) {
+	if (NULL == ports) {
 		errno = saveerr;
 		return 0;
 	}
@@ -139,26 +143,27 @@ getportent(void)
 	/*
 	 * Common point for beginning a new line -
 	 *
-	 *	- read a line, and NUL terminate
-	 *	- skip lines which begin with '#'
-	 *	- parse off the tty names
-	 *	- parse off a list of user names
-	 *	- parse off a list of days and times
+	 *      - read a line, and NUL terminate
+	 *      - skip lines which begin with '#'
+	 *      - parse off the tty names
+	 *      - parse off a list of user names
+	 *      - parse off a list of days and times
 	 */
 
-again:
+      again:
 
 	/*
 	 * Get the next line and remove the last character, which
 	 * is a '\n'.  Lines which begin with '#' are all ignored.
 	 */
 
-	if (fgets (buf, sizeof buf, ports) == 0) {
+	if (fgets (buf, (int) sizeof buf, ports) == 0) {
 		errno = saveerr;
 		return 0;
 	}
-	if (buf[0] == '#')
+	if ('#' == buf[0]) {
 		goto again;
+	}
 
 	/*
 	 * Get the name of the TTY device.  It is the first colon
@@ -170,21 +175,26 @@ again:
 	buf[strlen (buf) - 1] = 0;
 
 	port.pt_names = ttys;
-	for (cp = buf, j = 0;j < PORT_TTY;j++) {
+	for (cp = buf, j = 0; j < PORT_TTY; j++) {
 		port.pt_names[j] = cp;
-		while (*cp && *cp != ':' && *cp != ',')
+		while (('\0' != *cp) && (':' != *cp) && (',' != *cp)) {
 			cp++;
+		}
 
-		if (! *cp)
+		if ('\0' == *cp) {
 			goto again;	/* line format error */
+		}
 
-		if (*cp == ':')		/* end of tty name list */
+		if (':' == *cp) {	/* end of tty name list */
 			break;
+		}
 
-		if (*cp == ',')		/* end of current tty name */
+		if (',' == *cp) {	/* end of current tty name */
 			*cp++ = '\0';
+		}
 	}
-	*cp++ = 0;
+	*cp = '\0';
+	cp++;
 	port.pt_names[j + 1] = (char *) 0;
 
 	/*
@@ -194,24 +204,29 @@ again:
 	 * The last entry in the list is a (char *) 0 pointer.
 	 */
 
-	if (*cp != ':') {
+	if (':' != *cp) {
 		port.pt_users = users;
 		port.pt_users[0] = cp;
 
-		for (j = 1;*cp != ':';cp++) {
-			if (*cp == ',' && j < PORT_IDS) {
-				*cp++ = 0;
-				port.pt_users[j++] = cp;
+		for (j = 1; ':' != *cp; cp++) {
+			if ((',' == *cp) && (j < PORT_IDS)) {
+				*cp = '\0';
+				cp++;
+				port.pt_users[j] = cp;
+				j++;
 			}
 		}
 		port.pt_users[j] = 0;
-	} else
+	} else {
 		port.pt_users = 0;
+	}
 
-	if (*cp != ':')
+	if (':' != *cp) {
 		goto again;
+	}
 
-	*cp++ = 0;
+	*cp = '\0';
+	cp++;
 
 	/*
 	 * Get the list of valid times.  The times field is the third
@@ -226,7 +241,7 @@ again:
 	 * the starting time.  Days are presumed to wrap at 0000.
 	 */
 
-	if (*cp == '\0') {
+	if ('\0' == *cp) {
 		port.pt_times = 0;
 		return &port;
 	}
@@ -237,7 +252,7 @@ again:
 	 * Get the next comma separated entry
 	 */
 
-	for (j = 0;*cp && j < PORT_TIMES;j++) {
+	for (j = 0; ('\0' != *cp) && (j < PORT_TIMES); j++) {
 
 		/*
 		 * Start off with no days of the week
@@ -251,38 +266,40 @@ again:
 		 * week or the other two values.
 		 */
 
-		for (i = 0;cp[i] && cp[i + 1] && isalpha (cp[i]);i += 2) {
+		for (i = 0;
+		     ('\0' != cp[i]) && ('\0' != cp[i + 1]) && isalpha (cp[i]);
+		     i += 2) {
 			switch ((cp[i] << 8) | (cp[i + 1])) {
-				case ('S' << 8) | 'u':
-					port.pt_times[j].t_days |= 01;
-					break;
-				case ('M' << 8) | 'o':
-					port.pt_times[j].t_days |= 02;
-					break;
-				case ('T' << 8) | 'u':
-					port.pt_times[j].t_days |= 04;
-					break;
-				case ('W' << 8) | 'e':
-					port.pt_times[j].t_days |= 010;
-					break;
-				case ('T' << 8) | 'h':
-					port.pt_times[j].t_days |= 020;
-					break;
-				case ('F' << 8) | 'r':
-					port.pt_times[j].t_days |= 040;
-					break;
-				case ('S' << 8) | 'a':
-					port.pt_times[j].t_days |= 0100;
-					break;
-				case ('W' << 8) | 'k':
-					port.pt_times[j].t_days |= 076;
-					break;
-				case ('A' << 8) | 'l':
-					port.pt_times[j].t_days |= 0177;
-					break;
-				default:
-					errno = EINVAL;
-					return 0;
+			case ('S' << 8) | 'u':
+				port.pt_times[j].t_days |= 01;
+				break;
+			case ('M' << 8) | 'o':
+				port.pt_times[j].t_days |= 02;
+				break;
+			case ('T' << 8) | 'u':
+				port.pt_times[j].t_days |= 04;
+				break;
+			case ('W' << 8) | 'e':
+				port.pt_times[j].t_days |= 010;
+				break;
+			case ('T' << 8) | 'h':
+				port.pt_times[j].t_days |= 020;
+				break;
+			case ('F' << 8) | 'r':
+				port.pt_times[j].t_days |= 040;
+				break;
+			case ('S' << 8) | 'a':
+				port.pt_times[j].t_days |= 0100;
+				break;
+			case ('W' << 8) | 'k':
+				port.pt_times[j].t_days |= 076;
+				break;
+			case ('A' << 8) | 'l':
+				port.pt_times[j].t_days |= 0177;
+				break;
+			default:
+				errno = EINVAL;
+				return 0;
 			}
 		}
 
@@ -290,8 +307,9 @@ again:
 		 * The default is 'Al' if no days were seen.
 		 */
 
-		if (i == 0)
+		if (0 == i) {
 			port.pt_times[j].t_days = 0177;
+		}
 
 		/*
 		 * The start and end times are separated from each
@@ -299,20 +317,27 @@ again:
 		 * representing the times of day.
 		 */
 
-		for (dtime = 0;cp[i] && isdigit (cp[i]);i++)
+		for (dtime = 0; ('\0' != cp[i]) && isdigit (cp[i]); i++) {
 			dtime = dtime * 10 + cp[i] - '0';
+		}
 
-		if (cp[i] != '-' || dtime > 2400 || dtime % 100 > 59)
+		if (('-' != cp[i]) || (dtime > 2400) || ((dtime % 100) > 59)) {
 			goto again;
+		}
 		port.pt_times[j].t_start = dtime;
 		cp = cp + i + 1;
 
-		for (dtime = i = 0;cp[i] && isdigit (cp[i]);i++)
+		for (dtime = 0, i = 0;
+		     ('\0' != cp[i]) && isdigit (cp[i]);
+		     i++) {
 			dtime = dtime * 10 + cp[i] - '0';
+		}
 
-		if ((cp[i] != ',' && cp[i]) ||
-		    dtime > 2400 || dtime % 100 > 59)
+		if (   ((',' != cp[i]) && ('\0' != cp[i]))
+		    || (dtime > 2400)
+		    || ((dtime % 100) > 59)) {
 			goto again;
+		}
 
 		port.pt_times[j].t_end = dtime;
 		cp = cp + i + 1;
@@ -337,32 +362,39 @@ again:
  *	entries are treated as an ordered list.
  */
 
-static struct port *
-getttyuser(const char *tty, const char *user)
+static struct port *getttyuser (const char *tty, const char *user)
 {
-	int	i, j;
-	struct	port	*port;
+	int i, j;
+	struct port *port;
 
 	setportent ();
 
-	while ((port = getportent ())) {
-		if (port->pt_names == 0 || port->pt_users == 0)
+	while ((port = getportent ()) != NULL) {
+		if (   (0 == port->pt_names)
+		    || (0 == port->pt_users)) {
 			continue;
+		}
 
-		for (i = 0;port->pt_names[i];i++)
-			if (portcmp (port->pt_names[i], tty) == 0)
+		for (i = 0; NULL != port->pt_names[i]; i++) {
+			if (portcmp (port->pt_names[i], tty) == 0) {
 				break;
+			}
+		}
 
-		if (port->pt_names[i] == 0)
+		if (port->pt_names[i] == 0) {
 			continue;
+		}
 
-		for (j = 0;port->pt_users[j];j++)
-			if (strcmp (user, port->pt_users[j]) == 0 ||
-					strcmp (port->pt_users[j], "*") == 0)
+		for (j = 0; NULL != port->pt_users[j]; j++) {
+			if (   (strcmp (user, port->pt_users[j]) == 0)
+			    || (strcmp (port->pt_users[j], "*") == 0)) {
 				break;
+			}
+		}
 
-		if (port->pt_users[j] != 0)
+		if (port->pt_users[j] != 0) {
 			break;
+		}
 	}
 	endportent ();
 	return port;
@@ -375,34 +407,36 @@ getttyuser(const char *tty, const char *user)
  *	the user name and TTY given.
  */
 
-int
-isttytime(const char *id, const char *port, time_t when)
+bool isttytime (const char *id, const char *port, time_t when)
 {
-	int	i;
-	int	dtime;
-	struct	port	*pp;
-	struct	tm	*tm;
+	int i;
+	int dtime;
+	struct port *pp;
+	struct tm *tm;
 
 	/*
 	 * Try to find a matching entry for this user.  Default to
-	 * letting the user in - there are pleny of ways to have an
+	 * letting the user in - there are plenty of ways to have an
 	 * entry to match all users.
 	 */
 
-	if (! (pp = getttyuser (port, id)))
-		return 1;
+	pp = getttyuser (port, id);
+	if (NULL == pp) {
+		return true;
+	}
 
 	/*
 	 * The entry is there, but has no time entries - don't
 	 * ever let them login.
 	 */
 
-	if (pp->pt_times == 0)
-		return 0;
+	if (0 == pp->pt_times) {
+		return false;
+	}
 
 	/*
 	 * The current time is converted to HHMM format for
-	 * comparision against the time values in the TTY entry.
+	 * comparison against the time values in the TTY entry.
 	 */
 
 	tm = localtime (&when);
@@ -411,22 +445,25 @@ isttytime(const char *id, const char *port, time_t when)
 	/*
 	 * Each time entry is compared against the current
 	 * time.  For entries with the start after the end time,
-	 * the comparision is made so that the time is between
+	 * the comparison is made so that the time is between
 	 * midnight and either the start or end time.
 	 */
 
-	for (i = 0;pp->pt_times[i].t_start != -1;i++) {
-		if (! (pp->pt_times[i].t_days & PORT_DAY(tm->tm_wday)))
+	for (i = 0; pp->pt_times[i].t_start != -1; i++) {
+		if (!(pp->pt_times[i].t_days & PORT_DAY (tm->tm_wday))) {
 			continue;
+		}
 
 		if (pp->pt_times[i].t_start <= pp->pt_times[i].t_end) {
-			if (dtime >= pp->pt_times[i].t_start &&
-					dtime <= pp->pt_times[i].t_end)
-				return 1;
+			if (   (dtime >= pp->pt_times[i].t_start)
+			    && (dtime <= pp->pt_times[i].t_end)) {
+				return true;
+			}
 		} else {
-			if (dtime >= pp->pt_times[i].t_start ||
-					dtime <= pp->pt_times[i].t_end)
-				return 1;
+			if (   (dtime >= pp->pt_times[i].t_start)
+			    || (dtime <= pp->pt_times[i].t_end)) {
+				return true;
+			}
 		}
 	}
 
@@ -435,5 +472,6 @@ isttytime(const char *id, const char *port, time_t when)
 	 * be let in right now.
 	 */
 
-	return 0;
+	return false;
 }
+

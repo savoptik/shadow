@@ -1,4 +1,35 @@
 /*
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2002 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2009       , Nicolas François
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
  * pwconv - create or update /etc/shadow with information from
  * /etc/passwd.
  *
@@ -20,33 +51,31 @@
  * Doesn't currently support pw_age information in /etc/passwd, and doesn't
  * support DBM files. Add it if you need it...
  *
- * Copyright (C) 1996-1997, Marek Michalkiewicz
- * <marekm@i17linuxb.ists.pwr.wroc.pl>
- * This program may be freely used and distributed for any purposes.  If you
- * improve it, please send me your changes. Thanks!
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID (PKG_VER "$Id: pwconv.c,v 1.15 2003/06/19 18:11:01 kloczek Exp $")
+#ident "$Id: pwconv.c 2851 2009-04-30 21:39:38Z nekral-guest $"
+
+#include <errno.h>
+#include <fcntl.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <errno.h>
-#include <pwd.h>
-#include "prototypes.h"
 #include "defines.h"
+#include "getdef.h"
+#include "prototypes.h"
 #include "pwio.h"
 #include "shadowio.h"
-#include "getdef.h"
-#ifdef SHADOWPWD
+#include "nscd.h"
+
 /*
  * exit status values
  */
+/*@-exitarg@*/
 #define E_SUCCESS	0	/* success */
 #define E_NOPERM	1	/* permission denied */
 #define E_USAGE		2	/* invalid command syntax */
@@ -54,18 +83,35 @@ RCSID (PKG_VER "$Id: pwconv.c,v 1.15 2003/06/19 18:11:01 kloczek Exp $")
 #define E_MISSING	4	/* unexpected failure, passwd file missing */
 #define E_PWDBUSY	5	/* passwd file(s) busy */
 #define E_BADENTRY	6	/* bad shadow entry */
-static int
- shadow_locked = 0, passwd_locked = 0;
+/*
+ * Global variables
+ */
+char *Prog;
+
+static bool spw_locked = false;
+static bool pw_locked = false;
 
 /* local function prototypes */
-static void fail_exit (int);
+static void fail_exit (int status);
 
 static void fail_exit (int status)
 {
-	if (shadow_locked)
-		spw_unlock ();
-	if (passwd_locked)
-		pw_unlock ();
+	if (pw_locked) {
+		if (pw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+			/* continue */
+		}
+	}
+
+	if (spw_locked) {
+		if (spw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+			/* continue */
+		}
+	}
+
 	exit (status);
 }
 
@@ -75,29 +121,41 @@ int main (int argc, char **argv)
 	struct passwd pwent;
 	const struct spwd *sp;
 	struct spwd spent;
-	char *Prog = argv[0];
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	if (1 != argc) {
+		(void) fputs (_("Usage: pwconv\n"), stderr);
+	}
+	Prog = Basename (argv[0]);
 
-	if (!pw_lock ()) {
-		fprintf (stderr, _("%s: can't lock passwd file\n"), Prog);
+	(void) setlocale (LC_ALL, "");
+	(void) bindtextdomain (PACKAGE, LOCALEDIR);
+	(void) textdomain (PACKAGE);
+
+	OPENLOG ("pwconv");
+
+	if (pw_lock () == 0) {
+		fprintf (stderr,
+		         _("%s: cannot lock %s; try again later.\n"),
+		         Prog, pw_dbname ());
 		fail_exit (E_PWDBUSY);
 	}
-	passwd_locked++;
-	if (!pw_open (O_RDWR)) {
-		fprintf (stderr, _("%s: can't open passwd file\n"), Prog);
+	pw_locked = true;
+	if (pw_open (O_RDWR) == 0) {
+		fprintf (stderr,
+		         _("%s: cannot open %s\n"), Prog, pw_dbname ());
 		fail_exit (E_MISSING);
 	}
 
-	if (!spw_lock ()) {
-		fprintf (stderr, _("%s: can't lock shadow file\n"), Prog);
+	if (spw_lock () == 0) {
+		fprintf (stderr,
+		         _("%s: cannot lock %s; try again later.\n"),
+		         Prog, spw_dbname ());
 		fail_exit (E_PWDBUSY);
 	}
-	shadow_locked++;
-	if (!spw_open (O_CREAT | O_RDWR)) {
-		fprintf (stderr, _("%s: can't open shadow file\n"), Prog);
+	spw_locked = true;
+	if (spw_open (O_CREAT | O_RDWR) == 0) {
+		fprintf (stderr,
+		         _("%s: cannot open %s\n"), Prog, spw_dbname ());
 		fail_exit (E_FAILURE);
 	}
 
@@ -105,18 +163,18 @@ int main (int argc, char **argv)
 	 * Remove /etc/shadow entries for users not in /etc/passwd.
 	 */
 	spw_rewind ();
-	while ((sp = spw_next ())) {
-		if (pw_locate (sp->sp_namp))
+	while ((sp = spw_next ()) != NULL) {
+		if (pw_locate (sp->sp_namp) != NULL) {
 			continue;
+		}
 
-		if (!spw_remove (sp->sp_namp)) {
+		if (spw_remove (sp->sp_namp) == 0) {
 			/*
 			 * This shouldn't happen (the entry exists) but...
 			 */
 			fprintf (stderr,
-				 _
-				 ("%s: can't remove shadow entry for %s\n"),
-				 Prog, sp->sp_namp);
+			         _("%s: cannot remove entry '%s' from %s\n"),
+			         Prog, sp->sp_namp, spw_dbname ());
 			fail_exit (E_FAILURE);
 		}
 	}
@@ -126,69 +184,93 @@ int main (int argc, char **argv)
 	 * missing shadow entries.
 	 */
 	pw_rewind ();
-	while ((pw = pw_next ())) {
+	while ((pw = pw_next ()) != NULL) {
 		sp = spw_locate (pw->pw_name);
-		if (sp) {
+		if (NULL != sp) {
 			/* do we need to update this entry? */
-			if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) ==
-			    0)
+			if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
 				continue;
+			}
 			/* update existing shadow entry */
 			spent = *sp;
 		} else {
 			/* add new shadow entry */
 			memset (&spent, 0, sizeof spent);
-			spent.sp_namp = pw->pw_name;
-			spent.sp_min = getdef_num ("PASS_MIN_DAYS", -1);
-			spent.sp_max = getdef_num ("PASS_MAX_DAYS", -1);
-			spent.sp_warn = getdef_num ("PASS_WARN_AGE", -1);
-			spent.sp_inact = -1;
+			spent.sp_namp   = pw->pw_name;
+			spent.sp_min    = getdef_num ("PASS_MIN_DAYS", -1);
+			spent.sp_max    = getdef_num ("PASS_MAX_DAYS", -1);
+			spent.sp_warn   = getdef_num ("PASS_WARN_AGE", -1);
+			spent.sp_inact  = -1;
 			spent.sp_expire = -1;
-			spent.sp_flag = -1;
+			spent.sp_flag   = SHADOW_SP_FLAG_UNSET;
 		}
 		spent.sp_pwdp = pw->pw_passwd;
-		spent.sp_lstchg = time ((time_t *) 0) / (24L * 3600L);
-		if (!spw_update (&spent)) {
+		spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+		if (0 == spent.sp_lstchg) {
+			/* Better disable aging than requiring a password
+			 * change */
+			spent.sp_lstchg = -1;
+		}
+		if (spw_update (&spent) == 0) {
 			fprintf (stderr,
-				 _
-				 ("%s: can't update shadow entry for %s\n"),
-				 Prog, spent.sp_namp);
+			         _("%s: failed to prepare the new %s entry '%s'\n"),
+			         Prog, spw_dbname (), spent.sp_namp);
 			fail_exit (E_FAILURE);
 		}
+
 		/* remove password from /etc/passwd */
 		pwent = *pw;
 		pwent.pw_passwd = SHADOW_PASSWD_STRING;	/* XXX warning: const */
-		if (!pw_update (&pwent)) {
+		if (pw_update (&pwent) == 0) {
 			fprintf (stderr,
-				 _
-				 ("%s: can't update passwd entry for %s\n"),
-				 Prog, pwent.pw_name);
+			         _("%s: failed to prepare the new %s entry '%s'\n"),
+			         Prog, pw_dbname (), pwent.pw_name);
 			fail_exit (E_FAILURE);
 		}
 	}
 
-	if (!spw_close ()) {
-		fprintf (stderr, _("%s: can't update shadow file\n"),
-			 Prog);
+	if (spw_close () == 0) {
+		fprintf (stderr,
+		         _("%s: failure while writing changes to %s\n"),
+		         Prog, spw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
 		fail_exit (E_FAILURE);
 	}
-	if (!pw_close ()) {
-		fprintf (stderr, _("%s: can't update passwd file\n"),
-			 Prog);
+	if (pw_close () == 0) {
+		fprintf (stderr,
+		         _("%s: failure while writing changes to %s\n"),
+		         Prog, pw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
 		fail_exit (E_FAILURE);
 	}
-	chmod (PASSWD_FILE "-", 0600);	/* /etc/passwd- (backup file) */
-	spw_unlock ();
-	pw_unlock ();
-	exit (E_SUCCESS);
+
+	/* /etc/passwd- (backup file) */
+	if (chmod (PASSWD_FILE "-", 0600) != 0) {
+		fprintf (stderr,
+		         _("%s: failed to change the mode of %s to 0600\n"),
+		         Prog, PASSWD_FILE "-");
+		SYSLOG ((LOG_ERR, "failed to change the mode of %s to 0600", PASSWD_FILE "-"));
+		/* continue */
+	}
+
+	if (pw_locked) {
+		if (pw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+			/* continue */
+		}
+	}
+
+	if (spw_locked) {
+		if (spw_unlock () == 0) {
+			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+			/* continue */
+		}
+	}
+
+	nscd_flush_cache ("passwd");
+
+	return E_SUCCESS;
 }
 
-#else				/* !SHADOWPWD */
-int main (int argc, char **argv)
-{
-	fprintf (stderr,
-		 "%s: not configured for shadow password support.\n",
-		 argv[0]);
-	exit (1);
-}
-#endif				/* !SHADOWPWD */

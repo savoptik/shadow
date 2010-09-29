@@ -1,4 +1,5 @@
-.\" Copyright 1991 - 1994, Julianne Frances Haugh
+.\" $Id: usermod.8 1342 2007-11-10 23:46:11Z nekral-guest $
+.\" Copyright 1991 \- 1994, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -24,101 +25,98 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: usermod.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
-.\"
 .TH USERMOD 8
-.SH Ãû³Æ
-usermod \- ÐÞ ¸Ä Ê¹ ÓÃ Õß ÕÊ ºÅ
-.SH Óï·¨
+.SH åç§°
+usermod \- ä¿® æ”¹ ä½¿ ç”¨ è€… å¸ å·
+.SH è¯­æ³•
 .TP 8
 .B usermod
-.\" .RB [ -A
+.\" .RB [ \-A
 .\" .RI { method | \fBDEFAULT\fR "},... ]"
-.RB [ -c
+.RB [ \-c
 .IR comment ]
-.RB [ -d
+.RB [ \-d
 .IR home_dir " ["
-.BR -m ]]
+.BR \-m ]]
 .br
-.RB [ -e
+.RB [ \-e
 .IR expire_date ]
-.RB [ -f
+.RB [ \-f
 .IR inactive_time ]
 .br
-.RB [ -g
+.RB [ \-g
 .IR initial_group ]
-.RB [ -G
+.RB [ \-G
 .IR group [,...]]
 .br
-.RB [ -l
+.RB [ \-l
 .IR login_name ]
-.RB [ -s
+.RB [ \-s
 .IR shell ]
 .br
-.RB [ -u
+.RB [ \-u
 .IR uid " ["
-.BR -o ]]
+.BR \-o ]]
 .I login
-.SH ÃèÊö
-\fBusermod\fR Ãü Áî »á ²Î ÕÕ Äã Ãü Áî ÁÐ ÉÏ Ö¸ ¶¨ µÄ ²¿ ·Ý ÐÞ ¸Ä Ïµ Í³ ÕÊ 
-ºÅ µµ ¡£ ÏÂ ÁÐ Îª \fBusermod\fR ¿É Ñ¡ ÓÃ µÄ ²Î Êý ¡£
+.SH æè¿°
+\fBusermod\fR å‘½ ä»¤ ä¼š å‚ ç…§ ä½  å‘½ ä»¤ åˆ— ä¸Š æŒ‡ å®š çš„ éƒ¨ ä»½ ä¿® æ”¹ ç³» ç»Ÿ å¸ 
+å· æ¡£ ã€‚ ä¸‹ åˆ— ä¸º \fBusermod\fR å¯ é€‰ ç”¨ çš„ å‚ æ•° ã€‚
 
-.\" .IP "\fB-A \fImethod\fR|\fBDEFAULT\fR"
+.\" .IP "\fB\-A \fImethod\fR|\fBDEFAULT\fR"
 .\" The new value of the user's authentication method.
 .\" The authentication method is the name of a program which is responsible
 .\" for validating the user's identity.
 .\" The string \fBDEFAULT\fR may be used to change the user's authentication
 .\" method to the standard system password method.
-.IP "\fB-c \fIcomment\fR"
-¸ü ÐÂ Ê¹ ÓÃ Õß ÕÊ ºÅ password µµ ÖÐ µÄ ×¢ ½â À¸
-£¬ Ò» °ã ÊÇ Ê¹ ÓÃ \fBchfn\fR(1) À´ ÐÞ ¸Ä ¡£
-.IP "\fB-d \fIhome_dir\fR"
-¸ü ÐÂ Ê¹ ÓÃ Õß ÐÂ µÄ µÇ Èë Ä¿ Â¼ ¡£
-Èç ¹û ¸ø ¶¨ \fB-m\fR Ñ¡ Ïî £¬ Ê¹ ÓÃ Õß ¾É Ä¿ Â¼ »á °á µ½ ÐÂ µÄ Ä¿ Â¼ È¥ 
-£¬Èç ¾É Ä¿ Â¼ ²» ´æ ÔÚ Ôò ½¨ ¸ö ÐÂ µÄ ¡£
-.IP "\fB-e \fIexpire_date\fR"
-¼Ó ÉÏ Ê¹ ÓÃ Õß ÕÊ ºÅ Í£ Ö¹ ÈÕ ÆÚ ¡£ ÈÕ ÆÚ ¸ñ Ê½ Îª \fIMM/DD/YY\fR.
-.IP "\fB-f \fIinactive_days\fR"
-ÕÊ ºÅ ¹ý ÆÚ ¼¸ ÈÕ ºó ÓÀ ¾Ã Í£ È¨¡£µ± Öµ Îª  0  Ê±
-ÕÊ  ºÅ Ôò Á¢ ¿Ì ±» Í£ È¨ ¡£ ¶ø µ± Öµ Îª -1 Ê± Ôò ¹Ø±Õ´Ë¹¦ÄÜ
-¡£Ô¤ Éè Öµ Îª -1¡£
-.IP "\fB-g \fIinitial_group\fR"
-¸ü ÐÂ Ê¹ ÓÃ Õß ÐÂ µÄ Æð Ê¼ µÇ Èë Èº ×é ¡£ Èº ×é Ãû Ðë ÒÑ ´æ ÔÚ 
-¡£Èº ×é ID ±Ø Ðë ²Î ÕÕ ¼È ÓÐ µÄ µÄ Èº ×é ¡£ Èº ×é ID Ô¤ Éè Öµ Îª 1 ¡£
-.IP "\fB-G \fIgroup,[...]\fR"
-¶¨ Òå Ê¹ ÓÃ Õß Îª  Ò» ¶Ñ groups µÄ ³É Ô± ¡£ Ã¿
-¸ö Èº ×é Ê¹ ÓÃ "," Çø ¸ñ ¿ª À´ £¬ ²» ¿É ÒÔ ¼Ð ÔÓ ¿Õ
-°× ×Ö Ôª ¡£ Èº ×é Ãû Í¬ -g Ñ¡ Ïî µÄ ÏÞ ÖÆ ¡£
-Èç ¹û Ê¹ ÓÃ Õß ÏÖ ÔÚ µÄ Èº ×é ²» ÔÙ ´Ë ÁÐ £¬ Ôò ½« Ê¹ ÓÃ Õß ÓÉ ¸Ã 
-Èº ×é ÖÐ ÒÆ ³ý ¡£
-.IP "\fB-l \fIlogin_name\fR"
-±ä ¸ü Ê¹ ÓÃ Õß \fIlogin\fR Ê± µÄ Ãû ³Æ Îª \fIlogin_name\fR ¡£
-Æä ÓÚ ²» ±ä ¡£ ÌØ ±ð ÊÇ £¬ Ê¹ ÓÃ Õß Ä¿ Â¼ Ãû Ó¦ ¸Ã Ò² »á ¸ú ×Å ¸ü ¶¯ ³É ÐÂ 
-µÄ µÇ Èë Ãû ¡£
-.IP "\fB-s \fIshell\fR"
-Ö¸ ¶¨ ÐÂ µÇ Èë shell ¡£ Èç ´Ë À¸ Áô °× £¬ Ïµ Í³ ½« Ñ¡ ÓÃ Ïµ Í³ Ô¤ Éè shell ¡£
-.IP "\fB-u \fIuid\fR"
-Ê¹ ÓÃ Õß ID Öµ ¡£±Ø Ðë Îª Î¨ Ò» µÄ ID Öµ £¬ ³ý ·Ç ÓÃ \fI-o\fR Ñ¡ Ïî ¡£ Êý 
-×Ö ²» ¿É Îª ¸º Öµ¡£Ô¤ Éè Îª ×î Ð¡  ²»  µÃ Ð¡ ÓÚ 99 ¶ø Öð ´Î 
-Ôö ¼Ó ¡£ 0~99 ´« Í³ ÉÏ ÊÇ ±£ Áô ¸ø Ïµ Í³ ÕÊ ºÅ Ê¹ ÓÃ ¡£
-Ê¹ ÓÃ Õß Ä¿ Â¼ Ê÷ ÏÂ Ëù ÓÐ µÄ µµ °¸ Ä¿ Â¼ Æä user ID »á ×Ô ¶¯ ¸Ä ±ä ¡£
-·Å ÔÚ Ê¹ ÓÃ Õß Ä¿ Â¼ Íâ µÄ µµ °¸ Ôò Òª ×Ô ÐÐ ÊÖ ¶¯ ¸ü ¶¯ ¡£
-.SH ¾¯¸æ
-\fBusermod\fR ²» ÔÊ Ðí Äã ¸Ä ±ä  Õý ÔÚÏß ÉÏ µÄ Ê¹ ÓÃ Õß ÕÊ ºÅ Ãû ³Æ ¡£
-µ± usermod ÓÃ À´ ¸Ä ±ä user ID, ±Ø Ðë È· ÈÏ Õâ Ãû user Ã» ÔÚ µç ÄÔ ÉÏ Ö´ 
-ÐÐ ÈÎ ºÎ ³Ì Ðò¡£
-Äã Ðè ÊÖ ¶¯ ¸ü ¸Ä Ê¹ ÓÃ Õß µÄ crontab µµ ¡£
-Ò² Ðè ÊÖ ¶¯ ¸ü ¸Ä Ê¹ ÓÃ Õß µÄ at ¹¤ ×÷ µµ ¡£
-²É ÓÃ NIS server Ðë ÔÚ server ÉÏ ¸ü ¶¯ Ïà ¹Ø µÄ NIS Éè ¶¨ ¡£
+.IP "\fB\-c\fR \fIcomment\fR"
+æ›´ æ–° ä½¿ ç”¨ è€… å¸ å· password æ¡£ ä¸­ çš„ æ³¨ è§£ æ 
+ï¼Œ ä¸€ èˆ¬ æ˜¯ ä½¿ ç”¨ \fBchfn\fR(1) æ¥ ä¿® æ”¹ ã€‚
+.IP "\fB\-d\fR \fIhome_dir\fR"
+æ›´ æ–° ä½¿ ç”¨ è€… æ–° çš„ ç™» å…¥ ç›® å½• ã€‚
+å¦‚ æžœ ç»™ å®š \fB\-m\fR é€‰ é¡¹ ï¼Œ ä½¿ ç”¨ è€… æ—§ ç›® å½• ä¼š æ¬ åˆ° æ–° çš„ ç›® å½• åŽ» 
+ï¼Œå¦‚ æ—§ ç›® å½• ä¸ å­˜ åœ¨ åˆ™ å»º ä¸ª æ–° çš„ ã€‚
+.IP "\fB\-e\fR \fIexpire_date\fR"
+åŠ  ä¸Š ä½¿ ç”¨ è€… å¸ å· åœ æ­¢ æ—¥ æœŸ ã€‚ æ—¥ æœŸ æ ¼ å¼ ä¸º \fIMM/DD/YY\fR.
+.IP "\fB\-f\fR \fIinactive_days\fR"
+å¸ å· è¿‡ æœŸ å‡  æ—¥ åŽ æ°¸ ä¹… åœ æƒã€‚å½“ å€¼ ä¸º  0  æ—¶
+å¸  å· åˆ™ ç«‹ åˆ» è¢« åœ æƒ ã€‚ è€Œ å½“ å€¼ ä¸º \-1 æ—¶ åˆ™ å…³é—­æ­¤åŠŸèƒ½
+ã€‚é¢„ è®¾ å€¼ ä¸º \-1ã€‚
+.IP "\fB\-g\fR \fIinitial_group\fR"
+æ›´ æ–° ä½¿ ç”¨ è€… æ–° çš„ èµ· å§‹ ç™» å…¥ ç¾¤ ç»„ ã€‚ ç¾¤ ç»„ å é¡» å·² å­˜ åœ¨ 
+ã€‚ç¾¤ ç»„ ID å¿… é¡» å‚ ç…§ æ—¢ æœ‰ çš„ çš„ ç¾¤ ç»„ ã€‚ ç¾¤ ç»„ ID é¢„ è®¾ å€¼ ä¸º 1 ã€‚
+.IP "\fB\-G\fR \fIgroup,[...]\fR"
+å®š ä¹‰ ä½¿ ç”¨ è€… ä¸º  ä¸€ å † groups çš„ æˆ å‘˜ ã€‚ æ¯
+ä¸ª ç¾¤ ç»„ ä½¿ ç”¨ "," åŒº æ ¼ å¼€ æ¥ ï¼Œ ä¸ å¯ ä»¥ å¤¹ æ‚ ç©º
+ç™½ å­— å…ƒ ã€‚ ç¾¤ ç»„ å åŒ \-g é€‰ é¡¹ çš„ é™ åˆ¶ ã€‚
+å¦‚ æžœ ä½¿ ç”¨ è€… çŽ° åœ¨ çš„ ç¾¤ ç»„ ä¸ å† æ­¤ åˆ— ï¼Œ åˆ™ å°† ä½¿ ç”¨ è€… ç”± è¯¥ 
+ç¾¤ ç»„ ä¸­ ç§» é™¤ ã€‚
+.IP "\fB\-l\fR \fIlogin_name\fR"
+å˜ æ›´ ä½¿ ç”¨ è€… \fIlogin\fR æ—¶ çš„ å ç§° ä¸º \fIlogin_name\fR ã€‚
+å…¶ äºŽ ä¸ å˜ ã€‚ ç‰¹ åˆ« æ˜¯ ï¼Œ ä½¿ ç”¨ è€… ç›® å½• å åº” è¯¥ ä¹Ÿ ä¼š è·Ÿ ç€ æ›´ åŠ¨ æˆ æ–° 
+çš„ ç™» å…¥ å ã€‚
+.IP "\fB\-s\fR \fIshell\fR"
+æŒ‡ å®š æ–° ç™» å…¥ shell ã€‚ å¦‚ æ­¤ æ  ç•™ ç™½ ï¼Œ ç³» ç»Ÿ å°† é€‰ ç”¨ ç³» ç»Ÿ é¢„ è®¾ shell ã€‚
+.IP "\fB\-u\fR \fIuid\fR"
+ä½¿ ç”¨ è€… ID å€¼ ã€‚å¿… é¡» ä¸º å”¯ ä¸€ çš„ ID å€¼ ï¼Œ é™¤ éž ç”¨ \fI\-o\fR é€‰ é¡¹ ã€‚ æ•° 
+å­— ä¸ å¯ ä¸º è´Ÿ å€¼ã€‚é¢„ è®¾ ä¸º æœ€ å°  ä¸  å¾— å° äºŽ 999 è€Œ é€ æ¬¡ 
+å¢ž åŠ  ã€‚ 0~ 999 ä¼  ç»Ÿ ä¸Š æ˜¯ ä¿ ç•™ ç»™ ç³» ç»Ÿ å¸ å· ä½¿ ç”¨ ã€‚
+ä½¿ ç”¨ è€… ç›® å½• æ ‘ ä¸‹ æ‰€ æœ‰ çš„ æ¡£ æ¡ˆ ç›® å½• å…¶ user ID ä¼š è‡ª åŠ¨ æ”¹ å˜ ã€‚
+æ”¾ åœ¨ ä½¿ ç”¨ è€… ç›® å½• å¤– çš„ æ¡£ æ¡ˆ åˆ™ è¦ è‡ª è¡Œ æ‰‹ åŠ¨ æ›´ åŠ¨ ã€‚
+.SH è­¦å‘Š
+\fBusermod\fR ä¸ å… è®¸ ä½  æ”¹ å˜  æ­£ åœ¨çº¿ ä¸Š çš„ ä½¿ ç”¨ è€… å¸ å· å ç§° ã€‚
+å½“ usermod ç”¨ æ¥ æ”¹ å˜ user ID, å¿… é¡» ç¡® è®¤ è¿™ å user æ²¡ åœ¨ ç”µ è„‘ ä¸Š æ‰§ 
+è¡Œ ä»» ä½• ç¨‹ åºã€‚
+ä½  éœ€ æ‰‹ åŠ¨ æ›´ æ”¹ ä½¿ ç”¨ è€… çš„ crontab æ¡£ ã€‚
+ä¹Ÿ éœ€ æ‰‹ åŠ¨ æ›´ æ”¹ ä½¿ ç”¨ è€… çš„ at å·¥ ä½œ æ¡£ ã€‚
+é‡‡ ç”¨ NIS server é¡» åœ¨ server ä¸Š æ›´ åŠ¨ ç›¸ å…³ çš„ NIS è®¾ å®š ã€‚
 
-.SH µµ°¸
-\fI/etc/passwd\fR \- Ê¹ ÓÃ Õß ÕÊ ºÅ ×Ê Ñ¶
+.SH æ¡£æ¡ˆ
+\fI/etc/passwd\fR \- ä½¿ ç”¨ è€… å¸ å· èµ„ è®¯
 .br
-\fI/etc/shadow\fR \- Ê¹ ÓÃ Õß ÕÊ ºÅ ×Ê Ñ¶ ¼Ó ÃÜ
+\fI/etc/shadow\fR \- ä½¿ ç”¨ è€… å¸ å· èµ„ è®¯ åŠ  å¯†
 .br
-\fI/etc/group\fR \- Èº ×é ×Ê Ñ¶
-.SH Ïà¹ØÎÄ¼þ
+\fI/etc/group\fR \- ç¾¤ ç»„ èµ„ è®¯
+.SH ç›¸å…³æ–‡ä»¶
 .BR chfn (1),
 .BR chsh (1),
 .BR groupadd (8),
@@ -127,5 +125,5 @@ usermod \- ÐÞ ¸Ä Ê¹ ÓÃ Õß ÕÊ ºÅ
 .BR passwd (1),
 .BR useradd (8),
 .BR userdel (8)
-.SH ×÷Õß
+.SH ä½œè€…
 Julianne Frances Haugh (jfh@tab.com)

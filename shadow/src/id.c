@@ -1,5 +1,8 @@
 /*
- * Copyright 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2001 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +13,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*
@@ -37,12 +40,12 @@
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID (PKG_VER "$Id: id.c,v 1.13 2003/06/19 18:11:01 kloczek Exp $")
-#include <sys/types.h>
-#include <stdio.h>
+#ident "$Id: id.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+
 #include <grp.h>
 #include <pwd.h>
+#include <stdio.h>
+#include <sys/types.h>
 #include "defines.h"
 /* local function prototypes */
 static void usage (void);
@@ -50,11 +53,11 @@ static void usage (void);
 static void usage (void)
 {
 #ifdef HAVE_GETGROUPS
-	fprintf (stderr, _("Usage: id [-a]\n"));
+	(void) fputs (_("Usage: id [-a]\n"), stderr);
 #else
-	fprintf (stderr, _("Usage: id\n"));
+	(void) fputs (_("Usage: id\n"), stderr);
 #endif
-	exit (1);
+	exit (EXIT_FAILURE);
 }
 
  /*ARGSUSED*/ int main (int argc, char **argv)
@@ -74,14 +77,14 @@ static void usage (void)
 #ifdef HAVE_GETGROUPS
 	GETGROUPS_T *groups;
 	int ngroups;
-	int aflg = 0;
+	bool aflg = 0;
 #endif
 	struct passwd *pw;
 	struct group *gr;
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
+	(void) setlocale (LC_ALL, "");
+	(void) bindtextdomain (PACKAGE, LOCALEDIR);
+	(void) textdomain (PACKAGE);
 
 	/*
 	 * Dynamically get the maximum number of groups from system, instead
@@ -91,21 +94,23 @@ static void usage (void)
 	 */
 	sys_ngroups = sysconf (_SC_NGROUPS_MAX);
 #ifdef HAVE_GETGROUPS
-	groups = malloc (sys_ngroups * sizeof (GETGROUPS_T));
+	groups = (GETGROUPS_T *) malloc (sizeof (GETGROUPS_T) * sys_ngroups);
 	/*
 	 * See if the -a flag has been given to print out the concurrent
 	 * group set.
 	 */
 
 	if (argc > 1) {
-		if (argc > 2 || strcmp (argv[1], "-a"))
+		if ((argc > 2) || (strcmp (argv[1], "-a") != 0)) {
 			usage ();
-		else
-			aflg = 1;
+		} else {
+			aflg = true;
+		}
 	}
 #else
-	if (argc > 1)
+	if (argc > 1) {
 		usage ();
+	}
 #endif
 
 	ruid = getuid ();
@@ -118,17 +123,21 @@ static void usage (void)
 	 * does not exist, just give the numerical value.
 	 */
 
-	pw = getpwuid (ruid);
-	if (pw)
-		printf ("uid=%u(%s)", ruid, pw->pw_name);
-	else
-		printf ("uid=%u", ruid);
+	pw = getpwuid (ruid); /* local, no need for xgetpwuid */
+	if (NULL != pw) {
+		(void) printf ("UID=%lu(%s)",
+		               (unsigned long) ruid, pw->pw_name);
+	} else {
+		(void) printf ("UID=%lu", (unsigned long) ruid);
+	}
 
-	gr = getgrgid (rgid);
-	if (gr)
-		printf (" gid=%u(%s)", rgid, gr->gr_name);
-	else
-		printf (" gid=%u", rgid);
+	gr = getgrgid (rgid);; /* local, no need for xgetgrgid */
+	if (NULL != gr) {
+		(void) printf (" GID=%lu(%s)",
+		               (unsigned long) rgid, gr->gr_name);
+	} else {
+		(void) printf (" GID=%lu", (unsigned long) rgid);
+	}
 
 	/*
 	 * Print out the effective user ID and group ID if they are
@@ -136,25 +145,28 @@ static void usage (void)
 	 */
 
 	if (ruid != euid) {
-		pw = getpwuid (euid);
-		if (pw)
-			printf (" euid=%u(%s)", euid, pw->pw_name);
-		else
-			printf (" euid=%u", euid);
+		pw = getpwuid (euid); /* local, no need for xgetpwuid */
+		if (NULL != pw) {
+			(void) printf (" EUID=%lu(%s)",
+			               (unsigned long) euid, pw->pw_name);
+		} else {
+			(void) printf (" EUID=%lu", (unsigned long) euid);
+		}
 	}
 	if (rgid != egid) {
-		gr = getgrgid (egid);
-		if (gr)
-			printf (" egid=%u(%s)", egid, gr->gr_name);
-		else
-			printf (" egid=%u", egid);
+		gr = getgrgid (egid); /* local, no need for xgetgrgid */
+		if (NULL != gr) {
+			(void) printf (" EGID=%lu(%s)",
+			               (unsigned long) egid, gr->gr_name);
+		} else {
+			(void) printf (" EGID=%lu", (unsigned long) egid);
+		}
 	}
 #ifdef HAVE_GETGROUPS
 	/*
 	 * Print out the concurrent group set if the user has requested it.
 	 * The group numbers will be printed followed by their names.
 	 */
-
 	if (aflg && (ngroups = getgroups (sys_ngroups, groups)) != -1) {
 
 		/*
@@ -165,17 +177,21 @@ static void usage (void)
 		 * where "###" is a numerical value and "aaa" is the
 		 * corresponding name for each respective numerical value.
 		 */
-
-		printf (_(" groups="));
+		(void) puts (_(" groups="));
 		for (i = 0; i < ngroups; i++) {
-			if (i)
-				putchar (',');
+			if (0 != i)
+				(void) putchar (',');
 
+			/* local, no need for xgetgrgid */
 			gr = getgrgid (groups[i]);
-			if (gr)
-				printf ("%u(%s)", groups[i], gr->gr_name);
-			else
-				printf ("%u", groups[i]);
+			if (NULL != gr) {
+				(void) printf ("%lu(%s)",
+				               (unsigned long) groups[i],
+				               gr->gr_name);
+			} else {
+				(void) printf ("%lu",
+				               (unsigned long) groups[i]);
+			}
 		}
 	}
 	free (groups);
@@ -184,8 +200,8 @@ static void usage (void)
 	/*
 	 * Finish off the line.
 	 */
+	(void) putchar ('\n');
 
-	putchar ('\n');
-	exit (0);
-	/* NOT REACHED */
+	return EXIT_SUCCESS;
 }
+

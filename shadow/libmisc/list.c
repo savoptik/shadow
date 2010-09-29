@@ -1,5 +1,7 @@
 /*
- * Copyright 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1991 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1997, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,30 +12,28 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/* Removed duplicated code from gpmain.c, useradd.c, userdel.c and
-   usermod.c.  --marekm */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: list.c,v 1.4 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: list.c 2763 2009-04-23 09:57:03Z nekral-guest $"
+
+#include <assert.h>
 #include "prototypes.h"
 #include "defines.h"
 /*
@@ -43,19 +43,24 @@ RCSID ("$Id: list.c,v 1.4 2003/04/22 10:59:22 kloczek Exp $")
  *	name, and if not present it is added to a freshly allocated
  *	list of users.
  */
-char **add_list (char **list, const char *member)
+/*@only@*/ /*@out@*/char **add_list (/*@returned@*/ /*@only@*/char **list, const char *member)
 {
 	int i;
 	char **tmp;
+
+	assert (NULL != member);
+	assert (NULL != list);
 
 	/*
 	 * Scan the list for the new name.  Return the original list
 	 * pointer if it is present.
 	 */
 
-	for (i = 0; list[i] != (char *) 0; i++)
-		if (strcmp (list[i], member) == 0)
+	for (i = 0; list[i] != (char *) 0; i++) {
+		if (strcmp (list[i], member) == 0) {
 			return list;
+		}
+	}
 
 	/*
 	 * Allocate a new list pointer large enough to hold all the
@@ -70,11 +75,12 @@ char **add_list (char **list, const char *member)
 	 * is returned to the invoker.
 	 */
 
-	for (i = 0; list[i] != (char *) 0; i++)
+	for (i = 0; list[i] != (char *) 0; i++) {
 		tmp[i] = list[i];
+	}
 
-	tmp[i++] = xstrdup (member);
-	tmp[i] = (char *) 0;
+	tmp[i] = xstrdup (member);
+	tmp[i+1] = (char *) 0;
 
 	return tmp;
 }
@@ -87,22 +93,28 @@ char **add_list (char **list, const char *member)
  *	list of users.
  */
 
-char **del_list (char **list, const char *member)
+/*@only@*/ /*@out@*/char **del_list (/*@returned@*/ /*@only@*/char **list, const char *member)
 {
 	int i, j;
 	char **tmp;
+
+	assert (NULL != member);
+	assert (NULL != list);
 
 	/*
 	 * Scan the list for the old name.  Return the original list
 	 * pointer if it is not present.
 	 */
 
-	for (i = j = 0; list[i] != (char *) 0; i++)
-		if (strcmp (list[i], member))
+	for (i = j = 0; list[i] != (char *) 0; i++) {
+		if (strcmp (list[i], member) != 0) {
 			j++;
+		}
+	}
 
-	if (j == i)
+	if (j == i) {
 		return list;
+	}
 
 	/*
 	 * Allocate a new list pointer large enough to hold all the
@@ -117,52 +129,68 @@ char **del_list (char **list, const char *member)
 	 * is returned to the invoker.
 	 */
 
-	for (i = j = 0; list[i] != (char *) 0; i++)
-		if (strcmp (list[i], member))
-			tmp[j++] = list[i];
+	for (i = j = 0; list[i] != (char *) 0; i++) {
+		if (strcmp (list[i], member) != 0) {
+			tmp[j] = list[i];
+			j++;
+		}
+	}
 
 	tmp[j] = (char *) 0;
 
 	return tmp;
 }
 
-char **dup_list (char *const *list)
+/*@only@*/ /*@out@*/char **dup_list (char *const *list)
 {
 	int i;
 	char **tmp;
 
-	for (i = 0; list[i]; i++);
+	assert (NULL != list);
+
+	for (i = 0; NULL != list[i]; i++);
 
 	tmp = (char **) xmalloc ((i + 1) * sizeof (char *));
 
 	i = 0;
-	while (*list)
-		tmp[i++] = xstrdup (*list++);
+	while (NULL != *list) {
+		tmp[i] = xstrdup (*list);
+		i++;
+		list++;
+	}
 
 	tmp[i] = (char *) 0;
 	return tmp;
 }
 
-int is_on_list (char *const *list, const char *member)
+bool is_on_list (char *const *list, const char *member)
 {
-	while (*list) {
-		if (strcmp (*list, member) == 0)
-			return 1;
+	assert (NULL != member);
+	assert (NULL != list);
+
+	while (NULL != *list) {
+		if (strcmp (*list, member) == 0) {
+			return true;
+		}
 		list++;
 	}
-	return 0;
+
+	return false;
 }
 
 /*
  * comma_to_list - convert comma-separated list to (char *) array
  */
 
-char **comma_to_list (const char *comma)
+/*@only@*/char **comma_to_list (const char *comma)
 {
 	char *members;
 	char **array;
 	int i;
-	char *cp, *cp2;
+	const char *cp;
+	char *cp2;
+
+	assert (NULL != comma);
 
 	/*
 	 * Make a copy since we are going to be modifying the list
@@ -174,11 +202,14 @@ char **comma_to_list (const char *comma)
 	 * Count the number of commas in the list
 	 */
 
-	for (cp = members, i = 0;; i++)
-		if ((cp2 = strchr (cp, ',')))
+	for (cp = members, i = 0;; i++) {
+		cp2 = strchr (cp, ',');
+		if (NULL != cp2) {
 			cp = cp2 + 1;
-		else
+		} else {
 			break;
+		}
+	}
 
 	/*
 	 * Add 2 - one for the ending NULL, the other for the last item
@@ -196,7 +227,7 @@ char **comma_to_list (const char *comma)
 	 * Empty list is special - 0 members, not 1 empty member.  --marekm
 	 */
 
-	if (!*members) {
+	if ('\0' == *members) {
 		*array = (char *) 0;
 		return array;
 	}
@@ -208,8 +239,10 @@ char **comma_to_list (const char *comma)
 
 	for (cp = members, i = 0;; i++) {
 		array[i] = cp;
-		if ((cp2 = strchr (cp, ','))) {
-			*cp2++ = '\0';
+		cp2 = strchr (cp, ',');
+		if (NULL != cp2) {
+			*cp2 = '\0';
+			cp2++;
 			cp = cp2;
 		} else {
 			array[i + 1] = (char *) 0;
@@ -223,3 +256,4 @@ char **comma_to_list (const char *comma)
 
 	return array;
 }
+

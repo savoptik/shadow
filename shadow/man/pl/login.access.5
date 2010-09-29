@@ -1,55 +1,59 @@
-.\" $Id: login.access.5,v 1.2 2001/01/25 10:43:54 kloczek Exp $
-.\" {PTM/WK/1999-09-17}
-.TH LOGIN.ACCESS 5
-.\" .Dt SKEY.ACCESS 5
-.\" .Os FreeBSD 1.2
-.SH NAZWA
-login.access \- tabela kontroli dostêpu logowania
-.SH OPIS
-Plik
-.I login.access
-okre¶la kombinacje (u¿ytkownik, host) i/lub (u¿ytkownik, tty) 
-dla których logowanie bêdzie albo przyjête albo odrzucone.
+'\" t
+.\"     Title: login.access
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 07/24/2009
+.\"    Manual: File Formats and Conversions
+.\"    Source: File Formats and Conversions
+.\"  Language: Polish
+.\"
+.TH "LOGIN\&.ACCESS" "5" "07/24/2009" "File Formats and Conversions" "File Formats and Conversions"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAZWA"
+login.access \- login access control table
+.SH "OPIS"
 .PP
-Gdy kto¶ siê loguje, plik
-.I login.access
-przeszukiwany jest do znalezienia pierwszej pozycji pasuj±cej do danej
-kombinacji (u¿ytkownik, host), lub, w przypadku logowañ nie-sieciowych
-kombinacji (u¿ytkownik, tty). Pole zezwolenia w tej tablicy pozycji okre¶la
-czy logowanie bêdzie przyjête czy odrzucone.
+The
+\fIlogin\&.access\fR
+file specifies (user, host) combinations and/or (user, tty) combinations for which a login will be either accepted or refused\&.
 .PP
-Ka¿dy wiersz tabeli kontroli dostêpu logowania posiada trzy, oddzielone
-znakiem dwukropka, pola:
-.sp 1
-.IR 	zezwolenie : u¿ytkownicy : pochodzenie
-.sp 1
-Pierwsze pole powinno zawieraæ znak "\fB+\fR" (dostêp zapewniony) lub "\fB-\fR"
-(zakaz dostêpu). Drugie z pól powinno zawieraæ listê jednego lub wiêcej nazw
-u¿ytkowników, grup lub s³owo
-.B ALL
-(zawsze pasuje do wszystkich). Trzecie pole powinno byæ list± jednej lub wiêcej
-nazw tty (dla logowañ nie-sieciowych), nazw hostów, domen (rozpoczynaj±cych siê
-od kropki), adresów hostów, internetowych numerów sieci (koñcz±cych siê
-kropk±), s³owem
-.B ALL
-(wszystkie - zawsze pasuje) lub
-.B LOCAL
-(dopasowuje dowolny ³añcuch nie zawieraj±cy kropki).
-Je¿eli uruchomisz NIS mo¿esz u¿yæ @nazwagrupysieciowej we wzorcu hosta
-lub u¿ytkownika.
-.\" @netgroupname
+When someone logs in, the
+\fIlogin\&.access\fR
+is scanned for the first entry that matches the (user, host) combination, or, in case of non\-networked logins, the first entry that matches the (user, tty) combination\&. The permissions field of that table entry determines whether the login will be accepted or refused\&.
 .PP
-Operator
-.B EXCEPT
-(oprócz) umo¿liwia pisanie z³o¿onych regu³.
+Each line of the login access control table has three fields separated by a ":" character:
 .PP
-Plik grup przeszukiwany jest wy³±cznie wtedy, gdy nazwa nie pasuje do
-loguj±cego siê u¿ytkownika. Dopasowywane s± tylko te grupy, w których
-u¿ytkownik jest jawnie wymieniony: program nie sprawdza warto¶ci
-identyfikatora grupy g³ównej u¿ytkownika.
-.SH PLIKI
-.I /etc/login.access
-.SH ZOBACZ TAK¯E
-.BR login (1)
-.SH AUTOR
-Guido van Rooij
+
+\fIpermission\fR:\fIusers\fR:\fIorigins\fR
+.PP
+The first field should be a "\fI+\fR" (access granted) or "\fI\-\fR" (access denied) character\&. The second field should be a list of one or more login names, group names, or
+\fIALL\fR
+(always matches)\&. The third field should be a list of one or more tty names (for non\-networked logins), host names, domain names (begin with "\&."), host addresses, internet network numbers (end with "\&."),
+\fIALL\fR
+(always matches) or
+\fILOCAL\fR
+(matches any string that does not contain a "\&." character)\&. If you run NIS you can use @netgroupname in host or user patterns\&.
+.PP
+The
+\fIEXCEPT\fR
+operator makes it possible to write very compact rules\&.
+.PP
+The group file is searched only when a name does not match that of the logged\-in user\&. Only groups are matched in which users are explicitly listed: the program does not look at a user\'s primary group id value\&.
+.SH "PLIKI"
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguracja pakietu shadow\&.
+.RE
+.SH "ZOBACZ TAKÅ»E"
+.PP
+\fBlogin\fR(1)\&.

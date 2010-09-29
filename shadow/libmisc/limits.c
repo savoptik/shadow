@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1999, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2006, Tomasz Kłoczko
+ * Copyright (c) 2007 - 2008, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,21 +13,21 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*
@@ -34,8 +37,10 @@
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: limits.c,v 1.14 2003/05/05 21:44:15 kloczek Exp $")
+#ifndef USE_PAM
+
+#ident "$Id: limits.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -60,49 +65,53 @@ RCSID ("$Id: limits.c,v 1.14 2003/05/05 21:44:15 kloczek Exp $")
  *	multiplier - value*multiplier is the actual limit
  */
 static int
-setrlimit_value (unsigned int rlimit, const char *value,
+setrlimit_value (unsigned int resource, const char *value,
 		 unsigned int multiplier)
 {
 	struct rlimit rlim;
 	long limit;
-	char **endptr = (char **) &value;
-	const char *value_orig = value;
 
-	limit = strtol (value, endptr, 10);
-	if (limit == 0 && value_orig == *endptr)	/* no chars read */
+	if (getlong (value, &limit) == 0) {
 		return 0;
+	}
 	limit *= multiplier;
-	rlim.rlim_cur = limit;
-	rlim.rlim_max = limit;
-	if (setrlimit (rlimit, &rlim))
+	if (limit != (rlim_t) limit) {
+		return 0;
+	}
+	rlim.rlim_cur = (rlim_t) limit;
+	rlim.rlim_max = (rlim_t) limit;
+	if (setrlimit (resource, &rlim) != 0) {
 		return LOGIN_ERROR_RLIMIT;
+	}
 	return 0;
 }
 
 
 static int set_prio (const char *value)
 {
-	int prio;
-	char **endptr = (char **) &value;
+	long prio;
 
-	prio = strtol (value, endptr, 10);
-	if ((prio == 0) && (value == *endptr))
+	if (   (getlong (value, &prio) == 0)
+	    || (prio != (int) prio)) {
 		return 0;
-	if (setpriority (PRIO_PROCESS, 0, prio))
+	}
+	if (setpriority (PRIO_PROCESS, 0, (int) prio) != 0) {
 		return LOGIN_ERROR_RLIMIT;
+	}
 	return 0;
 }
 
 
 static int set_umask (const char *value)
 {
-	mode_t mask;
-	char **endptr = (char **) &value;
+	unsigned long int mask;
 
-	mask = strtol (value, endptr, 8) & 0777;
-	if ((mask == 0) && (value == *endptr))
+	if (   (getulong (value, &mask) == 0)
+	    || (mask != (mode_t) mask)) {
 		return 0;
-	umask (mask);
+	}
+
+	(void) umask ((mode_t) mask);
 	return 0;
 }
 
@@ -110,48 +119,49 @@ static int set_umask (const char *value)
 /* Counts the number of user logins and check against the limit */
 static int check_logins (const char *name, const char *maxlogins)
 {
-#if HAVE_UTMPX_H
+#ifdef USE_UTMPX
 	struct utmpx *ut;
-#else
+#else				/* !USE_UTMPX */
 	struct utmp *ut;
-#endif
-	unsigned int limit, count;
-	char **endptr = (char **) &maxlogins;
-	const char *ml_orig = maxlogins;
+#endif				/* !USE_UTMPX */
+	unsigned long limit, count;
 
-	limit = strtol (maxlogins, endptr, 10);
-	if (limit == 0 && ml_orig == *endptr)	/* no chars read */
+	if (getulong (maxlogins, &limit) == 0) {
 		return 0;
+	}
 
-	if (limit == 0) {	/* maximum 0 logins ? */
+	if (0 == limit) {	/* maximum 0 logins ? */
 		SYSLOG ((LOG_WARN, "No logins allowed for `%s'\n", name));
 		return LOGIN_ERROR_LOGIN;
 	}
 
 	count = 0;
-#if HAVE_UTMPX_H
+#ifdef USE_UTMPX
 	setutxent ();
 	while ((ut = getutxent ())) {
-#else
+#else				/* !USE_UTMPX */
 	setutent ();
 	while ((ut = getutent ())) {
-#endif
-#ifdef USER_PROCESS
-		if (ut->ut_type != USER_PROCESS)
+#endif				/* !USE_UTMPX */
+		if (USER_PROCESS != ut->ut_type) {
 			continue;
-#endif
-		if (ut->ut_user[0] == '\0')
+		}
+		if ('\0' == ut->ut_user[0]) {
 			continue;
-		if (strncmp (name, ut->ut_user, sizeof (ut->ut_user)) != 0)
+		}
+		if (strncmp (name, ut->ut_user, sizeof (ut->ut_user)) != 0) {
 			continue;
-		if (++count > limit)
+		}
+		count++;
+		if (count > limit) {
 			break;
+		}
 	}
-#if HAVE_UTMPX_H
+#ifdef USE_UTMPX
 	endutxent ();
-#else
+#else				/* !USE_UTMPX */
 	endutent ();
-#endif
+#endif				/* !USE_UTMPX */
 	/*
 	 * This is called after setutmp(), so the number of logins counted
 	 * includes the user who is currently trying to log in.
@@ -169,7 +179,7 @@ static int check_logins (const char *name, const char *maxlogins)
  * by Cristian Gafton - gafton@sorosis.ro
  *
  * We are passed a string of the form ('BASH' constants for ulimit)
- *     [Aa][Cc][Dd][Ff][Mm][Nn][Rr][Ss][Tt][Uu][Ll][Pp]
+ *     [Aa][Cc][Dd][Ff][Mm][Nn][Rr][Ss][Tt][Uu][Ll][Pp][Ii][Oo]
  *     (eg. 'C2F256D2048N5' or 'C2 F256 D2048 N5')
  * where:
  * [Aa]: a = RLIMIT_AS		max address space (KB)
@@ -185,6 +195,8 @@ static int check_logins (const char *name, const char *maxlogins)
  * [Kk]: k = file creation masK (umask)
  * [Ll]: l = max number of logins for this user
  * [Pp]: p = process priority -20..20 (negative = high, positive = low)
+ * [Ii]: i = RLIMIT_NICE    max nice value (0..39 translates to 20..-19)
+ * [Oo]: o = RLIMIT_RTPRIO  max real time priority (linux/sched.h 0..MAX_RT_PRIO)
  *
  * Return value:
  *		0 = okay, of course
@@ -198,16 +210,18 @@ static int do_user_limits (const char *buf, const char *name)
 {
 	const char *pp;
 	int retval = 0;
+	bool reported = false;
 
 	pp = buf;
 
-	while (*pp != '\0')
+	while ('\0' != *pp) {
 		switch (*pp++) {
 #ifdef RLIMIT_AS
 		case 'a':
 		case 'A':
 			/* RLIMIT_AS - max address space (KB) */
 			retval |= setrlimit_value (RLIMIT_AS, pp, 1024);
+			break;
 #endif
 #ifdef RLIMIT_CPU
 		case 't':
@@ -248,8 +262,7 @@ static int do_user_limits (const char *buf, const char *name)
 		case 'm':
 		case 'M':
 			/* RLIMIT_MEMLOCK - max locked-in-memory address space (KB) */
-			retval |=
-			    setrlimit_value (RLIMIT_MEMLOCK, pp, 1024);
+			retval |= setrlimit_value (RLIMIT_MEMLOCK, pp, 1024);
 			break;
 #endif
 #ifdef RLIMIT_NOFILE
@@ -273,20 +286,44 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_STACK, pp, 1024);
 			break;
 #endif
+#ifdef RLIMIT_NICE
+		case 'i':
+		case 'I':
+			/* RLIMIT_NICE - max scheduling priority (0..39) */
+			retval |= setrlimit_value (RLIMIT_NICE, pp, 1);
+			break;
+#endif
+#ifdef RLIMIT_RTPRIO
+		case 'o':
+		case 'O':
+			/* RLIMIT_RTPRIO - max real time priority (0..MAX_RT_PRIO) */
+			retval |= setrlimit_value (RLIMIT_RTPRIO, pp, 1);
+			break;
+#endif
 		case 'k':
 		case 'K':
 			retval |= set_umask (pp);
 			break;
 		case 'l':
 		case 'L':
-			/* LIMIT the number of concurent logins */
+			/* LIMIT the number of concurrent logins */
 			retval |= check_logins (name, pp);
 			break;
 		case 'p':
 		case 'P':
 			retval |= set_prio (pp);
 			break;
+		default:
+			/* Only report invalid strings once */
+			if (!reported) {
+				SYSLOG ((LOG_WARN,
+				         "Invalid limit string: '%s'",
+				         pp-1));
+				reported = true;
+				retval |= LOGIN_ERROR_RLIMIT;
+			}
 		}
+	}
 	return retval;
 }
 
@@ -317,8 +354,9 @@ static int setup_user_limits (const char *uname)
 	 * - username must start on first column
 	 * A better (smarter) checking should be done --cristiang */
 	while (fgets (buf, 1024, fil) != NULL) {
-		if (buf[0] == '#' || buf[0] == '\n')
+		if (('#' == buf[0]) || ('\n' == buf[0])) {
 			continue;
+		}
 		memzero (tempbuf, sizeof (tempbuf));
 		/* a valid line should have a username, then spaces,
 		 * then limits
@@ -328,7 +366,7 @@ static int setup_user_limits (const char *uname)
 		 * Imposing a limit should be done with care, so a wrong
 		 * entry means no care anyway :-). A '-' as a limits
 		 * strings means no limits --cristiang */
-		if (sscanf (buf, "%s%[ACDFMNRSTULPacdfmnrstulp0-9 \t-]",
+		if (sscanf (buf, "%s%[ACDFMNRSTULPIOacdfmnrstulpio0-9 \t-]",
 			    name, tempbuf) == 2) {
 			if (strcmp (name, uname) == 0) {
 				strcpy (limits, tempbuf);
@@ -338,11 +376,12 @@ static int setup_user_limits (const char *uname)
 			}
 		}
 	}
-	fclose (fil);
+	(void) fclose (fil);
 	if (limits[0] == '\0') {
 		/* no user specific limits */
-		if (deflimits[0] == '\0')	/* no default limits */
+		if (deflimits[0] == '\0') {	/* no default limits */
 			return 0;
+		}
 		strcpy (limits, deflimits);	/* use the default limits */
 	}
 	return do_user_limits (limits, uname);
@@ -353,18 +392,21 @@ static int setup_user_limits (const char *uname)
 static void setup_usergroups (const struct passwd *info)
 {
 	const struct group *grp;
-	mode_t oldmask;
+	mode_t tmpmask;
 
 /*
- *	if not root, and uid == gid, and username is the same as primary
+ *	if not root, and UID == GID, and username is the same as primary
  *	group name, set umask group bits to be the same as owner bits
  *	(examples: 022 -> 002, 077 -> 007).
  */
-	if (info->pw_uid != 0 && info->pw_uid == info->pw_gid) {
+	if ((0 != info->pw_uid) && (info->pw_uid == info->pw_gid)) {
+		/* local, no need for xgetgrgid */
 		grp = getgrgid (info->pw_gid);
-		if (grp && (strcmp (info->pw_name, grp->gr_name) == 0)) {
-			oldmask = umask (0777);
-			umask ((oldmask & ~070) | ((oldmask >> 3) & 070));
+		if (   (NULL != grp)
+		    && (strcmp (info->pw_name, grp->gr_name) == 0)) {
+			tmpmask = umask (0777);
+			tmpmask = (tmpmask & ~070) | ((tmpmask >> 3) & 070);
+			(void) umask (tmpmask);
 		}
 	}
 }
@@ -376,11 +418,10 @@ static void setup_usergroups (const struct passwd *info)
 void setup_limits (const struct passwd *info)
 {
 	char *cp;
-	int i;
-	long l;
 
-	if (getdef_bool ("USERGROUPS_ENAB"))
+	if (getdef_bool ("USERGROUPS_ENAB")) {
 		setup_usergroups (info);
+	}
 
 	/*
 	 * See if the GECOS field contains values for NICE, UMASK or ULIMIT.
@@ -390,37 +431,67 @@ void setup_limits (const struct passwd *info)
 
 	if (getdef_bool ("QUOTAS_ENAB")) {
 #ifdef LIMITS
-		if (info->pw_uid != 0)
+		if (info->pw_uid != 0) {
 			if (setup_user_limits (info->pw_name) &
 			    LOGIN_ERROR_LOGIN) {
-				fprintf (stderr, _("Too many logins.\n"));
-				sleep (2);
-				exit (1);
+				(void) fputs (_("Too many logins.\n"), stderr);
+				(void) sleep (2); /* XXX: Should be FAIL_DELAY */
+				exit (EXIT_FAILURE);
 			}
+		}
 #endif
-		for (cp = info->pw_gecos; cp != NULL;
-		     cp = strchr (cp, ',')) {
-			if (*cp == ',')
+		for (cp = info->pw_gecos; cp != NULL; cp = strchr (cp, ',')) {
+			if (',' == *cp) {
 				cp++;
+			}
 
 			if (strncmp (cp, "pri=", 4) == 0) {
-				i = atoi (cp + 4);
-				if (i >= -20 && i <= 20)
-					(void) nice (i);
+				long int inc;
+				if (   (getlong (cp + 4, &inc) == 1)
+				    && (inc >= -20) && (inc <= 20)) {
+					errno = 0;
+					if (   (nice ((int) inc) != -1)
+					    || (0 != errno)) {
+						continue;
+					}
+				}
+
+				/* Failed to parse or failed to nice() */
+				SYSLOG ((LOG_WARN,
+				         "Can't set the nice value for user %s",
+				         info->pw_name));
 
 				continue;
 			}
 			if (strncmp (cp, "ulimit=", 7) == 0) {
-				l = strtol (cp + 7, (char **) 0, 10);
-				set_filesize_limit (l);
+				long int blocks;
+				if (   (getlong (cp + 7, &blocks) == 0)
+				    || (blocks != (int) blocks)
+				    || (set_filesize_limit ((int) blocks) != 0)) {
+					SYSLOG ((LOG_WARN,
+					         "Can't set the ulimit for user %s",
+					         info->pw_name));
+				}
 				continue;
 			}
 			if (strncmp (cp, "umask=", 6) == 0) {
-				i = strtol (cp + 6, (char **) 0, 8) & 0777;
-				(void) umask (i);
+				unsigned long int mask;
+				if (   (getulong (cp + 6, &mask) == 0)
+				    || (mask != (mode_t) mask)) {
+					SYSLOG ((LOG_WARN,
+					         "Can't set umask value for user %s",
+					         info->pw_name));
+				} else {
+					(void) umask ((mode_t) mask);
+				}
 
 				continue;
 			}
 		}
 	}
 }
+
+#else				/* !USE_PAM */
+extern int errno;		/* warning: ANSI C forbids an empty source file */
+#endif				/* !USE_PAM */
+

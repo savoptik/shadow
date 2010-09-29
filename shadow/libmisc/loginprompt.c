@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1993, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1993, Julianne Frances Haugh
+ * Copyright (c) 1996 - 2000, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008 - 2009, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,36 +13,38 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: loginprompt.c,v 1.7 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: loginprompt.c 2787 2009-04-24 22:46:06Z nekral-guest $"
+
+#include <assert.h>
 #include <stdio.h>
 #include <signal.h>
 #include <ctype.h>
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
-static void login_exit (int sig)
+
+static void login_exit (unused int sig)
 {
-	exit (1);
+	exit (EXIT_FAILURE);
 }
 
 /*
@@ -82,17 +87,21 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	 * be displayed and display it before the prompt.
 	 */
 
-	if (prompt) {
+	if (NULL != prompt) {
 		cp = getdef_str ("ISSUE_FILE");
-		if (cp && (fp = fopen (cp, "r"))) {
-			while ((i = getc (fp)) != EOF)
-				putc (i, stdout);
+		if (NULL != cp) {
+			fp = fopen (cp, "r");
+			if (NULL != fp) {
+				while ((i = getc (fp)) != EOF) {
+					(void) putc (i, stdout);
+				}
 
-			fclose (fp);
+				(void) fclose (fp);
+			}
 		}
 		gethostname (buf, sizeof buf);
 		printf (prompt, buf);
-		fflush (stdout);
+		(void) fflush (stdout);
 	}
 
 	/* 
@@ -101,12 +110,14 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	 */
 
 	memzero (buf, sizeof buf);
-	if (fgets (buf, sizeof buf, stdin) != buf)
-		exit (1);
+	if (fgets (buf, (int) sizeof buf, stdin) != buf) {
+		exit (EXIT_FAILURE);
+	}
 
 	cp = strchr (buf, '\n');
-	if (!cp)
-		exit (1);
+	if (NULL == cp) {
+		exit (EXIT_FAILURE);
+	}
 	*cp = '\0';		/* remove \n [ must be there ] */
 
 	/*
@@ -118,11 +129,13 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	for (cp = buf; *cp == ' ' || *cp == '\t'; cp++);
 
 	for (i = 0; i < namesize - 1 && isgraph (*cp); name[i++] = *cp++);
-	while (isgraph (*cp))
+	while (isgraph (*cp)) {
 		cp++;
+	}
 
-	if (*cp)
+	if ('\0' != *cp) {
 		cp++;
+	}
 
 	name[i] = '\0';
 
@@ -132,20 +145,23 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	 * to do this, and I just take the easy way out.
 	 */
 
-	if (*cp != '\0') {	/* process new variables */
+	if ('\0' != *cp) {	/* process new variables */
 		char *nvar;
 		int count = 1;
 
 		for (envc = 0; envc < MAX_ENV; envc++) {
-			nvar = strtok (envc ? (char *) 0 : cp, " \t,");
-			if (!nvar)
+			nvar = strtok ((0 != envc) ? (char *) 0 : cp, " \t,");
+			if (NULL == nvar) {
 				break;
-			if (strchr (nvar, '=')) {
+			}
+			if (strchr (nvar, '=') != NULL) {
 				envp[envc] = nvar;
 			} else {
-				envp[envc] = xmalloc (strlen (nvar) + 32);
-				sprintf (envp[envc], "L%d=%s", count++,
-					 nvar);
+				size_t len = strlen (nvar) + 32;
+				int wlen;
+				envp[envc] = xmalloc (len);
+				wlen = snprintf (envp[envc], len, "L%d=%s", count++, nvar);
+				assert (wlen == (int) len -1);
 			}
 		}
 		set_env (envc, envp);
@@ -155,8 +171,9 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	 * Set the SIGQUIT handler back to its original value
 	 */
 
-	signal (SIGQUIT, sigquit);
+	(void) signal (SIGQUIT, sigquit);
 #ifdef	SIGTSTP
-	signal (SIGTSTP, sigtstp);
+	(void) signal (SIGTSTP, sigtstp);
 #endif
 }
+

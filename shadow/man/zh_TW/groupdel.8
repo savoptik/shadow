@@ -1,3 +1,4 @@
+.\" $Id: groupdel.8 1342 2007-11-10 23:46:11Z nekral-guest $
 .\" Copyright 1991 - 1993, Julianne Frances Haugh
 .\" All rights reserved.
 .\"
@@ -24,27 +25,24 @@
 .\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
-.\"
-.\"	$Id: groupdel.8,v 1.2 2003/04/26 13:24:16 kloczek Exp $
-.\"
 .TH GROUPDEL 8
-.SH �W��
-groupdel \- �R���s��
-.SH �y�k
+.SH 名稱
+groupdel \- 刪除群組
+.SH 語法
 .B groupdel
 .I group
-.SH �y�z
-\fBgroupdel\fR �R�O�|�ק�t�αb���ɡA�|�R���Ҧ��w�g�s�b��\fIgroup\fR.
-�s�զW���s�b�C
+.SH 描述
+\fBgroupdel\fR 命令會修改系統帳號檔，會刪除所有已經存在的\fIgroup\fR.
+群組名須存在。
 .PP
-�A����ʽT�{�@�U�Ҧ����ɮרt�νT�O���S���ɮ��٬O�S�ץ��s�զW�ܦ��s��ID�C
-.SH ĵ�i
-�p�G������@�Ӹs�ժ��ϥΪ̦b�u�W���ܴN���ಾ���Ӹs�աC
-�̦n�������ϥΪ̫�A�����s�աC
-.SH �ɮ�
-\fI/etc/group\fR \- �s�ո�T
-\fI/etc/gshadow\fR \- �s�ո�T�[�K
-.SH �������
+你須手動確認一下所有的檔案系統確保有沒有檔案還是沒修正群組名變成群組ID。
+.SH 警告
+如果有任何一個群組的使用者在線上的話就不能移除該群組。
+最好先移除使用者後再移除群組。
+.SH 檔案
+\fI/etc/group\fR \- 群組資訊
+\fI/etc/gshadow\fR \- 群組資訊加密
+.SH 相關文件
 .BR chfn (1),
 .BR chsh (1),
 .BR useradd (8),
@@ -53,5 +51,5 @@ groupdel \- �R���s��
 .BR passwd (1),
 .BR groupadd (8),
 .BR groupmod (8)
-.SH �@��
+.SH 作者
 Julianne Frances Haugh (jfh@tab.com)

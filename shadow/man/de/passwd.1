@@ -1,199 +1,386 @@
-.\" Copyleft (C) 2003 Josef Spillner <josef@ggzgamingzone.org>
-.\" Übersetzung der englischen Version von Julianne Frances Haugh
-.\" Ersatz für die originale Version von:
-.\" Copyright 1993 Sebastian Hetze und Peter Orbaek.
+'\" t
+.\"     Title: passwd
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24.07.2009
+.\"    Manual: Dienstprogramme f\(:ur Benutzer
+.\"    Source: Dienstprogramme f\(:ur Benutzer
+.\"  Language: German
 .\"
-.\" Veröffentlicht unter der GNU General Public License (GPL).
-.\"
-.TH PASSWD 1
-.SH BEZEICHNUNG
-passwd \- ändert das Nutzerkennwort
-.SH SYNTAX
-\fBpasswd\fR [\fB-f\fR|\fB-s\fR] [\fIName\fR]
-.br
-\fBpasswd\fR [\fB-g\fR] [\fB-r\fR|\fB-R\fR] \fIGruppe\fR
-.br
-\fBpasswd\fR [\fB-x \fImax\fR] [\fB-n \fImin\fR]
-[\fB-w \fIwarn\fR] [\fB-i \fIinaktiv\fR] \fILogin\fR
-.br
-\fBpasswd\fR {\fB-l\fR|\fB-u\fR|\fB-d\fR|\fB-S\fR|\fB-e\fR} \fILogin\fR
-.SH BESCHREIBUNG
-\fBpasswd\fR ändert Kennwörter für Nutzer- und Gruppenkonten.
-Ein normaler Nutzer darf das Kennwort nur für sein/ihr eigenes
-Login ändern, während der Superuser (root) dies für jedes Login darf.
-Der Administrator einer Gruppe kann das Kennwort für die Gruppe ändern.
-\fBpasswd\fR ändert auch Kontoinformationen, wie den vollen Namen
-des Nutzers, seine/ihre Loginshell, oder das Datum und Intervall des
-Ablaufes des Kennwortes.
+.TH "PASSWD" "1" "24.07.2009" "Dienstprogramme f\(:ur Benutzer" "Dienstprogramme f\(:ur Benutzer"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+passwd \- \(:andert das Passwort eines Benutzers
+.SH "SYNOPSIS"
+.HP \w'\fBpasswd\fR\ 'u
+\fBpasswd\fR [\fIOptionen\fR] [\fILOGIN\fR]
+.SH "BESCHREIBUNG"
 .PP
-Die Option \fB-s\fR sorgt dafür, daß \fBpasswd\fR das Programm \fBchsh\fR
-aufruft, welches die Shell des Nutzers ändert. Die Option \fB-f\fR
-läßt \fBpasswd\fR das Programm \fBchfn\fR zum Ändern der GECOS-Information
-starten.
-Diese beiden Optionen sind nur aus Kompatibilitätsgründen vorhanden, da diese
-Programme direkt aufgerufen werden können.
-.SS Änderung des Kennwortes
-Der Nutzer wird zuerst nach seinem/ihren alten Kennwort gefragt, sofern es
-bereits existiert. Dieses wird dann verschlüsselt und mit dem gespeicherten
-Kennwort verglichen.
-Der Nutzer hat nur einen Versuch, das Kennwort korrekt einzugeben.
-Hingegen kann der Superuser diesen Schritt überspringen, um vergessene
-Kennwörter abzuändern.
+The
+\fBpasswd\fR
+command changes passwords for user accounts\&. A normal user may only change the password for his/her own account, while the superuser may change the password for any account\&.
+\fBpasswd\fR
+also changes the account or associated password validity period\&.
+.SS "Ver\(:andern des Passworts"
 .PP
-Nachdem das Kennwort eingegeben wurde, wird die Gültigkeitsinformation
-geprüft, um herauszufinden ob der Nutzer zu diesem Zeitpunkt das Kennwort
-ändern darf.
-Wenn das nicht der Fall ist, verweigert \fBpasswd\fR die Kennwortänderung
-und beendet sich.
+The user is first prompted for his/her old password, if one is present\&. This password is then encrypted and compared against the stored password\&. The user has only one chance to enter the correct password\&. The superuser is permitted to bypass this step so that forgotten passwords may be changed\&.
 .PP
-Anschließend wird der Nutzer nach einem Ersatzkennwort gefragt.
-Dieses wird auf Komplexität überprüft.
-Als Richtlinie sollten Kennwörter mit 6 bis 8 Zeichen gewählt werden,
-inklusive einem oder mehreren Zeichen aus den folgenden Mengen:
-.IP "" .5i
+Nachdem das Passwort eingegeben wurde, werden Informationen \(:uber die G\(:ultigkeitsdauer des Passworts abgefragt, um festzustellen, ob der Benutzer das Passwort zu dieser Zeit ver\(:andern darf\&. Wenn nicht, lehnt
+\fBpasswd\fR
+die \(:Anderung des Passworts ab und beendet sich\&.
+.PP
+Der Benutzer wird dann aufgefordert, zweimal ein neues Passwort einzugeben\&. Beide Eingaben werden miteinander verglichen\&. Sie m\(:ussen \(:ubereinstimmen, damit das Passwort ge\(:andert wird\&.
+.PP
+Anschlie\(ssend wird das Passwort auf seine Komplexit\(:at \(:uberpr\(:uft\&. Eine allgemeine Richtlinie ist, dass Passw\(:orter aus sechs bis acht Zeichen bestehen sollten und ein oder mehrere Zeichen aus folgenden Mengen enthalten sollten:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 Kleinbuchstaben
-.IP "" .5i
-Großbuchstaben
-.IP "" .5i
-Ziffern von 0 bis 9
-.IP "" .5i
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Ziffern 0 bis 9
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 Satzzeichen
+.RE
 .PP
-Es sollte darauf geachtet werden, daß keine Systemlöschzeichen
-oder sonstigen Sonderzeichen darunter sind.
-\fBpasswd\fR lehnt jedes Kennwort ab, welches nicht ein Mindestmaß
-an Komplexität besitzt.
+Seien Sie vorsichtig, dass Sie nicht die standardm\(:a\(ssigen L\(:osch\- und Kill\-Zeichen des Systems eingeben\&.
+\fBpasswd\fR
+weist Passw\(:orter zur\(:uck, die nicht hinreichend komplex sind\&.
+.SS "Hinweise zu Benutzerpassw\(:ortern"
 .PP
-Wenn das Kennwort akzeptiert wurde, wird
-\fBpasswd\fR ein weiteres Mal nach dem Kennwort fragen und dieses mit
-der ersten Eingabe vergleichen.
-Beide Eingaben müssen identisch sein, damit das Kennwort geändert
-werden kann.
-.SS Gruppenkennwörter
-Wenn die Option \fB-g\fR benutzt wird, hat das die Änderung des Kennwortes
-für die angegebene Gruppe zur Auswahl.
-Dafür muß der Nutzer entweder der Superuser oder der Gruppenadministrator
-sein.
-Es wird nicht nach dem aktuellen Gruppenkennwort gefragt.
-Die Option \fB-r\fR wird zusammen mit \fB-g\fR verwendet, um das aktuelle
-Kennwort von der angegebenen Gruppe zu entfernen.
-Das erlaubt den Zugriff auf die Gruppe durch alle Mitglieder.
-Die Option \fB-R\fR in Kombination mit \fB-g\fR beschränkt den
-Zugriff für alle Nutzer.
-.SS Kennwortgültigkeitsinformationen
-Die Information zur Gültigkeitsdauer des Kennwortes kann vom Superuser
-mit den Optionen \fB-x\fR, \fB-n\fR, \fB-w\fR und \fB-i\fR geändert werden.
-Mit der Option \fB-x\fR wird die maximale Anzahl an Tagen eingestellt,
-die ein Kennwort gültig bleiben soll.
-Nach \fImax\fR Tagen wird eine Kennwortänderung verlangt.
-Die Option \fB-n\fR setzt die minimale Gültigkeitsdauer in Tagen,
-nach der ein Kennwort geändert werden kann.
-Es ist dem Nutzer nicht gestattet, sein Kennwort zu ändern, bis
-\fImin\fR Tage verstrichen sind.
-Die Option \fB-w\fR wird genutzt, um die Anzahl der Tage zu setzen,
-an denen der Nutzer gewarnt wird, daß die Gültigkeit seines/ihres Kennwortes
-bald ausläuft.
-Die Warnung tritt dann \fIwarn\fR Tage vor dem Ablauf der Gültigkeit ein,
-und teilt dem Nutzer mit, wieviele Tage noch bis zur notwendigen Änderung
-verbleiben.
-Durch \fB-i\fR wird verwendet, ein Konto zu sperren, wenn das Kennwort nicht
-ein paar Tage nach Ablauf der Gültigkeit geändert wurde.
-Wenn die Gültigkeit bereits für \fIinaktiv\fR Tage überschritten wurde,
-kann sich der Nutzer nicht mehr an seinem Konto anmelden.
+The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
+\fIUNIX\fR
+System encryption method is based on the NBS DES algorithm\&. More recent methods are now recommended (see
+\fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
 .PP
-Wenn die sofortige Ungültigkeit eines Kennwortes gewünscht wird,
-kann dieses über die Option \fB-e\fR eingestellt werden.
-Diese Maßnahme zwingt den Nutzer dazu, sein/ihr Kennwort beim nächsten
-Login zu ändern. Mit der Option \fB-d\fR kann ein Kennwort gelöscht werden.
-Dies sollte mit Vorsicht verwendet werden, denn ein leeres Kennwort kann
-bedeuten, daß beim Login keines mehr benötigt wird und somit Eindringlinge
-Zugang zum System haben.
-.SS Kontoverwaltung
-Nutzerkonten können mit den Optionen \fB-l\fR und \fB-u\fR gesperrt und
-wieder entsperrt werden.
-Die Option \fB-l\fR deaktiviert ein Konto dadurch, daß das Kennwort
-auf einen Wert gesetzt wird, der durch kein verschlüsseltes Kennwort
-dargestellt werden kann.
-Die Option \fB-u\fR schaltet das Konto wieder frei, indem das
-Kennwort auf seinen vorherigen Wert zurückgesetzt wird.
+Gefahren f\(:ur die Sicherheit von Passw\(:ortern kommen gew\(:ohnlich von sorgloser Wahl oder Handhabung des Passworts\&. Daher sollten Sie kein Passwort w\(:ahlen, das in einem W\(:orterbuch auftaucht oder das aufgeschrieben werden muss\&. Das Passwort sollte somit kein echter Name, Ihr Autokennzeichen, Geburtstag oder Ihre Adresse sein\&. All das kann dazu verwendet werden, das Passwort zu erraten, und stellt daher eine Gefahr f\(:ur die Sicherheit Ihres Systems dar\&.
 .PP
-Der Status eines Kontos kann mit der Option \fB-S\fR angesehen werden.
-Die Statusinformation besteht aus 7 Feldern.
-Das erste Feld ist der Loginname des Nutzers, gefolgt von dem Zustand
-des Kontos: gesperrt (L), ohne Kennwort (NP), oder normal mit Kennwort
-(P). Das dritte Feld gibt das Datum der letzten Kennwortänderung
-zurück. In den restlichen vier Feldern stehen die minimale und maximale
-Gültigkeitsdauer, die Warnzeit und die Dauer, nach der bei Inaktivität
-das Konto gesperrt wird.
-Diese Werte sind als Tagesangaben zu verstehen.
-Siehe obiger Absatz
-.B Kennwortgültigkeitsinformationen
-für eine Erläuterung dieser Felder.
-.SS Hinweise für Nutzerkennwörter
-Die Sicherheit des Kennwortes hängt von der Leistungsfähigkeit
-des Verschlüsselungsalgorithmus und dem Schlüsselraum ab.
-Die auf \fB\s-2UNIX\s+2\fR-Systemen eingesetzte Verschlüsselungsmethode
-basiert auf dem NBS DES-Algorithmus und gilt als sehr sicher.
-Die Größe des Schlüsselraumes hängt von der Zufälligkeit (Entropie)
-des ausgewählten Kennwortes ab.
+You can find advices on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+.SH "OPTIONEN"
 .PP
-Zwischenfälle bei Sicherheitsmaßnahmen mit Kennwörtern sind meist
-durch unsachgemäßen Umgang oder ungenügende Kennwortwahl bedingt.
-Aus diesem Grund sollte man kein Kennwort wählen, welches in einem
-Wörterbuch vorkommt, oder so kompliziert ist daß man es notieren
-muß.
-Es sollte auch keinem Namen entsprechen, und ebensowenig der
-Ausweisnummer, dem Geburtstagsdatum oder der Adresse.
-Nichtbeachtung dieser Regeln führt oft zu Verletzungen der Systemsicherheit.
+Die Optionen, die vom Befehl
+\fBpasswd\fR
+unterst\(:utzt werden, sind:
 .PP
-Das Kennwort muß dennoch einfach genug gehalten sein, daß man nicht
-gezwungen ist, es auf Papier niederzuschreiben.
-Das kann erreicht werden, indem man zwei kleine Wörter durch ein
-Sonderzeichen miteinander verbindet, bespielsweise so: Pass%wort.
+\fB\-a\fR, \fB\-\-all\fR
+.RS 4
+Diese Option kann nur in Verbindung mit
+\fB\-S\fR
+verwendet werden und f\(:uhrt dazu, dass der Status aller Benutzer angezeigt wird\&.
+.RE
 .PP
-Andere Konstruktionsmethoden beinhalten die Auswahl eines leicht
-zu merkenden Satzes und die Bildung eines Wortes durch
-Aneinanderreihung der Anfangs- oder Endbuchstaben seiner Wörter.
-Das Beispiel hierfür kommt aus 'Faust'
-.IP "" .5i
-Was wollt ihr da? Was schlich sich ein?
+\fB\-d\fR, \fB\-\-delete\fR
+.RS 4
+L\(:oscht das Passwort eines Benutzers (macht es leer)\&. Dies ist ein schneller Weg, um das Passwort eines Kontos zu deaktivieren\&. Dem Konto ist dann kein Passwort zugeordnet\&.
+.RE
 .PP
-welches folgendes Wort bildet:
-.IP "" .5i
-WwidWss1.
+\fB\-e\fR, \fB\-\-expire\fR
+.RS 4
+L\(:asst das Passwort eines Kontos sofort verfallen\&. Im Ergebnis kann damit erreicht werden, dass ein Benutzer beim n\(:achsten Login das Passwort \(:andern muss\&.
+.RE
 .PP
-Man kann sich ziemlich sicher sein, daß nur weniger Cracker
-diesen Term in ihrem Wörterbuch haben.
-Man sollte jedoch eigene Methoden zum Konstruieren von
-Kennwörtern finden, und sich nicht ausschließlich auf die
-hier aufgezeigten Kennwörter verlassen.
-.SS Bemerkungen zu Gruppenkennwörtern
-Gruppenkennwörter können ein ernsthaftes Sicherheitsproblem
-darstellen, da mehr als eine Person befugt ist, das Kennwort
-zu kennen.
-Gruppen sind allerdings ein wichtiges Werkzeug für die Kooperation
-unter verschiedenen Nutzern.
-.SH HINWEISE
-Nicht alle Optionen werden unterstützt.
-Die Komplexitätsprüfung für Kennwörter kann sich von Rechner
-zu Rechner unterscheiden.
-Der Nutzer wird angehalten, ein Kennwort zu wählen, was so
-komplex ist wie er/sie es für richtig hält.
-Nutzer können eventuell ihre Kennwörter nicht ändern,
-wenn NIS eingesetzt wird und sie nicht im NIS-Server eingeloggt sind.
-.SH DATEIEN
-.TP
-.I /etc/passwd 
-Informationen über Nutzerkonten
-.TP
-.I /etc/shadow 
-Verschlüsselte Nutzerkennwörter
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Zeigt die Hilfe an und beendet das Programm\&.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-inactive\fR\fIINAKTIV\fR
+.RS 4
+Mit dieser Option wird ein Konto deaktiviert, nachdem das Passwort f\(:ur eine bestimmte Anzahl von Tagen abgelaufen ist\&. Wenn ein Benutzerkonto ein abgelaufenes Passwort f\(:ur l\(:anger als
+\fIINAKTIV\fR
+Tage hatte, kann sich der Benutzer nicht mehr auf diesem Konto anmelden\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-keep\-tokens\fR
+.RS 4
+Indicate password change should be performed only for expired authentication tokens (passwords)\&. The user wishes to keep their non\-expired tokens as before\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-lock\fR
+.RS 4
+Lock the password of the named account\&. This option disables a password by changing it to a value which matches no possible encrypted value (it adds a \(aa!\(aa at the beginning of the password)\&.
+.sp
+Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
+\fBusermod \-\-expiredate 1\fR
+(this set the account\'s expire date to Jan 2, 1970)\&.
+.sp
+Users with a locked password are not allowed to change their password\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-mindays\fR \fIMIN_DAYS\fR
+.RS 4
+Setzt die Anzahl von Tagen, die mindestens zwischen zwei \(:Anderungen eines Passworts vergehen m\(:ussen, auf
+\fIMIN_TAGE\fR\&. Ein Wert von Null in diesem Feld bedeutet, dass der Benutzer sein Passwort jederzeit \(:andern darf\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Stiller Modus\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-repository\fR\fIPASSWORTDEPOT\fR
+.RS 4
+change password in
+\fIREPOSITORY\fR
+repository
+.RE
+.PP
+\fB\-S\fR, \fB\-\-status\fR
+.RS 4
+Display account status information\&. The status information consists of 7 fields\&. The first field is the user\'s login name\&. The second field indicates if the user account has a locked password (L), has no password (NP), or has a usable password (P)\&. The third field gives the date of the last password change\&. The next four fields are the minimum age, maximum age, warning period, and inactivity period for the password\&. These ages are expressed in days\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-unlock\fR
+.RS 4
+Unlock the password of the named account\&. This option re\-enables a password by changing the password back to its previous value (to the value before using the
+\fB\-l\fR
+option)\&.
+.RE
+.PP
+\fB\-w\fR, \fB\-\-warndays\fR\fIWARN_TAGE\fR
+.RS 4
+Legt die Anzahl der Tage fest, an denen der Benutzer eine Warnung erh\(:alt, bevor sein Passwort ung\(:ultig wird\&. Die Option
+\fIWARN_TAGE\fR
+bezeichnet die Anzahl der Tage, f\(:ur die ein Benutzer vor Verfall seines Passworts gewarnt wird\&.
+.RE
+.PP
+\fB\-x\fR, \fB\-\-maxdays\fR\fIMAX_TAGE\fR
+.RS 4
+Bestimmt die maximale Anzahl von Tagen, die das Passwort g\(:ultig bleibt\&. Nach
+\fIMAX_TAGE\fR
+Tagen muss das Passwort ge\(:andert werden\&.
+.RE
+.SH "WARNUNGEN"
+.PP
+Password complexity checking may vary from site to site\&. The user is urged to select a password as complex as he or she feels comfortable with\&.
+.PP
+Users may not be able to change their password on a system if NIS is enabled and they are not logged into the NIS server\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENCRYPT_METHOD\fR (string)
+.RS 4
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+.sp
+It can take one of these values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIDES\fR
+(default)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIMD5\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fISHA256\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fISHA512\fR
+.RE
+.RS 4
+.sp
+Note: this parameter overrides the
+\fBMD5_CRYPT_ENAB\fR
+variable\&.
+.RE
+.PP
+\fBMD5_CRYPT_ENAB\fR (boolean)
+.RS 4
+Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
+\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
+\fIno\fR
+if you need to copy encrypted passwords to other systems which don\'t understand the new algorithm\&. Default is
+\fIno\fR\&.
+.sp
+This variable is superceded by the
+\fBENCRYPT_METHOD\fR
+variable or by any command line option used to configure the encryption algorithm\&.
+.sp
+This variable is deprecated\&. You should use
+\fBENCRYPT_METHOD\fR\&.
+.RE
+.PP
+\fBOBSCURE_CHECKS_ENAB\fR (boolean)
+.RS 4
+Enable additional checks upon password changes\&.
+.RE
+.PP
+\fBPASS_ALWAYS_WARN\fR (boolean)
+.RS 4
+Warn about weak passwords (but still allow them) if you are root\&.
+.RE
+.PP
+\fBPASS_CHANGE_TRIES\fR (number)
+.RS 4
+Maximum number of attempts to change password if rejected (too easy)\&.
+.RE
+.PP
+\fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
+.RS 4
+Number of significant characters in the password for crypt()\&.
+\fBPASS_MAX_LEN\fR
+is 8 by default\&. Don\'t change unless your crypt() is better\&. This is ignored if
+\fBMD5_CRYPT_ENAB\fR
+set to
+\fIyes\fR\&.
+.RE
+.PP
+\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
+.RS 4
+When
+\fBENCRYPT_METHOD\fR
+is set to
+\fISHA256\fR
+or
+\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
+.sp
+With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+.sp
+If not specified, the libc will choose the default number of rounds (5000)\&.
+.sp
+The values must be inside the 1000\-999999999 range\&.
+.sp
+If only one of the
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+or
+\fBSHA_CRYPT_MAX_ROUNDS\fR
+values is set, then this value will be used\&.
+.sp
+If
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+>
+\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
+.RE
+.SH "DATEIEN"
+.PP
+/etc/passwd
+.RS 4
+Informationen zu den Benutzerkonten\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Verschl\(:usselte Informationen zu den Benutzerkonten\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguration des Shadow\-Passwort\-Systems
+.RE
+.SH "R\(:UCKGABEWERTE"
+.PP
+Der Befehl
+\fBpasswd\fR
+gibt beim Beenden folgende Werte zur\(:uck:
+.PP
+\fI0\fR
+.RS 4
+Erfolg
+.RE
+.PP
+\fI1\fR
+.RS 4
+Berechtigung verweigert
+.RE
+.PP
+\fI2\fR
+.RS 4
+ung\(:ultige Kombination von Optionen
+.RE
+.PP
+\fI3\fR
+.RS 4
+unerwarteter Fehler, nichts wurde ver\(:andert
+.RE
+.PP
+\fI4\fR
+.RS 4
+unerwarteter Fehler, die Datei
+passwd
+fehlt
+.RE
+.PP
+\fI5\fR
+.RS 4
+Datei
+passwd
+wird benutzt, bitte nochmal versuchen
+.RE
+.PP
+\fI6\fR
+.RS 4
+ung\(:ultiges Argument f\(:ur Option
+.RE
 .SH "SIEHE AUCH"
-.BR group (5),
-.BR passwd (5)
-.BR shadow (5)
-.SH AUTOR
-Julianne Frances Haugh <jockgrrl@ix.netcom.com>
-.br
-Deutsche Übersetzung von Josef Spillner <josef@ggzgamingzone.org>
+.PP
 
+\fBpasswd\fR(5),
+\fBshadow\fR(5),
+\fBlogin.defs\fR(5),
+\fBusermod\fR(8)\&.

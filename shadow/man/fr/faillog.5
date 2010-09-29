@@ -1,60 +1,56 @@
-.\" Copyright 1989 - 1994, Julianne Frances Haugh
-.\" All rights reserved.
+'\" t
+.\"     Title: faillog
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
+.\"      Date: 24/07/2009
+.\"    Manual: Formats et conversions de fichiers
+.\"    Source: Formats et conversions de fichiers
+.\"  Language: French
 .\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.TH FAILLOG 5
-.SH NOM
-faillog \- Fichier de trace d'échecs de login
-.SH DESCRIPTION
-.I faillog
-maintient le décompte des échecs de login et la limite associés à
-chaque compte.  Ce fichier est à enregistrements de taille fixe,
-indexés par l'UID numérique.  Chaque enregistrement contient le nombre
-d'échecs de login depuis la dernière réussite, le nombre maximum
-d'échecs avant que le compte ne  soit désactivé, la ligne sur laquelle
-le dernier échec de login a eu lieu et la date du dernier échec de
-login\&.
-
+.TH "FAILLOG" "5" "24/07/2009" "Formats et conversions de fich" "Formats et conversions de fich"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOM"
+faillog \- journal des \('echecs de connexion
+.SH "DESCRIPTION"
 .PP
-La structure des enregistrements est la suivante\ :
-.DS
 
-        struct	faillog {
-                short   fail_cnt;
-                short   fail_max;
-                char    fail_line[12];
-                time_t  fail_time;
-        };
+/var/log/faillog
+maintains a count of login failures and the limits for each account\&.
+.PP
+The file contains fixed length records, indexed by numerical UID\&. Each record contains the count of login failures since the last successful login; the maximum number of failures before the account is disabled; the line on whiche the last login failure occurred; the date of the last login failure; and the duration (in seconds) during which the account will be locked after a failure\&.
+.PP
+La structure du fichier est la suivante\ \&:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+struct	faillog {
+	short   fail_cnt;      /* compteur des \('echecs */
+	short   fail_max;      /* nb max avant d\('esactivation */
+	char    fail_line[12]; /* ligne du dernier \('echec */
+	time_t  fail_time;     /* date du dernier \('echec */
+	long    fail_locktime;};
+.fi
+.if n \{\
+.RE
+.\}
+.SH "FICHIERS"
+.PP
+/var/log/faillog
+.RS 4
+Journal des \('echecs de connexion\&.
+.RE
+.SH "VOIR AUSSI"
+.PP
 
-.DE
-.SH FICHIERS
-\I/var/log/faillog\R \- Fichier de trace d'échecs de login
-.SH VOIR AUSSI
-.BR faillog (8)
-.SH AUTEUR
-Julianne Frances Haugh <jfh@austin.ibm.com>
-.SH TRADUCTION
-Pascal Terjan <CMoi@tuxfamily.org>
+\fBfaillog\fR(8)

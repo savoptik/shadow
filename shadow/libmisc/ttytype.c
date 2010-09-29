@@ -1,5 +1,8 @@
 /*
- * Copyright 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1989 - 1994, Julianne Frances Haugh
+ * Copyright (c) 1996 - 1997, Marek Michałkiewicz
+ * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2008       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,37 +13,34 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ * 3. The name of the copyright holders or contributors may not be used to
+ *    endorse or promote products derived from this software without
+ *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <config.h>
 
-#include "rcsid.h"
-RCSID ("$Id: ttytype.c,v 1.6 2003/04/22 10:59:22 kloczek Exp $")
+#ident "$Id: ttytype.c 2714 2009-04-20 11:31:05Z nekral-guest $"
+
 #include <stdio.h>
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
-extern char *getenv ();
-
 /*
  * ttytype - set ttytype from port to terminal type mapping database
  */
-
 void ttytype (const char *line)
 {
 	FILE *fp;
@@ -50,37 +50,41 @@ void ttytype (const char *line)
 	char type[BUFSIZ];
 	char port[BUFSIZ];
 
-	if (getenv ("TERM"))
+	if (getenv ("TERM") != NULL) {
 		return;
-	if ((typefile = getdef_str ("TTYTYPE_FILE")) == NULL)
+	}
+	typefile = getdef_str ("TTYTYPE_FILE");
+	if (NULL == typefile) {
 		return;
-	if (access (typefile, F_OK))
+	}
+	if (access (typefile, F_OK) != 0) {
 		return;
+	}
 
-	if (!(fp = fopen (typefile, "r"))) {
+	fp = fopen (typefile, "r");
+	if (NULL == fp) {
 		perror (typefile);
 		return;
 	}
-	while (fgets (buf, sizeof buf, fp)) {
-		if (buf[0] == '#')
+	while (fgets (buf, (int) sizeof buf, fp) == buf) {
+		if (buf[0] == '#') {
 			continue;
+		}
 
-		if ((cp = strchr (buf, '\n')))
+		cp = strchr (buf, '\n');
+		if (NULL != cp) {
 			*cp = '\0';
+		}
 
-#if defined(SUN) || defined(BSD) || defined(SUN4)
-		if ((sscanf (buf, "%s \"%*[^\"]\" %s", port, type) == 2 ||
-		     sscanf (buf, "%s %*s %s", port, type) == 2) &&
-		    strcmp (line, port) == 0)
+		if ((sscanf (buf, "%s %s", type, port) == 2) &&
+		    (strcmp (line, port) == 0)) {
 			break;
-#else				/* USG */
-		if (sscanf (buf, "%s %s", type, port) == 2 &&
-		    strcmp (line, port) == 0)
-			break;
-#endif
+		}
 	}
-	if (!feof (fp) && !ferror (fp))
+	if ((feof (fp) == 0) && (ferror (fp) == 0)) {
 		addenv ("TERM", type);
+	}
 
-	fclose (fp);
+	(void) fclose (fp);
 }
+
