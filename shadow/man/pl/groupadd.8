@@ -1,0 +1,80 @@
+.\" $Id: groupadd.8,v 1.9 2004/01/05 01:08:32 kloczek Exp $
+.\" {PTM/WK/0.1/VIII-1999}
+.\" Copyright 1991, Julianne Frances Haugh
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. Neither the name of Julianne F. Haugh nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.TH GROUPADD 8
+.SH NAZWA
+groupadd - twórz now± grupê
+.SH SK£ADNIA
+\fBgroupadd\fR [\fB-g\fR \fIgid\fR [\fB-o\fR]] [\fB-f\fR] \fIgrupa\fR
+.SH OPIS
+Polecenie \fBgroupadd\fR tworzy nowe konto grupy pos³uguj±c siê
+warto¶ciami podanymi w wierszu poleceñ i domy¶lnymi warto¶ciami z systemu.
+W razie potrzeby zostanie wprowadzona do systemu nowa grupa.
+Polecenie \fBgroupadd\fR posiada nastêpuj±ce opcje:
+.TP
+.BI -g " gid"
+Numeryczna warto¶æ identyfikatora grupy. Warto¶æ ta musi byæ niepowtarzalna,
+chyba ¿e u¿yto opcji \fB-o\fR. Warto¶æ ID grupy nie mo¿e byæ ujemna. Domy¶lnie
+u¿ywana jest najmniejsza warto¶æ identyfikatora wiêksza ni¿ 99 a wiêksza ni¿
+jakiejkolwiek innej grupy.
+Warto¶ci miêdzy 0 a 99 s± zwykle zarezerwowane dla kont systemowych.
+.TP
+.BI -f
+Ta opcja powoduje zakoñczenie programu ze statusem oznaczaj±cym sukces je¶li
+podana groupa ju¿ istnieje. Z opcj± \fB-g\fR, je¶li podany gid ju¿ istnieje,
+wybierany jest inny (unikalny) gid (czyli \fB-g\fR jest wy³±czane).
+.SH PLIKI
+\fI/etc/group\fR	\- informacja o kontach grup
+.br
+\fI/etc/gshadow\fR	\- bezpieczna informacja o kontach grup
+.SH KOD ZAKOÑCZENIA
+.TP 2
+Polecenie \fBgroupadd\fR koñczy dzia³anie z nastêpuj±cymi warto¶ciami kodów zakoñczenia:
+.br
+\fB0\fR	\- powodzenie
+.br
+\fB2\fR	\- niew³a¶ciwa sk³adnia parametrów polecenia
+.br
+\fB3\fR	\- niew³a¶ciwe parametry opcji
+.br
+\fB4\fR	\- uid jest ju¿ u¿ywany (i nie u¿yto opcji -o)
+.br
+\fB9\fR	\- nazwa groupy nie jest unikalna
+.br
+\fB10\fR	\- niemo¿liwa aktualizacja plików grup
+.SH ZOBACZ TAK¯E
+.BR chfn (1),
+.BR chsh (1),
+.BR passwd (1),
+.BR groupdel (8),
+.BR groupmod (8).
+.BR useradd (8),
+.BR userdel (8),
+.BR usermod (8),
+.SH AUTOR
+Julianne Frances Haugh (jockgrrl@ix.netcom.com)

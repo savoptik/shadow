@@ -1,0 +1,2315 @@
+# shadow.pot Ukrainian translation.
+# Roman Festchook <roma@orta.zt.ua>, 2001.
+# Comments and bug-reports are welcomed
+msgid ""
+msgstr ""
+"Project-Id-Version: shadow-20001016\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-14 15:16+0100\n"
+"PO-Revision-Date: 2001-08-04 19:45+0200\n"
+"Last-Translator: Roman Festchook <roma@orta.zt.ua>\n"
+"Language-Team: Roman Festchook <roma@orta.zt.ua>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libmisc/addgrps.c:56
+#, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Застереження: невідома група %s\n"
+
+#: libmisc/addgrps.c:68
+msgid "Warning: too many groups\n"
+msgstr "Застереження: занадто багато груп\n"
+
+#: libmisc/age.c:72
+msgid "Your password has expired."
+msgstr "Ваш пароль прострочено."
+
+#: libmisc/age.c:75
+msgid "Your password is inactive."
+msgstr "Ваш пароль є неактивним."
+
+#: libmisc/age.c:78
+msgid "Your login has expired."
+msgstr "Ваш логін прострочено."
+
+#: libmisc/age.c:90
+msgid "  Contact the system administrator.\n"
+msgstr "  З'вяжіться з системним адміністратором.\n"
+
+#: libmisc/age.c:93
+msgid "  Choose a new password.\n"
+msgstr "  Виберіть новий пароль.\n"
+
+#: libmisc/age.c:168
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "Ваш пароль буде просторочено за %ld днів.\n"
+
+#: libmisc/age.c:172
+msgid "Your password will expire tomorrow.\n"
+msgstr "Ваш пароль буде прострочено завтра.\n"
+
+#: libmisc/age.c:174
+msgid "Your password will expire today.\n"
+msgstr "Ваш пароль буде прострочено сьогодні.\n"
+
+#: libmisc/chowntty.c:106
+#, c-format
+msgid "Unable to change tty %s"
+msgstr "Не можу змінити tty %s"
+
+#: libmisc/env.c:155
+msgid "Environment overflow\n"
+msgstr "Переповнення оточення\n"
+
+#: libmisc/env.c:195
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Ви не можете змінити $%s\n"
+
+#: libmisc/failure.c:230
+#, c-format
+msgid "%d %s since last login.  Last was %s on %s.\n"
+msgstr "%d %s з часу останньго входу.  Останній вхід: %s з %s.\n"
+
+#: libmisc/failure.c:232
+msgid "failures"
+msgstr "помилки"
+
+#: libmisc/failure.c:232
+msgid "failure"
+msgstr "помилка"
+
+#: libmisc/limits.c:396
+msgid "Too many logins.\n"
+msgstr "Занадто багато сесій.\n"
+
+#: libmisc/login_desrpc.c:59
+#, c-format
+msgid "Password does not decrypt secret key for %s.\n"
+msgstr "Пароль не дешифрує таємний ключ для %s.\n"
+
+#: libmisc/login_desrpc.c:66
+#, c-format
+msgid "Could not set %s's secret key: is the keyserv daemon running?\n"
+msgstr "Не можу встановити таємного ключа для %s: чи запущено сервер ключів?\n"
+
+#: libmisc/mail.c:61 libmisc/mail.c:76
+msgid "You have new mail."
+msgstr "Ви маєте нову почту."
+
+#: libmisc/mail.c:72
+msgid "No mail."
+msgstr "Почти не має."
+
+#: libmisc/mail.c:74
+msgid "You have mail."
+msgstr "Ви маєте почту."
+
+#: libmisc/obscure.c:271 src/passwd.c:183
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Поганий пароль: %s.  "
+
+#: libmisc/pam_pass.c:38
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() не виконано, помилка %d\n"
+
+#: libmisc/pam_pass.c:44
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#: libmisc/pam_pass.c:50
+msgid "passwd: password updated successfully\n"
+msgstr ""
+
+#: libmisc/setupenv.c:208
+#, c-format
+msgid "Unable to cd to \"%s\"\n"
+msgstr "Не можу перейти до теки \"%s\"\n"
+
+#: libmisc/setupenv.c:216
+msgid "No directory, logging in with HOME=/"
+msgstr "Нема теки, відкриваємо сессію з HOME=/"
+
+#: libmisc/shell.c:119
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Не можу виконати %s"
+
+#: libmisc/sub.c:55
+#, c-format
+msgid "Invalid root directory \"%s\"\n"
+msgstr "Невірна коренева тека \"%s\"\n"
+
+#: libmisc/sub.c:67
+#, c-format
+msgid "Can't change root directory to \"%s\"\n"
+msgstr "Не можу змінити кореневу теку на \"%s\"\n"
+
+#: libmisc/xmalloc.c:24
+#, c-format
+msgid "malloc(%d) failed\n"
+msgstr "malloc(%d) не виконано\n"
+
+#: lib/getdef.c:274
+msgid "Could not allocate space for config info.\n"
+msgstr "Не можу виділити ресурси для конфігураційних данних.\n"
+
+#: lib/getdef.c:328
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"помилка у конфігурації - невідома позиція '%s' (повідомте адміністратора)\n"
+
+#: lib/pwauth.c:54 src/newgrp.c:343
+msgid "Password: "
+msgstr "Пароль: "
+
+#: lib/pwauth.c:56
+#, c-format
+msgid "%s's Password: "
+msgstr "Пароль користувача %s: "
+
+#: lib/pwauth.c:247
+msgid "(Echo on) "
+msgstr ""
+
+#: lib/strerror.c:20
+#, c-format
+msgid "Unknown error %d"
+msgstr "Невідома помилка %d"
+
+#: src/chage.c:118
+msgid ""
+"Usage: chage [-l] [-m min_days] [-M max_days] [-W warn]\n"
+"             [-I inactive] [-E expire] [-d last_day] user\n"
+msgstr ""
+"Використовуйте: chage [-l] [-m мін_днів] [-M макс_днів] [-W застереження]\n"
+"                      [-I неактивність] [-E простроченно]\n"
+"                      [-d останній_день] користувач\n"
+
+#: src/chage.c:152
+msgid ""
+"Enter the new value, or press ENTER for the default\n"
+"\n"
+msgstr ""
+"Введіть нове значення, або нажміть ENTER для значення по замовчуванню\n"
+"\n"
+
+#: src/chage.c:155
+msgid "Minimum Password Age"
+msgstr "Мінімальний вік пароля"
+
+#: src/chage.c:161
+msgid "Maximum Password Age"
+msgstr "Максімальний вік пароля"
+
+#: src/chage.c:169
+msgid "Last Password Change (YYYY-MM-DD)"
+msgstr "Остання зміна пароля (РРРР-ММ-ДД)"
+
+#: src/chage.c:177
+msgid "Password Expiration Warning"
+msgstr "Застереження про прострочення пароля"
+
+#: src/chage.c:183
+msgid "Password Inactive"
+msgstr "Пароль неактивний"
+
+#: src/chage.c:191
+msgid "Account Expiration Date (YYYY-MM-DD)"
+msgstr "Дата прострочення рахунку (РРРР-ММ-ДД)"
+
+#: src/chage.c:241
+#, c-format
+msgid "Minimum:\t%ld\n"
+msgstr "Мінімум:\t%ld\n"
+
+#: src/chage.c:242
+#, c-format
+msgid "Maximum:\t%ld\n"
+msgstr "Максімум:\t%ld\n"
+
+#: src/chage.c:243
+#, c-format
+msgid "Warning:\t%ld\n"
+msgstr "Застереження:\t%ld\n"
+
+#: src/chage.c:244
+#, c-format
+msgid "Inactive:\t%ld\n"
+msgstr "Неактивний:\t%ld\n"
+
+#: src/chage.c:251
+msgid "Last Change:\t\t"
+msgstr "Остання зміна:\t\t"
+
+#: src/chage.c:253 src/chage.c:267 src/chage.c:283 src/chage.c:296
+msgid "Never\n"
+msgstr "Ніколи\n"
+
+#: src/chage.c:264
+msgid "Password Expires:\t"
+msgstr "Пароль простроченно:\t"
+
+#: src/chage.c:280
+msgid "Password Inactive:\t"
+msgstr "Пароль неактивний:\t"
+
+#: src/chage.c:294
+msgid "Account Expires:\t"
+msgstr "Рахунок прострочено:\t"
+
+#: src/chage.c:445
+#, c-format
+msgid "%s: do not include \"l\" with other flags\n"
+msgstr "%s: не використовуйте \"l\" з іншіми флагами\n"
+
+#: src/chage.c:458 src/chage.c:588 src/login.c:503
+#, c-format
+msgid "%s: permission denied\n"
+msgstr "%s: у доступі відмовлено\n"
+
+#: src/chage.c:489 src/chpasswd.c:136 src/groupadd.c:530 src/groupdel.c:325
+#: src/groupmod.c:521 src/newusers.c:362 src/useradd.c:1661 src/userdel.c:657
+#: src/usermod.c:1413
+#, c-format
+msgid "%s: PAM authentication failed\n"
+msgstr "%s: PAM аутентифікація не пройшла\n"
+
+#: src/chage.c:510 src/chpasswd.c:159
+#, c-format
+msgid "%s: can't open password file\n"
+msgstr "%s: не можу відкрити файл паролей\n"
+
+#: src/chage.c:518
+#, c-format
+msgid "%s: unknown user: %s\n"
+msgstr "%s: невідомий користувач: %s\n"
+
+#: src/chage.c:536
+#, fuzzy, c-format
+msgid "%s: can't lock shadow password file"
+msgstr "%s: не можу заблокувати файл прихованих паролей\n"
+
+#: src/chage.c:544
+#, fuzzy, c-format
+msgid "%s: can't open shadow password file"
+msgstr "%s: не можу відкрити файл прихованих паролей\n"
+
+#: src/chage.c:605
+#, c-format
+msgid "Changing the aging information for %s\n"
+msgstr "Змінюю вікову інформацію для %s\n"
+
+#: src/chage.c:608
+#, c-format
+msgid "%s: error changing fields\n"
+msgstr "%s: помилка заміни поля\n"
+
+#: src/chage.c:632 src/pwunconv.c:138
+#, c-format
+msgid "%s: can't update password file\n"
+msgstr "%s: не можу оновити файл паролей\n"
+
+#: src/chage.c:661 src/pwunconv.c:132
+#, c-format
+msgid "%s: can't update shadow password file\n"
+msgstr "%s: не можу оновити файл прихованих паролей\n"
+
+#: src/chage.c:676 src/chfn.c:571 src/chsh.c:377 src/passwd.c:543
+#: src/passwd.c:615
+msgid "Error updating the DBM password entry.\n"
+msgstr "Помилка оновлення запису пароля у DBM.\n"
+
+#: src/chage.c:693
+#, c-format
+msgid "%s: can't rewrite shadow password file\n"
+msgstr "%s: не можу переписати файл прихованих паролей\n"
+
+#: src/chage.c:707
+#, c-format
+msgid "%s: can't rewrite password file\n"
+msgstr "%s: не можу переписати файл паролей\n"
+
+#: src/chage.c:727 src/chpasswd.c:336 src/groupadd.c:592 src/groupdel.c:413
+#: src/groupmod.c:606 src/newusers.c:609 src/useradd.c:1786 src/userdel.c:814
+#: src/usermod.c:1494
+#, fuzzy, c-format
+msgid "%s: PAM chauthtok failed\n"
+msgstr "%s: не можу разблокувати файл\n"
+
+#: src/chfn.c:84
+#, c-format
+msgid ""
+"Usage: %s [-f full_name] [-r room_no] [-w work_ph]\n"
+"\t[-h home_ph] [-o other] [user]\n"
+msgstr ""
+"Використовуйтє: %s [-f повне_ім'я] [-r номер_кімнати] [-w робочій_телефон]\n"
+"\t[-h домашній_телефон] [-o інше] [користувач]\n"
+
+#: src/chfn.c:89
+#, c-format
+msgid "Usage: %s [-f full_name] [-r room_no] [-w work_ph] [-h home_ph]\n"
+msgstr ""
+"Використовуйте: %s [-f повне_ім'я] [-r номер_кімнати]\n"
+"\t[-w робочій_телефон] [-h домашній_телефон]\n"
+
+#: src/chfn.c:140
+msgid "Enter the new value, or press ENTER for the default\n"
+msgstr ""
+"Введіть нове значення, або нажміть ENTER, для значення по замовчуванню\n"
+
+#: src/chfn.c:143
+msgid "Full Name"
+msgstr "Повне ім'я"
+
+#: src/chfn.c:145
+#, c-format
+msgid "\tFull Name: %s\n"
+msgstr "\tПовне ім'я: %s\n"
+
+#: src/chfn.c:148
+msgid "Room Number"
+msgstr "Номер кімнати"
+
+#: src/chfn.c:150
+#, c-format
+msgid "\tRoom Number: %s\n"
+msgstr "\tНомер кімнати: %s\n"
+
+#: src/chfn.c:153
+msgid "Work Phone"
+msgstr "Робочій телефон"
+
+#: src/chfn.c:155
+#, c-format
+msgid "\tWork Phone: %s\n"
+msgstr "\tРобочій телефон: %s\n"
+
+#: src/chfn.c:158
+msgid "Home Phone"
+msgstr "Домашній телефон"
+
+#: src/chfn.c:160
+#, c-format
+msgid "\tHome Phone: %s\n"
+msgstr "\tДомашній телефон: %s\n"
+
+#: src/chfn.c:163
+msgid "Other"
+msgstr "Інше"
+
+#: src/chfn.c:272 src/chfn.c:282 src/chfn.c:292 src/chfn.c:302 src/chfn.c:312
+#: src/chfn.c:380 src/passwd.c:853
+#, c-format
+msgid "%s: Permission denied.\n"
+msgstr "%s: У доступі відмовлено.\n"
+
+#: src/chfn.c:333 src/chsh.c:185 src/passwd.c:903
+#, c-format
+msgid "%s: Unknown user %s\n"
+msgstr "%s: Невідомий користувач %s\n"
+
+#: src/chfn.c:342 src/chsh.c:193 src/passwd.c:834
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: Не можу визначити ваше ім'я користувача.\n"
+
+#: src/chfn.c:359 src/chsh.c:210
+#, c-format
+msgid "%s: cannot change user `%s' on NIS client.\n"
+msgstr "%s: не можу змінити користувача `%s' у клієнті NIS.\n"
+
+#: src/chfn.c:367 src/chsh.c:218
+#, c-format
+msgid "%s: `%s' is the NIS master for this client.\n"
+msgstr "%s: `%s' є NIS сервер для цього клієнта.\n"
+
+#: src/chfn.c:442
+#, c-format
+msgid "Changing the user information for %s\n"
+msgstr "Зміна інформації про користувача %s\n"
+
+#: src/chfn.c:451
+#, c-format
+msgid "%s: invalid name: \"%s\"\n"
+msgstr "%s: невірне ім'я: \"%s\"\n"
+
+#: src/chfn.c:457
+#, c-format
+msgid "%s: invalid room number: \"%s\"\n"
+msgstr "%s: невірний номер кімнати: \"%s\"\n"
+
+#: src/chfn.c:463
+#, c-format
+msgid "%s: invalid work phone: \"%s\"\n"
+msgstr "%s: невірний робочий телефон: \"%s\"\n"
+
+#: src/chfn.c:469
+#, c-format
+msgid "%s: invalid home phone: \"%s\"\n"
+msgstr "%s: невірний домашній телефон: \"%s\"\n"
+
+#: src/chfn.c:476
+#, c-format
+msgid "%s: \"%s\" contains illegal characters\n"
+msgstr "%s: \"%s\" включає заборонені символи\n"
+
+#: src/chfn.c:489
+#, c-format
+msgid "%s: fields too long\n"
+msgstr "%s: поля занадто довгі\n"
+
+#: src/chfn.c:505 src/chsh.c:311 src/gpasswd.c:570 src/passwd.c:994
+msgid "Cannot change ID to root.\n"
+msgstr "Не можу змінити ID на root.\n"
+
+#: src/chfn.c:520 src/chsh.c:326 src/passwd.c:515 src/passwd.c:567
+msgid "Cannot lock the password file; try again later.\n"
+msgstr "Не можу блокувати файл паролей; спробуйте пізніше.\n"
+
+#: src/chfn.c:526 src/chsh.c:332 src/passwd.c:520 src/passwd.c:572
+msgid "Cannot open the password file.\n"
+msgstr "Не можу відкрити файл паролей.\n"
+
+#: src/chfn.c:543 src/chsh.c:347 src/passwd.c:526 src/usermod.c:1092
+#, c-format
+msgid "%s: %s not found in /etc/passwd\n"
+msgstr "%s: %s не знайдено у /etc/passwd\n"
+
+#: src/chfn.c:562 src/chsh.c:368 src/passwd.c:536 src/passwd.c:608
+msgid "Error updating the password entry.\n"
+msgstr "Не можу оновити запис у файлі паролей.\n"
+
+#: src/chfn.c:586 src/chsh.c:392 src/passwd.c:551 src/passwd.c:623
+msgid "Cannot commit password file changes.\n"
+msgstr "Не можу записати зміни до файлу паролей.\n"
+
+#: src/chfn.c:593 src/chsh.c:399
+msgid "Cannot unlock the password file.\n"
+msgstr "Не можу разблокувати файл паролей.\n"
+
+#: src/chpasswd.c:67
+#, fuzzy, c-format
+msgid "Usage: %s [-e]\n"
+msgstr "використовуйте: %s [-e]\n"
+
+#: src/chpasswd.c:154
+#, c-format
+msgid "%s: can't lock password file\n"
+msgstr "%s: не можу заблокувати файл паролей\n"
+
+#: src/chpasswd.c:168 src/pwconv.c:95
+#, c-format
+msgid "%s: can't lock shadow file\n"
+msgstr "%s: не можу заблокувати файл з прихованими паролями\n"
+
+#: src/chpasswd.c:174 src/gpasswd.c:596 src/pwconv.c:100 src/pwunconv.c:89
+#: src/pwunconv.c:94
+#, c-format
+msgid "%s: can't open shadow file\n"
+msgstr "%s: не можу відкрити файл з прихованими паролями\n"
+
+#: src/chpasswd.c:197 src/newusers.c:441
+#, c-format
+msgid "%s: line %d: line too long\n"
+msgstr "%s: рядок %d: рядок занадто довгий\n"
+
+#: src/chpasswd.c:217
+#, c-format
+msgid "%s: line %d: missing new password\n"
+msgstr "%s: рядок %d: бракує нового пароля\n"
+
+#: src/chpasswd.c:234
+#, c-format
+msgid "%s: line %d: unknown user %s\n"
+msgstr "%s: рядок %d: невідомий користувач %s\n"
+
+#: src/chpasswd.c:280
+#, c-format
+msgid "%s: line %d: cannot update password entry\n"
+msgstr "%s: рядок %d: не можу оновити запис у базі паролей\n"
+
+#: src/chpasswd.c:297 src/newusers.c:569
+#, c-format
+msgid "%s: error detected, changes ignored\n"
+msgstr "%s: виявлено помилку, зміни ігноруються\n"
+
+#: src/chpasswd.c:309
+#, c-format
+msgid "%s: error updating shadow file\n"
+msgstr "%s: помилка оновлення файлу з прихованими паролями\n"
+
+#: src/chpasswd.c:318
+#, c-format
+msgid "%s: error updating password file\n"
+msgstr "%s: помилка оновлення файлу з паролями\n"
+
+#: src/chsh.c:76
+#, c-format
+msgid "Usage: %s [-s shell] [name]\n"
+msgstr "Використовуйте: %s [-s shell] [ім'я]\n"
+
+#: src/chsh.c:90
+msgid "Enter the new value, or press return for the default\n"
+msgstr ""
+"Введіть нове значення, або нажміть ENTER, для значення по замовчуванню\n"
+
+#: src/chsh.c:91
+msgid "Login Shell"
+msgstr "Login Shell"
+
+#: src/chsh.c:234 src/chsh.c:248
+#, c-format
+msgid "You may not change the shell for %s.\n"
+msgstr "Не можна змінити shell для %s.\n"
+
+#: src/chsh.c:277
+#, c-format
+msgid "Changing the login shell for %s\n"
+msgstr "Змінюю shell для %s\n"
+
+#: src/chsh.c:289
+#, c-format
+msgid "%s: Invalid entry: %s\n"
+msgstr "%s: Невірний запис: %s\n"
+
+#: src/chsh.c:296
+#, c-format
+msgid "%s is an invalid shell.\n"
+msgstr "%s є невірний shell.\n"
+
+#: src/expiry.c:59
+msgid "Usage: expiry {-f|-c}\n"
+msgstr "Використовуйте: expiry {-f|-c}\n"
+
+#: src/expiry.c:113
+#, c-format
+msgid "%s: WARNING!  Must be set-UID root!\n"
+msgstr "%s: ЗАСТЕРЕЖЕННЯ! Програма повина бути SUID root!\n"
+
+#: src/expiry.c:124
+#, c-format
+msgid "%s: unknown user\n"
+msgstr "%s: невідомий користувач\n"
+
+#: src/faillog.c:77
+#, fuzzy, c-format
+msgid "Usage: %s [-a|-u user] [-m max] [-r] [-t days] [-l locksecs]\n"
+msgstr ""
+"використовуйте: %s [-a|-u користувач] [-m макс] [-r] [-t днів] [-l лок_сек]\n"
+
+#: src/faillog.c:131 src/lastlog.c:96
+#, c-format
+msgid "Unknown User: %s\n"
+msgstr "Невідомий користувач: %s\n"
+
+#: src/faillog.c:212
+#, fuzzy
+msgid "Username   Failures  Maximum  Latest\n"
+msgstr "Користувач Помилок   Максімум Остання\n"
+
+#: src/faillog.c:229
+#, c-format
+msgid "  %s on %s"
+msgstr "  %s на %s"
+
+#: src/faillog.c:233
+#, c-format
+msgid " [%lds left]"
+msgstr " [%lds залишилось]"
+
+#: src/faillog.c:237
+#, c-format
+msgid " [%lds lock]"
+msgstr " [%lds блоковано]"
+
+#: src/gpasswd.c:78
+#, fuzzy, c-format
+msgid "Usage: %s [-r|-R] group\n"
+msgstr "використовуйте: %s [-r|-R] група\n"
+
+#: src/gpasswd.c:79
+#, c-format
+msgid "       %s [-a user] group\n"
+msgstr "       %s [-a користувач] група\n"
+
+#: src/gpasswd.c:80
+#, c-format
+msgid "       %s [-d user] group\n"
+msgstr "       %s [-d користувач] група\n"
+
+#: src/gpasswd.c:83
+#, c-format
+msgid "       %s [-A user,...] [-M user,...] group\n"
+msgstr "       %s [-A користувач,...] [-M користувач,...] група\n"
+
+#: src/gpasswd.c:85
+#, c-format
+msgid "       %s [-M user,...] group\n"
+msgstr "       %s [-M користувач,...] група\n"
+
+#: src/gpasswd.c:146 src/gpasswd.c:230
+#, c-format
+msgid "%s: unknown user %s\n"
+msgstr "%s: невідомий користувач %s\n"
+
+#: src/gpasswd.c:157
+msgid "Permission denied.\n"
+msgstr "Доступ заборонено.\n"
+
+#: src/gpasswd.c:243
+#, c-format
+msgid "%s: shadow group passwords required for -A\n"
+msgstr "%s: приховані паролі груп потрібні для -A\n"
+
+#: src/gpasswd.c:294
+msgid "Who are you?\n"
+msgstr "Ви хто?\n"
+
+#: src/gpasswd.c:313 src/newgrp.c:292
+#, c-format
+msgid "unknown group: %s\n"
+msgstr "невідома група: %s\n"
+
+#: src/gpasswd.c:422
+#, c-format
+msgid "Adding user %s to group %s\n"
+msgstr "Додано нового користувача %s до групи %s\n"
+
+#: src/gpasswd.c:440
+#, c-format
+msgid "Removing user %s from group %s\n"
+msgstr "Видалено користувача %s з групи %s\n"
+
+#: src/gpasswd.c:454
+#, c-format
+msgid "%s: unknown member %s\n"
+msgstr "%s: невідомий член %s\n"
+
+#: src/gpasswd.c:501
+#, c-format
+msgid "%s: Not a tty\n"
+msgstr "%s: Не є tty\n"
+
+#: src/gpasswd.c:522
+#, c-format
+msgid "Changing the password for group %s\n"
+msgstr "Зміна пароля для групи %s\n"
+
+#: src/gpasswd.c:525
+msgid "New Password: "
+msgstr "Новий пароль: "
+
+#: src/gpasswd.c:530 src/passwd.c:281
+msgid "Re-enter new password: "
+msgstr "Повторіть новий пароль: "
+
+#: src/gpasswd.c:542
+msgid "They don't match; try again"
+msgstr "не співпадає; спробуйте знову"
+
+#: src/gpasswd.c:546
+#, c-format
+msgid "%s: Try again later\n"
+msgstr "%s: Спробуйте знову пізніше\n"
+
+#: src/gpasswd.c:578
+#, c-format
+msgid "%s: can't get lock\n"
+msgstr "%s: не можу заблокувати\n"
+
+#: src/gpasswd.c:584
+#, c-format
+msgid "%s: can't get shadow lock\n"
+msgstr "%s: не можу заблокувати базу прихований паролей\n"
+
+#: src/gpasswd.c:590
+#, c-format
+msgid "%s: can't open file\n"
+msgstr "%s: не можу відкрити файл\n"
+
+#: src/gpasswd.c:602
+#, c-format
+msgid "%s: can't update entry\n"
+msgstr "%s: не можу оновити запис\n"
+
+#: src/gpasswd.c:608
+#, c-format
+msgid "%s: can't update shadow entry\n"
+msgstr "%s: не можу оновити запис у базі прихованих паролей\n"
+
+#: src/gpasswd.c:615
+#, c-format
+msgid "%s: can't re-write file\n"
+msgstr "%s: не можу переписати файл\n"
+
+#: src/gpasswd.c:621
+#, c-format
+msgid "%s: can't re-write shadow file\n"
+msgstr "%s: не можу переписати файл прихований паролей\n"
+
+#: src/gpasswd.c:630
+#, c-format
+msgid "%s: can't unlock file\n"
+msgstr "%s: не можу разблокувати файл\n"
+
+#: src/gpasswd.c:635
+#, c-format
+msgid "%s: can't update DBM files\n"
+msgstr "%s: не можу оновити DBM файл\n"
+
+#: src/gpasswd.c:642
+#, c-format
+msgid "%s: can't update DBM shadow files\n"
+msgstr "%s: не можу оновити DBM файл з прихованими паролями\n"
+
+#: src/groupadd.c:102
+msgid "Usage: groupadd [-g gid [-o]] [-f] group\n"
+msgstr "використовуйте: groupadd [-g gid [-o]] [-f] група\n"
+
+#: src/groupadd.c:168 src/groupadd.c:193 src/groupmod.c:180 src/groupmod.c:229
+#: src/useradd.c:940 src/usermod.c:533 src/usermod.c:676
+#, c-format
+msgid "%s: error adding new group entry\n"
+msgstr "%s: помилка додання нового запису у файл груп\n"
+
+#: src/groupadd.c:179 src/groupadd.c:204 src/groupmod.c:198 src/useradd.c:951
+#: src/usermod.c:545 src/usermod.c:689
+#, c-format
+msgid "%s: cannot add new dbm group entry\n"
+msgstr "%s: помилка додання нового запису у файл груп dbm\n"
+
+#: src/groupadd.c:256 src/useradd.c:1004
+#, c-format
+msgid "%s: name %s is not unique\n"
+msgstr "%s: ім'я %s не є унікальним\n"
+
+#: src/groupadd.c:271
+#, c-format
+msgid "%s: gid %u is not unique\n"
+msgstr "%s: uid %u не є унікальним\n"
+
+#: src/groupadd.c:295
+#, c-format
+msgid "%s: can't get unique gid\n"
+msgstr "%s: не можу отримати унікальний gid\n"
+
+#: src/groupadd.c:318 src/groupmod.c:342
+#, c-format
+msgid "%s: %s is a not a valid group name\n"
+msgstr "%s: %s: то не є вірне ім'я групи\n"
+
+#: src/groupadd.c:347 src/groupmod.c:367
+#, c-format
+msgid "%s: invalid group %s\n"
+msgstr "%s: невірна група %s\n"
+
+#: src/groupadd.c:364 src/useradd.c:1200
+#, c-format
+msgid "%s: -O requires NAME=VALUE\n"
+msgstr "%s: -O вимагає ЗМІННА=ЗНАЧЕННЯ\n"
+
+#: src/groupadd.c:408 src/groupdel.c:171 src/groupmod.c:402 src/useradd.c:1315
+#: src/userdel.c:302 src/usermod.c:557
+#, c-format
+msgid "%s: cannot rewrite group file\n"
+msgstr "%s: не можу переписати файл груп\n"
+
+#: src/groupadd.c:416 src/groupdel.c:179 src/groupmod.c:410 src/useradd.c:1324
+#: src/userdel.c:309 src/usermod.c:703
+#, c-format
+msgid "%s: cannot rewrite shadow group file\n"
+msgstr "%s: не можу переписати файл прихованих груп\n"
+
+#: src/groupadd.c:434 src/groupdel.c:197 src/groupmod.c:428 src/userdel.c:374
+#, c-format
+msgid "%s: unable to lock group file\n"
+msgstr "%s: не можу заблокувати файл груп\n"
+
+#: src/groupadd.c:439 src/groupdel.c:202 src/groupmod.c:433
+#, c-format
+msgid "%s: unable to open group file\n"
+msgstr "%s: не можу відкрити файл груп\n"
+
+#: src/groupadd.c:446 src/groupdel.c:209 src/groupmod.c:440 src/userdel.c:385
+#, c-format
+msgid "%s: unable to lock shadow group file\n"
+msgstr "%s: не можу блокувати файл прихованих груп\n"
+
+#: src/groupadd.c:452 src/groupdel.c:215 src/groupmod.c:446
+#, c-format
+msgid "%s: unable to open shadow group file\n"
+msgstr "%s: не можу відкрити файл прихованих груп\n"
+
+#: src/groupadd.c:563
+#, c-format
+msgid "%s: group %s exists\n"
+msgstr "%s: група %s існує\n"
+
+#: src/groupdel.c:88
+#, fuzzy
+msgid "Usage: groupdel group\n"
+msgstr "використовуйте: groupdel група\n"
+
+#: src/groupdel.c:105 src/groupmod.c:185 src/groupmod.c:234
+#, c-format
+msgid "%s: error removing group entry\n"
+msgstr "%s: помилка відалення запису з бази груп\n"
+
+#: src/groupdel.c:119 src/groupmod.c:205
+#, c-format
+msgid "%s: error removing group dbm entry\n"
+msgstr "%s: помилка відалення запису з бази груп dbm\n"
+
+#: src/groupdel.c:135
+#, c-format
+msgid "%s: error removing shadow group entry\n"
+msgstr "%s: помилка відалення запису з бази прихованих груп\n"
+
+#: src/groupdel.c:149 src/groupmod.c:255
+#, c-format
+msgid "%s: error removing shadow group dbm entry\n"
+msgstr "%s: помилка відалення запису з бази прихованих груп dbm\n"
+
+#: src/groupdel.c:255
+#, c-format
+msgid "%s: cannot remove user's primary group.\n"
+msgstr "%s: не можу видалити головну групу користувача.\n"
+
+#: src/groupdel.c:359 src/groupmod.c:551
+#, c-format
+msgid "%s: group %s does not exist\n"
+msgstr "%s: група %s не існує\n"
+
+#: src/groupdel.c:373 src/groupmod.c:567
+#, c-format
+msgid "%s: group %s is a NIS group\n"
+msgstr "%s: група %s є групою NIS\n"
+
+#: src/groupdel.c:378 src/groupmod.c:572 src/userdel.c:724 src/usermod.c:805
+#, c-format
+msgid "%s: %s is the NIS master\n"
+msgstr "%s: %s є сервер NIS\n"
+
+#: src/groupmems.c:95
+msgid "Member already exists\n"
+msgstr ""
+
+#: src/groupmems.c:125
+msgid "Member to remove could not be found\n"
+msgstr ""
+
+#: src/groupmems.c:158
+msgid "Usage: groupmems -a username | -d username | -D | -l [-g groupname]\n"
+msgstr ""
+
+#: src/groupmems.c:201
+msgid "Only root can add members to different groups\n"
+msgstr ""
+
+#: src/groupmems.c:206
+msgid "Group access is required\n"
+msgstr ""
+
+#: src/groupmems.c:210
+msgid "Not primary owner of current group\n"
+msgstr ""
+
+#: src/groupmems.c:215
+#, fuzzy
+msgid "Unable to lock group file\n"
+msgstr "не можу заблокувати файл груп\n"
+
+#: src/groupmems.c:220
+#, fuzzy
+msgid "Unable to open group file\n"
+msgstr "не можу відкрити файл груп\n"
+
+#: src/groupmems.c:240
+msgid "Cannot close group file\n"
+msgstr "не можу відкрити файл груп\n"
+
+#: src/groupmod.c:104
+#, fuzzy
+msgid "Usage: groupmod [-g gid [-o]] [-n name] group\n"
+msgstr "використовуйте: groupmod [-g gid [-o]] [-n ім'я] група\n"
+
+#: src/groupmod.c:162
+#, c-format
+msgid "%s: %s not found in /etc/group\n"
+msgstr "%s: %s не знайдено у /etc/passwd\n"
+
+#: src/groupmod.c:248
+#, c-format
+msgid "%s: cannot add new dbm shadow group entry\n"
+msgstr "%s: не можу додати запис у базу прихованих груп dbm\n"
+
+#: src/groupmod.c:301
+#, c-format
+msgid "%s: %u is not a unique gid\n"
+msgstr "%s: %u не є унікальний gid\n"
+
+#: src/groupmod.c:331
+#, c-format
+msgid "%s: %s is not a unique name\n"
+msgstr "%s: %s не є унікальне ім'я\n"
+
+#: src/groups.c:59
+#, c-format
+msgid "unknown user %s\n"
+msgstr "невідомий користувач %s\n"
+
+#: src/grpck.c:87
+#, c-format
+msgid "Usage: %s [-r] [-s] [group [gshadow]]\n"
+msgstr "Використовуйте: %s [-r] [-s] [група [gshadow]]\n"
+
+#: src/grpck.c:90
+#, c-format
+msgid "Usage: %s [-r] [-s] [group]\n"
+msgstr "Використовуйте: %s [-r] [-s] [група]\n"
+
+#: src/grpck.c:108 src/pwck.c:108
+msgid "No"
+msgstr "Ні"
+
+#: src/grpck.c:192 src/pwck.c:175
+#, c-format
+msgid "%s: -s and -r are incompatibile\n"
+msgstr ""
+
+#: src/grpck.c:232 src/grpck.c:242 src/pwck.c:215 src/pwck.c:225
+#, c-format
+msgid "%s: cannot lock file %s\n"
+msgstr "%s: не можу заблокувати файл %s\n"
+
+#: src/grpck.c:259 src/grpck.c:268 src/mkpasswd.c:202 src/pwck.c:242
+#: src/pwck.c:251
+#, c-format
+msgid "%s: cannot open file %s\n"
+msgstr "%s: не можу відкрити файл %s\n"
+
+#: src/grpck.c:311
+msgid "invalid group file entry\n"
+msgstr "невірний запис у файлі груп\n"
+
+#: src/grpck.c:312 src/grpck.c:375 src/grpck.c:458 src/grpck.c:521
+#: src/grpck.c:538 src/pwck.c:296 src/pwck.c:358 src/pwck.c:457 src/pwck.c:519
+#: src/pwck.c:543
+#, c-format
+msgid "delete line `%s'? "
+msgstr "видалити запис `%s'? "
+
+#: src/grpck.c:374
+msgid "duplicate group entry\n"
+msgstr "повторюючися записи у базі груп\n"
+
+#: src/grpck.c:391
+#, c-format
+msgid "invalid group name `%s'\n"
+msgstr "невірне ім'я групи `%s'\n"
+
+#: src/grpck.c:418
+#, c-format
+msgid "group %s: no user %s\n"
+msgstr "група %s: не має користувачів %s\n"
+
+#: src/grpck.c:420 src/grpck.c:590
+#, c-format
+msgid "delete member `%s'? "
+msgstr "видалити члена `%s'? "
+
+#: src/grpck.c:457
+msgid "invalid shadow group file entry\n"
+msgstr "невірний запис у файлі прихованих груп\n"
+
+#: src/grpck.c:520
+msgid "duplicate shadow group entry\n"
+msgstr "повторюючийся запис у файлі прихованих груп\n"
+
+#: src/grpck.c:537
+msgid "no matching group file entry\n"
+msgstr "відсутній відповідний запис у файлі груп\n"
+
+#: src/grpck.c:558
+#, c-format
+msgid "shadow group %s: no administrative user %s\n"
+msgstr "прихована група %s: не має адміністратора %s\n"
+
+#: src/grpck.c:560
+#, c-format
+msgid "delete administrative member `%s'? "
+msgstr "видалити адміністратора `%s'? "
+
+#: src/grpck.c:588
+#, c-format
+msgid "shadow group %s: no user %s\n"
+msgstr "прихована група %s: не має користувачів %s\n"
+
+#: src/grpck.c:616 src/grpck.c:622 src/pwck.c:577 src/pwck.c:585
+#, c-format
+msgid "%s: cannot update file %s\n"
+msgstr "%s: не можу оновити файл %s\n"
+
+#: src/grpck.c:647 src/pwck.c:612
+#, c-format
+msgid "%s: the files have been updated; run mkpasswd\n"
+msgstr "%s: файли було оновлено; виконайте mkpasswd\n"
+
+#: src/grpck.c:648 src/grpck.c:652 src/pwck.c:613 src/pwck.c:617
+#, c-format
+msgid "%s: no changes\n"
+msgstr "%s: без змін\n"
+
+#: src/grpck.c:651 src/pwck.c:616
+#, c-format
+msgid "%s: the files have been updated\n"
+msgstr "%s: файли було оновлено\n"
+
+#: src/grpconv.c:60 src/grpunconv.c:56
+#, c-format
+msgid "%s: can't lock group file\n"
+msgstr "%s: не можу блокувати файл груп\n"
+
+#: src/grpconv.c:65 src/grpunconv.c:61
+#, c-format
+msgid "%s: can't open group file\n"
+msgstr "%s: не можу відкрити файл груп\n"
+
+#: src/grpconv.c:70 src/grpunconv.c:66
+#, c-format
+msgid "%s: can't lock shadow group file\n"
+msgstr "%s: не можу блокувати файл прихованих груп\n"
+
+#: src/grpconv.c:76 src/grpunconv.c:72
+#, c-format
+msgid "%s: can't open shadow group file\n"
+msgstr "%s: не можу відкрити файл прихованих груп\n"
+
+#: src/grpconv.c:94
+#, c-format
+msgid "%s: can't remove shadow group %s\n"
+msgstr "%s: не можу видалити приховану групу %s\n"
+
+#: src/grpconv.c:133 src/pwconv.c:154
+#, c-format
+msgid "%s: can't update shadow entry for %s\n"
+msgstr "%s: не можу оновити прихований запис для %s\n"
+
+#: src/grpconv.c:143 src/grpunconv.c:91
+#, c-format
+msgid "%s: can't update entry for group %s\n"
+msgstr "%s: не можу оновити запис для групи %s\n"
+
+#: src/grpconv.c:150 src/grpunconv.c:99
+#, c-format
+msgid "%s: can't update shadow group file\n"
+msgstr "%s: не можу оновити файл прихованих груп\n"
+
+#: src/grpconv.c:155 src/grpunconv.c:105
+#, c-format
+msgid "%s: can't update group file\n"
+msgstr "%s: не можу оновити файл груп\n"
+
+#: src/grpunconv.c:110
+#, c-format
+msgid "%s: can't delete shadow group file\n"
+msgstr "%s: не можу видалити файл прихованих груп\n"
+
+#: src/id.c:53
+#, fuzzy
+msgid "Usage: id [-a]\n"
+msgstr "використовуйте: id [-a]\n"
+
+#: src/id.c:55
+#, fuzzy
+msgid "Usage: id\n"
+msgstr "використовуйте: id\n"
+
+#: src/id.c:169
+msgid " groups="
+msgstr " групи="
+
+#: src/lastlog.c:110 src/lastlog.c:116
+#, c-format
+msgid "Usage: %s [{-u|--login} login] [{-t|--time} days] [{-h|--help}]\n"
+msgstr ""
+
+#: src/lastlog.c:181
+msgid "Username         Port     From             Latest\n"
+msgstr "Користувач       Консоль  Звідки           Останній вхід\n"
+
+#: src/lastlog.c:183
+msgid "Username                Port     Latest\n"
+msgstr "Користувач             Порт     Останній вхід\n"
+
+#: src/lastlog.c:198
+msgid "**Never logged in**"
+msgstr "**Ніколи не входив**"
+
+#: src/login.c:175
+#, fuzzy, c-format
+msgid "Usage: %s [-p] [name]\n"
+msgstr "використовуйте: %s [-p] [ім'я]\n"
+
+#: src/login.c:178
+#, c-format
+msgid "       %s [-p] [-h host] [-f name]\n"
+msgstr "       %s [-p] [-h хост] [-f ім'я]\n"
+
+#: src/login.c:180
+#, c-format
+msgid "       %s [-p] -r host\n"
+msgstr "       %s [-p] -r хост\n"
+
+#: src/login.c:259
+msgid "Invalid login time\n"
+msgstr "Невірний час для входу\n"
+
+#: src/login.c:314
+msgid ""
+"\n"
+"System closed for routine maintenance\n"
+msgstr ""
+"\n"
+"Систему закрито для профілактики.\n"
+
+#: src/login.c:325
+msgid ""
+"\n"
+"[Disconnect bypassed -- root login allowed.]\n"
+msgstr ""
+"\n"
+"[Пройшло відключення -- дозволено лише вхід root-a.]\n"
+
+#: src/login.c:362
+#, c-format
+msgid ""
+"\n"
+"Login timed out after %d seconds.\n"
+msgstr ""
+"\n"
+"Час логіну вичерпано за %d секунд.\n"
+
+#: src/login.c:648
+#, c-format
+msgid " on `%.100s' from `%.200s'"
+msgstr " на `%s.100s' з `%.200s'"
+
+#: src/login.c:652
+#, c-format
+msgid " on `%.100s'"
+msgstr " на `%.100s'"
+
+#: src/login.c:811
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s login: "
+
+#: src/login.c:814
+msgid "login: "
+msgstr "login: "
+
+#: src/login.c:1013 src/sulogin.c:205
+msgid "Login incorrect"
+msgstr "Невірний логін"
+
+#: src/login.c:1193
+msgid "Warning: login re-enabled after temporary lockout.\n"
+msgstr "Застереження: login поновлено після тимчасового блокування.\n"
+
+#: src/login.c:1207
+#, c-format
+msgid "Last login: %s on %s"
+msgstr "Останній вхід в систему: %s на %s"
+
+#: src/login.c:1210
+#, c-format
+msgid "Last login: %.19s on %s"
+msgstr "Останній вхід в систему: %s на %s"
+
+#: src/login.c:1216
+#, c-format
+msgid " from %.*s"
+msgstr " з %.*s"
+
+#: src/login.c:1293
+msgid "Starting rad_login\n"
+msgstr "Стартуємо rad_login\n"
+
+#: src/mkpasswd.c:47
+#, c-format
+msgid "%s: no DBM database on system - no action performed\n"
+msgstr "%s: не має DBM бази данних у системі - ніяких дій не виконано\n"
+
+#: src/mkpasswd.c:232 src/mkpasswd.c:237
+#, c-format
+msgid "%s: cannot overwrite file %s\n"
+msgstr "%s: не можу перезаписати файл %s\n"
+
+#: src/mkpasswd.c:252
+#, c-format
+msgid "%s: cannot open DBM files for %s\n"
+msgstr "%s: не можу відкрити файли DBM для %s\n"
+
+#: src/mkpasswd.c:287
+#, c-format
+msgid "%s: the beginning with "
+msgstr "%s: розпочинаємо з "
+
+#: src/mkpasswd.c:288
+msgid " is too long\n"
+msgstr " поля занадто довгі\n"
+
+#: src/mkpasswd.c:315
+#, c-format
+msgid "%s: error parsing line \"%s\"\n"
+msgstr "%s: помилка обробки рядку \"%s\"\n"
+
+#: src/mkpasswd.c:323 src/mkpasswd.c:328 src/mkpasswd.c:333 src/mkpasswd.c:338
+msgid "adding record for name "
+msgstr "додано запис для імені "
+
+#: src/mkpasswd.c:324 src/mkpasswd.c:329 src/mkpasswd.c:334 src/mkpasswd.c:339
+#: src/mkpasswd.c:345 src/mkpasswd.c:351 src/mkpasswd.c:356 src/mkpasswd.c:361
+msgid "\n"
+msgstr ""
+
+#: src/mkpasswd.c:344 src/mkpasswd.c:350 src/mkpasswd.c:355 src/mkpasswd.c:360
+#, c-format
+msgid "%s: error adding record for "
+msgstr "%s: помилка додання запису "
+
+#: src/mkpasswd.c:378
+#, c-format
+msgid "added %d entries, longest was %d\n"
+msgstr "додано %d записів, довжиною %d\n"
+
+#: src/mkpasswd.c:392
+#, c-format
+msgid "Usage: %s [-vf] [-p|g|sp|sg] file\n"
+msgstr "Використовуйте: %s [-vf] [-p|g|sp|sg] файл\n"
+
+#: src/mkpasswd.c:395
+#, c-format
+msgid "Usage: %s [-vf] [-p|g|sp] file\n"
+msgstr "Використовуйте: %s [-vf] [-p|g|sp] файл\n"
+
+#: src/mkpasswd.c:398
+#, c-format
+msgid "Usage: %s [-vf] [-p|g] file\n"
+msgstr "Використовуйте: %s [-vf] [-p|g] файл\n"
+
+#: src/newgrp.c:61
+#, fuzzy
+msgid "Usage: newgrp [-] [group]\n"
+msgstr "використовуйте: newgrp [-] [група]\n"
+
+#: src/newgrp.c:63
+#, fuzzy
+msgid "Usage: sg group [[-c] command]\n"
+msgstr "використовуйте: sg група [[-c] команда]\n"
+
+#: src/newgrp.c:131
+#, c-format
+msgid "unknown uid: %u\n"
+msgstr "невідомий uid: %u\n"
+
+#: src/newgrp.c:214
+#, c-format
+msgid "unknown gid: %lu\n"
+msgstr "невідомий gid: %lu\n"
+
+#: src/newgrp.c:360 src/newgrp.c:369
+msgid "Sorry.\n"
+msgstr "Вибачте.\n"
+
+#: src/newgrp.c:469
+msgid "too many groups\n"
+msgstr "занадто багато груп\n"
+
+#: src/newusers.c:78
+#, c-format
+msgid "Usage: %s [input]\n"
+msgstr "Використовуйте: %s [input]\n"
+
+#: src/newusers.c:388
+#, c-format
+msgid "%s: can't lock /etc/passwd.\n"
+msgstr "%s: не можу блокувати /etc/passwd.\n"
+
+#: src/newusers.c:400
+#, c-format
+msgid "%s: can't lock files, try again later\n"
+msgstr "%s: не можу блокувати файли, спробуйте пізніше\n"
+
+#: src/newusers.c:416
+#, c-format
+msgid "%s: can't open files\n"
+msgstr "%s: не можу відкрити файл\n"
+
+#: src/newusers.c:461
+#, c-format
+msgid "%s: line %d: invalid line\n"
+msgstr "%s: рядок %d: невірний рядок\n"
+
+#: src/newusers.c:480
+#, c-format
+msgid "%s: line %d: can't create GID\n"
+msgstr "%s: рядок %d: не можу створити GID\n"
+
+#: src/newusers.c:496
+#, c-format
+msgid "%s: line %d: can't create UID\n"
+msgstr "%s: рядок %d: не можу створити UID\n"
+
+#: src/newusers.c:509
+#, c-format
+msgid "%s: line %d: cannot find user %s\n"
+msgstr "%s: рядок %d: не можу знайти користувача %s\n"
+
+#: src/newusers.c:518
+#, c-format
+msgid "%s: line %d: can't update password\n"
+msgstr "%s: рядок %d: не можу оновити пароль\n"
+
+#: src/newusers.c:536
+#, c-format
+msgid "%s: line %d: mkdir failed\n"
+msgstr "%s: рядок %d: mkdir не виконався\n"
+
+#: src/newusers.c:542
+#, c-format
+msgid "%s: line %d: chown failed\n"
+msgstr "%s: рядок %d: chown не виконався\n"
+
+#: src/newusers.c:552
+#, c-format
+msgid "%s: line %d: can't update entry\n"
+msgstr "%s: рядок %d: не можу оновити запис\n"
+
+#: src/newusers.c:584
+#, c-format
+msgid "%s: error updating files\n"
+msgstr "%s: помилка оновлення файлу\n"
+
+#: src/passwd.c:155
+#, fuzzy, c-format
+msgid "Usage: %s [-f|-s] [name]\n"
+msgstr "використовуйте: %s [-f|-s] [ім'я]\n"
+
+#: src/passwd.c:159
+#, c-format
+msgid "       %s [-x max] [-n min] [-w warn] [-i inact] name\n"
+msgstr "       %s [-x макс] [-n мин] [-w застереження] [-i неактивний] ім'я\n"
+
+#: src/passwd.c:161
+#, c-format
+msgid "       %s {-l|-u|-d|-S|-e} name\n"
+msgstr "       %s {-l|-u|-d|-S|-e} ім'я\n"
+
+#: src/passwd.c:216
+msgid "Old password: "
+msgstr "Старий пароль: "
+
+#: src/passwd.c:225
+#, c-format
+msgid "Incorrect password for `%s'\n"
+msgstr "Невірний пароль для `%s'\n"
+
+#: src/passwd.c:249
+#, c-format
+msgid ""
+"Enter the new password (minimum of %d, maximum of %d characters)\n"
+"Please use a combination of upper and lower case letters and numbers.\n"
+msgstr ""
+"Введіть новий пароль (від %d до %d знаків)\n"
+"Змішуйте великі та малі літери та цифри.\n"
+
+#: src/passwd.c:255
+msgid "New password: "
+msgstr "Новий пароль: "
+
+#: src/passwd.c:266
+msgid "Try again.\n"
+msgstr "Спробуй ще.\n"
+
+#: src/passwd.c:277
+msgid ""
+"\n"
+"Warning: weak password (enter it again to use it anyway).\n"
+msgstr ""
+"\n"
+"Застереження: Поганий пароль (введіть його знову, якщо все одно бажаєте його "
+"використовувати).\n"
+
+#: src/passwd.c:287
+msgid "They don't match; try again.\n"
+msgstr "Не співпадає; спробуйте знову.\n"
+
+#: src/passwd.c:364 src/passwd.c:382
+#, c-format
+msgid "The password for %s cannot be changed.\n"
+msgstr "Пароль для %s не може бути змінений.\n"
+
+#: src/passwd.c:396
+#, c-format
+msgid "Sorry, the password for %s cannot be changed yet.\n"
+msgstr "Вибачте, пароль для %s нге може бути змінено зараз.\n"
+
+#: src/passwd.c:479
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: брак пам'яті\n"
+
+#: src/passwd.c:730
+#, c-format
+msgid "%s: Cannot execute %s"
+msgstr "%s: Не можу виконати %s"
+
+#: src/passwd.c:815
+#, c-format
+msgid "%s: repository %s not supported\n"
+msgstr "%s: репозиторій %s не підтримується\n"
+
+#: src/passwd.c:890
+#, c-format
+msgid "%s: Permission denied\n"
+msgstr "%s: Доступ заборонено\n"
+
+#: src/passwd.c:914
+#, c-format
+msgid "You may not change the password for %s.\n"
+msgstr "Ви не можете змінити пароль для %s.\n"
+
+#: src/passwd.c:962
+#, c-format
+msgid "Changing password for %s\n"
+msgstr "Зміна пароля для %s\n"
+
+#: src/passwd.c:966
+#, c-format
+msgid "The password for %s is unchanged.\n"
+msgstr "Пароль для %s не змінено.\n"
+
+#: src/passwd.c:1016
+msgid "Password changed.\n"
+msgstr "Пароль змінено.\n"
+
+#: src/pwck.c:87
+#, c-format
+msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
+msgstr "Використовуйте: %s [-q] [-r] [-s] [пароль [shadow]]\n"
+
+#: src/pwck.c:90
+#, c-format
+msgid "Usage: %s [-q] [-r] [-s] [passwd]\n"
+msgstr "Використовуйте: %s [-q] [-r] [-s] [пароль]\n"
+
+#: src/pwck.c:295
+msgid "invalid password file entry\n"
+msgstr "невірний запис у файлі паролей\n"
+
+#: src/pwck.c:357
+msgid "duplicate password entry\n"
+msgstr "дублюючий запис у файлі паролей\n"
+
+#: src/pwck.c:373
+#, c-format
+msgid "invalid user name '%s'\n"
+msgstr "невірне ім'я користувача '%s'\n"
+
+#: src/pwck.c:388
+#, c-format
+msgid "user %s: no group %u\n"
+msgstr "користувач %s: не має групи %u\n"
+
+#: src/pwck.c:404
+#, c-format
+msgid "user %s: directory %s does not exist\n"
+msgstr "користувач %s: тека %s не існує\n"
+
+#: src/pwck.c:420
+#, c-format
+msgid "user %s: program %s does not exist\n"
+msgstr "користувач %s: програма %s не існує\n"
+
+#: src/pwck.c:456
+msgid "invalid shadow password file entry\n"
+msgstr "невірний запис у файлі прихованих паролей\n"
+
+#: src/pwck.c:518
+msgid "duplicate shadow password entry\n"
+msgstr "дублюючий запис у файлі прихованих паролей\n"
+
+#: src/pwck.c:542
+msgid "no matching password file entry\n"
+msgstr "відсутній відповідний запис у файлі паролей\n"
+
+#: src/pwck.c:560
+#, c-format
+msgid "user %s: last password change in the future\n"
+msgstr "користувач %s: остання зміна пароля у майбутньому\n"
+
+#: src/pwconv.c:85 src/pwunconv.c:79
+#, c-format
+msgid "%s: can't lock passwd file\n"
+msgstr "%s: не можу блокувати файл паролей\n"
+
+#: src/pwconv.c:90 src/pwunconv.c:84
+#, c-format
+msgid "%s: can't open passwd file\n"
+msgstr "%s: не можу відкрити файл паролей\n"
+
+#: src/pwconv.c:118
+#, c-format
+msgid "%s: can't remove shadow entry for %s\n"
+msgstr "%s: не можу відалити запис у файлі прихованих паролей для %s\n"
+
+#: src/pwconv.c:164
+#, c-format
+msgid "%s: can't update passwd entry for %s\n"
+msgstr "%s: не можу оновити запис у файлі паролей для %s\n"
+
+#: src/pwconv.c:171
+#, c-format
+msgid "%s: can't update shadow file\n"
+msgstr "%s: не можу оновити файл прихованих паролей\n"
+
+#: src/pwconv.c:176
+#, c-format
+msgid "%s: can't update passwd file\n"
+msgstr "%s: не можу оновити файл паролей\n"
+
+#: src/pwunconv.c:124
+#, c-format
+msgid "%s: can't update entry for user %s\n"
+msgstr "%s: не можу оновити запис для користувача %s\n"
+
+#: src/pwunconv.c:145
+#, c-format
+msgid "%s: can't delete shadow password file\n"
+msgstr "%s: не можу видалити файл прихованих паролей\n"
+
+#: src/su.c:133
+msgid "Sorry."
+msgstr "Вибачте."
+
+#: src/su.c:216
+#, c-format
+msgid "%s: must be run from a terminal\n"
+msgstr "%s: повино бути запущено з терміналу\n"
+
+#: src/su.c:306
+#, c-format
+msgid "%s: pam_start: error %d\n"
+msgstr "%s: pam_start: помилка %d\n"
+
+#: src/su.c:336
+#, c-format
+msgid "Unknown id: %s\n"
+msgstr "Невідомий id: %s\n"
+
+#: src/su.c:373 src/su.c:390
+#, c-format
+msgid "You are not authorized to su %s\n"
+msgstr "Ви не авторизовані для su %s\n"
+
+#: src/su.c:385
+msgid "(Enter your own password.)"
+msgstr "(Введіть ваш пароль.)"
+
+#: src/su.c:419
+#, c-format
+msgid ""
+"%s: %s\n"
+"(Ignored)\n"
+msgstr ""
+"%s: %s\n"
+"(Ігнорую)\n"
+
+#: src/su.c:609
+msgid "No shell\n"
+msgstr "Немає shell\n"
+
+#: src/suauth.c:105
+msgid "Access to su to that account DENIED.\n"
+msgstr "Доступ цього користувача до su ЗАБОРОНЕНО.\n"
+
+#: src/suauth.c:113
+msgid "Password authentication bypassed.\n"
+msgstr "Аутентифікацію пройдено.\n"
+
+#: src/suauth.c:122
+msgid "Please enter your OWN password as authentication.\n"
+msgstr "Будьласка введіть ваш власний пароль для аутентифікації.\n"
+
+#: src/sulogin.c:118
+msgid "No password file\n"
+msgstr "Немає файла паролей\n"
+
+#: src/sulogin.c:160
+msgid "No password entry for 'root'\n"
+msgstr "Бракує запису у базі паролей для 'root'\n"
+
+#: src/sulogin.c:176
+msgid ""
+"\n"
+"Type control-d to proceed with normal startup,\n"
+"(or give root password for system maintenance):"
+msgstr ""
+"\n"
+"Натисніть control-d для виконання звичайного завантаження,\n"
+"(або введіть пароль адміністратора для відновлення системи):"
+
+#: src/sulogin.c:212
+msgid "Entering System Maintenance Mode\n"
+msgstr "Входимо у режим відновлення системи\n"
+
+#: src/useradd.c:239
+#, c-format
+msgid "%s: rebuild the group database\n"
+msgstr "%s: перестроюю базу груп\n"
+
+#: src/useradd.c:248
+#, c-format
+msgid "%s: rebuild the shadow group database\n"
+msgstr "%s: перестроюю базу прихованих груп\n"
+
+#: src/useradd.c:283 src/useradd.c:297 src/usermod.c:741 src/usermod.c:755
+#, c-format
+msgid "%s: invalid numeric argument `%s'\n"
+msgstr "%s: невірний числовий аргумент `%s'\n"
+
+#: src/useradd.c:354
+#, c-format
+msgid "%s: unknown gid %s\n"
+msgstr "%s: невідомий gid %s\n"
+
+#: src/useradd.c:362 src/useradd.c:663 src/useradd.c:1156 src/usermod.c:244
+#: src/usermod.c:876
+#, c-format
+msgid "%s: unknown group %s\n"
+msgstr "%s: невідома група %s\n"
+
+#: src/useradd.c:434
+#, c-format
+msgid "GROUP=%u\n"
+msgstr "ГРУПА=%u\n"
+
+#: src/useradd.c:435
+#, c-format
+msgid "HOME=%s\n"
+msgstr "ДОМАШНЯ_ТЕКА=%s\n"
+
+#: src/useradd.c:437
+#, c-format
+msgid "INACTIVE=%ld\n"
+msgstr "НЕАКТИВНИЙ=%ld\n"
+
+#: src/useradd.c:438
+#, c-format
+msgid "EXPIRE=%s\n"
+msgstr "ПРОСТРОЧЕНИЙ=%s\n"
+
+#: src/useradd.c:440
+#, c-format
+msgid "SHELL=%s\n"
+msgstr "SHELL=%s\n"
+
+#: src/useradd.c:441
+#, c-format
+msgid "SKEL=%s\n"
+msgstr "SKEL=%s\n"
+
+#: src/useradd.c:442
+#, c-format
+msgid "CREATE_MAIL_SPOOL=%s\n"
+msgstr ""
+
+#: src/useradd.c:479
+#, c-format
+msgid "%s: cannot create new defaults file\n"
+msgstr "%s: не можу створити новий файл із значеннями по замовчеванню\n"
+
+#: src/useradd.c:484
+#, fuzzy, c-format
+msgid "%s: cannot open new defaults file\n"
+msgstr "%s: не можу створити новий файл із значеннями по замовчеванню\n"
+
+#: src/useradd.c:578 src/useradd.c:590
+#, c-format
+msgid "%s: rename: %s"
+msgstr "%s: перейменування: %s"
+
+#: src/useradd.c:684 src/usermod.c:265
+#, c-format
+msgid "%s: group `%s' is a NIS group.\n"
+msgstr "%s: група `%s' є групою NIS.\n"
+
+#: src/useradd.c:693 src/usermod.c:274
+#, c-format
+msgid "%s: too many groups specified (max %d).\n"
+msgstr "%s: занадто багато груп вказанно (макс %d).\n"
+
+#: src/useradd.c:725
+msgid "Usage: useradd [-u uid [-o]] [-g group] [-G group,...] \n"
+msgstr "використовуйте: useradd [-u uid [-o]] [-g група] [-G група,...] \n"
+
+#: src/useradd.c:728
+msgid "               [-d home] [-s shell] [-c comment] [-m [-k template]]\n"
+msgstr ""
+"                        [-d домашня_тека] [-s shell] [-c коментар]\n"
+"                        [-m [-k шаблон]]\n"
+
+#: src/useradd.c:730 src/useradd.c:735
+msgid "               [-f inactive] [-e expire]\n"
+msgstr "                 [-f неактивний] [-e прострочений]\n"
+
+#: src/useradd.c:733
+msgid "       useradd -D [-g group] [-b base] [-s shell]\n"
+msgstr "         useradd -D [-g група] [-b базова_тека] [-s shell]\n"
+
+#: src/useradd.c:820 src/usermod.c:461
+#, c-format
+msgid "%s: error locking group file\n"
+msgstr "%s: не можу заблокувати файл груп\n"
+
+#: src/useradd.c:825 src/usermod.c:467
+#, c-format
+msgid "%s: error opening group file\n"
+msgstr "%s: не можу відкрити файл груп\n"
+
+#: src/useradd.c:832 src/usermod.c:578
+#, c-format
+msgid "%s: error locking shadow group file\n"
+msgstr "%s: не можу заблокувати файл прихованих груп\n"
+
+#: src/useradd.c:837 src/usermod.c:584
+#, c-format
+msgid "%s: error opening shadow group file\n"
+msgstr "%s: не можу відкрити файл прихованих груп\n"
+
+#: src/useradd.c:1009
+#, c-format
+msgid "%s: uid %u is not unique\n"
+msgstr "%s: uid %u не є унікальним\n"
+
+#: src/useradd.c:1039
+#, c-format
+msgid "%s: can't get unique uid\n"
+msgstr "%s: не можу отримати унікальній uid\n"
+
+#: src/useradd.c:1076
+#, c-format
+msgid "%s: invalid base directory `%s'\n"
+msgstr "%s: невірна базова тека `%s'\n"
+
+#: src/useradd.c:1086
+#, c-format
+msgid "%s: invalid comment `%s'\n"
+msgstr "%s: невірний коментар `%s'\n"
+
+#: src/useradd.c:1097
+#, c-format
+msgid "%s: invalid home directory `%s'\n"
+msgstr "%s: невірна домашня тека `%s'\n"
+
+#: src/useradd.c:1116 src/usermod.c:858
+#, c-format
+msgid "%s: invalid date `%s'\n"
+msgstr "%s: невірна дата `%s'\n"
+
+#: src/useradd.c:1129
+#, c-format
+msgid "%s: shadow passwords required for -e\n"
+msgstr "%s: приховані паролі потрібні для -e\n"
+
+#: src/useradd.c:1145
+#, c-format
+msgid "%s: shadow passwords required for -f\n"
+msgstr "%s: приховані паролі потрібні для -f\n"
+
+#: src/useradd.c:1212 src/usermod.c:834 src/usermod.c:844 src/usermod.c:891
+#: src/usermod.c:935
+#, c-format
+msgid "%s: invalid field `%s'\n"
+msgstr "%s: невірне поле `%s'\n"
+
+#: src/useradd.c:1223
+#, c-format
+msgid "%s: invalid shell `%s'\n"
+msgstr "%s: невірний shell `%s'\n"
+
+#: src/useradd.c:1264
+#, c-format
+msgid "%s: invalid user name '%s'\n"
+msgstr "%s: невірне ім'я користувача '%s'\n"
+
+#: src/useradd.c:1300 src/userdel.c:293 src/usermod.c:1003
+#, c-format
+msgid "%s: cannot rewrite password file\n"
+msgstr "%s: не можу переписати файл паролей\n"
+
+#: src/useradd.c:1307 src/userdel.c:298 src/usermod.c:1010
+#, c-format
+msgid "%s: cannot rewrite shadow password file\n"
+msgstr "%s: не можу переписати файл прихованих паролей\n"
+
+#: src/useradd.c:1348 src/userdel.c:350 src/usermod.c:1044
+#, c-format
+msgid "%s: unable to lock password file\n"
+msgstr "%s: не можу блокувати файл паролей\n"
+
+#: src/useradd.c:1353 src/userdel.c:355 src/usermod.c:1049
+#, c-format
+msgid "%s: unable to open password file\n"
+msgstr "%s: не можу відкрити файл паролей\n"
+
+#: src/useradd.c:1361 src/userdel.c:362 src/usermod.c:1056
+#, c-format
+msgid "%s: cannot lock shadow password file\n"
+msgstr "%s: не можу блокувати файл прихованих паролей\n"
+
+#: src/useradd.c:1368 src/userdel.c:368 src/usermod.c:1062
+#, c-format
+msgid "%s: cannot open shadow password file\n"
+msgstr "%s: не можу відкрити файл прихованих паролей\n"
+
+#: src/useradd.c:1462
+#, c-format
+msgid "%s: error adding new password entry\n"
+msgstr "%s: помилка додання нового запису у базу паролей\n"
+
+#: src/useradd.c:1476
+#, c-format
+msgid "%s: error updating password dbm entry\n"
+msgstr "%s: помилка оновлення запису у базі паролей dbm\n"
+
+#: src/useradd.c:1492 src/usermod.c:1151
+#, c-format
+msgid "%s: error adding new shadow password entry\n"
+msgstr "%s: помилка додання нового запису у базу прихованих паролей\n"
+
+#: src/useradd.c:1508 src/usermod.c:1168
+#, c-format
+msgid "%s: error updating shadow passwd dbm entry\n"
+msgstr "%s: помилка оновлення запису у базі прихованих паролей dbm\n"
+
+#: src/useradd.c:1540
+#, c-format
+msgid "%s: cannot create directory %s\n"
+msgstr "%s: не можу створити теку %s\n"
+
+#: src/useradd.c:1570
+msgid "No group named \"mail\" exists, creating mail spool with mode 0600.\n"
+msgstr ""
+
+#: src/useradd.c:1593
+#, fuzzy, c-format
+msgid "Can't create mail spool for user %s.\n"
+msgstr "%s: не можу оновити запис для користувача %s\n"
+
+#: src/useradd.c:1713 src/usermod.c:981
+#, c-format
+msgid "%s: user %s exists\n"
+msgstr "%s: користувач %s існує\n"
+
+#: src/useradd.c:1728
+#, c-format
+msgid ""
+"%s: group %s exists - if you want to add this user to that group, use -g.\n"
+msgstr ""
+"%s: група %s існує - якщо ви бажаєте додати користувача до цієї групи, "
+"використовуйте -g.\n"
+
+#: src/useradd.c:1766
+#, c-format
+msgid "%s: warning: CREATE_HOME not supported, please use -m instead.\n"
+msgstr "%s: застереження: CREATE_HOME не підтримується, користуйтесь -m.\n"
+
+#: src/userdel.c:124
+#, fuzzy, c-format
+msgid "Usage: %s [-r] name\n"
+msgstr "використовуйте: %s [-r] ім'я\n"
+
+#: src/userdel.c:176 src/userdel.c:262
+#, c-format
+msgid "%s: error updating group entry\n"
+msgstr "%s: помилка оновлення запису у базі груп\n"
+
+#: src/userdel.c:186 src/userdel.c:271
+#, c-format
+msgid "%s: cannot update dbm group entry\n"
+msgstr "%s: помилка оновлення запису у базі груп dbm\n"
+
+#: src/userdel.c:214
+#, fuzzy, c-format
+msgid "%s: cannot remove dbm group entry\n"
+msgstr "%s: помилка видалення запису у базі груп dbm\n"
+
+#: src/userdel.c:379
+#, c-format
+msgid "%s: cannot open group file\n"
+msgstr "%s: не можу відкрити файл груп\n"
+
+#: src/userdel.c:390
+#, c-format
+msgid "%s: cannot open shadow group file\n"
+msgstr "%s: не можу відкрити файл прихованих груп\n"
+
+#: src/userdel.c:408
+#, c-format
+msgid "%s: error deleting password entry\n"
+msgstr "%s: помилка видалення запису з бази паролей\n"
+
+#: src/userdel.c:412
+#, c-format
+msgid "%s: error deleting shadow password entry\n"
+msgstr "%s: помилка видалення запису з бази прихованих паролей\n"
+
+#: src/userdel.c:421
+#, c-format
+msgid "%s: error deleting password dbm entry\n"
+msgstr "%s: помилка видалення запису dbm з бази паролей\n"
+
+#: src/userdel.c:440
+#, c-format
+msgid "%s: error deleting shadow passwd dbm entry\n"
+msgstr "%s: помилка видалення запису dbm з бази прихованих паролей\n"
+
+#: src/userdel.c:484
+#, c-format
+msgid "%s: user %s is currently logged in\n"
+msgstr "%s: користувач %s на данний момент у системі\n"
+
+#: src/userdel.c:594
+#, c-format
+msgid "%s: warning: %s not owned by %s, not removing\n"
+msgstr "%s: застереження: %s не належить %s, не видалено\n"
+
+#: src/userdel.c:600
+#, c-format
+msgid "%s: warning: can't remove "
+msgstr "%s: застереження: не можу видалити "
+
+#: src/userdel.c:703 src/usermod.c:783
+#, c-format
+msgid "%s: user %s does not exist\n"
+msgstr "%s: коритстувач %s не існує\n"
+
+#: src/userdel.c:718 src/usermod.c:799
+#, c-format
+msgid "%s: user %s is a NIS user\n"
+msgstr "%s: користувач %s є користувач NIS\n"
+
+#: src/userdel.c:756
+#, c-format
+msgid "%s: %s not owned by %s, not removing\n"
+msgstr "%s: %s не належить %s, не видалено\n"
+
+#: src/userdel.c:779
+#, c-format
+msgid "%s: not removing directory %s (would remove home of user %s)\n"
+msgstr "%s: не видалено теку %s (можна видалити домашню теку користувача %s)\n"
+
+#: src/userdel.c:793
+#, c-format
+msgid "%s: error removing directory %s\n"
+msgstr "%s: помилка видалення теки %s\n"
+
+#: src/usermod.c:306
+#, fuzzy, c-format
+msgid "Usage: %s\t[-u uid [-o]] [-g group] [-G group,...] \n"
+msgstr "використовуйте: %s\t[-u uid [-o]] [-g група] [-G група,...] \n"
+
+#: src/usermod.c:310
+msgid "\t\t[-d home [-m]] [-s shell] [-c comment] [-l new_name]\n"
+msgstr "\t\t[-d домашня_тека [-m]] [-s shell] [-c коментар] [-l нове_ім'я]\n"
+
+#: src/usermod.c:313
+#, fuzzy
+msgid "[-f inactive] [-e expire] "
+msgstr "[-f неактивний] [-e прострочений] "
+
+#: src/usermod.c:315
+msgid "[-p passwd] [-L|-U] name\n"
+msgstr "[-p пароль] [-L|-U] ім'я\n"
+
+#: src/usermod.c:495
+#, c-format
+msgid "%s: out of memory in update_group\n"
+msgstr "%s: бракує памяті у pdate_group\n"
+
+#: src/usermod.c:622
+#, c-format
+msgid "%s: out of memory in update_gshadow\n"
+msgstr "%s: бракує памяті у update_gshadow\n"
+
+#: src/usermod.c:958
+#, c-format
+msgid "%s: no flags given\n"
+msgstr "%s: не подано флагів\n"
+
+#: src/usermod.c:965
+#, c-format
+msgid "%s: shadow passwords required for -e and -f\n"
+msgstr "%s: приховані паролі потрібні для -e і -f\n"
+
+#: src/usermod.c:987
+#, c-format
+msgid "%s: uid %lu is not unique\n"
+msgstr "%s: uid %lu не є унікальним\n"
+
+#: src/usermod.c:1116
+#, c-format
+msgid "%s: error changing password entry\n"
+msgstr "%s: помилка зміни запису в базі паролей\n"
+
+#: src/usermod.c:1122
+#, c-format
+msgid "%s: error removing password entry\n"
+msgstr "%s: помилка видалення запису з бази паролей\n"
+
+#: src/usermod.c:1131
+#, c-format
+msgid "%s: error adding password dbm entry\n"
+msgstr "%s: помилка додання запису dbm у базу прихованих паролей\n"
+
+#: src/usermod.c:1139
+#, c-format
+msgid "%s: error removing passwd dbm entry\n"
+msgstr "%s: помилка видалення запису dbm з бази паролей\n"
+
+#: src/usermod.c:1158
+#, c-format
+msgid "%s: error removing shadow password entry\n"
+msgstr "%s: помилка видалення запису з бази прихованих паролей\n"
+
+#: src/usermod.c:1175
+#, c-format
+msgid "%s: error removing shadow passwd dbm entry\n"
+msgstr "%s: помилка видалення запису dbm з бази прихованих паролей\n"
+
+#: src/usermod.c:1204
+#, c-format
+msgid "%s: directory %s exists\n"
+msgstr "%s: тека %s існує\n"
+
+#: src/usermod.c:1213
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: не можу створити %s\n"
+
+#: src/usermod.c:1219
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: не можу змінити володаря %s\n"
+
+#: src/usermod.c:1236
+#, c-format
+msgid "%s: cannot rename directory %s to %s\n"
+msgstr "%s: не можу перейменувати теку з %s на %s\n"
+
+#: src/usermod.c:1333
+#, c-format
+msgid "%s: warning: %s not owned by %s\n"
+msgstr "%s: застереження: %s не належить %s\n"
+
+#: src/usermod.c:1339
+msgid "failed to change mailbox owner"
+msgstr "не можу змінити володаря поштової скриньки"
+
+#: src/usermod.c:1347
+msgid "failed to rename mailbox"
+msgstr "не можу перейменувати поштову скриньку"
+
+#: src/vipw.c:105
+#, c-format
+msgid ""
+"\n"
+"%s: %s is unchanged\n"
+msgstr ""
+"\n"
+"%s: %s є незмінений\n"
+
+#: src/vipw.c:133
+#, fuzzy
+msgid "Couldn't lock file"
+msgstr "Не можу блокувати файл\n"
+
+#: src/vipw.c:142
+msgid "Couldn't make backup"
+msgstr "Не можу зробити резервну копію"
+
+#: src/vipw.c:200
+#, c-format
+msgid "%s: can't restore %s: %s (your changes are in %s)\n"
+msgstr "%s: не можу відновити %s: %s (ваші зміни у %s)\n"
+
+#: src/vipw.c:238
+msgid ""
+"Usage:\n"
+"`vipw' edits /etc/passwd        `vipw -s' edits /etc/shadow\n"
+"`vigr' edits /etc/group         `vigr -s' edits /etc/gshadow\n"
+msgstr ""
+"Використовуйте:\n"
+"`vipw' редагує /etc/passwd      `vipw -s' редагує /etc/shadow\n"
+"`vigr' редагує /etc/group       `vigr -s' редагує /etc/gshadow\n"
+
+#~ msgid "User %s has a TCFS key, his old password is required.\n"
+#~ msgstr "Користувач %s має TCFS ключ, потрібен його старий пароль.\n"
+
+#~ msgid "You can use -t option to force the change.\n"
+#~ msgstr "Ви маєте змогу використовувати ключ -t для прискорення змін.\n"
+
+#~ msgid "Warning: user %s has a TCFS key.\n"
+#~ msgstr "Застереження: користувач %s має TCFS ключ.\n"
+
+#~ msgid "Cannot lock the TCFS key database; try again later\n"
+#~ msgstr "Не можу блокувати базу ключей TCFS; спробуйте пізніше\n"
+
+#~ msgid "Cannot open the TCFS key database.\n"
+#~ msgstr "Не можу відкрити базу ключей TCFS.\n"
+
+#~ msgid "Error updating the TCFS key database.\n"
+#~ msgstr "Не можу оновити базу ключей TCFS.\n"
+
+#~ msgid "Cannot commit TCFS changes.\n"
+#~ msgstr "Не можу внести зміни у базу ключей TCFS.\n"
+
+#~ msgid "%s: cannot rewrite TCFS key file\n"
+#~ msgstr "%s: не можу переписати файл ключей TCFS\n"
+
+#~ msgid "%s: cannot lock TCFS key file\n"
+#~ msgstr "%s: не можу блокувати файл ключей TCFS\n"
+
+#~ msgid "%s: cannot open TCFS key file\n"
+#~ msgstr "%s: не можу відкрити файл ключей TCFS\n"
+
+#~ msgid "%s: error deleting TCFS entry\n"
+#~ msgstr "%s: помилка видалення запису з бази TCFS\n"
+
+#~ msgid "               [-f inactive] [-e expire]"
+#~ msgstr "                        [-f неактивний] [-e прострочений]"
+
+#~ msgid "%s: error deleting authentication\n"
+#~ msgstr "%s: помилка видалення методу аутентифікації\n"
+
+#, fuzzy
+#~ msgid "[-A {DEFAULT|program},...] "
+#~ msgstr "[-A {DEFAULT|program},...] "
+
+#~ msgid "%s: error deleting authentication method\n"
+#~ msgstr "%s: помилка видалення методу аутентифікації\n"
+
+#~ msgid "%s: error adding authentication method\n"
+#~ msgstr "%s: помилка додання методу аутентифікації\n"
+
+#~ msgid "%s: error changing authentication method\n"
+#~ msgstr "%s: помилка заміни методу аутентифікації\n"
+
+#~ msgid "[-A program] "
+#~ msgstr "[-A програма] "
+
+#~ msgid "[-p passwd] name\n"
+#~ msgstr "[-p пароль] ім'я\n"
+
+#~ msgid "error - lookup '%s' failed\n"
+#~ msgstr "помилка - пошук '%s' не виконано\n"
+
+#~ msgid "%s not found\n"
+#~ msgstr "%s не знайдено\n"
+
+#~ msgid "%s: not configured for shadow group support.\n"
+#~ msgstr "%s: не зконфігуровано для підтримки прихованих груп.\n"
+
+#~ msgid "%s: Shadow passwords are not configured.\n"
+#~ msgstr "%s: Приховані паролі не зконфігуровано.\n"
+
+#, fuzzy
+#~ msgid "Usage: %s [-l] user\n"
+#~ msgstr "використовуйте: %s [-e]\n"
+
+#~ msgid "Executing shell %s\n"
+#~ msgstr "Виконую shell %s\n"
+
+#~ msgid "Dialup Password: "
+#~ msgstr "Пароль на модемне підключення: "
+
+#~ msgid "Usage: %s [-l] [-m min_days] [-M max_days] [-d last_day] user\n"
+#~ msgstr ""
+#~ "Використовуйте: %s [-l] [-m мін_днів] [-M макс_днів] [-d останній_день] "
+#~ "користувач\n"
+
+#~ msgid "Usage: %s [-(a|d)] shell\n"
+#~ msgstr "Використовуйте: %s [-(a|d)] shell\n"
+
+#~ msgid "Shell password: "
+#~ msgstr "Shell пароль: "
+
+#~ msgid "re-enter Shell password: "
+#~ msgstr "Повторіть пароль для shell: "
+
+#~ msgid "%s: Passwords do not match, try again.\n"
+#~ msgstr "%s: Пароль не співпадає, спробуйте знову.\n"
+
+#~ msgid "%s: can't create %s"
+#~ msgstr "%s: не можу створити %s"
+
+#~ msgid "%s: can't open %s"
+#~ msgstr "%s: не можу відкрити %s"
+
+#~ msgid "%s: Shell %s not found.\n"
+#~ msgstr "%s: Shell %s не знайдено.\n"
+
+#~ msgid "group=%s,%u  basedir=%s  skel=%s\n"
+#~ msgstr "група=%s,%u головна_тека=%s  skel=%s\n"
+
+#~ msgid "shell=%s  "
+#~ msgstr "shell=%s  "
+
+#~ msgid "inactive=%ld  expire=%s"
+#~ msgstr "неактивний=%ld  просторочений=%s"
+
+#~ msgid "usage: %s\t[-u uid [-o]] [-g group] [-G group,...] \n"
+#~ msgstr "використовуйте: %s\t[-u uid [-o]] [-g група] [-G група,...] \n"
+
+#~ msgid "%s: gid %ld is not unique\n"
+#~ msgstr "%s: gid %ld не є унікальним\n"
+
+#, fuzzy
+#~ msgid "unknown gid: %u\n"
+#~ msgstr "невідомий gid: %d\n"
+
+#~ msgid "%s: uid %d is not unique\n"
+#~ msgstr "%s: uid %d не є унікальним\n"
+
+#~ msgid "user %s: bad UID (%d)\n"
+#~ msgstr "користувач %s: поганий UID (%d)\n"
+
+#~ msgid "%s: no aging information present\n"
+#~ msgstr "%s: немає інформації про вік\n"
+
+#~ msgid "group %s: bad GID (%d)\n"
+#~ msgstr "група %s: має невірний GID (%d)\n"
+
+#~ msgid "%s: permission denied (shell).\n"
+#~ msgstr "%s: доступ заборонено (shell).\n"
+
+#~ msgid "Incorrect password for %s.\n"
+#~ msgstr "Невірний пароль для %s.\n"
+
+#~ msgid "group not found\n"
+#~ msgstr "група не знайдена\n"
