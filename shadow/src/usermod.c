@@ -355,7 +355,7 @@ static char *new_pw_passwd (char *pw_pass)
 		strcpy (buf, "!");
 		strcat (buf, pw_pass);
 		pw_pass = buf;
-	} else if (Uflg && pw_pass[0] == '!') {
+	} else if (Uflg && pw_pass[0] == '!' && pw_pass[1] != '!') {
 		char *s;
 
 		if (pw_pass[1] == '\0') {
