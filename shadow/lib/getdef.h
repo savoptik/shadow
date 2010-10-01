@@ -42,6 +42,6 @@ extern /*@observer@*/ /*@null@*/const char *getdef_str (const char *);
 extern int putdef_str (const char *, const char *);
 
 /* default UMASK value if not specified in /etc/login.defs */
-#define		GETDEF_DEFAULT_UMASK	022
+#define		GETDEF_DEFAULT_UMASK	077
 
 #endif				/* _GETDEF_H */
