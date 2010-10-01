@@ -1109,6 +1109,12 @@ static void process_flags (int argc, char **argv)
 				usage ();
 				break;
 			case 'k':
+				if (!VALID(optarg) || optarg[0] != '/') {
+					fprintf(stderr,
+							_("%s: invalid template directory `%s'\n"),
+							Prog, optarg);
+					exit(E_BAD_ARG);
+				}
 				def_template = optarg;
 				kflg = true;
 				break;
@@ -1222,7 +1228,7 @@ static void process_flags (int argc, char **argv)
 		         Prog, "-o", "-u");
 		usage ();
 	}
-	if (kflg && !mflg) {
+	if (kflg && !mflg && !Dflg) {
 		fprintf (stderr,
 		         _("%s: %s flag is only allowed with the %s flag\n"),
 		         Prog, "-k", "-m");
@@ -1909,7 +1915,7 @@ int main (int argc, char **argv)
 	 * a new user.
 	 */
 	if (Dflg) {
-		if (gflg || bflg || fflg || eflg || sflg) {
+		if (gflg || bflg || fflg || eflg || sflg || kflg) {
 			exit ((set_defaults () != 0) ? 1 : 0);
 		}
 
