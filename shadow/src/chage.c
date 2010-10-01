@@ -802,9 +802,11 @@ int main (int argc, char **argv)
 	audit_help_open ();
 #endif
 	sanitize_env ();
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	ruid = getuid ();
 	rgid = getgid ();

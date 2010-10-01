@@ -610,9 +610,11 @@ int main (int argc, char **argv)
 	char *user;
 
 	sanitize_env ();
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	/*
 	 * This command behaves different for root and non-root

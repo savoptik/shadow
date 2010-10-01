@@ -977,9 +977,11 @@ int main (int argc, char **argv)
 #endif
 
 	sanitize_env ();
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	/*
 	 * Make a note of whether or not this command was invoked by root.

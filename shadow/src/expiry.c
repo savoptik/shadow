@@ -79,6 +79,11 @@ int main (int argc, char **argv)
 	Prog = Basename (argv[0]);
 
 	sanitize_env ();
+	if (getuid() == 0) {
+		setlocale (LC_ALL, "");
+		bindtextdomain (PACKAGE, LOCALEDIR);
+		textdomain (PACKAGE);
+	}
 
 	/* 
 	 * Start by disabling all of the keyboard signals.
@@ -94,9 +99,6 @@ int main (int argc, char **argv)
 	 * expiry takes one of two arguments. The default action is to give
 	 * the usage message.
 	 */
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
 
 	OPENLOG ("expiry");
 

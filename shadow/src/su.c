@@ -380,9 +380,11 @@ int main (int argc, char **argv)
 
 	sanitize_env ();
 
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	change_environment = true;
 

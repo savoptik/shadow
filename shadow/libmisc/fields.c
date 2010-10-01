@@ -39,6 +39,13 @@
 #include <stdio.h>
 #include "prototypes.h"
 
+
+#define fixed_iscntrl(c) \
+	(((c) & 0x7f) < 0x20 || (c) == 0x7f)
+
+#define MAX_FIELD_SIZE                 0x80
+
+
 /*
  * valid_field - insure that a field contains all legal characters
  *
@@ -66,7 +73,7 @@ int valid_field (const char *field, const char *illegal)
 	if (0 == err) {
 		/* Search if there are some non-printable characters */
 		for (cp = field; '\0' != *cp; cp++) {
-			if (!isprint (*cp)) {
+			if (iscntrl(*cp) || fixed_iscntrl(*cp)) {
 				err = 1;
 				break;
 			}

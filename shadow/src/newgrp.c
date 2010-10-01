@@ -388,9 +388,11 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	/*
 	 * Save my name for error messages and save my real gid incase of

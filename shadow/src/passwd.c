@@ -767,9 +767,12 @@ int main (int argc, char **argv)
 	const struct spwd *sp;	/* Shadow file entry for user   */
 #endif				/* !USE_PAM */
 
-	(void) setlocale (LC_ALL, "");
-	(void) bindtextdomain (PACKAGE, LOCALEDIR);
-	(void) textdomain (PACKAGE);
+	sanitize_env ();
+	if (getuid() == 0) {
+		(void) setlocale (LC_ALL, "");
+		(void) bindtextdomain (PACKAGE, LOCALEDIR);
+		(void) textdomain (PACKAGE);
+	}
 
 	/*
 	 * The program behaves differently when executed by root than when
@@ -782,8 +785,6 @@ int main (int argc, char **argv)
 	 * most error messages.
 	 */
 	Prog = Basename (argv[0]);
-
-	sanitize_env ();
 
 	OPENLOG ("passwd");
 
