@@ -412,9 +412,6 @@ static void def_load (void)
 	 */
 	fp = fopen (def_fname, "r");
 	if (NULL == fp) {
-		int err = errno;
-		SYSLOG ((LOG_CRIT, "cannot open login definitions %s [%s]",
-		         def_fname, strerror (err)));
 		exit (EXIT_FAILURE);
 	}
 
