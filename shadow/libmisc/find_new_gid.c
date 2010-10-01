@@ -58,11 +58,11 @@ int find_new_gid (bool sys_group,
 	assert (gid != NULL);
 
 	if (!sys_group) {
-		gid_min = (gid_t) getdef_ulong ("GID_MIN", 1000UL);
+		gid_min = (gid_t) getdef_ulong ("GID_MIN", 500UL);
 		gid_max = (gid_t) getdef_ulong ("GID_MAX", 60000UL);
 	} else {
-		gid_min = (gid_t) getdef_ulong ("SYS_GID_MIN", 101UL);
-		gid_max = (gid_t) getdef_ulong ("GID_MIN", 1000UL) - 1;
+		gid_min = (gid_t) getdef_ulong ("SYS_GID_MIN", 10UL);
+		gid_max = (gid_t) getdef_ulong ("GID_MIN", 500UL) - 1;
 		gid_max = (gid_t) getdef_ulong ("SYS_GID_MAX", (unsigned long) gid_max);
 	}
 	used_gids = alloca (sizeof (bool) * (gid_max +1));

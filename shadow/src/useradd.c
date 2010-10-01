@@ -90,7 +90,7 @@ char *Prog;
 static gid_t def_group = 100;
 static const char *def_gname = "other";
 static const char *def_home = "/home";
-static const char *def_shell = "";
+static const char *def_shell = "/sbin/nologin";
 static const char *def_template = SKEL_DIR;
 static const char *def_create_mail_spool = "no";
 
@@ -102,7 +102,7 @@ static char def_file[] = USER_DEFAULTS_FILE;
 #define	VALID(s)	(strcspn (s, ":\n") == strlen (s))
 
 static const char *user_name = "";
-static const char *user_pass = "!";
+static const char *user_pass = "!!";
 static uid_t user_id;
 static gid_t user_gid;
 static const char *user_comment = "";
@@ -989,9 +989,9 @@ static void process_flags (int argc, char **argv)
 		};
 		while ((c = getopt_long (argc, argv,
 #ifdef WITH_SELINUX
-		                         "b:c:d:De:f:g:G:k:K:lmMNop:rs:u:UZ:",
+		                         "b:c:d:De:f:g:G:k:K:lmMnNop:rs:u:UZ:",
 #else
-		                         "b:c:d:De:f:g:G:k:K:lmMNop:rs:u:U",
+		                         "b:c:d:De:f:g:G:k:K:lmMnNop:rs:u:U",
 #endif
 		                         long_options, NULL)) != -1) {
 			switch (c) {
@@ -1147,6 +1147,7 @@ static void process_flags (int argc, char **argv)
 			case 'M':
 				Mflg = true;
 				break;
+			case 'n':
 			case 'N':
 				Nflg = true;
 				break;

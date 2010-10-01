@@ -58,11 +58,11 @@ int find_new_uid (bool sys_user,
 	assert (uid != NULL);
 
 	if (!sys_user) {
-		uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
+		uid_min = (uid_t) getdef_ulong ("UID_MIN", 500UL);
 		uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
 	} else {
-		uid_min = (uid_t) getdef_ulong ("SYS_UID_MIN", 101UL);
-		uid_max = (uid_t) getdef_ulong ("UID_MIN", 1000UL) - 1;
+		uid_min = (uid_t) getdef_ulong ("SYS_UID_MIN", 1UL);
+		uid_max = (uid_t) getdef_ulong ("UID_MIN", 500UL) - 1;
 		uid_max = (uid_t) getdef_ulong ("SYS_UID_MAX", (unsigned long) uid_max);
 	}
 	used_uids = alloca (sizeof (bool) * (uid_max +1));
