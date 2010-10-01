@@ -44,6 +44,7 @@
 
 #include <ctype.h>
 #include "defines.h"
+#include "getdef.h"
 #include "chkname.h"
 
 static bool is_valid_name (const char *name)
@@ -70,13 +71,21 @@ static bool is_valid_name (const char *name)
 	return true;
 }
 
+static size_t min (size_t a, size_t b)
+{
+	return a < b ? a : b;
+}
+
 bool is_valid_user_name (const char *name)
 {
+	size_t max_len;
 	/*
 	 * User names are limited by whatever utmp can
-	 * handle.
+	 * handle and the settings in login.defs.
 	 */
-	if (strlen (name) > USER_NAME_MAX_LENGTH) {
+	max_len = min (getdef_unum ("USERNAME_MAX", USER_NAME_MAX_LENGTH),
+					USER_NAME_MAX_LENGTH);
+	if (strlen (name) > max_len) {
 		return false;
 	}
 
@@ -85,12 +94,17 @@ bool is_valid_user_name (const char *name)
 
 bool is_valid_group_name (const char *name)
 {
+	size_t max_len;
 	/*
 	 * Arbitrary limit for group names.
-	 * HP-UX 10 limits to 16 characters
 	 */
-	if (   (GROUP_NAME_MAX_LENGTH > 0)
-	    && (strlen (name) > GROUP_NAME_MAX_LENGTH)) {
+	if (GROUP_NAME_MAX_LENGTH <= 0)
+		return false;
+
+	max_len = min (getdef_unum ("GROUPNAME_MAX", GROUP_NAME_MAX_LENGTH),
+					GROUP_NAME_MAX_LENGTH);
+
+	if (strlen (name) > max_len) {
 		return false;
 	}
 

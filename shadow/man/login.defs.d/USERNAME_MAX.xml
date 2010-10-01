@@ -1,0 +1,13 @@
+<!--
+   Based on changes in the old man page by Juan M. Bello Rivas <jmbr@owl.openwall.com>
+-->
+<varlistentry>
+  <term><option>USERNAME_MAX</option> (number)</term>
+  <listitem>
+    <para>
+      Maximum number of characters for user names. This value must be less than or
+      equal to the length of an user name in utmp login records (usually 32
+      characters). If not specified, 32 characters will be assumed.
+    </para>
+  </listitem>
+</varlistentry>

@@ -1,0 +1,12 @@
+<!--
+   Based on changes in the old man page by Juan M. Bello Rivas <jmbr@owl.openwall.com>
+-->
+<varlistentry>
+  <term><option>GROUPNAME_MAX</option> (number)</term>
+  <listitem>
+    <para>
+      Maximum number of characters for group names. This value can't be greater than
+      32. If not specified, 32 characters will be assumed.
+    </para>
+  </listitem>
+</varlistentry>

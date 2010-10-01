@@ -124,6 +124,8 @@ static struct itemdef def_table[] = {
 	{"SYSLOG_SG_ENAB", NULL},
 	{"SYSLOG_SU_ENAB", NULL},
 #endif
+	{"GROUPNAME_MAX", NULL},
+	{"USERNAME_MAX", NULL},
 	{NULL, NULL}
 };
 
