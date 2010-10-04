@@ -409,11 +409,11 @@ static int copy_dir (const char *src, const char *dst,
 #ifdef WITH_SELINUX
 	selinux_file_context (dst);
 #endif
-	if (   (mkdir (dst, statp->st_mode) != 0)
+	if (   (mkdir (dst, statp->st_mode & 0700) != 0)
 	    || (chown (dst,
 	               (uid == - 1) ? statp->st_uid : (uid_t) uid,
 	               (gid == - 1) ? statp->st_gid : (gid_t) gid) != 0)
-	    || (chmod (dst, statp->st_mode) != 0)
+	    || (chmod (dst, statp->st_mode & 0700) != 0)
 	    || (copy_tree (src, dst, uid, gid) != 0)
 	    || (utimes (dst, mt) != 0)) {
 		err = -1;
@@ -583,11 +583,11 @@ static int copy_special (const char *dst,
 	selinux_file_context (dst);
 #endif
 
-	if (   (mknod (dst, statp->st_mode & ~07777, statp->st_rdev) != 0)
+	if (   (mknod (dst, statp->st_mode & ~07700, statp->st_rdev) != 0)
 	    || (chown (dst,
 	               (uid == -1) ? statp->st_uid : (uid_t) uid,
 	               (gid == -1) ? statp->st_gid : (gid_t) gid) != 0)
-	    || (chmod (dst, statp->st_mode & 07777) != 0)
+	    || (chmod (dst, statp->st_mode & 07700) != 0)
 	    || (utimes (dst, mt) != 0)) {
 		err = -1;
 	}
@@ -622,12 +622,12 @@ static int copy_file (const char *src, const char *dst,
 #ifdef WITH_SELINUX
 	selinux_file_context (dst);
 #endif
-	ofd = open (dst, O_WRONLY | O_CREAT | O_TRUNC, statp->st_mode & 07777);
+	ofd = open (dst, O_WRONLY | O_CREAT | O_TRUNC, statp->st_mode & 07700);
 	if (   (ofd < 0)
 	    || (fchown (ofd,
 	                (uid == -1) ? statp->st_uid : (uid_t) uid,
 	                (gid == -1) ? statp->st_gid : (gid_t) gid) != 0)
-	    || (fchmod (ofd, statp->st_mode & 07777) != 0)) {
+	    || (fchmod (ofd, statp->st_mode & 07700) != 0)) {
 		(void) close (ifd);
 		return -1;
 	}
