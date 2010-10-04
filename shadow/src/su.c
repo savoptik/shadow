@@ -77,8 +77,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 /* not needed by sulog.c anymore */
 static char name[BUFSIZ];
 static char oldname[BUFSIZ];
@@ -387,12 +385,6 @@ int main (int argc, char **argv)
 	}
 
 	change_environment = true;
-
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("su");
 

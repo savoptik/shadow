@@ -63,8 +63,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static const char *pwd_file = PASSWD_FILE;
 static bool use_system_pw_file = true;
 static const char *spw_file = SHADOW_FILE;
@@ -661,11 +659,6 @@ int main (int argc, char **argv)
 {
 	int errors = 0;
 	bool changed = false;
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

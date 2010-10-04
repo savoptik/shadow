@@ -82,8 +82,6 @@ static pam_handle_t *pamh = NULL;
 /*
  * Global variables
  */
-char *Prog;
-
 static const char *hostname = "";
 static /*@null@*/ /*@only@*/char *username = NULL;
 static int reason = PW_LOGIN;
@@ -563,7 +561,6 @@ int main (int argc, char **argv)
 	initenv ();
 
 	amroot = (getuid () == 0);
-	Prog = Basename (argv[0]);
 
 	if (geteuid() != 0) {
 		fprintf (stderr, _("%s: Cannot possibly work without effective root\n"), Prog);

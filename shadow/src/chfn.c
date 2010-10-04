@@ -58,7 +58,6 @@
 /*
  * Global variables.
  */
-char *Prog;
 static char fullnm[BUFSIZ];
 static char roomno[BUFSIZ];
 static char workph[BUFSIZ];
@@ -621,12 +620,6 @@ int main (int argc, char **argv)
 	 * users.
 	 */
 	amroot = (getuid () == 0);
-
-	/*
-	 * Get the program name. The program name is used as a
-	 * prefix to most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("chfn");
 

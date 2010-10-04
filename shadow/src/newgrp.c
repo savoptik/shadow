@@ -48,8 +48,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 extern char **newenvp;
 extern char **environ;
 
@@ -417,7 +415,6 @@ int main (int argc, char **argv)
 	 * but we do not need to restore the previous process persona and we
 	 * don't need to re-exec anything.  -- JWP
 	 */
-	Prog = Basename (argv[0]);
 	is_newgrp = (strcmp (Prog, "newgrp") == 0);
 	OPENLOG (is_newgrp ? "newgrp" : "sg");
 	gid = getgid ();

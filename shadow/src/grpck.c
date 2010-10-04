@@ -64,8 +64,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static const char *grp_file = GROUP_FILE;
 static bool use_system_grp_file = true;
 
@@ -799,11 +797,6 @@ int main (int argc, char **argv)
 {
 	int errors = 0;
 	bool changed = false;
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

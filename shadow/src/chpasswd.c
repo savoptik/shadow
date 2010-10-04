@@ -53,7 +53,6 @@
 /*
  * Global variables
  */
-char *Prog;
 #ifndef USE_PAM
 static bool cflg   = false;
 static bool eflg   = false;
@@ -401,8 +400,6 @@ int main (int argc, char **argv)
 
 	int errors = 0;
 	int line = 0;
-
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

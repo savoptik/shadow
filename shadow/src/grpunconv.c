@@ -54,8 +54,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static bool gr_locked  = false;
 static bool sgr_locked = false;
 
@@ -92,7 +90,6 @@ int main (int argc, char **argv)
 	if (1 != argc) {
 		(void) fputs (_("Usage: grpunconv\n"), stderr);
 	}
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

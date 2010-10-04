@@ -9,7 +9,6 @@ libmisc_a_SOURCES = \
 	addgrps.c \
 	age.c \
 	audit_help.c \
-	basename.c \
 	chkname.c \
 	chkname.h \
 	chowndir.c \

@@ -78,6 +78,9 @@ char *strchr (), *strrchr (), *strtok ();
 # include <errno.h>
 #endif
 
+#define	Prog program_invocation_short_name
+#define	Progname program_invocation_short_name
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #if HAVE_SYS_WAIT_H

@@ -39,10 +39,6 @@
 #include <stdio.h>
 #include "defines.h"
 #include "prototypes.h"
-/*
- * Global variables
- */
-char *Prog;
 
 /* local function prototypes */
 static void print_groups (const char *member);
@@ -124,11 +120,6 @@ int main (int argc, char **argv)
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
-
-	/*
-	 * Get the program name so that error messages can use it.
-	 */
-	Prog = Basename (argv[0]);
 
 	if (argc == 1) {
 

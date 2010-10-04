@@ -48,8 +48,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static bool spw_locked = false;
 static bool pw_locked = false;
 
@@ -85,7 +83,6 @@ int main (int argc, char **argv)
 	if (1 != argc) {
 		(void) fputs (_("Usage: pwunconv\n"), stderr);
 	}
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

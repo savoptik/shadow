@@ -55,8 +55,6 @@
 /*
  * Global variables
  */
-/* The name of this command, as it is invoked */
-char *Prog;
 
 #ifdef SHADOWGRP
 /* Indicate if shadow groups are enabled on the system
@@ -991,7 +989,6 @@ int main (int argc, char **argv)
 	 * with this command.
 	 */
 	bywho = getuid ();
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("gpasswd");
 	setbuf (stdout, NULL);

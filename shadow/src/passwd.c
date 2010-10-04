@@ -70,8 +70,6 @@
 /*
  * Global variables
  */
-char *Prog;			/* Program name */
-
 static char *name;		/* The name of user whose password is being changed */
 static char *myname;		/* The current user's name */
 static bool amroot;		/* The caller's real UID was 0 */
@@ -779,12 +777,6 @@ int main (int argc, char **argv)
 	 * executed by a normal user.
 	 */
 	amroot = (getuid () == 0);
-
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("passwd");
 

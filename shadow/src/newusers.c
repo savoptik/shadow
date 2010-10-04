@@ -70,8 +70,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static bool rflg = false;	/* create a system account */
 #ifndef USE_PAM
 static bool cflg = false;
@@ -827,8 +825,6 @@ int main (int argc, char **argv)
 	char **passwords = NULL;
 	unsigned int nusers = 0;
 #endif				/* USE_PAM */
-
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

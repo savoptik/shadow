@@ -55,8 +55,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static char *group_name;
 static gid_t group_id = -1;
 
@@ -317,12 +315,6 @@ int main (int argc, char **argv)
 	audit_help_open ();
 #endif
 	atexit (do_cleanups);
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

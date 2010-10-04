@@ -80,11 +80,6 @@
 #define LASTLOG_FILE "/var/log/lastlog"
 #endif
 /*
- * Global variables
- */
-char *Prog;
-
-/*
  * These defaults are used if there is no defaults file.
  */
 static gid_t def_group = 100;
@@ -1849,11 +1844,6 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

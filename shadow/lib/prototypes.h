@@ -42,6 +42,7 @@
 #ifndef _PROTOTYPES_H
 #define _PROTOTYPES_H
 
+#include <string.h>
 #include <sys/stat.h>
 #ifdef USE_UTMPX
 #include <utmpx.h>
@@ -57,8 +58,6 @@
 #include "defines.h"
 #include "commonio.h"
 
-extern char *Prog;
-
 /* addgrps.c */
 #if defined (HAVE_SETGROUPS) && ! defined (USE_PAM)
 extern int add_groups (const char *);
@@ -70,9 +69,7 @@ extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
-/* basename() renamed to Basename() to avoid libc name space confusion */
-/* basename.c */
-extern char *Basename (char *str);
+#define Basename basename
 
 /* chowndir.c */
 extern int chown_tree (const char *, uid_t, uid_t, gid_t, gid_t);

@@ -41,9 +41,6 @@
 #include "defines.h"
 #include "prototypes.h"
 
-/* Global variables */
-char *Prog;
-
 /* local function prototypes */
 static RETSIGTYPE catch_signals (int);
 static void usage (void);
@@ -75,8 +72,6 @@ int main (int argc, char **argv)
 {
 	struct passwd *pwd;
 	struct spwd *spwd;
-
-	Prog = Basename (argv[0]);
 
 	sanitize_env ();
 	if (getuid() == 0) {

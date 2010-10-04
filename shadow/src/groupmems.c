@@ -64,8 +64,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static char *adduser = NULL;
 static char *deluser = NULL;
 static char *thisgroup = NULL;
@@ -577,11 +575,6 @@ int main (int argc, char **argv)
 {
 	char *name;
 	const struct group *grp;
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("groupmems");
 

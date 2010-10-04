@@ -57,7 +57,6 @@
 /*
  * Global variables
  */
-char *Prog;
 static bool cflg   = false;
 static bool eflg   = false;
 static bool md5flg = false;
@@ -383,8 +382,6 @@ int main (int argc, char **argv)
 	struct group newgr;
 	int errors = 0;
 	int line = 0;
-
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

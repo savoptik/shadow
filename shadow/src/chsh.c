@@ -61,7 +61,6 @@
 /*
  * Global variables
  */
-char *Prog;		/* Program name */
 static bool amroot;		/* Real UID is root */
 static char loginsh[BUFSIZ];	/* Name of new login shell */
 /* command line options */
@@ -446,12 +445,6 @@ int main (int argc, char **argv)
 	 * This command behaves different for root and non-root users.
 	 */
 	amroot = (getuid () == 0);
-
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("chsh");
 

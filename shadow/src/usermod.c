@@ -86,8 +86,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 static char *user_name;
 static char *user_newname;
 static char *user_pass;
@@ -1699,11 +1697,6 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
-
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

@@ -43,8 +43,6 @@
 /*
  * Global variables
  */
-char *Prog;
-
 #ifndef DEFAULT_HUP_MESG
 #define DEFAULT_HUP_MESG _("login time exceeded\n\n")
 #endif
@@ -186,7 +184,6 @@ int main (int argc, char **argv)
 	/*
 	 * Start syslogging everything
 	 */
-	Prog = Basename (argv[0]);
 
 	OPENLOG ("logoutd");
 

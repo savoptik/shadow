@@ -62,7 +62,6 @@
 /*
  * Global variables
  */
-char *Prog;
 
 static bool
     dflg = false,		/* set last password change date */
@@ -816,11 +815,6 @@ int main (int argc, char **argv)
 		amroot = (selinux_check_passwd_access (PASSWD__ROOTOK) == 0);
 	}
 #endif
-
-	/*
-	 * Get the program name so that error messages can use it.
-	 */
-	Prog = Basename (argv[0]);
 
 	process_flags (argc, argv);
 
