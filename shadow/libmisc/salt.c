@@ -15,10 +15,73 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <crypt.h>
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
 
+#define RANDOM_DEVICE			"/dev/urandom"
+
+static int read_loop(int fd, char *buffer, int count)
+{
+	int offset, block;
+
+	offset = 0;
+	while (count > 0) {
+		block = read(fd, &buffer[offset], count);
+
+		if (block < 0) {
+			if (errno == EINTR) continue;
+			return block;
+		}
+		if (!block) return offset;
+
+		offset += block;
+		count -= block;
+	}
+
+	return offset;
+}
+
+const char *
+crypt_make_salt(/*@null@*/const char *meth, /*@null@*/void *arg)
+{
+	int fd;
+	char entropy[16];
+	char *retval;
+
+	fd = open(RANDOM_DEVICE, O_RDONLY);
+	if (fd < 0) {
+		perror("open: " RANDOM_DEVICE);
+		exit(1);
+	}
+
+	if (read_loop(fd, entropy, sizeof(entropy)) != sizeof(entropy)) {
+		close(fd);
+		fprintf(stderr, "Unable to obtain entropy from %s\n",
+				RANDOM_DEVICE);
+		exit(1);
+	}
+
+	close(fd);
+
+	retval = crypt_gensalt(getdef_str("CRYPT_PREFIX") ?: "",
+			getdef_num("CRYPT_ROUNDS", 0), entropy, sizeof(entropy));
+	memset(entropy, 0, sizeof(entropy));
+	if (!retval) {
+		fprintf(stderr, "Unable to generate a salt, "
+				"check your CRYPT_PREFIX and CRYPT_ROUNDS settings.\n");
+		exit(1);
+	}
+
+	return retval;
+}
+
+#if 0
 /* local function prototypes */
 static void seedRNG (void);
 static /*@observer@*/const char *gensalt (size_t salt_size);
@@ -255,3 +318,4 @@ static /*@observer@*/const char *gensalt (size_t salt_size)
 	return result;
 }
 
+#endif

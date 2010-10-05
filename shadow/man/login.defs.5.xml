@@ -37,6 +37,7 @@
 <!ENTITY CONSOLE               SYSTEM "login.defs.d/CONSOLE.xml">
 <!ENTITY CONSOLE_GROUPS        SYSTEM "login.defs.d/CONSOLE_GROUPS.xml">
 <!ENTITY CREATE_HOME           SYSTEM "login.defs.d/CREATE_HOME.xml">
+<!ENTITY CRYPT_PREFIX          SYSTEM "login.defs.d/CRYPT_PREFIX.xml">
 <!ENTITY DEFAULT_HOME          SYSTEM "login.defs.d/DEFAULT_HOME.xml">
 <!ENTITY ENCRYPT_METHOD        SYSTEM "login.defs.d/ENCRYPT_METHOD.xml">
 <!ENTITY ENV_HZ                SYSTEM "login.defs.d/ENV_HZ.xml">
@@ -146,6 +147,7 @@
       &CONSOLE;
       &CONSOLE_GROUPS;
       &CREATE_HOME;
+      &CRYPT_PREFIX; <!-- documents also CRYPT_ROUNDS -->
       &DEFAULT_HOME;
       &ENCRYPT_METHOD;
       &ENV_HZ;
@@ -265,6 +267,7 @@
 	    ENCRYPT_METHOD MAX_MEMBERS_PER_GROUP MD5_CRYPT_ENAB
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
 	    SHA_CRYPT_MIN_ROUNDS</phrase>
+	    CRYPT_PREFIX CRYPT_ROUNDS
 	  </para>
 	</listitem>
       </varlistentry>
@@ -475,6 +478,9 @@
     <title>SEE ALSO</title>
     <para>
       <citerefentry>
+	<refentrytitle>gpasswd</refentrytitle><manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
 	<refentrytitle>login</refentrytitle><manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
@@ -482,6 +488,9 @@
       </citerefentry>,
       <citerefentry>
 	<refentrytitle>su</refentrytitle><manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>crypt</refentrytitle><manvolnum>3</manvolnum>
       </citerefentry>,
       <citerefentry>
 	<refentrytitle>passwd</refentrytitle><manvolnum>5</manvolnum>

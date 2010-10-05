@@ -1,0 +1,16 @@
+<!--
+   Based on changes in the old man page by Solar Designer <solar@owl.openwall.com>
+-->
+<varlistentry>
+  <term><option>CRYPT_PREFIX</option> (string)</term>
+  <term><option>CRYPT_ROUNDS</option> (number)</term>
+  <listitem>
+    <para>
+      The password hashing method and iteration count to use for group passwords
+      that may be set with <command>gpasswd</command>.
+      Please refer to <citerefentry><refentrytitle>crypt</refentrytitle>
+      <manvolnum>3</manvolnum></citerefentry> for information on supported
+      password hashing methods.
+    </para>
+  </listitem>
+</varlistentry>

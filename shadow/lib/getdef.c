@@ -126,6 +126,8 @@ static struct itemdef def_table[] = {
 #endif
 	{"GROUPNAME_MAX", NULL},
 	{"USERNAME_MAX", NULL},
+	{"CRYPT_PREFIX", NULL},
+	{"CRYPT_ROUNDS", NULL},
 	{NULL, NULL}
 };
 
