@@ -2069,7 +2069,8 @@ int main (int argc, char **argv)
 	if (mflg) {
 		create_home ();
 		if (home_added) {
-			copy_tree (def_template, user_home, user_id, user_gid);
+			copy_tree ((access(def_template,R_OK|X_OK)?SKEL_DIR:def_template),
+					user_home, user_id, user_gid);
 		} else {
 			fprintf (stderr,
 			         _("%s: warning: the home directory already exists.\n"
