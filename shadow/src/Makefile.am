@@ -21,9 +21,9 @@ INCLUDES = \
 # and installation would be much simpler (just two directories,
 # $prefix/bin and $prefix/sbin, no install-data hacks...)
 
-bin_PROGRAMS   = groups login su
+bin_PROGRAMS   =
 sbin_PROGRAMS  = nologin
-ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
+ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp
 usbin_PROGRAMS = \
 	chgpasswd \
 	chpasswd \
@@ -44,11 +44,8 @@ usbin_PROGRAMS = \
 	usermod \
 	vipw
 
-# id and groups are from gnu, sulogin from sysvinit
-noinst_PROGRAMS = id sulogin
-
-suidbins       = su
-suidubins      = chage chfn chsh expiry gpasswd newgrp passwd
+suidbins       =
+suidubins      = 
 if ACCT_TOOLS_SETUID
 	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
@@ -84,21 +81,12 @@ groupmod_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
 grpck_LDADD    = $(LDADD) $(LIBSELINUX)
 grpconv_LDADD  = $(LDADD) $(LIBSELINUX)
 grpunconv_LDADD = $(LDADD) $(LIBSELINUX)
-login_SOURCES  = \
-	login.c \
-	login_nopam.c
-login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT)
 newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT) -lpam_userpass
 nologin_LDADD  =
-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM)
 pwck_LDADD     = $(LDADD) $(LIBSELINUX)
 pwconv_LDADD   = $(LDADD) $(LIBSELINUX)
 pwunconv_LDADD = $(LDADD) $(LIBSELINUX)
-su_SOURCES     = \
-	su.c \
-	suauth.c
-su_LDADD       = $(LDADD) $(LIBPAM) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 sulogin_LDADD  = $(LDADD) $(LIBCRYPT)
 useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
 userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)

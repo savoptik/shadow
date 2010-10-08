@@ -56,7 +56,6 @@ libmisc_a_SOURCES = \
 	tz.c \
 	ulimit.c \
 	user_busy.c \
-	utmp.c \
 	valid.c \
 	xgetpwnam.c \
 	xgetpwuid.c \
