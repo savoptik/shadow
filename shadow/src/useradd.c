@@ -52,6 +52,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#ifdef SHADOWTCB
+#include <tcb.h>
+#include "tcbfuncs.h"
+#endif
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
@@ -144,6 +148,9 @@ static bool
     Zflg = false;		/* new selinux user */
 
 static bool home_added = false;
+#ifdef SHADOWTCB
+static bool tcb_added = false;
+#endif
 
 /*
  * exit status values
@@ -187,11 +194,50 @@ static void grp_update (void);
 static void process_flags (int argc, char **argv);
 static void close_files (void);
 static void open_files (void);
+static void open_shadow (void);
 static void faillog_reset (uid_t);
 static void lastlog_reset (uid_t);
 static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
+
+#ifdef SHADOWTCB
+static int useradd_rm_tcbdir(const char *user_name, uid_t user_id)
+{
+	char *buf;
+	int ret = 0;
+
+	if (!getdef_bool("USE_TCB"))
+		return 0;
+
+	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
+		fprintf(stderr, "Can't allocate memory, "
+				"tcb entry for %s not removed.\n",
+				user_name);
+		return 1;
+	}
+	if (!s_drop_priv()) {
+		perror("tcb_drop_privs");
+		free(buf);
+		return 1;
+	}
+	if (remove_tree(buf, false)) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		s_gain_priv();
+		free(buf);
+		return 1;
+	}
+	s_gain_priv();
+	free(buf);
+	if (!tcb_rmdir(user_name)) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		ret = 1;
+	}
+	return ret;
+}
+#endif
 
 /*
  * fail_exit - undo as much as possible
@@ -215,6 +261,12 @@ static void fail_exit (int code)
 			/* continue */
 		}
 	}
+
+#ifdef SHADOWTCB
+	if (tcb_added)
+		useradd_rm_tcbdir(user_name, user_id);
+#endif
+
 	if (pw_locked) {
 		if (pw_unlock () == 0) {
 			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
@@ -1430,22 +1482,6 @@ static void open_files (void)
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, pw_dbname ());
 		fail_exit (E_PW_UPDATE);
 	}
-	if (is_shadow_pwd) {
-		if (spw_lock () == 0) {
-			fprintf (stderr,
-			         _("%s: cannot lock %s; try again later.\n"),
-			         Prog, spw_dbname ());
-			fail_exit (E_PW_UPDATE);
-		}
-		spw_locked = true;
-		if (spw_open (O_RDWR) == 0) {
-			fprintf (stderr,
-			         _("%s: cannot open %s\n"),
-			         Prog, spw_dbname ());
-			fail_exit (E_PW_UPDATE);
-		}
-	}
-
 	/*
 	 * Lock and open the group file.
 	 */
@@ -1515,6 +1551,24 @@ static void new_sgent (struct sgrp *sgent)
 }
 #endif				/* SHADOWGRP */
 
+static void open_shadow (void)
+{
+	if (is_shadow_pwd) {
+		if (spw_lock () == 0) {
+			fprintf (stderr,
+			         _("%s: cannot lock %s; try again later.\n"),
+			         Prog, spw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
+		spw_locked = true;
+		if (spw_open (O_RDWR) == 0) {
+			fprintf (stderr,
+			         _("%s: cannot open %s\n"),
+			         Prog, spw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
+	}
+}
 
 /*
  * grp_add - add new group file entries
@@ -1985,6 +2039,18 @@ int main (int argc, char **argv)
 			}
 		}
 	}
+
+#ifdef SHADOWTCB
+	if (getdef_bool("USE_TCB")) {
+		if (!tcb_create(user_name, user_id)) {
+			fprintf(stderr, "Problems creating /etc/tcb/%s\n", user_name);
+			exit(E_UID_IN_USE);
+		}
+		tcb_added = true;
+	}
+#endif
+
+	open_shadow();
 
 	/* do we have to add a group for that user? This is why we need to
 	 * open the group files in the open_files() function  --gafton */

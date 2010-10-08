@@ -43,6 +43,10 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/stat.h>
+#ifdef SHADOWTCB
+#include <tcb.h>
+#include "tcbfuncs.h"
+#endif
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -121,6 +125,44 @@ static void usage (void)
 	         "\n"), stderr);
 	exit (E_USAGE);
 }
+
+#ifdef SHADOWTCB
+static int userdel_rm_tcbdir(const char *user_name, uid_t user_id)
+{
+	char *buf;
+	int ret = 0;
+
+	if (!getdef_bool("USE_TCB"))
+		return 0;
+
+	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
+		fprintf(stderr, "Can't allocate memory, "
+				"tcb entry for %s not removed.\n",
+				user_name);
+		return 1;
+	}
+	if (!s_drop_priv()) {
+		perror("tcb_drop_privs");
+		free(buf);
+		return 1;
+	}
+	if (remove_tree(buf, false)) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		s_gain_priv();
+		free(buf);
+		return 1;
+	}
+	s_gain_priv();
+	free(buf);
+	if (!tcb_rmdir(user_name)) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		ret = 1;
+	}
+	return ret;
+}
+#endif
 
 /*
  * update_groups - delete user from secondary group set
@@ -847,6 +889,10 @@ int main (int argc, char **argv)
 		user_id = pwd->pw_uid;
 		user_home = xstrdup (pwd->pw_dir);
 	}
+#ifdef SHADOWTCB
+	if (!tcb_user(user_name))
+		exit(E_NOTFOUND);
+#endif
 #ifdef	USE_NIS
 
 	/*
@@ -947,7 +993,7 @@ int main (int argc, char **argv)
 #endif
 
 	if (rflg) {
-		if (remove_tree (user_home) != 0) {
+		if (remove_tree (user_home, true) != 0) {
 			fprintf (stderr,
 				 _("%s: error removing directory %s\n"),
 				 Prog, user_home);
@@ -991,6 +1037,9 @@ int main (int argc, char **argv)
 	 */
 	user_cancel (user_name);
 	close_files ();
+#ifdef SHADOWTCB
+	    errors += userdel_rm_tcbdir(user_name, user_id);
+#endif
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");

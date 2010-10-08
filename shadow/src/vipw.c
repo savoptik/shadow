@@ -39,6 +39,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <utime.h>
+#ifdef SHADOWTCB
+#include <tcb.h>
+#include "tcbfuncs.h"
+#endif
+#include "getdef.h"
+#include "commonio.h"
 #include "defines.h"
 #include "groupio.h"
 #include "nscd.h"
@@ -62,6 +68,8 @@ static bool filelocked = false;
 static bool createedit = false;
 static int (*unlock) (void);
 static bool quiet = false;
+static bool securemode = false;
+static char *user = NULL;
 
 /* local function prototypes */
 static void usage (void);
@@ -137,6 +145,26 @@ static int create_backup_file (FILE * fp, const char *backup, struct stat *sb)
 	return 0;
 }
 
+#ifdef SHADOWTCB
+static int prep_new(char **to_rename, char *fileedit, const char *file)
+{
+	FILE *f;
+	struct stat st;
+
+	if (!(f = fopen(fileedit, "r"))) return 0;
+	if (unlink(fileedit)) return 0;
+	if (!s_drop_priv()) return 0;
+	if (stat(file, &st)) return 0;
+	if (asprintf(to_rename, "%s+", file) < 0) {
+		fclose(f);
+		return 0;
+	}
+	if (create_backup_file(f, *to_rename, &st)) return 0;
+
+	return 1;
+}
+#endif
+
 /*
  *
  */
@@ -174,6 +202,7 @@ static void vipwexit (const char *msg, int syserr, int ret)
 #ifndef DEFAULT_EDITOR
 #define DEFAULT_EDITOR "vi"
 #endif
+#define SCRATCHDIR ":tmp"
 
 /*
  *
@@ -187,16 +216,38 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	int status;
 	FILE *f;
 	char filebackup[1024], fileedit[1024];
+	char *to_rename;
 
 	snprintf (filebackup, sizeof filebackup, "%s-", file);
-	snprintf (fileedit, sizeof fileedit, "%s.edit", file);
+#ifdef SHADOWTCB
+	if (securemode) {
+		if (mkdir(TCB_DIR "/" SCRATCHDIR, 0700) && errno != EEXIST) {
+			fprintf(stderr, "%s when trying to mkdir " TCB_DIR "/" SCRATCHDIR
+					"\nare you sure you're the admin here? :^)\n", strerror(errno));
+			exit(1);
+		}
+		snprintf(fileedit, sizeof fileedit, TCB_DIR "/" SCRATCHDIR "/.vipw.shadow.%s", user);
+	} else
+#endif
+		snprintf (fileedit, sizeof fileedit, "%s.edit", file);
 	unlock = file_unlock;
 	filename = file;
 	fileeditname = fileedit;
-
+#ifdef SHADOWTCB
+	if (securemode && !s_drop_priv()) {
+		fprintf(stderr, "Unable to open %s\n", file);
+		exit(1);
+	}
+#endif
 	if (access (file, F_OK) != 0) {
 		vipwexit (file, 1, 1);
 	}
+#ifdef SHADOWTCB
+	if (securemode && !s_gain_priv()) {
+		fprintf(stderr, "Unable to gain privs\n");
+		exit(1);
+	}
+#endif
 #ifdef WITH_SELINUX
 	/* if SE Linux is enabled then set the context of all new files
 	   to be the context of the file we are editing */
@@ -218,6 +269,12 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	}
 	filelocked = true;
 
+#ifdef SHADOWTCB
+	if (securemode && !s_drop_priv()) {
+		fprintf(stderr, "Unable to open %s\n", file);
+		exit(1);
+	}
+#endif
 	/* edited copy has same owners, perm */
 	if (stat (file, &st1) != 0) {
 		vipwexit (file, 1, 1);
@@ -226,6 +283,12 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	if (NULL == f) {
 		vipwexit (file, 1, 1);
 	}
+#ifdef SHADOWTCB
+	if (securemode && !s_gain_priv()) {
+		fprintf(stderr, "Unable to gain privs\n");
+		exit(1);
+	}
+#endif
 	if (create_backup_file (f, fileedit, &st1) != 0) {
 		vipwexit (_("Couldn't make backup"), errno, 1);
 	}
@@ -300,15 +363,30 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	 * without saving). Use pwck or grpck to do the check.  --marekm
 	 */
 	createedit = false;
+#ifdef SHADOWTCB
+	if (securemode) {
+		if (!prep_new(&to_rename, fileedit, file)) {
+			fprintf(stderr, _("%s: can't restore %s: %s (your changes are in %s)\n"),
+					progname, file, strerror(errno), fileedit);
+			vipwexit(0,0,1);
+		}
+	} else
+#endif
+		to_rename = fileedit;
 	unlink (filebackup);
 	link (file, filebackup);
-	if (rename (fileedit, file) == -1) {
+	if (rename (to_rename, file) == -1) {
 		fprintf (stderr,
 		         _("%s: can't restore %s: %s (your changes are in %s)\n"),
 		         progname, file, strerror (errno), fileedit);
 		vipwexit (0, 0, 1);
 	}
-
+#ifdef SHADOWTCB
+	if (securemode && !s_gain_priv()) {
+		fprintf(stderr, "Unable to gain privs\n");
+		exit(1);
+	}
+#endif
 	if ((*file_unlock) () == 0) {
 		fprintf (stderr, _("%s: failed to unlock %s\n"), progname, fileeditname);
 		SYSLOG ((LOG_ERR, "failed to unlock %s", fileeditname));
@@ -370,9 +448,21 @@ int main (int argc, char **argv)
 		}
 	}
 
+#ifdef SHADOWTCB
+	if (do_vipw && editshadow && getdef_bool("USE_TCB")) {
+		securemode = true;
+		user = argv[optind];
+		if (!user) {
+			usage();
+		}
+		if (!tcb_user(user))
+			exit(1);
+	}
+#endif
+
 	if (do_vipw) {
 		if (editshadow) {
-			vipwedit (SHADOW_FILE, spw_lock, spw_unlock);
+			vipwedit (spw_dbname(), spw_lock, spw_unlock);
 			printf (MSG_WARN_EDIT_OTHER_FILE,
 			        SHADOW_FILE,
 			        PASSWD_FILE,

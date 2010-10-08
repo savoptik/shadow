@@ -66,6 +66,9 @@
 #include "sgroupio.h"
 #include "shadowio.h"
 #include "chkname.h"
+#ifdef SHADOWTCB
+#include "tcbfuncs.h"
+#endif
 
 /*
  * Global variables
@@ -80,7 +83,6 @@ static long sha_rounds = 5000;
 #endif				/* USE_SHA_CRYPT */
 #endif				/* !USE_PAM */
 
-static bool is_shadow;
 #ifdef SHADOWGRP
 static bool is_shadow_grp;
 static bool sgr_locked = false;
@@ -381,22 +383,7 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 #ifndef USE_PAM
 static void update_passwd (struct passwd *pwd, const char *password)
 {
-	void *crypt_arg = NULL;
-	if (crypt_method != NULL) {
-#ifdef USE_SHA_CRYPT
-		if (sflg) {
-			crypt_arg = &sha_rounds;
-		}
-#endif
-	}
-
-	if ((crypt_method != NULL) && (0 == strcmp(crypt_method, "NONE"))) {
-		pwd->pw_passwd = (char *)password;
-	} else {
-		pwd->pw_passwd = pw_encrypt (password,
-		                             crypt_make_salt (crypt_method,
-		                                              crypt_arg));
-	}
+	pwd->pw_passwd = "!!";
 }
 #endif				/* !USE_PAM */
 
@@ -407,6 +394,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 {
 	const struct spwd *sp;
 	struct spwd spent;
+	int retval = -1;
 
 #ifndef USE_PAM
 	void *crypt_arg = NULL;
@@ -423,37 +411,42 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 * points to the entry in the password file. Shadow files are
 	 * harder since there are zillions of things to do ...
 	 */
-	if (!is_shadow) {
-		update_passwd (pwd, password);
+	if (!spw_file_present()) {
+		update_passwd (pwd, NULL);
 		return 0;
 	}
 #endif				/* USE_PAM */
+
+	if (spw_lock () == 0) {
+		fprintf (stderr,
+				_("%s: cannot lock %s; try again later.\n"),
+				Prog, spw_dbname ());
+		return -1;
+	}
+	spw_locked = true;
+	if ((spw_open (O_RDWR) == 0)) {
+		fprintf (stderr, _("%s: cannot open %s\n"), Prog, spw_dbname ());
+		return -1;
+	}
 
 	/*
 	 * Do the first and easiest shadow file case. The user already
 	 * exists in the shadow password file.
 	 */
 	sp = spw_locate (pwd->pw_name);
-#ifndef USE_PAM
 	if (NULL != sp) {
 		spent = *sp;
-		if (   (NULL != crypt_method)
-		    && (0 == strcmp(crypt_method, "NONE"))) {
-			spent.sp_pwdp = (char *)password;
-		} else {
-			const char *salt = crypt_make_salt (crypt_method,
-			                                    crypt_arg);
-			spent.sp_pwdp = pw_encrypt (password, salt);
-		}
+		spent.sp_pwdp = "!!";
 		spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
 		if (0 == spent.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */
 			spent.sp_lstchg = -1;
 		}
-		return (spw_update (&spent) == 0);
+		goto out_update;
 	}
 
+#if 0
 	/*
 	 * Pick the next easiest case - the user has an encrypted password
 	 * which isn't equal to "x". The password was set to "x" earlier
@@ -464,18 +457,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 		update_passwd (pwd, password);
 		return 0;
 	}
-#else				/* USE_PAM */
-	/*
-	 * If there is already a shadow entry, do not touch it.
-	 * If there is already a passwd entry with a password, do not
-	 * touch it.
-	 * The password will be updated later for all users using PAM.
-	 */
-	if (   (NULL != sp)
-	    || (strcmp (pwd->pw_passwd, "x") != 0)) {
-		return 0;
-	}
-#endif				/* USE_PAM */
+#endif
 
 	/*
 	 * Now the really hard case - I need to create an entirely new
@@ -494,7 +476,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 * Lock the password.
 	 * The password will be updated later for all users using PAM.
 	 */
-	spent.sp_pwdp = "!";
+	spent.sp_pwdp = "!!";
 #endif
 	spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
 	if (0 == spent.sp_lstchg) {
@@ -509,7 +491,26 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	spent.sp_expire = -1;
 	spent.sp_flag   = SHADOW_SP_FLAG_UNSET;
 
-	return (spw_update (&spent) == 0);
+out_update:
+	retval = spw_update (&spent) == 0;
+
+	if (spw_close () == 0) {
+		fprintf (stderr,
+				_("%s: failure while writing changes to %s\n"),
+				Prog, spw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
+		retval = -1;
+	}
+	if (spw_unlock () == 0) {
+		fprintf (stderr,
+				_("%s: failed to unlock %s\n"),
+				Prog, spw_dbname ());
+		SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+		/* continue */
+	}
+	spw_locked = false;
+
+	return retval;
 }
 
 /*
@@ -658,9 +659,11 @@ static void check_perms (void)
 		retval = pam_acct_mgmt (pamh, 0);
 	}
 
-	if (NULL != pamh) {
+	if (retval == PAM_SUCCESS)
+		retval = pam_end(pamh, retval);
+	else
 		(void) pam_end (pamh, retval);
-	}
+
 	if (PAM_SUCCESS != retval) {
 		fprintf (stderr, _("%s: PAM authentication failed\n"), Prog);
 		fail_exit (EXIT_FAILURE);
@@ -687,15 +690,6 @@ static void open_files (void)
 		fail_exit (EXIT_FAILURE);
 	}
 	pw_locked = true;
-	if (is_shadow) {
-		if (spw_lock () == 0) {
-			fprintf (stderr,
-			         _("%s: cannot lock %s; try again later.\n"),
-			         Prog, spw_dbname ());
-			fail_exit (EXIT_FAILURE);
-		}
-		spw_locked = true;
-	}
 	if (gr_lock () == 0) {
 		fprintf (stderr,
 		         _("%s: cannot lock %s; try again later.\n"),
@@ -717,10 +711,6 @@ static void open_files (void)
 
 	if (pw_open (O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, pw_dbname ());
-		fail_exit (EXIT_FAILURE);
-	}
-	if (is_shadow && (spw_open (O_RDWR) == 0)) {
-		fprintf (stderr, _("%s: cannot open %s\n"), Prog, spw_dbname ());
 		fail_exit (EXIT_FAILURE);
 	}
 	if (gr_open (O_RDWR) == 0) {
@@ -752,7 +742,7 @@ static void close_files (void)
 	}
 	pw_locked = false;
 
-	if (is_shadow) {
+	if (spw_locked) {
 		if (spw_close () == 0) {
 			fprintf (stderr,
 			         _("%s: failure while writing changes to %s\n"),
@@ -836,8 +826,6 @@ int main (int argc, char **argv)
 
 	check_perms ();
 
-	is_shadow = spw_file_present ();
-
 #ifdef SHADOWGRP
 	is_shadow_grp = sgr_file_present ();
 #endif
@@ -864,7 +852,7 @@ int main (int argc, char **argv)
 				         _("%s: line %d: line too long\n"),
 				         Prog, line);
 				errors++;
-				continue;
+				break;
 			}
 		}
 
@@ -886,7 +874,8 @@ int main (int argc, char **argv)
 		if (nfields != 6) {
 			fprintf (stderr, _("%s: line %d: invalid line\n"),
 			         Prog, line);
-			continue;
+			errors++;
+			break;
 		}
 
 		/*
@@ -898,7 +887,7 @@ int main (int argc, char **argv)
 		    && (getpwnam (fields[0]) != NULL)) {
 			fprintf (stderr, _("%s: cannot update the entry of user %s (not in the passwd database)\n"), Prog, fields[0]);
 			errors++;
-			continue;
+			break;
 		}
 
 		if (   (NULL == pw)
@@ -907,7 +896,7 @@ int main (int argc, char **argv)
 			         _("%s: line %d: can't create user\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
 		}
 
 		/*
@@ -928,7 +917,7 @@ int main (int argc, char **argv)
 			         _("%s: line %d: can't create group\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
 		}
 
 		/*
@@ -944,7 +933,14 @@ int main (int argc, char **argv)
 			         _("%s: line %d: can't create user\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
+		}
+		if (!tcb_create(fields[0], uid)) {
+			fprintf(stderr, "Problems creating /etc/tcb/%s; "
+					"there may be a stale entry left.\n", fields[0]);
+			fprintf (stderr, "line %d user %s\n", line, fields[0]);
+			errors++;
+			break;
 		}
 
 		/*
@@ -957,7 +953,7 @@ int main (int argc, char **argv)
 			         _("%s: line %d: user '%s' does not exist in %s\n"),
 			         Prog, line, fields[0], pw_dbname ());
 			errors++;
-			continue;
+			break;
 		}
 		newpw = *pw;
 
@@ -976,7 +972,7 @@ int main (int argc, char **argv)
 			         _("%s: line %d: can't update password\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
 		}
 		if ('\0' != fields[4][0]) {
 			newpw.pw_gecos = fields[4];
@@ -1000,6 +996,7 @@ int main (int argc, char **argv)
 				         _("%s: line %d: mkdir %s failed: %s\n"),
 				         Prog, line, newpw.pw_dir,
 				         strerror (errno));
+				break;
 			} else if (chown (newpw.pw_dir,
 			                  newpw.pw_uid,
 			                  newpw.pw_gid) != 0) {
@@ -1018,7 +1015,7 @@ int main (int argc, char **argv)
 			         _("%s: line %d: can't update entry\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
 		}
 	}
 

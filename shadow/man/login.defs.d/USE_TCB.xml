@@ -1,0 +1,14 @@
+<!--
+   Based on changes in the old man page by Solar Designer <solar@owl.openwall.com>
+   and Rafal Wojtczuk <nergal@owl.openwall.com>
+-->
+<varlistentry>
+  <term><option>USE_TCB</option> (boolean)</term>
+  <listitem>
+    <para>
+        If <replaceable>yes</replaceable>, the commands which create or modify
+        accounts will adhere to the <citerefentry><refentrytitle>tcb</refentrytitle>
+        <manvolnum>5</manvolnum></citerefentry> password shadowing scheme.
+    </para>
+  </listitem>
+</varlistentry>

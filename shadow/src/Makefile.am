@@ -55,7 +55,8 @@ endif
 
 LDADD          = $(INTLLIBS) \
 		 $(top_builddir)/libmisc/libmisc.a \
-		 $(top_builddir)/lib/libshadow.la
+		 $(top_builddir)/lib/libshadow.la \
+		 -ltcb
 AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
 
 if ACCT_TOOLS_SETUID
@@ -74,7 +75,7 @@ chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
 chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
 chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT) -lpam_userpass
 gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT)
 groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
 groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
@@ -88,7 +89,7 @@ login_SOURCES  = \
 	login_nopam.c
 login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT)
-newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
+newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT) -lpam_userpass
 nologin_LDADD  =
 passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM)
 pwck_LDADD     = $(LDADD) $(LIBSELINUX)

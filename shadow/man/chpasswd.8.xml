@@ -87,7 +87,7 @@
     </refsect2>
     <refsect2 condition="pam">
       <para>
-	The supplied passwords must be in clear-text.
+	By default the supplied passwords must be in clear-text.
       </para>
       <para>
 	PAM is used to update the password in the system database
@@ -125,14 +125,14 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
+    </variablelist>
+    <variablelist remap='IP'>
+	  <varlistentry>
 	<term><option>-e</option>, <option>--encrypted</option></term>
 	<listitem>
 	  <para>Supplied passwords are in encrypted form.</para>
 	</listitem>
       </varlistentry>
-    </variablelist>
-    <variablelist remap='IP'>
       <varlistentry>
 	<term><option>-h</option>, <option>--help</option></term>
 	<listitem>

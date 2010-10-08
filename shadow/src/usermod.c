@@ -63,6 +63,9 @@
 #include "sgroupio.h"
 #endif
 #include "shadowio.h"
+#ifdef SHADOWTCB
+#include "tcbfuncs.h"
+#endif
 
 /*
  * exit status values
@@ -87,10 +90,10 @@
  * Global variables
  */
 static char *user_name;
-static char *user_newname;
+static char *user_newname = NULL;
 static char *user_pass;
 static uid_t user_id;
-static uid_t user_newid;
+static uid_t user_newid = -1;
 static gid_t user_gid;
 static gid_t user_newgid;
 static char *user_comment;
@@ -1433,7 +1436,7 @@ static void move_home (void)
 				if (copy_tree (user_home, user_newhome,
 				               uflg ? (long int)user_newid : -1,
 				               gflg ? (long int)user_newgid : -1) == 0) {
-					if (remove_tree (user_home) != 0) {
+					if (remove_tree (user_home, true) != 0) {
 						fprintf (stderr,
 						         _("%s: warning: failed to completely remove old home directory %s"),
 						         Prog, user_home);
@@ -1451,7 +1454,7 @@ static void move_home (void)
 
 				/* TODO: do some cleanup if the copy
 				 *       was started */
-				(void) remove_tree (user_newhome);
+				(void) remove_tree (user_newhome, true);
 			}
 			fprintf (stderr,
 			         _("%s: cannot rename directory %s to %s\n"),
@@ -1764,6 +1767,12 @@ int main (int argc, char **argv)
 	 * Do the hard stuff - open the files, change the user entries,
 	 * change the home directory, then close and update the files.
 	 */
+
+#ifdef SHADOWTCB
+	if (!tcb_user(user_name))
+		exit(E_PW_UPDATE);
+#endif
+
 	open_files ();
 	if (   cflg || dflg || eflg || fflg || gflg || Lflg || lflg || pflg
 	    || sflg || uflg || Uflg) {
@@ -1805,6 +1814,12 @@ int main (int argc, char **argv)
 			    user_id, user_newid,
 			    user_gid, gflg ? user_newgid : user_gid);
 	}
+
+#ifdef SHADOWTCB
+	if ((user_newname || user_newid != -1) &&
+	    !tcb_move(user_newname, user_newid))
+		exit(E_PW_UPDATE);
+#endif
 
 	return E_SUCCESS;
 }
