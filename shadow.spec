@@ -24,8 +24,13 @@ Source10: newgrp.control
 Patch: %name-%version-%release.patch
 
 %def_disable shared
+%def_with selinux
 
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
+
+%if_with selinux
+BuildPreReq: libselinux-devel
+%endif
 
 # Automatically added by buildreq on Mon Oct 28 2002
 BuildRequires: libpam-devel libtcb-devel pam_userpass-devel
@@ -187,6 +192,7 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 	%{subst_enable shared} \
 	--with-libpam \
 	--without-libcrack \
+	%{subst_with selinux} \
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
 	--enable-man
