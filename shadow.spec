@@ -297,7 +297,6 @@ fi
 %_sbindir/chpasswd
 %_man5dir/login.defs.*
 %_man5dir/shadow.*
-%_man8dir/adduser.*
 %_man8dir/chpasswd.*
 %_man8dir/group*.*
 %_man8dir/newusers.*
