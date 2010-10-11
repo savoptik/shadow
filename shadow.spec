@@ -204,12 +204,14 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 install -pD -m640 %_sourcedir/login.defs %buildroot%_sysconfdir/login.defs
 install -pD -m600 %_sourcedir/useradd.default %buildroot%_sysconfdir/default/useradd
 
+rm -rf %buildroot%_sysconfdir/pam.d
 mkdir -p %buildroot%_sysconfdir/pam.d
 pushd %buildroot%_sysconfdir/pam.d
 install -pm600 %_sourcedir/user-group-mod.pamd user-group-mod
 ln -s user-group-mod groupadd
 ln -s user-group-mod groupdel
 ln -s user-group-mod groupmod
+ln -s user-group-mod groupmems
 ln -s user-group-mod useradd
 ln -s user-group-mod userdel
 ln -s user-group-mod usermod
@@ -281,6 +283,7 @@ fi
 %_sysconfdir/pam.d/groupadd
 %_sysconfdir/pam.d/groupdel
 %_sysconfdir/pam.d/groupmod
+%_sysconfdir/pam.d/groupmems
 %_sysconfdir/pam.d/useradd
 %_sysconfdir/pam.d/userdel
 %_sysconfdir/pam.d/usermod
