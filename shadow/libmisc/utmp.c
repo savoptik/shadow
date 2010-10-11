@@ -56,7 +56,7 @@ static bool is_my_tty (const char *tty)
 	/* full_tty shall be at least sizeof utmp.ut_line + 5 */
 	char full_tty[200];
 	/* tmptty shall be bigger than full_tty */
-	static char tmptty[sizeof (full_tty)+1];
+	static char tmptty[sizeof (full_tty)+1] = "";
 
 	if ('/' != *tty) {
 		(void) snprintf (full_tty, sizeof full_tty, "/dev/%s", tty);
@@ -71,7 +71,7 @@ static bool is_my_tty (const char *tty)
 		}
 	}
 
-	if (NULL == tmptty) {
+	if ('\0' == tmptty[0]) {
 		(void) puts (_("Unable to determine your tty name."));
 		exit (EXIT_FAILURE);
 	} else if (strncmp (tty, tmptty, sizeof (tmptty)) != 0) {
@@ -200,7 +200,6 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 		strcpy (hostname, host);
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
 	} else if (   (NULL != ut)
-	           && (NULL != ut->ut_host)
 	           && ('\0' != ut->ut_host[0])) {
 		hostname = (char *) xmalloc (sizeof (ut->ut_host) + 1);
 		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));

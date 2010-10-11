@@ -167,7 +167,7 @@ static int check_logins (const char *name, const char *maxlogins)
 	 * includes the user who is currently trying to log in.
 	 */
 	if (count > limit) {
-		SYSLOG ((LOG_WARN, "Too many logins (max %d) for %s\n",
+		SYSLOG ((LOG_WARN, "Too many logins (max %lu) for %s\n",
 			 limit, name));
 		return LOGIN_ERROR_LOGIN;
 	}
