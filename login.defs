@@ -71,6 +71,18 @@ CREATE_HOME		yes
 #USERDEL_CMD		/usr/local/sbin/userdel_local
 
 #
+# If set to yes, userdel will remove the user´s group if it contains
+# no more members, and useradd will create by default a group with
+# the name of the user.
+#
+USERGROUPS_ENAB yes
+
+#
+# Enable "syslog" logging of newgrp and sg activity.
+#
+SYSLOG_SG_ENAB      yes
+
+#
 # The password hashing method and iteration count to use for group
 # passwords that may be set with gpasswd(1).
 #
