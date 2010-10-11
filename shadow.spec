@@ -21,40 +21,7 @@ Source8: chsh.control
 Source9: gpasswd.control
 Source10: newgrp.control
 
-Patch0: shadow-4.0.4.1-cvs-20041008-userdel.patch
-Patch1: shadow-4.0.4.1-cvs-20050519-newgrp.patch
-
-# Owl
-Patch2: shadow-4.0.4.1-owl-alt-check-reads.patch
-Patch3: shadow-4.0.4.1-owl-usermod-unlock.patch
-Patch4: shadow-4.0.4.1-owl-tmp.patch
-Patch5: shadow-4.0.4.1-owl-pam-auth.patch
-Patch6: shadow-4.0.4.1-owl-chage-drop-priv.patch
-Patch7: shadow-4.0.4.1-alt-userdel-path_prefix.patch
-Patch8: shadow-4.0.4.1-owl-pam_chauthtok.patch
-Patch9: shadow-4.0.4.1-owl-usermod-update-lstchg.patch
-Patch10: shadow-4.0.4.1-owl-alt-usergroupname_max.patch
-
-Patch19: shadow-4.0.4.1-rh-owl-alt-redhat.patch
-#Patch20: shadow-4.0.4.1-owl-man.patch
-Patch21: shadow-4.0.4.1-owl-create-mailbox.patch
-Patch22: shadow-4.0.4.1-owl-restrict-locale.patch
-Patch23: shadow-4.0.4.1-owl-alt-crypt_gensalt.patch
-Patch24: shadow-4.0.4.1-owl-newgrp.patch
-Patch30: shadow-4.0.4.1-owl-tcb.patch
-
-# ALT
-Patch101: shadow-4.0.4.1-alt-doc-check_names.patch
-Patch102: shadow-4.0.4.1-alt-default_skel.patch
-Patch103: shadow-4.0.4.1-alt-progname.patch
-Patch104: shadow-4.0.4.1-alt-configure.patch
-Patch105: shadow-4.0.4.1-alt-makefile.patch
-Patch106: shadow-4.0.4.1-alt-useradd-skel.patch
-Patch107: shadow-4.0.4.1-alt-copy_tree-perms.patch
-Patch108: shadow-4.0.4.1-alt-configure-passwd.patch
-Patch109: shadow-4.0.4.1-alt-xmalloc.patch
-Patch110: shadow-4.0.4.1-alt-man.patch
-Patch111: shadow-4.0.4.1-alt-getdef.patch
+Patch: %name-%version-%release.patch
 
 %def_disable shared
 
@@ -206,39 +173,7 @@ This virtual package unifies all shadow suite subpackages.
 %prep
 %setup -q
 
-%patch0 -p0
-%patch1 -p0
-
-# Owl
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch19 -p1
-#%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch30 -p1
-
-# ALT
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
-%patch110 -p1
-%patch111 -p1
+%patch -p1
 
 find -type f -name \*.orig -delete
 bzip2 -9k ChangeLog NEWS

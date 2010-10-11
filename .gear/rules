@@ -2,5 +2,5 @@ copy: *.control
 copy: *.default
 copy: *.defs
 copy: *.pamd
-copy: *.patch
-tar: shadow
+tar: v@version@:shadow
+diff: v@version@:@name@ @name@
