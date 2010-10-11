@@ -28,7 +28,7 @@ Patch: %name-%version-%release.patch
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 
 # Automatically added by buildreq on Mon Oct 28 2002
-BuildRequires: cvs libpam-devel libtcb-devel pam_userpass-devel
+BuildRequires: libpam-devel libtcb-devel pam_userpass-devel
 
 %description
 This package includes the tools necessary for manipulating local user and
@@ -181,14 +181,15 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 	echo 'ACLOCAL_AMFLAGS = -I m4' >>Makefile.am
 
 %build
-autoreconf -fisv
+%autoreconf
 %add_optflags -DEXTRA_CHECK_HOME_DIR -DSHADOWTCB
 %configure \
 	%{subst_enable shared} \
-	--disable-desrpc \
-	--with-libcrypt \
 	--with-libpam \
-	--without-libcrack
+	--without-libcrack \
+	--with-group-name-max-length=32 \
+	--without-sha-crypt \
+	--enable-man
 %make_build
 
 %install
@@ -292,7 +293,7 @@ fi
 %_man8dir/group*.*
 %_man8dir/newusers.*
 %_man8dir/user*.*
-%doc ChangeLog.bz2 NEWS.bz2 README TODO doc/LICENSE
+%doc ChangeLog.bz2 NEWS.bz2 README TODO
 
 %files check
 %_sbindir/*ck
