@@ -464,7 +464,7 @@ int main (int argc, char **argv)
 		if (editshadow) {
 			vipwedit (spw_dbname(), spw_lock, spw_unlock);
 			printf (MSG_WARN_EDIT_OTHER_FILE,
-			        SHADOW_FILE,
+			        spw_dbname(),
 			        PASSWD_FILE,
 			        "vipw");
 		} else {
@@ -472,7 +472,11 @@ int main (int argc, char **argv)
 			if (spw_file_present ()) {
 				printf (MSG_WARN_EDIT_OTHER_FILE,
 				        PASSWD_FILE,
+#ifdef SHADOWTCB
+				        "/etc/tcb/*/shadow",
+#else
 				        SHADOW_FILE,
+#endif
 				        "vipw -s");
 			}
 		}
