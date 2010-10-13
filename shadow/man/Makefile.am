@@ -1,10 +1,6 @@
 
 # subdirectories for translated manual pages
-if USE_NLS
-SUBDIRS = po cs de es fi fr hu id it ja ko pl pt_BR ru sv tr zh_CN zh_TW
-else
 SUBDIRS =
-endif
 
 man_MANS = \
 	chage.1 \
