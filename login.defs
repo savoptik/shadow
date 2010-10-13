@@ -17,11 +17,6 @@ GID_MIN			500
 GID_MAX			60000
 
 #
-# Require authentication before chfn/chsh can make any changes.
-#
-CHFN_AUTH		yes
-
-#
 # Don't allow users to change their "real name" and other information
 # using chfn.  The most restrictive setting is better achieved by not
 # installing chfn SUID.
