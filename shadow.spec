@@ -27,6 +27,8 @@ Patch: %name-%version-%release.patch
 %def_with selinux
 
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
+# for man pages generation
+BuildRequires: xsltproc docbook-style-xsl docbook-dtds
 
 %if_with selinux
 BuildPreReq: libselinux-devel
