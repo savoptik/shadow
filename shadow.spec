@@ -20,6 +20,8 @@ Source7: chfn.control
 Source8: chsh.control
 Source9: gpasswd.control
 Source10: newgrp.control
+Source11: groupmems.control
+Source12: groupmems.pamd
 
 Patch: %name-%version-%release.patch
 
@@ -213,7 +215,6 @@ install -pm600 %_sourcedir/user-group-mod.pamd user-group-mod
 ln -s user-group-mod groupadd
 ln -s user-group-mod groupdel
 ln -s user-group-mod groupmod
-ln -s user-group-mod groupmems
 ln -s user-group-mod useradd
 ln -s user-group-mod userdel
 ln -s user-group-mod usermod
@@ -224,6 +225,7 @@ ln -s chage-chfn-chsh chsh
 install -pm600 %_sourcedir/chpasswd-newusers.pamd chpasswd-newusers
 ln -s chpasswd-newusers chpasswd
 ln -s chpasswd-newusers newusers
+install -pm600 %_sourcedir/groupmems.pamd groupmems
 popd
 
 ln -s useradd %buildroot%_sbindir/adduser
@@ -233,6 +235,7 @@ install -pD -m755 %_sourcedir/chfn.control %buildroot%_controldir/chfn
 install -pD -m755 %_sourcedir/chsh.control %buildroot%_controldir/chsh
 install -pD -m755 %_sourcedir/gpasswd.control %buildroot%_controldir/gpasswd
 install -pD -m755 %_sourcedir/newgrp.control %buildroot%_controldir/newgrp
+install -pD -m755 %_sourcedir/groupmems.control %buildroot%_controldir/groupmems
 
 %find_lang %name
 
@@ -256,10 +259,10 @@ fi
 %post_control -s restricted chage chfn chsh
 
 %pre groups
-%pre_control gpasswd newgrp
+%pre_control gpasswd newgrp groupmems
 
 %post groups
-%post_control -s restricted gpasswd newgrp
+%post_control -s restricted gpasswd newgrp groupmems
 
 %if_enabled shadow
 %files -n lib%name
@@ -285,7 +288,6 @@ fi
 %_sysconfdir/pam.d/groupadd
 %_sysconfdir/pam.d/groupdel
 %_sysconfdir/pam.d/groupmod
-%_sysconfdir/pam.d/groupmems
 %_sysconfdir/pam.d/useradd
 %_sysconfdir/pam.d/userdel
 %_sysconfdir/pam.d/usermod
@@ -304,6 +306,8 @@ fi
 %_man8dir/newusers.*
 %_man8dir/user*.*
 %doc ChangeLog.bz2 NEWS.bz2 README TODO
+%exclude %_sbindir/groupmems
+%exclude %_man8dir/groupmems.*
 
 %files check
 %_sbindir/*ck
@@ -329,14 +333,18 @@ fi
 %_mandir/man?/vi??.*
 
 %files groups
+%_sysconfdir/pam.d/groupmems
 %config %_controldir/gpasswd
 %config %_controldir/newgrp
+%config %_controldir/groupmems
 %attr(700,root,root) %verify(not mode,group) %_bindir/gpasswd
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgrp
 %_bindir/sg
+%attr(700,root,root) %verify(not mode,group) %_sbindir/groupmems
 %_mandir/man?/gpasswd.*
 %_mandir/man?/newgrp.*
 %_mandir/man?/sg.*
+%_man8dir/groupmems.*
 
 %files log
 %_bindir/*log
