@@ -23,13 +23,12 @@ INCLUDES = \
 
 bin_PROGRAMS   =
 sbin_PROGRAMS  = nologin
-ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp
+ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp groupmems
 usbin_PROGRAMS = \
 	chgpasswd \
 	chpasswd \
 	groupadd \
 	groupdel \
-	groupmems \
 	groupmod \
 	grpck \
 	grpconv \

@@ -2,7 +2,7 @@
 
 . /etc/control.d/functions
 
-BINARY=/usr/sbin/groupmems
+BINARY=/usr/bin/groupmems
 
 new_fmode public 4711 root root
 new_fmode wheelonly 4710 root wheel

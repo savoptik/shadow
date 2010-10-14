@@ -306,7 +306,7 @@ fi
 %_man8dir/newusers.*
 %_man8dir/user*.*
 %doc ChangeLog.bz2 NEWS.bz2 README TODO
-%exclude %_sbindir/groupmems
+%exclude %_bindir/groupmems
 %exclude %_man8dir/groupmems.*
 
 %files check
@@ -340,7 +340,7 @@ fi
 %attr(700,root,root) %verify(not mode,group) %_bindir/gpasswd
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgrp
 %_bindir/sg
-%attr(700,root,root) %verify(not mode,group) %_sbindir/groupmems
+%attr(700,root,root) %verify(not mode,group) %_bindir/groupmems
 %_mandir/man?/gpasswd.*
 %_mandir/man?/newgrp.*
 %_mandir/man?/sg.*
