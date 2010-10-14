@@ -527,6 +527,28 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: Invalid entry: %s\n"), Prog, loginsh);
 		fail_exit (1);
 	}
+
+	if (loginsh[0] != '\0') {
+		/*
+		 * Shell must be a full path name.
+		 */
+		if(loginsh[0] != '/') {
+			fprintf (stderr, _("%s: shell must be a full path name.\n"), Prog);
+			fail_exit (1);
+		}
+		/*
+		 * Check that the shell is exist, but only print warning if not.
+		 */
+		if (access (loginsh, F_OK) != 0) {
+			if (errno == ENOENT || errno == ENOTDIR)
+				fprintf (stderr, _("%s: WARNING: %s does not exist.\n"),
+						Prog, loginsh);
+			else
+				fprintf (stderr, _("%s: failed to check the shell existence: %s.\n"),
+						Prog, strerror (errno));
+		}
+	}
+
 	if (   !amroot
 	    && (   is_restricted_shell (loginsh)
 	        || (access (loginsh, X_OK) != 0))) {
