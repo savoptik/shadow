@@ -433,11 +433,17 @@ int tcb_create(const char *name, uid_t uid)
 	if (asprintf(&dir, TCB_DIR "/%s", name) < 0 ||
 	    asprintf(&shadow, TCB_FMT, name) < 0)
 		NOMEM;
+#ifdef WITH_SELINUX
+	selinux_file_context (dir);
+#endif
 	if (mkdir(dir, 0700)) {
 		fprintf(stderr, "mkdir: %s: %s\n", dir, strerror(errno));
 		goto out_free;
 		return 0;
 	}
+#ifdef WITH_SELINUX
+	selinux_file_context (shadow);
+#endif
 	fd = open(shadow, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (fd < 0) {
 		perror("open");
@@ -464,6 +470,10 @@ int tcb_create(const char *name, uid_t uid)
 		goto out_free;
 	ret = 1;
 out_free:
+#ifdef WITH_SELINUX
+	/* Reset SELinux to create files with default contexts */
+	setfscreatecon (NULL);
+#endif
 	free(dir);
 	free(shadow);
 	return ret;
