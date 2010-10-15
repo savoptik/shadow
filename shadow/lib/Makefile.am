@@ -8,6 +8,7 @@ noinst_LTLIBRARIES = libshadow.la
 libshadow_la_LDFLAGS = -version-info 0:0:0
 
 libshadow_la_SOURCES = \
+	selinux_file_context.c \
 	tcbfuncs.c \
 	commonio.c \
 	commonio.h \
