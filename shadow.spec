@@ -1,6 +1,6 @@
 Name: shadow
-Version: 4.0.4.1
-Release: alt9
+Version: 4.1.4.2
+Release: alt1.M55C.1
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -353,6 +353,11 @@ fi
 %files suite
 
 %changelog
+* Thu Dec 23 2010 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt1.M55C.1
+- enable SELinux support.
+- Drop all patches from spec, use gear tags.
+- Updated to 4.1.4.2.
+
 * Tue Apr 22 2008 Dmitry V. Levin <ldv@altlinux.org> 1:4.0.4.1-alt9
 - def_load: Silence complains about missing /etc/login.defs file.
 
