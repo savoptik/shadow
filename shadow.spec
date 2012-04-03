@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt1.M55C.1
+Release: alt1.M60C.1
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -239,9 +239,6 @@ install -pD -m755 %_sourcedir/groupmems.control %buildroot%_controldir/groupmems
 
 %find_lang %name
 
-%post -n lib%name -p %post_ldconfig
-%postun -n lib%name -p %postun_ldconfig
-
 %post convert
 if [ $1 = 1 ]; then
 	if [ ! -e /etc/gshadow ]; then
@@ -353,6 +350,10 @@ fi
 %files suite
 
 %changelog
+* Tue Apr 03 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt1.M60C.1
+- Drop obsoleted %%post{,un}_ldconfig.
+- Rebuild for new c6.
+
 * Thu Dec 23 2010 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt1.M55C.1
 - enable SELinux support.
 - Drop all patches from spec, use gear tags.
