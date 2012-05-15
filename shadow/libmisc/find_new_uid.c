@@ -32,6 +32,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "prototypes.h"
 #include "pwio.h"
@@ -54,6 +55,7 @@ int find_new_uid (bool sys_user,
 	const struct passwd *pwd;
 	uid_t uid_min, uid_max, user_id, id;
 	bool *used_uids;
+	int rc = -1;
 
 	assert (uid != NULL);
 
@@ -65,8 +67,6 @@ int find_new_uid (bool sys_user,
 		uid_max = (uid_t) getdef_ulong ("UID_MIN", 500UL) - 1;
 		uid_max = (uid_t) getdef_ulong ("SYS_UID_MAX", (unsigned long) uid_max);
 	}
-	used_uids = alloca (sizeof (bool) * (uid_max +1));
-	memset (used_uids, false, sizeof (bool) * (uid_max + 1));
 
 	if (   (NULL != preferred_uid)
 	    && (*preferred_uid >= uid_min)
@@ -80,6 +80,12 @@ int find_new_uid (bool sys_user,
 		return 0;
 	}
 
+	used_uids = calloc (uid_max + 1, sizeof (bool));
+	if (used_uids == NULL) {
+                fprintf (stderr,
+                         _("%s: failed to allocate memory. %s\n"), Prog, strerror (errno));
+		return -1;
+	}
 
 	/*
 	 * Search the entire password file,
@@ -158,7 +164,7 @@ int find_new_uid (bool sys_user,
 				         Prog);
 				SYSLOG ((LOG_WARN,
 				         "no more available UID on the system"));
-				return -1;
+				goto out;
 			}
 		}
 	} else {
@@ -173,12 +179,15 @@ int find_new_uid (bool sys_user,
 				         _("%s: Can't get unique UID (no more available UIDs)\n"),
 				         Prog);
 				SYSLOG ((LOG_WARN, "no more available UID on the system"));
-				return -1;
+				goto out;
 			}
 		}
 	}
 
 	*uid = user_id;
-	return 0;
+	rc = 0;
+out:
+	free(used_uids);
+	return rc;
 }
 

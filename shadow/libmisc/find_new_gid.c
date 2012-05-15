@@ -32,6 +32,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "prototypes.h"
 #include "groupio.h"
@@ -54,6 +55,7 @@ int find_new_gid (bool sys_group,
 	const struct group *grp;
 	gid_t gid_min, gid_max, group_id, id;
 	bool *used_gids;
+	int rc = -1;
 
 	assert (gid != NULL);
 
@@ -65,8 +67,6 @@ int find_new_gid (bool sys_group,
 		gid_max = (gid_t) getdef_ulong ("GID_MIN", 500UL) - 1;
 		gid_max = (gid_t) getdef_ulong ("SYS_GID_MAX", (unsigned long) gid_max);
 	}
-	used_gids = alloca (sizeof (bool) * (gid_max +1));
-	memset (used_gids, false, sizeof (bool) * (gid_max + 1));
 
 	if (   (NULL != preferred_gid)
 	    && (*preferred_gid >= gid_min)
@@ -80,6 +80,12 @@ int find_new_gid (bool sys_group,
 		return 0;
 	}
 
+	used_gids = calloc (gid_max + 1, sizeof (bool));
+	if(used_gids==NULL) {
+                fprintf (stderr,
+                         _("%s: failed to allocate memory. %s\n"), Prog, strerror (errno));
+		return -1;
+	}
 
 	/*
 	 * Search the entire group file,
@@ -158,7 +164,7 @@ int find_new_gid (bool sys_group,
 				         Prog);
 				SYSLOG ((LOG_WARN,
 				         "no more available GID on the system"));
-				return -1;
+				goto out;
 			}
 		}
 	} else {
@@ -173,12 +179,15 @@ int find_new_gid (bool sys_group,
 				         _("%s: Can't get unique GID (no more available GIDs)\n"),
 				         Prog);
 				SYSLOG ((LOG_WARN, "no more available GID on the system"));
-				return -1;
+				goto out;
 			}
 		}
 	}
 
 	*gid = group_id;
-	return 0;
+	rc = 0;
+out:
+	free (used_gids);
+	return rc;
 }
 
