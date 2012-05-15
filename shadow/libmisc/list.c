@@ -187,7 +187,7 @@ bool is_on_list (char *const *list, const char *member)
 	char *members;
 	char **array;
 	int i;
-	const char *cp;
+	char *cp;
 	char *cp2;
 
 	assert (NULL != comma);

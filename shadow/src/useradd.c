@@ -1843,7 +1843,8 @@ static void create_home (void)
  */
 static void create_mail (void)
 {
-	char *spool, *file;
+	char *file;
+	const char *spool;
 	int fd;
 	struct group *gr;
 	gid_t gid;
