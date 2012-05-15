@@ -44,6 +44,7 @@
 #include "prototypes.h"
 #include "pwio.h"
 #include "shadowio.h"
+#include "getdef.h"
 
 /*
  * Global variables
