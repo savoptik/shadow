@@ -731,7 +731,7 @@ static int get_groups (char *list)
 static void usage (void)
 {
 	(void) fprintf (stderr,
-	                _("Usage: useradd [options] LOGIN\n"
+	                _("Usage: %s [options] LOGIN\n"
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
