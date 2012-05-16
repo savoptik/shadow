@@ -63,6 +63,7 @@
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif
+#include "spawn.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
 
@@ -630,25 +631,17 @@ static void update_user (void)
 static void user_cancel (const char *user)
 {
 	const char *cmd;
-	pid_t pid, wpid;
+	const char *argv[3];
 	int status;
 
 	cmd = getdef_str ("USERDEL_CMD");
 	if (NULL == cmd) {
 		return;
 	}
-	pid = fork ();
-	if (pid == 0) {
-		execl (cmd, cmd, user, (char *) 0);
-		perror (cmd);
-		exit (errno == ENOENT ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
-	} else if ((pid_t)-1 == pid) {
-		perror ("fork");
-		return;
-	}
-	do {
-		wpid = wait (&status);
-	} while ((wpid != pid) && ((pid_t)-1 != wpid));
+	argv[0] = cmd;
+	argv[1] = user;
+	argv[2] = (char *)0;
+	(void) run_command (cmd, argv, NULL, &status);
 }
 
 #ifdef EXTRA_CHECK_HOME_DIR

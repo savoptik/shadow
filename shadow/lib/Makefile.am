@@ -49,6 +49,8 @@ libshadow_la_SOURCES = \
 	shadowio.c \
 	shadowio.h \
 	shadowmem.c \
+	spawn.c \
+	spawn.h \
 	utent.c
 
 # These files are unneeded for some reason, listed in
