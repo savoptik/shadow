@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt1.M60C.1
+Release: alt2
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -350,6 +350,16 @@ fi
 %files suite
 
 %changelog
+* Wed May 16 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt2
+- gshadow.c: Drop unused variable.
+- Added lib/spawn.c and lib/spawn.h.
+- useradd.c: Fix fprintf() format string.
+- useradd.c: Avoid redefinition of SHELL.
+- Fix missing includes.
+- Fix some const issues.
+- Fix find_new_uid/gid for big UID/GID_MAX.
+- Fix gshadow functions from shadow utils.
+
 * Tue Apr 03 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt1.M60C.1
 - Drop obsoleted %%post{,un}_ldconfig.
 - Rebuild for new c6.
