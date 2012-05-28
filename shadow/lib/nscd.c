@@ -49,8 +49,11 @@ int nscd_flush_cache (const char *service)
 	}
 	if (code != 0)
 	{
+		/* Don't show an error message. It is annoying when nscd installed,
+		 * but not started.
 		(void) fprintf (stderr, "nscd exited with status %d", code);
 		(void) fputs (_(MSG_NSCD_FLUSH_CACHE_FAILED), stderr);
+		*/
 		return -1;
 	}
 	return 0;
