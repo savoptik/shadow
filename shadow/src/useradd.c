@@ -1846,11 +1846,14 @@ static void create_mail (void)
 	char *file;
 	const char *spool;
 	int fd;
-	struct group *gr;
+	struct group *gr = NULL;
 	gid_t gid;
 	mode_t mode;
+	bool private;
 
-	if (strcasecmp (create_mail_spool, "yes") == 0) {
+	private = strcasecmp (create_mail_spool, "private") == 0;
+
+	if (private || strcasecmp (create_mail_spool, "yes") == 0) {
 		spool = getdef_str ("MAIL_DIR");
 		if (NULL == spool) {
 			spool = "/var/mail";
@@ -1863,10 +1866,13 @@ static void create_mail (void)
 			return;
 		}
 
-		gr = getgrnam ("mail"); /* local, no need for xgetgrnam */
+		if (!private)
+			gr = getgrnam ("mail"); /* local, no need for xgetgrnam */
+
 		if (NULL == gr) {
-			fputs (_("Group 'mail' not found. Creating the user mailbox file with 0600 mode.\n"),
-			       stderr);
+			if (!private)
+				fputs (_("Group 'mail' not found. Creating the user mailbox file with 0600 mode.\n"),
+				       stderr);
 			gid = user_gid;
 			mode = 0600;
 		} else {
