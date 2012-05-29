@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt2
+Release: alt3
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -350,6 +350,10 @@ fi
 %files suite
 
 %changelog
+* Tue May 29 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt3
+- useradd: Add 'private' to allowed values of CREATE_MAIL_SPOOL.
+- Don't show error message if flashing nscd cache is failed.
+
 * Wed May 16 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt2
 - gshadow.c: Drop unused variable.
 - Added lib/spawn.c and lib/spawn.h.
