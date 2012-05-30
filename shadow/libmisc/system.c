@@ -67,6 +67,6 @@ int safe_system (const char *command,
 
 	execve (command, (char *const *) argv, (char *const *) env);
 	fprintf (stderr, _("Failed to exec '%s'\n"), argv[0]);
-	exit (EXIT_FAILURE);
+	_exit (EXIT_FAILURE);
 }
 
