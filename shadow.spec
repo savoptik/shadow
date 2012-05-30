@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt3
+Release: alt4
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -349,7 +349,25 @@ fi
 
 %files suite
 
+%exclude %_bindir/expiry
+%exclude %_sbindir/chgpasswd
+%exclude %_sbindir/logoutd
+%exclude %_sbindir/nologin
+%exclude %_man1dir/expiry.1.*
+%exclude %_man3dir/getspnam.3.*
+%exclude %_man3dir/shadow.3.*
+%exclude %_man5dir/gshadow.5.*
+%exclude %_man5dir/passwd.5.*
+%exclude %_man5dir/suauth.5.*
+%exclude %_man8dir/chgpasswd.8.*
+%exclude %_man8dir/logoutd.8.*
+%exclude %_man8dir/nologin.8.*
+
 %changelog
+* Wed May 30 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt4
+- Use _exit() for exit from child.
+- spawn.c: Backport from upstream's svn.
+
 * Tue May 29 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt3
 - useradd: Add 'private' to allowed values of CREATE_MAIL_SPOOL.
 - Don't show error message if flashing nscd cache is failed.
