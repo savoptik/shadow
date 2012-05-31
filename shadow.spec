@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt4
+Release: alt5
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -168,6 +168,7 @@ This package includes utilities for examining lastlog and faillog files:
 %package suite
 Summary: The shadow suite
 Group: System/Base
+BuildArch: noarch
 Requires: %name-change = %serial:%version-%release
 Requires: %name-check = %serial:%version-%release
 Requires: %name-convert = %serial:%version-%release
@@ -364,6 +365,9 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Thu May 31 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt5
+- Package suite subpackage as noarch.
+
 * Wed May 30 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt4
 - Use _exit() for exit from child.
 - spawn.c: Backport from upstream's svn.
