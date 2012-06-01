@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt5
+Release: alt6
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -365,6 +365,9 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Fri Jun 01 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt6
+- Do not create mail spool if -M option was given.
+
 * Thu May 31 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt5
 - Package suite subpackage as noarch.
 
