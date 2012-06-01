@@ -2087,8 +2087,9 @@ int main (int argc, char **argv)
 
 	}
 
-	/* Do not create mail directory for system accounts */
-	if( !rflg ) {
+	/* Do not create mail directory for system accounts
+	 * and when -M option was given */
+	if( !rflg && !Mflg) {
 		create_mail ();
 	}
 
