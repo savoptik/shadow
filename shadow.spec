@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.1.4.2
-Release: alt7
+Release: alt8
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -365,6 +365,9 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Thu Jun 21 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt8
+- Fixed groupmod.
+
 * Fri Jun 15 2012 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt7
 - useradd: Print exit code if an error was occurred.
 
