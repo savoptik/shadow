@@ -3,7 +3,7 @@
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001       , Michał Moskal
  * Copyright (c) 2005       , Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2013, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 
 #include <config.h>
 
-#ident "$Id: shadowmem.c 2777 2009-04-23 17:43:27Z nekral-guest $"
+#ident "$Id$"
 
 #include "prototypes.h"
 #include "defines.h"
@@ -49,13 +49,28 @@
 	if (NULL == sp) {
 		return NULL;
 	}
-	*sp = *spent;
-	sp->sp_namp = strdup (spent->sp_namp);
+	/* The libc might define other fields. They won't be copied. */
+	memset (sp, 0, sizeof *sp);
+	sp->sp_lstchg = spent->sp_lstchg;
+	sp->sp_min    = spent->sp_min;
+	sp->sp_max    = spent->sp_max;
+	sp->sp_warn   = spent->sp_warn;
+	sp->sp_inact  = spent->sp_inact;
+	sp->sp_expire = spent->sp_expire;
+	sp->sp_flag   = spent->sp_flag;
+	/*@-mustfreeonly@*/
+	sp->sp_namp   = strdup (spent->sp_namp);
+	/*@=mustfreeonly@*/
 	if (NULL == sp->sp_namp) {
+		free(sp);
 		return NULL;
 	}
+	/*@-mustfreeonly@*/
 	sp->sp_pwdp = strdup (spent->sp_pwdp);
+	/*@=mustfreeonly@*/
 	if (NULL == sp->sp_pwdp) {
+		free(sp->sp_namp);
+		free(sp);
 		return NULL;
 	}
 
@@ -65,8 +80,10 @@
 void spw_free (/*@out@*/ /*@only@*/struct spwd *spent)
 {
 	free (spent->sp_namp);
-	memzero (spent->sp_pwdp, strlen (spent->sp_pwdp));
-	free (spent->sp_pwdp);
+	if (NULL != spent->sp_pwdp) {
+		memzero (spent->sp_pwdp, strlen (spent->sp_pwdp));
+		free (spent->sp_pwdp);
+	}
 	free (spent);
 }
 

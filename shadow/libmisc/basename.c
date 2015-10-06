@@ -38,13 +38,13 @@
 
 #include <config.h>
 
-#ident "$Id: basename.c 1980 2008-04-27 00:40:09Z nekral-guest $"
+#ident "$Id$"
 
 #include "defines.h"
 #include "prototypes.h"
-char *Basename (char *str)
+/*@observer@*/const char *Basename (const char *str)
 {
 	char *cp = strrchr (str, '/');
 
-	return cp ? cp + 1 : str;
+	return (NULL != cp) ? cp + 1 : str;
 }

@@ -3,7 +3,7 @@
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001       , Michał Moskal
  * Copyright (c) 2005       , Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2013, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 
 #include <config.h>
 
-#ident "$Id: groupmem.c 2777 2009-04-23 17:43:27Z nekral-guest $"
+#ident "$Id$"
 
 #include "prototypes.h"
 #include "defines.h"
@@ -48,25 +48,46 @@
 	if (NULL == gr) {
 		return NULL;
 	}
-	*gr = *grent;
+	/* The libc might define other fields. They won't be copied. */
+	memset (gr, 0, sizeof *gr);
+	gr->gr_gid = grent->gr_gid;
+	/*@-mustfreeonly@*/
 	gr->gr_name = strdup (grent->gr_name);
+	/*@=mustfreeonly@*/
 	if (NULL == gr->gr_name) {
+		free(gr);
 		return NULL;
 	}
+	/*@-mustfreeonly@*/
 	gr->gr_passwd = strdup (grent->gr_passwd);
+	/*@=mustfreeonly@*/
 	if (NULL == gr->gr_passwd) {
+		free(gr->gr_name);
+		free(gr);
 		return NULL;
 	}
 
 	for (i = 0; grent->gr_mem[i]; i++);
 
+	/*@-mustfreeonly@*/
 	gr->gr_mem = (char **) malloc ((i + 1) * sizeof (char *));
+	/*@=mustfreeonly@*/
 	if (NULL == gr->gr_mem) {
+		free(gr->gr_passwd);
+		free(gr->gr_name);
+		free(gr);
 		return NULL;
 	}
 	for (i = 0; grent->gr_mem[i]; i++) {
 		gr->gr_mem[i] = strdup (grent->gr_mem[i]);
 		if (NULL == gr->gr_mem[i]) {
+			int j;
+			for (j=0; j<i; j++)
+				free(gr->gr_mem[j]);
+			free(gr->gr_mem);
+			free(gr->gr_passwd);
+			free(gr->gr_name);
+			free(gr);
 			return NULL;
 		}
 	}
@@ -78,11 +99,16 @@
 void gr_free (/*@out@*/ /*@only@*/struct group *grent)
 {
 	free (grent->gr_name);
-	memzero (grent->gr_passwd, strlen (grent->gr_passwd));
-	free (grent->gr_passwd);
-	while (*(grent->gr_mem)) {
-		free (*(grent->gr_mem));
-		grent->gr_mem++;
+	if (NULL != grent->gr_passwd) {
+		memzero (grent->gr_passwd, strlen (grent->gr_passwd));
+		free (grent->gr_passwd);
+	}
+	if (NULL != grent->gr_mem) {
+		size_t i;
+		for (i = 0; NULL != grent->gr_mem[i]; i++) {
+			free (grent->gr_mem[i]);
+		}
+		free (grent->gr_mem);
 	}
 	free (grent);
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 1997, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008       , Nicolas François
+ * Copyright (c) 2008 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: ttytype.c 2714 2009-04-20 11:31:05Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include "prototypes.h"
@@ -45,10 +45,10 @@ void ttytype (const char *line)
 {
 	FILE *fp;
 	char buf[BUFSIZ];
-	char *typefile;
+	const char *typefile;
 	char *cp;
-	char type[BUFSIZ];
-	char port[BUFSIZ];
+	char type[1024] = "";
+	char port[1024];
 
 	if (getenv ("TERM") != NULL) {
 		return;
@@ -76,12 +76,12 @@ void ttytype (const char *line)
 			*cp = '\0';
 		}
 
-		if ((sscanf (buf, "%s %s", type, port) == 2) &&
-		    (strcmp (line, port) == 0)) {
+		if (   (sscanf (buf, "%1023s %1023s", type, port) == 2)
+		    && (strcmp (line, port) == 0)) {
 			break;
 		}
 	}
-	if ((feof (fp) == 0) && (ferror (fp) == 0)) {
+	if ((feof (fp) == 0) && (ferror (fp) == 0) && (type[0] != '\0')) {
 		addenv ("TERM", type);
 	}
 

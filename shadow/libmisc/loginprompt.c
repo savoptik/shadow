@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1993, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2009, Nicolas François
+ * Copyright (c) 2008 - 2011, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: loginprompt.c 2787 2009-04-24 22:46:06Z nekral-guest $"
+#ident "$Id$"
 
 #include <assert.h>
 #include <stdio.h>
@@ -60,7 +60,6 @@ void login_prompt (const char *prompt, char *name, int namesize)
 
 #define MAX_ENV 32
 	char *envp[MAX_ENV];
-	int envc;
 	char *cp;
 	int i;
 	FILE *fp;
@@ -88,9 +87,9 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	 */
 
 	if (NULL != prompt) {
-		cp = getdef_str ("ISSUE_FILE");
-		if (NULL != cp) {
-			fp = fopen (cp, "r");
+		const char *fname = getdef_str ("ISSUE_FILE");
+		if (NULL != fname) {
+			fp = fopen (fname, "r");
 			if (NULL != fp) {
 				while ((i = getc (fp)) != EOF) {
 					(void) putc (i, stdout);
@@ -99,7 +98,7 @@ void login_prompt (const char *prompt, char *name, int namesize)
 				(void) fclose (fp);
 			}
 		}
-		gethostname (buf, sizeof buf);
+		(void) gethostname (buf, sizeof buf);
 		printf (prompt, buf);
 		(void) fflush (stdout);
 	}
@@ -148,6 +147,7 @@ void login_prompt (const char *prompt, char *name, int namesize)
 	if ('\0' != *cp) {	/* process new variables */
 		char *nvar;
 		int count = 1;
+		int envc;
 
 		for (envc = 0; envc < MAX_ENV; envc++) {
 			nvar = strtok ((0 != envc) ? (char *) 0 : cp, " \t,");
@@ -158,10 +158,9 @@ void login_prompt (const char *prompt, char *name, int namesize)
 				envp[envc] = nvar;
 			} else {
 				size_t len = strlen (nvar) + 32;
-				int wlen;
 				envp[envc] = xmalloc (len);
-				wlen = snprintf (envp[envc], len, "L%d=%s", count++, nvar);
-				assert (wlen == (int) len -1);
+				(void) snprintf (envp[envc], len,
+				                 "L%d=%s", count++, nvar);
 			}
 		}
 		set_env (envc, envp);

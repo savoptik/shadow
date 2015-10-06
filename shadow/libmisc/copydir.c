@@ -2,7 +2,7 @@
  * Copyright (c) 1991 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2001, Marek Michałkiewicz
  * Copyright (c) 2003 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: copydir.c 2978 2009-05-22 10:16:12Z nekral-guest $"
+#ident "$Id$"
 
 #include <assert.h>
 #include <sys/stat.h>
@@ -44,7 +44,19 @@
 #include "defines.h"
 #ifdef WITH_SELINUX
 #include <selinux/selinux.h>
-#endif
+#endif				/* WITH_SELINUX */
+#if defined(WITH_ACL) || defined(WITH_ATTR)
+#include <stdarg.h>
+#include <attr/error_context.h>
+#endif				/* WITH_ACL || WITH_ATTR */
+#ifdef WITH_ACL
+#include <acl/libacl.h>
+#endif				/* WITH_ACL */
+#ifdef WITH_ATTR
+#include <attr/libattr.h>
+#endif				/* WITH_ATTR */
+
+
 static /*@null@*/const char *src_orig;
 static /*@null@*/const char *dst_orig;
 
@@ -58,66 +70,73 @@ struct link_name {
 static /*@exposed@*/struct link_name *links;
 
 static int copy_entry (const char *src, const char *dst,
-                       long int uid, long int gid);
+                       bool reset_selinux,
+                       uid_t old_uid, uid_t new_uid,
+                       gid_t old_gid, gid_t new_gid);
 static int copy_dir (const char *src, const char *dst,
+                     bool reset_selinux,
                      const struct stat *statp, const struct timeval mt[],
-                     long int uid, long int gid);
+                     uid_t old_uid, uid_t new_uid,
+                     gid_t old_gid, gid_t new_gid);
 #ifdef	S_IFLNK
-static char *readlink_malloc (const char *filename);
+static /*@null@*/char *readlink_malloc (const char *filename);
 static int copy_symlink (const char *src, const char *dst,
+                         unused bool reset_selinux,
                          const struct stat *statp, const struct timeval mt[],
-                         long int uid, long int gid);
-#endif
-static int copy_hardlink (const char *src, const char *dst,
+                         uid_t old_uid, uid_t new_uid,
+                         gid_t old_gid, gid_t new_gid);
+#endif				/* S_IFLNK */
+static int copy_hardlink (const char *dst,
+                          unused bool reset_selinux,
                           struct link_name *lp);
-static int copy_special (const char *dst,
+static int copy_special (const char *src, const char *dst,
+                         bool reset_selinux,
                          const struct stat *statp, const struct timeval mt[],
-                         long int uid, long int gid);
+                         uid_t old_uid, uid_t new_uid,
+                         gid_t old_gid, gid_t new_gid);
 static int copy_file (const char *src, const char *dst,
+                      bool reset_selinux,
                       const struct stat *statp, const struct timeval mt[],
-                      long int uid, long int gid);
+                      uid_t old_uid, uid_t new_uid,
+                      gid_t old_gid, gid_t new_gid);
+static int chown_if_needed (const char *dst, const struct stat *statp,
+                            uid_t old_uid, uid_t new_uid,
+                            gid_t old_gid, gid_t new_gid);
+static int lchown_if_needed (const char *dst, const struct stat *statp,
+                             uid_t old_uid, uid_t new_uid,
+                             gid_t old_gid, gid_t new_gid);
+static int fchown_if_needed (int fdst, const struct stat *statp,
+                             uid_t old_uid, uid_t new_uid,
+                             gid_t old_gid, gid_t new_gid);
 
-#ifdef WITH_SELINUX
+#if defined(WITH_ACL) || defined(WITH_ATTR)
 /*
- * selinux_file_context - Set the security context before any file or
- *                        directory creation.
- *
- *	selinux_file_context () should be called before any creation of file,
- *	symlink, directory, ...
- *
- *	Callers may have to Reset SELinux to create files with default
- *	contexts:
- *		setfscreatecon (NULL);
+ * error_acl - format the error messages for the ACL and EQ libraries.
  */
-int selinux_file_context (const char *dst_name)
+static void error_acl (struct error_context *ctx, const char *fmt, ...)
 {
-	static bool selinux_checked = false;
-	static bool selinux_enabled;
-	security_context_t scontext = NULL;
+	va_list ap;
 
-	if (!selinux_checked) {
-		selinux_enabled = is_selinux_enabled () > 0;
-		selinux_checked = true;
+	/* ignore the case when destination does not support ACLs 
+	 * or extended attributes */
+	if (ENOTSUP == errno) {
+		errno = 0;
+		return;
 	}
 
-	if (selinux_enabled) {
-		/* Get the default security context for this file */
-		if (matchpathcon (dst_name, 0, &scontext) < 0) {
-			if (security_getenforce () != 0) {
-				return 1;
-			}
-		}
-		/* Set the security context for the next created file */
-		if (setfscreatecon (scontext) < 0) {
-			if (security_getenforce () != 0) {
-				return 1;
-			}
-		}
-		freecon (scontext);
+	va_start (ap, fmt);
+	(void) fprintf (stderr, _("%s: "), Prog);
+	if (vfprintf (stderr, fmt, ap) != 0) {
+		(void) fputs (_(": "), stderr);
 	}
-	return 0;
+	(void) fprintf (stderr, "%s\n", strerror (errno));
+	va_end (ap);
 }
-#endif
+
+static struct error_context ctx = {
+	error_acl
+};
+#endif				/* WITH_ACL || WITH_ATTR */
 
 /*
  * remove_link - delete a link from the linked list
@@ -184,7 +203,7 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
 	lp->ln_count = sb->st_nlink;
 	len = name_len - src_len + dst_len + 1;
 	lp->ln_name = (char *) xmalloc (len);
-	snprintf (lp->ln_name, len, "%s%s", dst_orig, name + src_len);
+	(void) snprintf (lp->ln_name, len, "%s%s", dst_orig, name + src_len);
 	lp->ln_next = links;
 	links = lp;
 
@@ -196,14 +215,48 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
  *
  *	copy_tree() walks a directory tree and copies ordinary files
  *	as it goes.
+ *
+ *	When reset_selinux is enabled, extended attributes (and thus
+ *	SELinux attributes) are not copied.
+ *
+ *	old_uid and new_uid are used to set the ownership of the copied
+ *	files. Unless old_uid is set to -1, only the files owned by
+ *	old_uid have their ownership changed to new_uid. In addition, if
+ *	new_uid is set to -1, no ownership will be changed.
+ *
+ *	The same logic applies for the group-ownership and
+ *	old_gid/new_gid.
  */
 int copy_tree (const char *src_root, const char *dst_root,
-               long int uid, long int gid)
+               bool copy_root, bool reset_selinux,
+               uid_t old_uid, uid_t new_uid,
+               gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
 	bool set_orig = false;
 	struct DIRECT *ent;
 	DIR *dir;
+
+	if (copy_root) {
+		struct stat sb;
+		if (access (dst_root, F_OK) == 0) {
+			return -1;
+		}
+
+		if (LSTAT (src_root, &sb) == -1) {
+			return -1;
+		}
+
+		if (!S_ISDIR (sb.st_mode)) {
+			fprintf (stderr,
+			         "%s: %s is not a directory",
+			         Prog, src_root);
+			return -1;
+		}
+
+		return copy_entry (src_root, dst_root, reset_selinux,
+		                   old_uid, new_uid, old_gid, new_gid);
+	}
 
 	/*
 	 * Make certain both directories exist.  This routine is called
@@ -256,12 +309,15 @@ int copy_tree (const char *src_root, const char *dst_root,
 				 * Build the filename for both the source and
 				 * the destination files.
 				 */
-				snprintf (src_name, src_len, "%s/%s",
-				          src_root, ent->d_name);
-				snprintf (dst_name, dst_len, "%s/%s",
-				          dst_root, ent->d_name);
+				(void) snprintf (src_name, src_len, "%s/%s",
+				                 src_root, ent->d_name);
+				(void) snprintf (dst_name, dst_len, "%s/%s",
+				                 dst_root, ent->d_name);
 
-				err = copy_entry (src_name, dst_name, uid, gid);
+				err = copy_entry (src_name, dst_name,
+				                  reset_selinux,
+				                  old_uid, new_uid,
+				                  old_gid, new_gid);
 			}
 			if (NULL != src_name) {
 				free (src_name);
@@ -276,16 +332,25 @@ int copy_tree (const char *src_root, const char *dst_root,
 	if (set_orig) {
 		src_orig = NULL;
 		dst_orig = NULL;
+		/* FIXME: clean links
+		 * Since there can be hardlinks elsewhere on the device,
+		 * we cannot check that all the hardlinks were found:
+		assert (NULL == links);
+		 */
 	}
 
 #ifdef WITH_SELINUX
-	/* Reset SELinux to create files with default contexts */
-	setfscreatecon (NULL);
-#endif
-
-	/* FIXME: with the call to remove_link, we could also check that
-	 *        no links remain in links.
-	 * assert (NULL == links); */
+	/* Reset SELinux to create files with default contexts.
+	 * Note that the context is only reset on exit of copy_tree (it is
+	 * assumed that the program would quit without needing a restored
+	 * context if copy_tree failed previously), and that copy_tree can
+	 * be called recursively (hence the context is set on the
+	 * sub-functions of copy_entry).
+	 */
+	if (reset_selinux_file_context () != 0) {
+		err = -1;
+	}
+#endif				/* WITH_SELINUX */
 
 	return err;
 }
@@ -300,13 +365,19 @@ int copy_tree (const char *src_root, const char *dst_root,
  *
  *	The access and modification time will not be modified.
  *
- *	The permissions will be set to uid/gid.
+ *	The permissions will be set to new_uid/new_gid.
  *
- *	If uid (resp. gid) is equal to -1, the user (resp. group) will
+ *	If new_uid (resp. new_gid) is equal to -1, the user (resp. group) will
  *	not be modified.
+ *
+ *	Only the files owned (resp. group-owned) by old_uid (resp.
+ *	old_gid) will be modified, unless old_uid (resp. old_gid) is set
+ *	to -1.
  */
 static int copy_entry (const char *src, const char *dst,
-                       long int uid, long int gid)
+                       bool reset_selinux,
+                       uid_t old_uid, uid_t new_uid,
+                       gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
 	struct stat sb;
@@ -319,29 +390,30 @@ static int copy_entry (const char *src, const char *dst,
 #ifdef HAVE_STRUCT_STAT_ST_ATIM
 		mt[0].tv_sec  = sb.st_atim.tv_sec;
 		mt[0].tv_usec = sb.st_atim.tv_nsec / 1000;
-#else
+#else				/* !HAVE_STRUCT_STAT_ST_ATIM */
 		mt[0].tv_sec  = sb.st_atime;
-#ifdef HAVE_STRUCT_STAT_ST_ATIMENSEC
+# ifdef HAVE_STRUCT_STAT_ST_ATIMENSEC
 		mt[0].tv_usec = sb.st_atimensec / 1000;
-#else
+# else				/* !HAVE_STRUCT_STAT_ST_ATIMENSEC */
 		mt[0].tv_usec = 0;
-#endif
-#endif
+# endif				/* !HAVE_STRUCT_STAT_ST_ATIMENSEC */
+#endif				/* !HAVE_STRUCT_STAT_ST_ATIM */
 
 #ifdef HAVE_STRUCT_STAT_ST_MTIM
 		mt[1].tv_sec  = sb.st_mtim.tv_sec;
 		mt[1].tv_usec = sb.st_mtim.tv_nsec / 1000;
-#else
+#else				/* !HAVE_STRUCT_STAT_ST_MTIM */
 		mt[1].tv_sec  = sb.st_mtime;
-#ifdef HAVE_STRUCT_STAT_ST_MTIMENSEC
+# ifdef HAVE_STRUCT_STAT_ST_MTIMENSEC
 		mt[1].tv_usec = sb.st_mtimensec / 1000;
-#else
+# else				/* !HAVE_STRUCT_STAT_ST_MTIMENSEC */
 		mt[1].tv_usec = 0;
-#endif
-#endif
+# endif				/* !HAVE_STRUCT_STAT_ST_MTIMENSEC */
+#endif				/* !HAVE_STRUCT_STAT_ST_MTIM */
 
 		if (S_ISDIR (sb.st_mode)) {
-			err = copy_dir (src, dst, &sb, mt, uid, gid);
+			err = copy_dir (src, dst, reset_selinux, &sb, mt,
+			                old_uid, new_uid, old_gid, new_gid);
 		}
 
 #ifdef	S_IFLNK
@@ -350,16 +422,17 @@ static int copy_entry (const char *src, const char *dst,
 		 */
 
 		else if (S_ISLNK (sb.st_mode)) {
-			err = copy_symlink (src, dst, &sb, mt, uid, gid);
+			err = copy_symlink (src, dst, reset_selinux, &sb, mt,
+			                    old_uid, new_uid, old_gid, new_gid);
 		}
-#endif
+#endif				/* S_IFLNK */
 
 		/*
 		 * See if this is a previously copied link
 		 */
 
 		else if ((lp = check_link (src, &sb)) != NULL) {
-			err = copy_hardlink (src, dst, lp);
+			err = copy_hardlink (dst, reset_selinux, lp);
 		}
 
 		/*
@@ -369,7 +442,8 @@ static int copy_entry (const char *src, const char *dst,
 		 */
 
 		else if (!S_ISREG (sb.st_mode)) {
-			err = copy_special (dst, &sb, mt, uid, gid);
+			err = copy_special (src, dst, reset_selinux, &sb, mt,
+			                    old_uid, new_uid, old_gid, new_gid);
 		}
 
 		/*
@@ -378,7 +452,8 @@ static int copy_entry (const char *src, const char *dst,
 		 */
 
 		else {
-			err = copy_file (src, dst, &sb, mt, uid, gid);
+			err = copy_file (src, dst, reset_selinux, &sb, mt,
+			                 old_uid, new_uid, old_gid, new_gid);
 		}
 	}
 
@@ -390,14 +465,16 @@ static int copy_entry (const char *src, const char *dst,
  *
  *	Copy a directory (recursively) from src to dst.
  *
- *	statp, mt, uid, gid are used to set the access and modification and the
- *	access rights.
+ *	statp, mt, old_uid, new_uid, old_gid, and new_gid are used to set
+ *	the access and modification and the access rights.
  *
  *	Return 0 on success, -1 on error.
  */
 static int copy_dir (const char *src, const char *dst,
+                     bool reset_selinux,
                      const struct stat *statp, const struct timeval mt[],
-                     long int uid, long int gid)
+                     uid_t old_uid, uid_t new_uid,
+                     gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
 
@@ -407,14 +484,33 @@ static int copy_dir (const char *src, const char *dst,
 	 */
 
 #ifdef WITH_SELINUX
-	selinux_file_context (dst);
-#endif
+	if (set_selinux_file_context (dst) != 0) {
+		return -1;
+	}
+#endif				/* WITH_SELINUX */
 	if (   (mkdir (dst, statp->st_mode) != 0)
-	    || (chown (dst,
-	               (uid == - 1) ? statp->st_uid : (uid_t) uid,
-	               (gid == - 1) ? statp->st_gid : (gid_t) gid) != 0)
+	    || (chown_if_needed (dst, statp,
+	                         old_uid, new_uid, old_gid, new_gid) != 0)
+#ifdef WITH_ACL
+	    || (   (perm_copy_file (src, dst, &ctx) != 0)
+	        && (errno != 0))
+#else				/* !WITH_ACL */
 	    || (chmod (dst, statp->st_mode) != 0)
-	    || (copy_tree (src, dst, uid, gid) != 0)
+#endif				/* !WITH_ACL */
+#ifdef WITH_ATTR
+	/*
+	 * If the third parameter is NULL, all extended attributes
+	 * except those that define Access Control Lists are copied.
+	 * ACLs are excluded by default because copying them between
+	 * file systems with and without ACL support needs some
+	 * additional logic so that no unexpected permissions result.
+	 */
+	    || (   !reset_selinux
+	        && (attr_copy_file (src, dst, NULL, &ctx) != 0)
+	        && (errno != 0))
+#endif				/* WITH_ATTR */
+	    || (copy_tree (src, dst, false, reset_selinux,
+	                   old_uid, new_uid, old_gid, new_gid) != 0)
 	    || (utimes (dst, mt) != 0)) {
 		err = -1;
 	}
@@ -429,11 +525,11 @@ static int copy_dir (const char *src, const char *dst,
  * return NULL on error.
  * The return string shall be freed by the caller.
  */
-static char *readlink_malloc (const char *filename)
+static /*@null@*/char *readlink_malloc (const char *filename)
 {
 	size_t size = 1024;
 
-	while (1) {
+	while (true) {
 		ssize_t nchars;
 		char *buffer = (char *) malloc (size);
 		if (NULL == buffer) {
@@ -443,10 +539,11 @@ static char *readlink_malloc (const char *filename)
 		nchars = readlink (filename, buffer, size);
 
 		if (nchars < 0) {
+			free(buffer);
 			return NULL;
 		}
 
-		if ( (size_t) nchars < size) { /* The buffer was large enough */
+		if ((size_t) nchars < size) { /* The buffer was large enough */
 			/* readlink does not nul-terminate */
 			buffer[nchars] = '\0';
 			return buffer;
@@ -463,14 +560,16 @@ static char *readlink_malloc (const char *filename)
  *
  *	Copy a symlink from src to dst.
  *
- *	statp, mt, uid, gid are used to set the access and modification and the
- *	access rights.
+ *	statp, mt, old_uid, new_uid, old_gid, and new_gid are used to set
+ *	the access and modification and the access rights.
  *
  *	Return 0 on success, -1 on error.
  */
 static int copy_symlink (const char *src, const char *dst,
+                         unused bool reset_selinux,
                          const struct stat *statp, const struct timeval mt[],
-                         long int uid, long int gid)
+                         uid_t old_uid, uid_t new_uid,
+                         gid_t old_gid, gid_t new_gid)
 {
 	char *oldlink;
 
@@ -494,25 +593,33 @@ static int copy_symlink (const char *src, const char *dst,
 	/* If src was a link to an entry of the src_orig directory itself,
 	 * create a link to the corresponding entry in the dst_orig
 	 * directory.
-	 * FIXME: This may change a relative link to an absolute link
 	 */
 	if (strncmp (oldlink, src_orig, strlen (src_orig)) == 0) {
 		size_t len = strlen (dst_orig) + strlen (oldlink) - strlen (src_orig) + 1;
-		char *dummy = (char *) malloc (len);
-		snprintf (dummy, len, "%s%s",
-		          dst_orig,
-		          oldlink + strlen (src_orig));
+		char *dummy = (char *) xmalloc (len);
+		(void) snprintf (dummy, len, "%s%s",
+		                 dst_orig,
+		                 oldlink + strlen (src_orig));
 		free (oldlink);
 		oldlink = dummy;
 	}
 
 #ifdef WITH_SELINUX
-	selinux_file_context (dst);
-#endif
+	if (set_selinux_file_context (dst) != 0) {
+		free (oldlink);
+		return -1;
+	}
+#endif				/* WITH_SELINUX */
 	if (   (symlink (oldlink, dst) != 0)
-	    || (lchown (dst,
-	                (uid == -1) ? statp->st_uid : (uid_t) uid,
-	                (gid == -1) ? statp->st_gid : (gid_t) gid) != 0)) {
+	    || (lchown_if_needed (dst, statp,
+	                          old_uid, new_uid, old_gid, new_gid) != 0)) {
+		/* FIXME: there are no modes on symlinks, right?
+		 *        ACL could be copied, but this would be much more
+		 *        complex than calling perm_copy_file.
+		 *        Ditto for Extended Attributes.
+		 *        We currently only document that ACL and Extended
+		 *        Attributes are not copied.
+		 */
 		free (oldlink);
 		return -1;
 	}
@@ -524,12 +631,12 @@ static int copy_symlink (const char *src, const char *dst,
 	 *  it returns ENOSYS on many system
 	 *  - not implemented
 	 */
-	lutimes (dst, mt);
-#endif
+	(void) lutimes (dst, mt);
+#endif				/* HAVE_LUTIMES */
 
 	return 0;
 }
-#endif
+#endif				/* S_IFLNK */
 
 /*
  * copy_hardlink - copy a hardlink
@@ -538,23 +645,18 @@ static int copy_symlink (const char *src, const char *dst,
  *
  *	Return 0 on success, -1 on error.
  */
-static int copy_hardlink (const char *src, const char *dst,
+static int copy_hardlink (const char *dst,
+                          unused bool reset_selinux,
                           struct link_name *lp)
 {
-	/* TODO: selinux needed? */
+	/* FIXME: selinux, ACL, Extended Attributes needed? */
 
 	if (link (lp->ln_name, dst) != 0) {
 		return -1;
 	}
 
-	/* FIXME: why is it unlinked? This is a copy, not a move */
-	if (unlink (src) != 0) {
-		return -1;
-	}
-
-	/* FIXME: idem, although it may never be used again */
 	/* If the file could be unlinked, decrement the links counter,
-	 * and delete the file if it was the last reference */
+	 * and forget about this link if it was the last reference */
 	lp->ln_count--;
 	if (lp->ln_count <= 0) {
 		remove_link (lp);
@@ -568,26 +670,46 @@ static int copy_hardlink (const char *src, const char *dst,
  *
  *	Copy a special file from src to dst.
  *
- *	statp, mt, uid, gid are used to set the access and modification and the
- *	access rights.
+ *	statp, mt, old_uid, new_uid, old_gid, and new_gid are used to set
+ *	the access and modification and the access rights.
  *
  *	Return 0 on success, -1 on error.
  */
-static int copy_special (const char *dst,
+static int copy_special (const char *src, const char *dst,
+                         bool reset_selinux,
                          const struct stat *statp, const struct timeval mt[],
-                         long int uid, long int gid)
+                         uid_t old_uid, uid_t new_uid,
+                         gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
 
 #ifdef WITH_SELINUX
-	selinux_file_context (dst);
-#endif
+	if (set_selinux_file_context (dst) != 0) {
+		return -1;
+	}
+#endif				/* WITH_SELINUX */
 
 	if (   (mknod (dst, statp->st_mode & ~07777, statp->st_rdev) != 0)
-	    || (chown (dst,
-	               (uid == -1) ? statp->st_uid : (uid_t) uid,
-	               (gid == -1) ? statp->st_gid : (gid_t) gid) != 0)
+	    || (chown_if_needed (dst, statp,
+	                         old_uid, new_uid, old_gid, new_gid) != 0)
+#ifdef WITH_ACL
+	    || (   (perm_copy_file (src, dst, &ctx) != 0)
+	        && (errno != 0))
+#else				/* !WITH_ACL */
 	    || (chmod (dst, statp->st_mode & 07777) != 0)
+#endif				/* !WITH_ACL */
+#ifdef WITH_ATTR
+	/*
+	 * If the third parameter is NULL, all extended attributes
+	 * except those that define Access Control Lists are copied.
+	 * ACLs are excluded by default because copying them between
+	 * file systems with and without ACL support needs some
+	 * additional logic so that no unexpected permissions result.
+	 */
+	    || (   !reset_selinux
+	        && (attr_copy_file (src, dst, NULL, &ctx) != 0)
+	        && (errno != 0))
+#endif				/* WITH_ATTR */
 	    || (utimes (dst, mt) != 0)) {
 		err = -1;
 	}
@@ -600,14 +722,16 @@ static int copy_special (const char *dst,
  *
  *	Copy a file from src to dst.
  *
- *	statp, mt, uid, gid are used to set the access and modification and the
- *	access rights.
+ *	statp, mt, old_uid, new_uid, old_gid, and new_gid are used to set
+ *	the access and modification and the access rights.
  *
  *	Return 0 on success, -1 on error.
  */
 static int copy_file (const char *src, const char *dst,
+                      bool reset_selinux,
                       const struct stat *statp, const struct timeval mt[],
-                      long int uid, long int gid)
+                      uid_t old_uid, uid_t new_uid,
+                      gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
 	int ifd;
@@ -620,20 +744,40 @@ static int copy_file (const char *src, const char *dst,
 		return -1;
 	}
 #ifdef WITH_SELINUX
-	selinux_file_context (dst);
-#endif
+	if (set_selinux_file_context (dst) != 0) {
+		return -1;
+	}
+#endif				/* WITH_SELINUX */
 	ofd = open (dst, O_WRONLY | O_CREAT | O_TRUNC, statp->st_mode & 07777);
 	if (   (ofd < 0)
-	    || (fchown (ofd,
-	                (uid == -1) ? statp->st_uid : (uid_t) uid,
-	                (gid == -1) ? statp->st_gid : (gid_t) gid) != 0)
-	    || (fchmod (ofd, statp->st_mode & 07777) != 0)) {
+	    || (fchown_if_needed (ofd, statp,
+	                          old_uid, new_uid, old_gid, new_gid) != 0)
+#ifdef WITH_ACL
+	    || (   (perm_copy_fd (src, ifd, dst, ofd, &ctx) != 0)
+	        && (errno != 0))
+#else				/* !WITH_ACL */
+	    || (fchmod (ofd, statp->st_mode & 07777) != 0)
+#endif				/* !WITH_ACL */
+#ifdef WITH_ATTR
+	/*
+	 * If the third parameter is NULL, all extended attributes
+	 * except those that define Access Control Lists are copied.
+	 * ACLs are excluded by default because copying them between
+	 * file systems with and without ACL support needs some
+	 * additional logic so that no unexpected permissions result.
+	 */
+	    || (   !reset_selinux
+	        && (attr_copy_fd (src, ifd, dst, ofd, NULL, &ctx) != 0)
+	        && (errno != 0))
+#endif				/* WITH_ATTR */
+	   ) {
 		(void) close (ifd);
 		return -1;
 	}
 
 	while ((cnt = read (ifd, buf, sizeof buf)) > 0) {
 		if (write (ofd, buf, (size_t)cnt) != cnt) {
+			(void) close (ifd);
 			return -1;
 		}
 	}
@@ -644,7 +788,7 @@ static int copy_file (const char *src, const char *dst,
 	if (futimes (ofd, mt) != 0) {
 		return -1;
 	}
-#endif
+#endif				/* HAVE_FUTIMES */
 
 	if (close (ofd) != 0) {
 		return -1;
@@ -654,97 +798,42 @@ static int copy_file (const char *src, const char *dst,
 	if (utimes(dst, mt) != 0) {
 		return -1;
 	}
-#endif
+#endif				/* !HAVE_FUTIMES */
 
 	return err;
 }
 
-/*
- * remove_tree - delete a directory tree
- *
- *	remove_tree() walks a directory tree and deletes all the files
- *	and directories.
- *	At the end, it deletes the root directory itself.
- */
-
-int remove_tree (const char *root)
-{
-	char *new_name = NULL;
-	int err = 0;
-	struct DIRECT *ent;
-	struct stat sb;
-	DIR *dir;
-
-	/*
-	 * Open the source directory and read each entry.  Every file
-	 * entry in the directory is copied with the UID and GID set
-	 * to the provided values.  As an added security feature only
-	 * regular files (and directories ...) are copied, and no file
-	 * is made set-ID.
-	 */
-	dir = opendir (root);
-	if (NULL == dir) {
-		return -1;
-	}
-
-	while ((ent = readdir (dir))) {
-		size_t new_len = strlen (root) + strlen (ent->d_name) + 2;
-
-		/*
-		 * Skip the "." and ".." entries
-		 */
-
-		if (strcmp (ent->d_name, ".") == 0 ||
-		    strcmp (ent->d_name, "..") == 0) {
-			continue;
-		}
-
-		/*
-		 * Make the filename for the current entry.
-		 */
-
-		if (NULL != new_name) {
-			free (new_name);
-		}
-		new_name = (char *) malloc (new_len);
-		if (NULL == new_name) {
-			err = -1;
-			break;
-		}
-		snprintf (new_name, new_len, "%s/%s", root, ent->d_name);
-		if (LSTAT (new_name, &sb) == -1) {
-			continue;
-		}
-
-		if (S_ISDIR (sb.st_mode)) {
-			/*
-			 * Recursively delete this directory.
-			 */
-			if (remove_tree (new_name) != 0) {
-				err = -1;
-				break;
-			}
-		} else {
-			/*
-			 * Delete the file.
-			 */
-			if (unlink (new_name) != 0) {
-				err = -1;
-				break;
-			}
-		}
-	}
-	if (NULL != new_name) {
-		free (new_name);
-	}
-	(void) closedir (dir);
-
-	if (0 == err) {
-		if (rmdir (root) != 0) {
-			err = -1;
-		}
-	}
-
-	return err;
+#define def_chown_if_needed(chown_function, type_dst)                  \
+static int chown_function ## _if_needed (type_dst dst,                 \
+                                         const struct stat *statp,     \
+                                         uid_t old_uid, uid_t new_uid, \
+                                         gid_t old_gid, gid_t new_gid) \
+{                                                                      \
+	uid_t tmpuid = (uid_t) -1;                                     \
+	gid_t tmpgid = (gid_t) -1;                                     \
+                                                                       \
+	/* Use new_uid if old_uid is set to -1 or if the file was      \
+	 * owned by the user. */                                       \
+	if (((uid_t) -1 == old_uid) || (statp->st_uid == old_uid)) {   \
+		tmpuid = new_uid;                                      \
+	}                                                              \
+	/* Otherwise, or if new_uid was set to -1, we keep the same    \
+	 * owner. */                                                   \
+	if ((uid_t) -1 == tmpuid) {                                    \
+		tmpuid = statp->st_uid;                                \
+	}                                                              \
+                                                                       \
+	if (((gid_t) -1 == old_gid) || (statp->st_gid == old_gid)) {   \
+		tmpgid = new_gid;                                      \
+	}                                                              \
+	if ((gid_t) -1 == tmpgid) {                                    \
+		tmpgid = statp->st_gid;                                \
+	}                                                              \
+                                                                       \
+	return chown_function (dst, tmpuid, tmpgid);                   \
 }
+
+def_chown_if_needed (chown, const char *)
+def_chown_if_needed (lchown, const char *)
+def_chown_if_needed (fchown, int)
 

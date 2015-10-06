@@ -35,7 +35,7 @@
 /* Newer versions of Linux libc already have shadow support.  */
 #if defined(SHADOWGRP) && !defined(HAVE_SHADOWGRP)	/*{ */
 
-#ident "$Id: gshadow.c 3020 2009-06-12 17:50:24Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include "prototypes.h"
@@ -216,13 +216,13 @@ void endsgent (void)
 	static char *buf = NULL;
 
 	char *cp;
-	struct sgrp *ret;
 
 	if (0 == buflen) {
 		buf = (char *) malloc (BUFSIZ);
 		if (NULL == buf) {
 			return NULL;
 		}
+		buflen = BUFSIZ;
 	}
 
 	if (NULL == fp) {
@@ -230,9 +230,9 @@ void endsgent (void)
 	}
 
 #ifdef	USE_NIS
-	while (fgetsx (buf, (int) sizeof buf, fp) == buf)
+	while (fgetsx (buf, (int) buflen, fp) == buf)
 #else
-	if (fgetsx (buf, (int) sizeof buf, fp) == buf)
+	if (fgetsx (buf, (int) buflen, fp) == buf)
 #endif
 	{
 		while (   ((cp = strrchr (buf, '\n')) == NULL)

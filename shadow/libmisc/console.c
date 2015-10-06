@@ -3,7 +3,7 @@
  * Copyright (c) 1991       , Chip Rosenthal
  * Copyright (c) 1996 - 1998, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 #include "getdef.h"
 #include "prototypes.h"
 
-#ident "$Id: console.c 2929 2009-05-16 18:19:24Z nekral-guest $"
+#ident "$Id$"
 
 /* local function prototypes */
 static bool is_listed (const char *cfgin, const char *tty, bool def);
@@ -50,7 +50,8 @@ static bool is_listed (const char *cfgin, const char *tty, bool def);
 static bool is_listed (const char *cfgin, const char *tty, bool def)
 {
 	FILE *fp;
-	char buf[200], *cons, *s;
+	char buf[200], *s;
+	const char *cons;
 
 	/*
 	 * If the CONSOLE configuration definition isn't given,
@@ -68,13 +69,15 @@ static bool is_listed (const char *cfgin, const char *tty, bool def)
 	 */
 
 	if (*cons != '/') {
+		char *pbuf;
 		strcpy (buf, cons);
-		while ((s = strtok (buf, ":")) != NULL) {
+		pbuf = &buf[0];
+		while ((s = strtok (pbuf, ":")) != NULL) {
 			if (strcmp (s, tty) == 0) {
 				return true;
 			}
 
-			cons = NULL;
+			pbuf = NULL;
 		}
 		return false;
 	}

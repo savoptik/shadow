@@ -42,10 +42,12 @@
 #endif
 
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
 
-#ident "$Id: utmp.c 2834 2009-04-28 20:03:23Z nekral-guest $"
+#ident "$Id$"
 
 
 /*
@@ -71,7 +73,7 @@ static bool is_my_tty (const char *tty)
 		}
 	}
 
-	if (NULL == tmptty) {
+	if ('\0' == tmptty[0]) {
 		(void) puts (_("Unable to determine your tty name."));
 		exit (EXIT_FAILURE);
 	} else if (strncmp (tty, tmptty, sizeof (tmptty)) != 0) {
@@ -129,6 +131,7 @@ static bool is_my_tty (const char *tty)
 	return ret;
 }
 
+#ifndef USE_PAM
 /*
  * Some systems already have updwtmp() and possibly updwtmpx().  Others
  * don't, so we re-implement these functions if necessary.
@@ -160,6 +163,7 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 }
 #endif				/* ! HAVE_UPDWTMPX */
 #endif				/* ! USE_UTMPX */
+#endif				/* ! USE_PAM */
 
 
 /*
@@ -200,7 +204,6 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 		strcpy (hostname, host);
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
 	} else if (   (NULL != ut)
-	           && (NULL != ut->ut_host)
 	           && ('\0' != ut->ut_host[0])) {
 		hostname = (char *) xmalloc (sizeof (ut->ut_host) + 1);
 		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
@@ -314,7 +317,10 @@ int setutmp (struct utmp *ut)
 	}
 	endutent ();
 
+#ifndef USE_PAM
+	/* This is done by pam_lastlog */
 	updwtmp (_WTMP_FILE, ut);
+#endif				/* ! USE_PAM */
 
 	return err;
 }
@@ -447,7 +453,10 @@ int setutmpx (struct utmpx *utx)
 	}
 	endutxent ();
 
+#ifndef USE_PAM
+	/* This is done by pam_lastlog */
 	updwtmpx (_WTMP_FILE "x", utx);
+#endif				/* ! USE_PAM */
 
 	return err;
 }

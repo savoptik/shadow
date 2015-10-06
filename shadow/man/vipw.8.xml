@@ -2,7 +2,7 @@
 <!--
    Copyright (c) 1997       , Marek Michałkiewicz
    Copyright (c) 2001 - 2006, Tomasz Kłoczko
-   Copyright (c) 2007 - 2009, Nicolas François
+   Copyright (c) 2007 - 2011, Nicolas François
    All rights reserved.
   
    Redistribution and use in source and binary forms, with or without
@@ -31,13 +31,36 @@
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN"
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY USE_TCB               SYSTEM "login.defs.d/USE_TCB.xml">
+<!-- SHADOW-CONFIG-HERE -->
 ]>
 <refentry id='vipw.8'>
-  <!--  $Id: vipw.8.xml 2511 2009-03-14 11:08:39Z nekral-guest $  -->
+  <!--  $Id$  -->
+  <refentryinfo>
+    <author>
+      <firstname>Marek</firstname>
+      <surname>Michałkiewicz</surname>
+      <contrib>Creation, 1997</contrib>
+    </author>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Kłoczko</surname>
+      <email>kloczek@pld.org.pl</email>
+      <contrib>shadow-utils maintainer, 2000 - 2007</contrib>
+    </author>
+    <author>
+      <firstname>Nicolas</firstname>
+      <surname>François</surname>
+      <email>nicolas.francois@centraliens.net</email>
+      <contrib>shadow-utils maintainer, 2007 - now</contrib>
+    </author>
+  </refentryinfo>
   <refmeta>
     <refentrytitle>vipw</refentrytitle>
     <manvolnum>8</manvolnum>
     <refmiscinfo class="sectdesc">System Management Commands</refmiscinfo>
+    <refmiscinfo class="source">shadow-utils</refmiscinfo>
+    <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>vipw</refname>
@@ -112,9 +135,57 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>
+	  <option>-R</option>, <option>--root</option>&nbsp;<replaceable>CHROOT_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes in the <replaceable>CHROOT_DIR</replaceable>
+	    directory and use the configuration files from the
+	    <replaceable>CHROOT_DIR</replaceable> directory.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><option>-s</option>, <option>--shadow</option></term>
 	<listitem>
 	  <para>Edit shadow or gshadow database.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="tcb">
+	<term><option>-u</option>, <option>--user</option></term>
+	<listitem>
+	  <para>Indicates which user's tcb shadow file to edit.</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id='configuration' condition="tcb">
+    <title>CONFIGURATION</title>
+    <para>
+      The following configuration variables in
+      <filename>/etc/login.defs</filename> change the behavior of this
+      tool:
+    </para>
+    <variablelist>
+      &USE_TCB;
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id='environment'>
+    <title>ENVIRONMENT</title>
+    <variablelist>
+      <varlistentry>
+	<term><option>VISUAL</option></term>
+	<listitem>
+	  <para>Editor to be used.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>EDITOR</option></term>
+	<listitem>
+	  <para>Editor to be used if <option>VISUAL</option> is not set.</para>
 	</listitem>
       </varlistentry>
     </variablelist>
@@ -162,8 +233,14 @@
       <citerefentry>
 	<refentrytitle>gshadow</refentrytitle><manvolnum>5</manvolnum>
       </citerefentry>
+      <citerefentry condition="tcb">
+	<refentrytitle>login.defs</refentrytitle><manvolnum>5</manvolnum>
+      </citerefentry>,
       <citerefentry>
 	<refentrytitle>passwd</refentrytitle><manvolnum>5</manvolnum>
+      </citerefentry>,
+      <citerefentry condition="tcb">
+	<refentrytitle>tcb</refentrytitle><manvolnum>5</manvolnum>
       </citerefentry>,
       <citerefentry>
 	<refentrytitle>shadow</refentrytitle><manvolnum>5</manvolnum>

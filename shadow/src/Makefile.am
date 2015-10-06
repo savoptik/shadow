@@ -5,6 +5,7 @@ EXTRA_DIST = \
 ubindir = ${prefix}/bin
 usbindir = ${prefix}/sbin
 suidperms = 4755
+sgidperms = 2755
 
 INCLUDES = \
 	-I${top_srcdir}/lib \
@@ -24,6 +25,9 @@ INCLUDES = \
 bin_PROGRAMS   = groups login su
 sbin_PROGRAMS  = nologin
 ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
+if ENABLE_SUBIDS
+ubin_PROGRAMS += newgidmap newuidmap
+endif
 usbin_PROGRAMS = \
 	chgpasswd \
 	chpasswd \
@@ -48,12 +52,18 @@ usbin_PROGRAMS = \
 noinst_PROGRAMS = id sulogin
 
 suidbins       = su
-suidubins      = chage chfn chsh expiry gpasswd newgrp passwd
+suidubins      = chage chfn chsh expiry gpasswd newgrp passwd newuidmap newgidmap
 if ACCT_TOOLS_SETUID
 	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 
+if WITH_TCB
+suidubins -= passwd
+shadowsgidubins = passwd
+endif
+
 LDADD          = $(INTLLIBS) \
+		 $(LIBTCB) \
 		 $(top_builddir)/libmisc/libmisc.a \
 		 $(top_builddir)/lib/libshadow.la
 AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
@@ -71,6 +81,8 @@ LIBCRYPT_NOPAM = $(LIBCRYPT)
 endif
 
 chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+newuidmap_LDADD    = $(LDADD) $(LIBSELINUX)
+newgidmap_LDADD    = $(LDADD) $(LIBSELINUX)
 chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
 chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
@@ -99,9 +111,9 @@ su_SOURCES     = \
 	suauth.c
 su_LDADD       = $(LDADD) $(LIBPAM) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 sulogin_LDADD  = $(LDADD) $(LIBCRYPT)
-useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-usermod_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR)
+userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE)
+usermod_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR)
 vipw_LDADD     = $(LDADD) $(LIBSELINUX)
 
 install-am: all-am
@@ -114,3 +126,9 @@ install-am: all-am
 	for i in $(suidubins); do \
 		chmod -f $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
+if WITH_TCB
+	for i in $(shadowsgidubins); do \
+		chown root:shadow $(DESTDIR)$(ubindir)/$$i; \
+		chmod -f $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
+	done
+endif

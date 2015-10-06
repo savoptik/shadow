@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
    Copyright (c) 1989 - 1994, Julianne Frances Haugh
-   Copyright (c) 2007 - 2009, Nicolas François
+   Copyright (c) 2007 - 2011, Nicolas François
    All rights reserved.
   
    Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,37 @@
    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN"
+  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!-- SHADOW-CONFIG-HERE -->
+]>
 <refentry id='faillog.8'>
-  <!--  $Id: faillog.8.xml 2968 2009-05-21 14:04:53Z nekral-guest $ -->
+  <!--  $Id$ -->
+  <refentryinfo>
+    <author>
+      <firstname>Julianne Frances</firstname>
+      <surname>Haugh</surname>
+      <contrib>Creation, 1989</contrib>
+    </author>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Kłoczko</surname>
+      <email>kloczek@pld.org.pl</email>
+      <contrib>shadow-utils maintainer, 2000 - 2007</contrib>
+    </author>
+    <author>
+      <firstname>Nicolas</firstname>
+      <surname>François</surname>
+      <email>nicolas.francois@centraliens.net</email>
+      <contrib>shadow-utils maintainer, 2007 - now</contrib>
+    </author>
+  </refentryinfo>
   <refmeta>
     <refentrytitle>faillog</refentrytitle>
     <manvolnum>8</manvolnum>
     <refmiscinfo class="sectdesc">System Management Commands</refmiscinfo>
+    <refmiscinfo class="source">shadow-utils</refmiscinfo>
+    <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>faillog</refname>
@@ -74,6 +99,23 @@
 	    Display (or act on) faillog records for all users having an
 	    entry in the <filename>faillog</filename> database.
 	  </para>
+	  <para>
+	    The range of users can be restricted with the
+	    <option>-u</option> option.
+	  </para>
+	  <para>
+	    In display mode, this is still restricted to existing users
+	    but forces the display of the faillog entries even if they
+	    are empty.
+	  </para>
+	  <para>
+	    With the <option>-l</option>, <option>-m</option>,
+	    <option>-r</option>, <option>-t</option> options, the users'
+	    records are changed, even if the user does not exist on the
+	    system. This is useful to reset records of users that have
+	    been deleted or to set a policy in advance for a range of
+	    users.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
@@ -84,8 +126,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-l</option>, <option>--lock-time</option>
-	  <replaceable>SEC</replaceable>
+	  <option>-l</option>, <option>--lock-secs</option>&nbsp;<replaceable>SEC</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -100,8 +141,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-m</option>, <option>--maximum</option>
-	  <replaceable>MAX</replaceable>
+	  <option>-m</option>, <option>--maximum</option>&nbsp;<replaceable>MAX</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -137,8 +177,19 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><option>-t</option>, <option>--time</option>
-	<replaceable>DAYS</replaceable>
+	<term>
+	  <option>-R</option>, <option>--root</option>&nbsp;<replaceable>CHROOT_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes in the <replaceable>CHROOT_DIR</replaceable>
+	    directory and use the configuration files from the
+	    <replaceable>CHROOT_DIR</replaceable> directory.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>-t</option>, <option>--time</option>&nbsp;<replaceable>DAYS</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -149,8 +200,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-u</option>, <option>--user</option>
-	  <replaceable>LOGIN</replaceable>|<replaceable>RANGE</replaceable>
+	  <option>-u</option>, <option>--user</option>&nbsp;<replaceable>LOGIN</replaceable>|<replaceable>RANGE</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -175,15 +225,6 @@
       When none of the <option>-l</option>, <option>-m</option>, or
       <option>-r</option> options are used, <command>faillog</command>
       displays the faillog record of the specified user(s).
-    </para>
-    <para>
-      NOTE: in display mode, only the records of users which currently
-      exist in the system are displayed.  In the other modes (when the
-      <option>-l</option>, <option>-m</option>, or <option>-r</option>
-      options are used), the records of the user, or the range of users,
-      or all the users that may have an entry in the faillog database will
-      be changed.  This is useful to reset records of users that have been
-      deleted or set a policy in advance for a range of users.
     </para>
   </refsect1>
 

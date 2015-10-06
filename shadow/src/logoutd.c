@@ -31,7 +31,7 @@
 
 #include <config.h>
 
-#ident "$Id: logoutd.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <fcntl.h>
 #include <signal.h>
@@ -43,7 +43,7 @@
 /*
  * Global variables
  */
-char *Prog;
+const char *Prog;
 
 #ifndef DEFAULT_HUP_MESG
 #define DEFAULT_HUP_MESG _("login time exceeded\n\n")
@@ -95,7 +95,6 @@ static void send_mesg_to_tty (int tty_fd)
 {
 	TERMIO oldt, newt;
 	FILE *mesg_file, *tty_file;
-	int c;
 	bool is_tty;
 
 	tty_file = fdopen (tty_fd, "w");
@@ -114,6 +113,7 @@ static void send_mesg_to_tty (int tty_fd)
 
 	mesg_file = fopen (HUP_MESG_FILE, "r");
 	if (NULL != mesg_file) {
+		int c;
 		while ((c = getc (mesg_file)) != EOF) {
 			if (c == '\n') {
 				putc ('\r', tty_file);

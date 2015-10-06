@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2001, Marek Michałkiewicz
  * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2012, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: login.c 2927 2009-05-16 15:43:13Z nekral-guest $"
+#ident "$Id$"
 
 #include <errno.h>
 #include <grp.h>
@@ -82,7 +82,7 @@ static pam_handle_t *pamh = NULL;
 /*
  * Global variables
  */
-char *Prog;
+const char *Prog;
 
 static const char *hostname = "";
 static /*@null@*/ /*@only@*/char *username = NULL;
@@ -167,10 +167,10 @@ static void usage (void)
 static void setup_tty (void)
 {
 	TERMIO termio;
-	int erasechar;
-	int killchar;
 
 	if (GTTY (0, &termio) == 0) {	/* get terminal characteristics */
+		int erasechar;
+		int killchar;
 
 		/*
 		 * Add your favorite terminal modes here ...
@@ -242,7 +242,6 @@ static void check_nologin (bool login_to_root)
 	fname = getdef_str ("NOLOGINS_FILE");
 	if ((NULL != fname) && (access (fname, F_OK) == 0)) {
 		FILE *nlfp;
-		int c;
 
 		/*
 		 * Cat the file if it can be opened, otherwise just
@@ -250,6 +249,7 @@ static void check_nologin (bool login_to_root)
 		 */
 		nlfp = fopen (fname, "r");
 		if (NULL != nlfp) {
+			int c;
 			while ((c = getc (nlfp)) != EOF) {
 				if (c == '\n') {
 					(void) putchar ('\r');
@@ -527,14 +527,13 @@ int main (int argc, char **argv)
 #endif
 	unsigned int delay;
 	unsigned int retries;
-	bool failed;
 	bool subroot = false;
 #ifndef USE_PAM
 	bool is_console;
 #endif
 	int err;
 	const char *cp;
-	char *tmp;
+	const char *tmp;
 	char fromhost[512];
 	struct passwd *pwd = NULL;
 	char **envp = environ;
@@ -773,7 +772,7 @@ int main (int argc, char **argv)
 		 */
 		failcount = 0;
 		while (true) {
-			failed = false;
+			bool failed = false;
 
 			failcount++;
 #ifdef HAS_PAM_FAIL_DELAY
@@ -792,9 +791,9 @@ int main (int argc, char **argv)
 				SYSLOG ((LOG_NOTICE,
 				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
 				         failcount, fromhost, failent_user));
-				fprintf(stderr,
-				        _("Maximum number of tries exceeded (%u)\n"),
-				        failcount);
+				fprintf (stderr,
+				         _("Maximum number of tries exceeded (%u)\n"),
+				         failcount);
 				PAM_END;
 				exit(0);
 			} else if (retcode == PAM_ABORT) {
@@ -836,9 +835,9 @@ int main (int argc, char **argv)
 				SYSLOG ((LOG_NOTICE,
 				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
 				         failcount, fromhost, failent_user));
-				fprintf(stderr,
-				        _("Maximum number of tries exceeded (%u)\n"),
-				        failcount);
+				fprintf (stderr,
+				         _("Maximum number of tries exceeded (%u)\n"),
+				         failcount);
 				PAM_END;
 				exit(0);
 			}
@@ -878,12 +877,15 @@ int main (int argc, char **argv)
 	if (NULL != username) {
 		free (username);
 	}
-	username = pam_user;
+	username = xstrdup (pam_user);
 	failent_user = get_failent_user (username);
 
 	pwd = xgetpwnam (username);
 	if (NULL == pwd) {
 		SYSLOG ((LOG_ERR, "cannot find user %s", failent_user));
+		fprintf (stderr,
+		         _("Cannot find user (%s)\n"),
+		         username);
 		exit (1);
 	}
 
@@ -903,6 +905,7 @@ int main (int argc, char **argv)
 
 #else				/* ! USE_PAM */
 	while (true) {	/* repeatedly get login/password pairs */
+		bool failed;
 		/* user_passwd is always a pointer to this constant string
 		 * or a passwd or shadow password that will be memzero by
 		 * pw_free / spw_free.

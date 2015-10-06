@@ -1,3 +1,10 @@
+ * Create a common usage function that'd take the array of     
+   long options and an array of descriptions and output that so things would
+   be standardized across the utils.
+   Usage strings should be normalized and split first.
+   Investigate optparse.
+
+
 /etc/default/useradd
  * GROUP=1000 should accept a group name.
 
@@ -108,7 +115,13 @@ ALL:
     entry (with a password).
   - Add check to move passwd passwords to shadow if there is a shadow
     file.
+  - Support an alternative /etc/tcb directory as second parameter.
+  - add options -g / -G to specify alternative group / gshadow files
 
 - su
   - add a login.defs configuration parameter to add variables to keep in
-    the environment with "su -l" (TERM/TERMCOLOR/...
+    the environment with "su -l" (TERM/TERMCOLOR/...)
+
+- vipw
+  - set ACLs and XATTRs on the temporary file (and backups?)
+  - vipw + selinux -> use lib/selinux.c

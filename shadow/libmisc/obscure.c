@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 1999, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 
 #ifndef USE_PAM
 
-#ident "$Id: obscure.c 2791 2009-04-24 23:04:27Z nekral-guest $"
+#ident "$Id$"
 
 
 /*
@@ -69,7 +69,7 @@ static bool palindrome (unused const char *old, const char *new)
  * more than half of the characters are different ones.
  */
 
-static bool similar (const char *old, const char *new)
+static bool similar (/*@notnull@*/const char *old, /*@notnull@*/const char *new)
 {
 	int i, j;
 
@@ -100,7 +100,7 @@ static bool similar (const char *old, const char *new)
  * a nice mix of characters.
  */
 
-static int simple (unused const char *old, const char *new)
+static bool simple (unused const char *old, const char *new)
 {
 	bool digits = false;
 	bool uppers = false;
@@ -147,7 +147,7 @@ static int simple (unused const char *old, const char *new)
 	return true;
 }
 
-static char *str_lower (char *string)
+static char *str_lower (/*@returned@*/char *string)
 {
 	char *cp;
 
@@ -157,8 +157,10 @@ static char *str_lower (char *string)
 	return string;
 }
 
-static const char *password_check (const char *old, const char *new,
-				   const struct passwd *pwdp)
+static /*@observer@*//*@null@*/const char *password_check (
+	/*@notnull@*/const char *old,
+	/*@notnull@*/const char *new,
+	/*@notnull@*/const struct passwd *pwdp)
 {
 	const char *msg = NULL;
 	char *oldmono, *newmono, *wrapped;
@@ -219,14 +221,15 @@ static const char *password_check (const char *old, const char *new,
 	return msg;
 }
 
-/*ARGSUSED*/
-static const char *obscure_msg (const char *old, const char *new,
-				    const struct passwd *pwdp)
+static /*@observer@*//*@null@*/const char *obscure_msg (
+	/*@notnull@*/const char *old,
+	/*@notnull@*/const char *new,
+	/*@notnull@*/const struct passwd *pwdp)
 {
 	size_t maxlen, oldlen, newlen;
 	char *new1, *old1;
 	const char *msg;
-	char *result;
+	const char *result;
 
 	oldlen = strlen (old);
 	newlen = strlen (new);
@@ -304,15 +307,15 @@ static const char *obscure_msg (const char *old, const char *new,
  *	check passwords.
  */
 
-int obscure (const char *old, const char *new, const struct passwd *pwdp)
+bool obscure (const char *old, const char *new, const struct passwd *pwdp)
 {
 	const char *msg = obscure_msg (old, new, pwdp);
 
 	if (NULL != msg) {
 		printf (_("Bad password: %s.  "), msg);
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 #else				/* !USE_PAM */

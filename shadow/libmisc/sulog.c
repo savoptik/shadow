@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1992, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008       , Nicolas François
+ * Copyright (c) 2008 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: sulog.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -47,7 +47,7 @@
  */
 void sulog (const char *tty, bool success, const char *oldname, const char *name)
 {
-	char *sulog_file;
+	const char *sulog_file;
 	time_t now;
 	struct tm *tm;
 	FILE *fp;
@@ -62,8 +62,10 @@ void sulog (const char *tty, bool success, const char *oldname, const char *name
 			"FAILED su for %s by %s",name,oldname));
 	}
 
-	if ((sulog_file = getdef_str ("SULOG_FILE")) == (char *) 0)
+	sulog_file = getdef_str ("SULOG_FILE");
+	if (NULL == sulog_file) {
 		return;
+	}
 
 	oldgid = getgid ();
 	oldmask = umask (077);

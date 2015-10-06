@@ -2,7 +2,7 @@
  * Copyright (c) 1991 - 1993, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2011, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: groupadd.c 3015 2009-06-05 22:16:56Z nekral-guest $"
+#ident "$Id$"
 
 #include <ctype.h>
 #include <fcntl.h>
@@ -70,7 +70,7 @@
 /*
  * Global variables
  */
-char *Prog;
+const char *Prog;
 
 static /*@null@*/char *group_name;
 static gid_t group_id;
@@ -88,7 +88,7 @@ static bool is_shadow_grp;
 #endif
 
 /* local function prototypes */
-static void usage (void);
+static /*@noreturn@*/void usage (int status);
 static void new_grent (struct group *grent);
 
 #ifdef SHADOWGRP
@@ -105,24 +105,26 @@ static void check_perms (void);
 /*
  * usage - display usage message and exit
  */
-static void usage (void)
+static /*@noreturn@*/void usage (int status)
 {
-	(void) fprintf (stderr,
+	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
+	(void) fprintf (usageout,
 	                _("Usage: %s [options] GROUP\n"
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
 	(void) fputs (_("  -f, --force                   exit successfully if the group already exists,\n"
-	                "                                and cancel -g if the GID is already used\n"), stderr);
-	(void) fputs (_("  -g, --gid GID                 use GID for the new group\n"), stderr);
-	(void) fputs (_("  -h, --help                    display this help message and exit\n"), stderr);
-	(void) fputs (_("  -K, --key KEY=VALUE           override /etc/login.defs defaults\n"), stderr);
+	                "                                and cancel -g if the GID is already used\n"), usageout);
+	(void) fputs (_("  -g, --gid GID                 use GID for the new group\n"), usageout);
+	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
+	(void) fputs (_("  -K, --key KEY=VALUE           override /etc/login.defs defaults\n"), usageout);
 	(void) fputs (_("  -o, --non-unique              allow to create groups with duplicate\n"
-	                "                                (non-unique) GID\n"), stderr);
-	(void) fputs (_("  -p, --password PASSWORD       use this encrypted password for the new group\n"), stderr);
-	(void) fputs (_("  -r, --system                  create a system account\n"), stderr);
-	(void) fputs ("\n", stderr);
-	exit (E_USAGE);
+	                "                                (non-unique) GID\n"), usageout);
+	(void) fputs (_("  -p, --password PASSWORD       use this encrypted password for the new group\n"), usageout);
+	(void) fputs (_("  -r, --system                  create a system account\n"), usageout);
+	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs ("\n", usageout);
+	exit (status);
 }
 
 /*
@@ -343,7 +345,7 @@ static void open_files (void)
 	 */
 	add_cleanup (cleanup_report_add_group, group_name);
 
-	/* An now open the databases */
+	/* And now open the databases */
 	if (gr_open (O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, gr_dbname ());
 		SYSLOG ((LOG_WARN, "cannot open %s", gr_dbname ()));
@@ -374,22 +376,21 @@ static void process_flags (int argc, char **argv)
 	 * Parse the command line options.
 	 */
 	char *cp;
-	int option_index = 0;
 	int c;
 	static struct option long_options[] = {
-		{"force", no_argument, NULL, 'f'},
-		{"gid", required_argument, NULL, 'g'},
-		{"help", no_argument, NULL, 'h'},
-		{"key", required_argument, NULL, 'K'},
-		{"non-unique", no_argument, NULL, 'o'},
-		{"password", required_argument, NULL, 'p'},
-		{"system", no_argument, NULL, 'r'},
+		{"force",      no_argument,       NULL, 'f'},
+		{"gid",        required_argument, NULL, 'g'},
+		{"help",       no_argument,       NULL, 'h'},
+		{"key",        required_argument, NULL, 'K'},
+		{"non-unique", no_argument,       NULL, 'o'},
+		{"password",   required_argument, NULL, 'p'},
+		{"system",     no_argument,       NULL, 'r'},
+		{"root",       required_argument, NULL, 'R'},
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((c =
-		getopt_long (argc, argv, "fg:hK:op:r", long_options,
-		             &option_index)) != -1) {
+	while ((c = getopt_long (argc, argv, "fg:hK:op:rR:",
+		                 long_options, NULL)) != -1) {
 		switch (c) {
 		case 'f':
 			/*
@@ -412,8 +413,8 @@ static void process_flags (int argc, char **argv)
 			}
 			break;
 		case 'h':
-			usage ();
-			break;
+			usage (E_SUCCESS);
+			/*@notreached@*/break;
 		case 'K':
 			/*
 			 * override login.defs defaults (-K name=value)
@@ -443,8 +444,10 @@ static void process_flags (int argc, char **argv)
 		case 'r':
 			rflg = true;
 			break;
+		case 'R': /* no-op, handled in process_root_flag () */
+			break;
 		default:
-			usage ();
+			usage (E_USAGE);
 		}
 	}
 
@@ -452,7 +455,7 @@ static void process_flags (int argc, char **argv)
 	 * Check the flags consistency
 	 */
 	if (optind != argc - 1) {
-		usage ();
+		usage (E_USAGE);
 	}
 	group_name = argv[optind];
 
@@ -468,7 +471,7 @@ static void check_flags (void)
 {
 	/* -o does not make sense without -g */
 	if (oflg && !gflg) {
-		usage ();
+		usage (E_USAGE);
 	}
 
 	check_new_name ();
@@ -546,13 +549,16 @@ static void check_perms (void)
 		retval = pam_acct_mgmt (pamh, 0);
 	}
 
-	if (NULL != pamh) {
-		(void) pam_end (pamh, retval);
-	}
 	if (PAM_SUCCESS != retval) {
-		fprintf (stderr, _("%s: PAM authentication failed\n"), Prog);
+		fprintf (stderr, _("%s: PAM: %s\n"),
+		         Prog, pam_strerror (pamh, retval));
+		SYSLOG((LOG_ERR, "%s", pam_strerror (pamh, retval)));
+		if (NULL != pamh) {
+			(void) pam_end (pamh, retval);
+		}
 		exit (1);
 	}
+	(void) pam_end (pamh, retval);
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 }
@@ -562,11 +568,6 @@ static void check_perms (void)
  */
 int main (int argc, char **argv)
 {
-#ifdef WITH_AUDIT
-	audit_help_open ();
-#endif
-	atexit (do_cleanups);
-
 	/*
 	 * Get my name so that I can use it to report errors.
 	 */
@@ -576,7 +577,19 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
+	process_root_flag ("-R", argc, argv);
+
 	OPENLOG ("groupadd");
+#ifdef WITH_AUDIT
+	audit_help_open ();
+#endif
+
+	if (atexit (do_cleanups) != 0) {
+		fprintf (stderr,
+		         _("%s: Cannot setup cleanup service.\n"),
+		         Prog);
+		exit (1);
+	}
 
 	/*
 	 * Parse the command line options.
@@ -606,7 +619,6 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("group");
 
-	exit (E_SUCCESS);
-	/*@notreached@*/
+	return E_SUCCESS;
 }
 

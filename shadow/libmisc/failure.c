@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 1998, Marek Michałkiewicz
  * Copyright (c) 2002 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008       , Nicolas François
+ * Copyright (c) 2008 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: failure.c 2829 2009-04-28 19:14:50Z nekral-guest $"
+#ident "$Id$"
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -273,12 +273,14 @@ void failprint (const struct faillog *fail)
 		lasttime++;
 	}
 #endif
+	/*@-formatconst@*/
 	(void) printf (ngettext ("%d failure since last login.\n"
 	                         "Last was %s on %s.\n",
 	                         "%d failures since last login.\n"
 	                         "Last was %s on %s.\n",
 	                         (unsigned long) fail->fail_cnt),
 	               fail->fail_cnt, lasttime, fail->fail_line);
+	/*@=formatconst@*/
 }
 
 /*
@@ -296,7 +298,7 @@ void failtmp (const char *username,
 #endif				/* !USE_UTMPX */
     )
 {
-	char *ftmp;
+	const char *ftmp;
 	int fd;
 
 	/*

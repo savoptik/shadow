@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: valid.c 2116 2008-06-10 21:52:34Z nekral-guest $"
+#ident "$Id$"
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -52,7 +52,7 @@
 bool valid (const char *password, const struct passwd *ent)
 {
 	const char *encrypted;
-	const char *salt;
+	/*@observer@*/const char *salt;
 
 	/*
 	 * Start with blank or empty password entries.  Always encrypt
@@ -95,6 +95,7 @@ bool valid (const char *password, const struct passwd *ent)
 	 */
 
 	if (   (NULL != ent->pw_name)
+	    && (NULL != encrypted)
 	    && (strcmp (encrypted, ent->pw_passwd) == 0)) {
 		return true;
 	} else {

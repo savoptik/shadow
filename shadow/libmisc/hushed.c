@@ -3,7 +3,7 @@
  * Copyright (c) 1991 - 1993, Chip Rosenthal
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2009, Nicolas François
+ * Copyright (c) 2008 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 
 #include <config.h>
 
-#ident "$Id: hushed.c 2731 2009-04-21 22:03:33Z nekral-guest $"
+#ident "$Id$"
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -50,7 +50,7 @@
 bool hushed (const char *username)
 {
 	struct passwd *pw;
-	char *hushfile;
+	const char *hushfile;
 	char buf[BUFSIZ];
 	bool found;
 	FILE *fp;
@@ -76,7 +76,7 @@ bool hushed (const char *username)
 	 */
 
 	if (hushfile[0] != '/') {
-		snprintf (buf, sizeof (buf), "%s/%s", pw->pw_dir, hushfile);
+		(void) snprintf (buf, sizeof (buf), "%s/%s", pw->pw_dir, hushfile);
 		return (access (buf, F_OK) == 0);
 	}
 

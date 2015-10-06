@@ -2,7 +2,7 @@
  * Copyright (c) 1990 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001 - 2005, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* $Id: commonio.h 2806 2009-04-25 14:16:22Z nekral-guest $ */
+/* $Id$ */
 #ifndef _COMMONIO_H
 #define _COMMONIO_H
 
@@ -126,7 +126,8 @@ struct commonio_db {
 	/*
 	 * Head, tail, current position in linked list.
 	 */
-	/*@owned@*/ /*@null@*/struct commonio_entry *head, *tail;
+	/*@owned@*/ /*@null@*/struct commonio_entry *head;
+	/*@dependent@*/ /*@null@*/struct commonio_entry *tail;
 	/*@dependent@*/ /*@null@*/struct commonio_entry *cursor;
 
 	/*
@@ -141,20 +142,23 @@ struct commonio_db {
 extern int commonio_setname (struct commonio_db *, const char *);
 extern bool commonio_present (const struct commonio_db *db);
 extern int commonio_lock (struct commonio_db *);
-extern int commonio_lock_nowait (struct commonio_db *);
+extern int commonio_lock_nowait (struct commonio_db *, bool log);
 extern int commonio_open (struct commonio_db *, int);
 extern /*@observer@*/ /*@null@*/const void *commonio_locate (struct commonio_db *, const char *);
 extern int commonio_update (struct commonio_db *, const void *);
+#ifdef ENABLE_SUBIDS
+extern int commonio_append (struct commonio_db *, const void *);
+#endif				/* ENABLE_SUBIDS */
 extern int commonio_remove (struct commonio_db *, const char *);
 extern int commonio_rewind (struct commonio_db *);
 extern /*@observer@*/ /*@null@*/const void *commonio_next (struct commonio_db *);
 extern int commonio_close (struct commonio_db *);
 extern int commonio_unlock (struct commonio_db *);
 extern void commonio_del_entry (struct commonio_db *,
-				const struct commonio_entry *);
+                                const struct commonio_entry *);
 extern int commonio_sort_wrt (struct commonio_db *shadow,
-			      struct commonio_db *passwd);
+                              const struct commonio_db *passwd);
 extern int commonio_sort (struct commonio_db *db,
-			  int (*cmp) (const void *, const void *));
+                          int (*cmp) (const void *, const void *));
 
 #endif

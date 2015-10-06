@@ -2,7 +2,7 @@
  * Copyright (c) 1990 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2003 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,14 @@
  *
  * prototypes of libmisc functions, and private lib functions.
  *
- * $Id: prototypes.h 2935 2009-05-18 18:32:17Z nekral-guest $
+ * $Id$
  *
  */
 
 #ifndef _PROTOTYPES_H
 #define _PROTOTYPES_H
+
+#include <config.h>
 
 #include <sys/stat.h>
 #ifdef USE_UTMPX
@@ -57,7 +59,7 @@
 #include "defines.h"
 #include "commonio.h"
 
-extern char *Prog;
+extern /*@observer@*/ const char *Prog;
 
 /* addgrps.c */
 #if defined (HAVE_SETGROUPS) && ! defined (USE_PAM)
@@ -72,25 +74,27 @@ extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
 /* basename() renamed to Basename() to avoid libc name space confusion */
 /* basename.c */
-extern char *Basename (char *str);
+extern /*@observer@*/const char *Basename (const char *str);
 
 /* chowndir.c */
-extern int chown_tree (const char *, uid_t, uid_t, gid_t, gid_t);
+extern int chown_tree (const char *root,
+                       uid_t old_uid, uid_t new_uid,
+                       gid_t old_gid, gid_t new_gid);
 
 /* chowntty.c */
 extern void chown_tty (const struct passwd *);
 
 /* cleanup.c */
-typedef void (*cleanup_function) (/*@null@*/void *arg);
-void add_cleanup (cleanup_function pcf, /*@null@*/void *arg);
-void del_cleanup (cleanup_function pcf);
+typedef /*@null@*/void (*cleanup_function) (/*@null@*/void *arg);
+void add_cleanup (/*@notnull@*/cleanup_function pcf, /*@null@*/void *arg);
+void del_cleanup (/*@notnull@*/cleanup_function pcf);
 void do_cleanups (void);
 
 /* cleanup_group.c */
 struct cleanup_info_mod {
 	char *audit_msg;
 	char *action;
-	char *name;
+	/*@observer@*/const char *name;
 };
 void cleanup_report_add_group (void *group_name);
 void cleanup_report_add_group_group (void *group_name);
@@ -116,15 +120,13 @@ extern bool console (const char *);
 
 /* copydir.c */
 extern int copy_tree (const char *src_root, const char *dst_root,
-                      long int uid, long int gid);
-extern int remove_tree (const char *root);
-
-#ifdef WITH_SELINUX
-extern int selinux_file_context (const char *dst_name);
-#endif
+                      bool copy_root,
+                      bool reset_selinux,
+                      uid_t old_uid, uid_t new_uid,
+                      gid_t old_gid, gid_t new_gid);
 
 /* encrypt.c */
-extern char *pw_encrypt (const char *, const char *);
+extern /*@exposed@*//*@null@*/char *pw_encrypt (const char *, const char *);
 
 /* entry.c */
 extern void pw_entry (const char *, struct passwd *);
@@ -149,11 +151,22 @@ extern int find_new_uid (bool sys_user,
                          uid_t *uid,
                          /*@null@*/uid_t const *preferred_uid);
 
+#ifdef ENABLE_SUBIDS
+/* find_new_sub_gids.c */
+extern int find_new_sub_gids (const char *owner,
+			      gid_t *range_start, unsigned long *range_count);
+
+/* find_new_sub_uids.c */
+extern int find_new_sub_uids (const char *owner,
+			      uid_t *range_start, unsigned long *range_count);
+#endif				/* ENABLE_SUBIDS */
+
+
 /* get_gid.c */
 extern int get_gid (const char *gidstr, gid_t *gid);
 
 /* getgr_nam_gid.c */
-extern /*@null@*/struct group *getgr_nam_gid (const char *grname);
+extern /*@only@*//*@null@*/struct group *getgr_nam_gid (/*@null@*/const char *grname);
 
 /* getlong.c */
 extern int getlong (const char *numstr, /*@out@*/long int *result);
@@ -236,7 +249,7 @@ extern void mailcheck (void);
 extern void motd (void);
 
 /* myname.c */
-extern /*@null@*/struct passwd *get_my_pwent (void);
+extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
 
 /* pam_pass_non_interractive.c */
 #ifdef USE_PAM
@@ -247,7 +260,7 @@ extern int do_pam_passwd_non_interractive (const char *pam_service,
 
 /* obscure.c */
 #ifndef USE_PAM
-extern int obscure (const char *, const char *, const struct passwd *);
+extern bool obscure (const char *, const char *, const struct passwd *);
 #endif
 
 /* pam_pass.c */
@@ -280,12 +293,30 @@ extern /*@dependent@*/ /*@null@*/struct commonio_entry *__pw_get_head (void);
 extern /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent);
 extern void pw_free (/*@out@*/ /*@only@*/struct passwd *pwent);
 
+/* remove_tree.c */
+extern int remove_tree (const char *root, bool remove_root);
+
 /* rlogin.c */
 extern int do_rlogin (const char *remote_host, char *name, size_t namelen,
                       char *term, size_t termlen);
 
+/* root_flag.c */
+extern void process_root_flag (const char* short_opt, int argc, char **argv);
+
 /* salt.c */
-extern /*@observer@*/const char *crypt_make_salt (/*@null@*/const char *meth, /*@null@*/void *arg);
+extern /*@observer@*/const char *crypt_make_salt (/*@null@*//*@observer@*/const char *meth, /*@null@*/void *arg);
+
+/* selinux.c */
+#ifdef WITH_SELINUX
+extern int set_selinux_file_context (const char *dst_name);
+extern int reset_selinux_file_context (void);
+#endif
+
+/* semanage.c */
+#ifdef WITH_SELINUX
+extern int set_seuser(const char *login_name, const char *seuser_name);
+extern int del_seuser(const char *login_name);
+#endif
 
 /* setugid.c */
 extern int setup_groups (const struct passwd *info);
@@ -331,17 +362,17 @@ extern void spw_free (/*@out@*/ /*@only@*/struct spwd *spent);
 /* shell.c */
 extern int shell (const char *file, /*@null@*/const char *arg, char *const envp[]);
 
-/* system.c */
-extern int safe_system (const char *command,
-                        const char *argv[],
-                        const char *env[],
-                        int ignore_stderr);
+/* spawn.c */
+extern int run_command (const char *cmd, const char *argv[],
+                        /*@null@*/const char *envp[], /*@out@*/int *status);
 
 /* strtoday.c */
 extern long strtoday (const char *);
 
 /* suauth.c */
-extern int check_su_auth (const char *actual_id, const char *wanted_id);
+extern int check_su_auth (const char *actual_id,
+                          const char *wanted_id,
+                          bool su_to_root);
 
 /* sulog.c */
 extern void sulog (const char *tty,
@@ -357,7 +388,7 @@ extern void ttytype (const char *);
 
 /* tz.c */
 #ifndef USE_PAM
-extern char *tz (const char *);
+extern /*@observer@*/const char *tz (const char *);
 #endif
 
 /* ulimit.c */
@@ -385,9 +416,9 @@ extern int setutmpx (struct utmpx *utx);
 extern bool valid (const char *, const struct passwd *);
 
 /* xmalloc.c */
-extern /*@maynotreturn@*/ /*@out@*//*@only@*/char *xmalloc (size_t size)
+extern /*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/char *xmalloc (size_t size)
   /*@ensures MaxSet(result) == (size - 1); @*/;
-extern /*@maynotreturn@*/ /*@only@*/char *xstrdup (const char *);
+extern /*@maynotreturn@*/ /*@only@*//*@notnull@*/char *xstrdup (const char *);
 
 /* xgetpwnam.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwnam (const char *);

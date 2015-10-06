@@ -2,7 +2,7 @@
  * Copyright (c) 1990 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2011, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: gpasswd.c 2851 2009-04-30 21:39:38Z nekral-guest $"
+#ident "$Id$"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -56,7 +56,7 @@
  * Global variables
  */
 /* The name of this command, as it is invoked */
-char *Prog;
+const char *Prog;
 
 #ifdef SHADOWGRP
 /* Indicate if shadow groups are enabled on the system
@@ -94,7 +94,7 @@ static uid_t bywho;
 #endif
 
 /* local function prototypes */
-static void usage (void);
+static void usage (int status);
 static RETSIGTYPE catch_signals (int killed);
 static bool is_valid_user_list (const char *users);
 static void process_flags (int argc, char **argv);
@@ -113,44 +113,41 @@ static void update_group (struct group *gr);
 static void change_passwd (struct group *gr);
 #endif
 static void log_gpasswd_failure (const char *suffix);
-static void log_gpasswd_failure_system (unused void *arg);
-static void log_gpasswd_failure_group (unused void *arg);
+static void log_gpasswd_failure_system (/*@null@*/unused void *arg);
+static void log_gpasswd_failure_group (/*@null@*/unused void *arg);
 #ifdef SHADOWGRP
-static void log_gpasswd_failure_gshadow (unused void *arg);
+static void log_gpasswd_failure_gshadow (/*@null@*/unused void *arg);
 #endif
 static void log_gpasswd_success (const char *suffix);
-static void log_gpasswd_success_system (unused void *arg);
-static void log_gpasswd_success_group (unused void *arg);
-#ifdef SHADOWGRP
-static void log_gpasswd_success_gshadow (unused void *arg);
-#endif
+static void log_gpasswd_success_system (/*@null@*/unused void *arg);
+static void log_gpasswd_success_group (/*@null@*/unused void *arg);
 
 /*
  * usage - display usage message
  */
-static void usage (void)
+static void usage (int status)
 {
-	fprintf (stderr,
-	         _("Usage: %s [option] GROUP\n"
-	           "\n"
-	           "Options:\n"
-	           "  -a, --add USER                add USER to GROUP\n"
-	           "  -d, --delete USER             remove USER from GROUP\n"
-	           "  -r, --remove-password         remove the GROUP's password\n"
-	           "  -R, --restrict                restrict access to GROUP to its members\n"
-	           "  -M, --members USER,...        set the list of members of GROUP\n"
-	           "%s\n"
-	           "\n"),
-	         Prog,
+	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
+	(void) fprintf (usageout,
+	                _("Usage: %s [option] GROUP\n"
+	                  "\n"
+	                  "Options:\n"),
+	                Prog);
+	(void) fputs (_("  -a, --add USER                add USER to GROUP\n"), usageout);
+	(void) fputs (_("  -d, --delete USER             remove USER from GROUP\n"), usageout);
+	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
+	(void) fputs (_("  -Q, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -r, --remove-password         remove the GROUP's password\n"), usageout);
+	(void) fputs (_("  -R, --restrict                restrict access to GROUP to its members\n"), usageout);
+	(void) fputs (_("  -M, --members USER,...        set the list of members of GROUP\n"), usageout);
 #ifdef SHADOWGRP
-	         _("  -A, --administrators ADMIN,...\n"
-	           "                                set the list of administrators for GROUP\n"
-	           "Except for the -A and -M options, the options cannot be combined.\n")
+	(void) fputs (_("  -A, --administrators ADMIN,...\n"
+	                "                                set the list of administrators for GROUP\n"), usageout);
+	(void) fputs (_("Except for the -A and -M options, the options cannot be combined.\n"), usageout);
 #else
-	         _("The options cannot be combined.\n")
+	(void) fputs (_("The options cannot be combined.\n"), usageout);
 #endif
-	        );
-	exit (E_USAGE);
+	exit (status);
 }
 
 /*
@@ -188,9 +185,10 @@ static RETSIGTYPE catch_signals (int killed)
  */
 static bool is_valid_user_list (const char *users)
 {
-	char *username, *end;
+	const char *username;
+	char *end;
 	bool is_valid = true;
-	char *tmpusers = xstrdup (users);
+	/*@owned@*/char *tmpusers = xstrdup (users);
 
 	for (username = tmpusers;
 	     (NULL != username) && ('\0' != *username);
@@ -230,20 +228,22 @@ static void failure (void)
  */
 static void process_flags (int argc, char **argv)
 {
-	int flag;
-	int option_index = 0;
+	int c;
 	static struct option long_options[] = {
-		{"add", required_argument, NULL, 'a'},
-		{"delete", required_argument, NULL, 'd'},
-		{"remove-password", no_argument, NULL, 'r'},
-		{"restrict", no_argument, NULL, 'R'},
-		{"administrators", required_argument, NULL, 'A'},
-		{"members", required_argument, NULL, 'M'},
+		{"add",             required_argument, NULL, 'a'},
+		{"administrators",  required_argument, NULL, 'A'},
+		{"delete",          required_argument, NULL, 'd'},
+		{"help",            no_argument,       NULL, 'h'},
+		{"members",         required_argument, NULL, 'M'},
+		{"root",            required_argument, NULL, 'Q'},
+		{"remove-password", no_argument,       NULL, 'r'},
+		{"restrict",        no_argument,       NULL, 'R'},
 		{NULL, 0, NULL, '\0'}
 		};
 
-	while ((flag = getopt_long (argc, argv, "a:A:d:gM:rR", long_options, &option_index)) != -1) {
-		switch (flag) {
+	while ((c = getopt_long (argc, argv, "a:A:d:ghM:Q:rR",
+	                         long_options, NULL)) != -1) {
+		switch (c) {
 		case 'a':	/* add a user */
 			aflg = true;
 			user = optarg;
@@ -276,12 +276,17 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 'g':	/* no-op from normal password */
 			break;
+		case 'h':
+			usage (E_SUCCESS);
+			break;
 		case 'M':	/* set the list of members */
 			members = optarg;
 			if (!is_valid_user_list (members)) {
 				exit (E_BAD_ARG);
 			}
 			Mflg = true;
+			break;
+		case 'Q':	/* no-op, handled in process_root_flag () */
 			break;
 		case 'r':	/* remove group password */
 			rflg = true;
@@ -290,7 +295,7 @@ static void process_flags (int argc, char **argv)
 			Rflg = true;
 			break;
 		default:
-			usage ();
+			usage (E_USAGE);
 		}
 	}
 
@@ -325,14 +330,14 @@ static void check_flags (int argc, int opt_index)
 		exclusive++;
 	}
 	if (exclusive > 1) {
-		usage ();
+		usage (E_USAGE);
 	}
 
 	/*
 	 * Make sure one (and only one) group was provided
 	 */
 	if ((argc != (opt_index+1)) || (NULL == group)) {
-		usage ();
+		usage (E_USAGE);
 	}
 }
 
@@ -648,16 +653,6 @@ static void log_gpasswd_success_group (unused void *arg)
 	log_gpasswd_success (buf);
 }
 
-#ifdef SHADOWGRP
-static void log_gpasswd_success_gshadow (unused void *arg)
-{
-	char buf[1024];
-	snprintf (buf, 1023, " in %s", sgr_dbname ());
-	buf[1023] = '\0';
-	log_gpasswd_success (buf);
-}
-#endif				/* SHADOWGRP */
-
 /*
  * close_files - close and unlock the group databases
  *
@@ -687,7 +682,6 @@ static void close_files (void)
 			         Prog, sgr_dbname ());
 			exit (E_NOPERM);
 		}
-		add_cleanup (log_gpasswd_success_gshadow, NULL);
 		del_cleanup (log_gpasswd_failure_gshadow);
 
 		cleanup_unlock_gshadow (NULL);
@@ -697,11 +691,6 @@ static void close_files (void)
 
 	log_gpasswd_success_system (NULL);
 	del_cleanup (log_gpasswd_success_group);
-#ifdef SHADOWGRP
-	if (is_shadowgrp) {
-		del_cleanup (log_gpasswd_success_gshadow);
-	}
-#endif
 }
 
 /*
@@ -909,6 +898,7 @@ static void change_passwd (struct group *gr)
 	char *cp;
 	static char pass[BUFSIZ];
 	int retries;
+	const char *salt;
 
 	/*
 	 * A new password is to be entered and it must be encrypted, etc.
@@ -949,10 +939,18 @@ static void change_passwd (struct group *gr)
 		exit (1);
 	}
 
-	cp = pw_encrypt (pass, crypt_make_salt (NULL, NULL));
+	salt = crypt_make_salt (NULL, NULL);
+	cp = pw_encrypt (pass, salt);
+	if (NULL == cp) {
+		fprintf (stderr,
+		         _("%s: failed to crypt password with salt '%s': %s\n"),
+		         Prog, salt, strerror (errno));
+		exit (1);
+	}
 	memzero (pass, sizeof pass);
 #ifdef SHADOWGRP
 	if (is_shadowgrp) {
+		gr->gr_passwd = SHADOW_PASSWD_STRING;
 		sg->sg_passwd = cp;
 	} else
 #endif
@@ -994,6 +992,8 @@ int main (int argc, char **argv)
 	OPENLOG ("gpasswd");
 	setbuf (stdout, NULL);
 	setbuf (stderr, NULL);
+
+	process_root_flag ("-Q", argc, argv);
 
 #ifdef SHADOWGRP
 	is_shadowgrp = sgr_file_present ();
@@ -1051,20 +1051,30 @@ int main (int argc, char **argv)
 	 * field to a "".
 	 */
 	if (rflg) {
-		grent.gr_passwd = "";	/* XXX warning: const */
 #ifdef SHADOWGRP
-		sgent.sg_passwd = "";	/* XXX warning: const */
-#endif
+		if (is_shadowgrp) {
+			grent.gr_passwd = SHADOW_PASSWD_STRING;	/* XXX warning: const */
+			sgent.sg_passwd = "";	/* XXX warning: const */
+		} else
+#endif				/* SHADOWGRP */
+		{
+			grent.gr_passwd = "";	/* XXX warning: const */
+		}
 		goto output;
 	} else if (Rflg) {
 		/*
 		 * Same thing for restricting the group. Set the password
 		 * field to "!".
 		 */
-		grent.gr_passwd = "!";	/* XXX warning: const */
 #ifdef SHADOWGRP
-		sgent.sg_passwd = "!";	/* XXX warning: const */
-#endif
+		if (is_shadowgrp) {
+			grent.gr_passwd = SHADOW_PASSWD_STRING;	/* XXX warning: const */
+			sgent.sg_passwd = "!";	/* XXX warning: const */
+		} else
+#endif				/* SHADOWGRP */
+		{
+			grent.gr_passwd = "!";	/* XXX warning: const */
+		}
 		goto output;
 	}
 

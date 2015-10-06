@@ -2,7 +2,7 @@
 <!--
    Copyright (c) 1996 - 1998, Marek Michałkiewicz
    Copyright (c) 2000 - 2006, Tomasz Kłoczko
-   Copyright (c) 2007 - 2008, Nicolas François
+   Copyright (c) 2007 - 2011, Nicolas François
    All rights reserved.
   
    Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,36 @@
 <!ENTITY PASS_MAX_DAYS         SYSTEM "login.defs.d/PASS_MAX_DAYS.xml">
 <!ENTITY PASS_MIN_DAYS         SYSTEM "login.defs.d/PASS_MIN_DAYS.xml">
 <!ENTITY PASS_WARN_AGE         SYSTEM "login.defs.d/PASS_WARN_AGE.xml">
+<!ENTITY USE_TCB               SYSTEM "login.defs.d/USE_TCB.xml">
+<!-- SHADOW-CONFIG-HERE -->
 ]>
 <refentry id='pwconv.8'>
-  <!-- $Id: pwconv.8.xml 2435 2008-10-11 11:44:43Z nekral-guest $ -->
+  <!-- $Id$ -->
+  <refentryinfo>
+    <author>
+      <firstname>Marek</firstname>
+      <surname>Michałkiewicz</surname>
+      <contrib>Creation, 1996</contrib>
+    </author>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Kłoczko</surname>
+      <email>kloczek@pld.org.pl</email>
+      <contrib>shadow-utils maintainer, 2000 - 2007</contrib>
+    </author>
+    <author>
+      <firstname>Nicolas</firstname>
+      <surname>François</surname>
+      <email>nicolas.francois@centraliens.net</email>
+      <contrib>shadow-utils maintainer, 2007 - now</contrib>
+    </author>
+  </refentryinfo>
   <refmeta>
     <refentrytitle>pwconv</refentrytitle>
     <manvolnum>8</manvolnum>
     <refmiscinfo class="sectdesc">System Management Commands</refmiscinfo>
+    <refmiscinfo class="source">shadow-utils</refmiscinfo>
+    <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>pwconv</refname>
@@ -54,15 +77,27 @@
   <refsynopsisdiv id='synopsis'>
     <cmdsynopsis>
       <command>pwconv</command>
+      <arg choice='opt'>
+        <replaceable>options</replaceable>
+      </arg>
     </cmdsynopsis>
     <cmdsynopsis>
       <command>pwunconv</command>
+      <arg choice='opt'>
+        <replaceable>options</replaceable>
+      </arg>
     </cmdsynopsis>
     <cmdsynopsis>
       <command>grpconv</command>
+      <arg choice='opt'>
+        <replaceable>options</replaceable>
+      </arg>
     </cmdsynopsis>
     <cmdsynopsis>
       <command>grpunconv</command>
+      <arg choice='opt'>
+        <replaceable>options</replaceable>
+      </arg>
     </cmdsynopsis>
   </refsynopsisdiv>
 
@@ -73,12 +108,29 @@
       remap='I'>shadow</emphasis> from <emphasis remap='I'>passwd</emphasis>
       and an optionally existing <emphasis remap='I'>shadow</emphasis>.
     </para>
+    <para condition="tcb">
+      <command>pwconv</command> does not work with
+      <option>USE_TCB</option> enabled. To convert to tcb passwords, you
+      should first use <command>pwconv</command> to convert to shadowed
+      passwords by disabling <option>USE_TCB</option> in
+      <filename>login.defs</filename> and then convert to tcb password
+      using <command>tcb_convert</command> (and re-enable
+      <option>USE_TCB</option> in <filename>login.defs</filename>.)
+    </para>
 
     <para>
       The <command>pwunconv</command> command creates <emphasis
       remap='I'>passwd</emphasis> from <emphasis remap='I'>passwd</emphasis>
       and <emphasis remap='I'>shadow</emphasis> and then removes <emphasis
       remap='I'>shadow</emphasis>.
+    </para>
+    <para condition="tcb">
+      <command>pwunconv</command> does not work with
+      <option>USE_TCB</option> enabled. You should first switch back from
+      tcb to shadowed passwords using <command>tcb_unconvert</command>,
+      and then disable <option>USE_TCB</option> in
+      <filename>login.defs</filename> before using
+      <command>pwunconv</command>.
     </para>
 
     <para>
@@ -131,6 +183,35 @@
     </para>
   </refsect1>
 
+  <refsect1 id='options'>
+    <title>OPTIONS</title>
+    <para>
+      The options which apply to the <command>pwconv</command>,
+      <command>pwunconv</command>, <command>grpconv</command>, and
+      <command>grpunconv</command> commands are:
+    </para>
+    <variablelist remap='IP'>
+      <varlistentry>
+	<term><option>-h</option>, <option>--help</option></term>
+	<listitem>
+	  <para>Display help message and exit.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-R</option>, <option>--root</option>&nbsp;<replaceable>CHROOT_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes in the <replaceable>CHROOT_DIR</replaceable>
+	    directory and use the configuration files from the
+	    <replaceable>CHROOT_DIR</replaceable> directory.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
   <refsect1 id='bugs'>
     <title>BUGS</title>
     <para>
@@ -161,6 +242,7 @@
       &PASS_MAX_DAYS;
       &PASS_MIN_DAYS;
       &PASS_WARN_AGE;
+      &USE_TCB;
     </variablelist>
   </refsect1>
 
@@ -187,7 +269,13 @@
       </citerefentry>,
       <citerefentry>
 	<refentrytitle>pwck</refentrytitle><manvolnum>8</manvolnum>
-      </citerefentry>.
+      </citerefentry><phrase condition="tcb">,
+      <citerefentry>
+	<refentrytitle>tcb_convert</refentrytitle><manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>tcb_unconvert</refentrytitle><manvolnum>8</manvolnum>
+      </citerefentry></phrase>.
     </para>
   </refsect1>
 </refentry>

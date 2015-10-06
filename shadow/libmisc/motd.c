@@ -2,6 +2,7 @@
  * Copyright (c) 1989 - 1991, Julianne Frances Haugh
  * Copyright (c) 1996 - 1997, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
+ * Copyright (c) 2010       , Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +32,7 @@
  
 #include <config.h>
 
-#ident "$Id: motd.c 1980 2008-04-27 00:40:09Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include "prototypes.h"
@@ -47,21 +48,34 @@
 void motd (void)
 {
 	FILE *fp;
-	char motdlist[BUFSIZ], *motdfile, *mb;
+	char *motdlist;
+	const char *motdfile;
+	char *mb;
 	register int c;
 
-	if ((mb = getdef_str ("MOTD_FILE")) == NULL)
+	motdfile = getdef_str ("MOTD_FILE");
+	if (NULL == motdfile) {
 		return;
+	}
 
-	strncpy (motdlist, mb, sizeof (motdlist));
-	motdlist[sizeof (motdlist) - 1] = '\0';
+	motdlist = xstrdup (motdfile);
 
-	for (mb = motdlist; (motdfile = strtok (mb, ":")) != NULL; mb = NULL) {
-		if ((fp = fopen (motdfile, "r")) != NULL) {
-			while ((c = getc (fp)) != EOF)
+	for (mb = motdlist; ;mb = NULL) {
+		motdfile = strtok (mb, ":");
+		if (NULL == motdfile) {
+			break;
+		}
+
+		fp = fopen (motdfile, "r");
+		if (NULL != fp) {
+			while ((c = getc (fp)) != EOF) {
 				putchar (c);
+			}
 			fclose (fp);
 		}
 	}
 	fflush (stdout);
+
+	free (motdlist);
 }
+

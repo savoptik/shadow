@@ -2,7 +2,7 @@
  * Copyright (c) 1990 - 1993, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2005       , Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: encrypt.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <unistd.h>
 #include <stdio.h>
@@ -40,27 +40,26 @@
 #include "prototypes.h"
 #include "defines.h"
 
-char *pw_encrypt (const char *clear, const char *salt)
+/*@exposed@*//*@null@*/char *pw_encrypt (const char *clear, const char *salt)
 {
 	static char cipher[128];
 	char *cp;
 
 	cp = crypt (clear, salt);
-	if (!cp) {
+	if (NULL == cp) {
 		/*
 		 * Single Unix Spec: crypt() may return a null pointer,
-		 * and set errno to indicate an error.  The caller doesn't
-		 * expect us to return NULL, so...
+		 * and set errno to indicate an error. In this case return
+		 * the NULL so the caller can handle appropriately.
 		 */
-		perror ("crypt");
-		exit (EXIT_FAILURE);
+		return NULL;
 	}
 
-	/* The GNU crypt does not return NULL if the algorithm is not
+	/* Some crypt() do not return NULL if the algorithm is not
 	 * supported, and return a DES encrypted password. */
 	if ((NULL != salt) && (salt[0] == '$') && (strlen (cp) <= 13))
 	{
-		const char *method;
+		/*@observer@*/const char *method;
 		switch (salt[1])
 		{
 			case '1':
@@ -79,9 +78,9 @@ char *pw_encrypt (const char *clear, const char *salt)
 				method = &nummethod[0];
 			}
 		}
-		fprintf (stderr,
-			 _("crypt method not supported by libcrypt? (%s)\n"),
-			  method);
+		(void) fprintf (stderr,
+		                _("crypt method not supported by libcrypt? (%s)\n"),
+		                method);
 		exit (EXIT_FAILURE);
 	}
 

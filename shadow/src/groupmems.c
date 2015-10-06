@@ -2,7 +2,7 @@
  * Copyright (c) 2000       , International Business Machines
  *                            George Kraft IV, gk4@us.ibm.com, 03/23/2000
  * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2011, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@
 /*
  * Global variables
  */
-char *Prog;
+const char *Prog;
 
 static char *adduser = NULL;
 static char *deluser = NULL;
@@ -88,7 +88,7 @@ static void remove_user (const char *user,
                          const struct group *grp);
 static void purge_members (const struct group *grp);
 static void display_members (const char *const *members);
-static void usage (void);
+static /*@noreturn@*/void usage (int status);
 static void process_flags (int argc, char **argv);
 static void check_perms (void);
 static void fail_exit (int code);
@@ -361,21 +361,25 @@ static void display_members (const char *const *members)
 	}
 }
 
-static void usage (void)
+static /*@noreturn@*/void usage (int status)
 {
-	(void) fputs (_("Usage: groupmems [options] [action]\n"
-	                "\n"
-	                "Options:\n"
-	                "  -g, --group groupname         change groupname instead of the user's group\n"
-	                "                                (root only)\n"
-	                "\n"
-	                "Actions:\n"
-	                "  -a, --add username            add username to the members of the group\n"
-	                "  -d, --delete username         remove username from the members of the group\n"
-	                "  -p, --purge                   purge all members from the group\n"
-	                "  -l, --list                    list the members of the group\n"
-	                "\n"), stderr);
-	fail_exit (EXIT_USAGE);
+	FILE *usageout = (EXIT_SUCCESS != status) ? stderr : stdout;
+	(void) fprintf (usageout,
+	                _("Usage: %s [options] [action]\n"
+	                  "\n"
+	                  "Options:\n"),
+	                Prog);
+	(void) fputs (_("  -g, --group groupname         change groupname instead of the user's group\n"
+	                "                                (root only)\n"), usageout);
+	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("\n"), usageout);
+	(void) fputs (_("Actions:\n"), usageout);
+	(void) fputs (_("  -a, --add username            add username to the members of the group\n"), usageout);
+	(void) fputs (_("  -d, --delete username         remove username from the members of the group\n"), usageout);
+	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
+	(void) fputs (_("  -p, --purge                   purge all members from the group\n"), usageout);
+	(void) fputs (_("  -l, --list                    list the members of the group\n"), usageout);
+	exit (status);
 }
 
 /*
@@ -383,20 +387,21 @@ static void usage (void)
  */
 static void process_flags (int argc, char **argv)
 {
-	int arg;
-	int option_index = 0;
+	int c;
 	static struct option long_options[] = {
-		{"add", required_argument, NULL, 'a'},
+		{"add",    required_argument, NULL, 'a'},
 		{"delete", required_argument, NULL, 'd'},
-		{"group", required_argument, NULL, 'g'},
-		{"list", no_argument, NULL, 'l'},
-		{"purge", no_argument, NULL, 'p'},
+		{"group",  required_argument, NULL, 'g'},
+		{"help",   no_argument,       NULL, 'h'},
+		{"list",   no_argument,       NULL, 'l'},
+		{"purge",  no_argument,       NULL, 'p'},
+		{"root",   required_argument, NULL, 'R'},
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((arg = getopt_long (argc, argv, "a:d:g:lp", long_options,
-	                           &option_index)) != EOF) {
-		switch (arg) {
+	while ((c = getopt_long (argc, argv, "a:d:g:hlpR:",
+	                         long_options, NULL)) != EOF) {
+		switch (c) {
 		case 'a':
 			adduser = xstrdup (optarg);
 			++exclusive;
@@ -408,6 +413,9 @@ static void process_flags (int argc, char **argv)
 		case 'g':
 			thisgroup = xstrdup (optarg);
 			break;
+		case 'h':
+			usage (EXIT_SUCCESS);
+			/*@notreached@*/break;
 		case 'l':
 			list = true;
 			++exclusive;
@@ -416,13 +424,15 @@ static void process_flags (int argc, char **argv)
 			purge = true;
 			++exclusive;
 			break;
+		case 'R': /* no-op, handled in process_root_flag () */
+			break;
 		default:
-			usage ();
+			usage (EXIT_USAGE);
 		}
 	}
 
 	if ((exclusive > 1) || (optind < argc)) {
-		usage ();
+		usage (EXIT_USAGE);
 	}
 
 	/* local, no need for xgetpwnam */
@@ -461,13 +471,16 @@ static void check_perms (void)
 			retval = pam_acct_mgmt (pamh, 0);
 		}
 
-		if (NULL != pamh) {
-			(void) pam_end (pamh, retval);
-		}
 		if (PAM_SUCCESS != retval) {
-			fprintf (stderr, _("%s: PAM authentication failed\n"), Prog);
+			fprintf (stderr, _("%s: PAM: %s\n"),
+			         Prog, pam_strerror (pamh, retval));
+			SYSLOG((LOG_ERR, "%s", pam_strerror (pamh, retval)));
+			if (NULL != pamh) {
+				(void) pam_end (pamh, retval);
+			}
 			fail_exit (1);
 		}
+		(void) pam_end (pamh, retval);
 #endif
 	}
 }
@@ -583,11 +596,13 @@ int main (int argc, char **argv)
 	 */
 	Prog = Basename (argv[0]);
 
-	OPENLOG ("groupmems");
-
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
+
+	process_root_flag ("-R", argc, argv);
+
+	OPENLOG ("groupmems");
 
 #ifdef SHADOWGRP
 	is_shadowgrp = sgr_file_present ();
