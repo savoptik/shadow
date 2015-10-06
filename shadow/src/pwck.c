@@ -172,18 +172,13 @@ static void process_flags (int argc, char **argv)
 		pw_setdbname (pwd_file);
 		use_system_pw_file = false;
 	}
-	if (!getdef_bool("USE_TCB")) {
-		if ((optind + 2) == argc) {
-			spw_file = argv[optind + 1];
-			spw_setdbname (spw_file);
-			is_shadow = true;
-			use_system_spw_file = false;
-		} else if (optind == argc) {
-			is_shadow = spw_file_present ();
-		}
-	} else {
-		fprintf(stderr, _("%s: shadow files will not be checked (tcb)\n"),
-				Prog);
+	if ((optind + 2) == argc) {
+		spw_file = argv[optind + 1];
+		spw_setdbname (spw_file);
+		is_shadow = true;
+		use_system_spw_file = false;
+	} else if (optind == argc) {
+		is_shadow = spw_file_present ();
 	}
 }
 

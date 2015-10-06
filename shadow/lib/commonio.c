@@ -44,9 +44,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <signal.h>
-#ifdef SHADOWTCB
-#include <tcb.h>
-#endif
 #include "nscd.h"
 #ifdef WITH_SELINUX
 #include <selinux/selinux.h>
@@ -357,14 +354,24 @@ int commonio_lock (struct commonio_db *db)
 	 * lockpw.c calls us and would cause infinite recursion!
 	 */
 
-	if (lock_count == 0 && lckpwdf() == -1) {
+	/*
+	 * Call lckpwdf() on the first lock.
+	 * If it succeeds, call *_lock() only once
+	 * (no retries, it should always succeed).
+	 */
+	if (0 == lock_count) {
+		if (lckpwdf () == -1) {
 			return 0;	/* failure */
+		}
 	}
-	lock_count++;
-	db->locked = true;
-	return 1; /* success */
+
+	if (commonio_lock_nowait (db) != 0) {
+		return 1;	/* success */
+	}
+
+	ulckpwdf ();
+	return 0;		/* failure */
 #else
-#error lckpwdf() is required
 	int i;
 
 	/*
@@ -415,6 +422,8 @@ static void dec_lock_count (void)
 
 int commonio_unlock (struct commonio_db *db)
 {
+	char lock[1024];
+
 	if (db->isopen) {
 		db->readonly = true;
 		if (commonio_close (db) == 0) {
@@ -430,10 +439,8 @@ int commonio_unlock (struct commonio_db *db)
 		 * then call ulckpwdf() (if used) on last unlock.
 		 */
 		db->locked = false;
-#if 0
 		snprintf (lock, sizeof lock, "%s.lock", db->filename);
 		unlink (lock);
-#endif
 		dec_lock_count ();
 		return 1;
 	}
@@ -526,7 +533,6 @@ int commonio_open (struct commonio_db *db, int mode)
 	void *eptr = NULL;
 	int flags = mode;
 	size_t buflen;
-	int fd;
 	int saved_errno;
 
 	mode &= ~O_CREAT;
@@ -547,19 +553,8 @@ int commonio_open (struct commonio_db *db, int mode)
 	db->cursor = NULL;
 	db->changed = false;
 
-	fd = open(db->filename, (db->readonly ? O_RDONLY : O_RDWR) |
-			O_NOCTTY | O_NONBLOCK | O_NOFOLLOW);
-	saved_errno = errno;
-	db->fp = NULL;
-	if (fd >= 0) {
-		if (!tcb_is_suspect(fd)) {
-			db->fp = fdopen(fd, db->readonly ? "r" : "r+");
-			saved_errno = errno;
-		}
-		if (!db->fp)
-			close(fd);
-	}
-	errno = saved_errno;
+	db->fp = fopen (db->filename, db->readonly ? "r" : "r+");
+
 	/*
 	 * If O_CREAT was specified and the file didn't exist, it will be
 	 * created by commonio_close().  We have no entries to read yet.  --marekm

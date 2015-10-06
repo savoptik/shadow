@@ -128,11 +128,6 @@ static struct itemdef def_table[] = {
 	{"USERNAME_MAX", NULL},
 	{"CRYPT_PREFIX", NULL},
 	{"CRYPT_ROUNDS", NULL},
-#ifdef SHADOWTCB
-	{"TCB_AUTH_GROUP", NULL},
-	{"TCB_SYMLINKS", NULL },
-	{"USE_TCB", NULL },
-#endif
 	{NULL, NULL}
 };
 

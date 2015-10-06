@@ -84,11 +84,6 @@ int main (int argc, char **argv)
 		(void) fputs (_("Usage: pwunconv\n"), stderr);
 	}
 
-	if (getdef_bool("USE_TCB")) {
-		fprintf(stderr, _("%s: can't work with tcb enabled\n"), Prog);
-		exit(1);
-	}
-
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);

@@ -31,7 +31,6 @@
  */
 #ifndef _GETDEF_H
 #define _GETDEF_H
-#include <stdbool.h>
 
 /* getdef.c */
 extern bool getdef_bool (const char *);

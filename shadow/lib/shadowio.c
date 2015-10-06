@@ -38,14 +38,9 @@
 #include "prototypes.h"
 #include "defines.h"
 #include <shadow.h>
-#ifdef SHADOWTCB
-#include <tcb.h>
-#include "tcbfuncs.h"
-#endif
 #include <stdio.h>
 #include "commonio.h"
 #include "shadowio.h"
-#include "getdef.h"
 
 static /*@null@*/ /*@only@*/void *shadow_dup (const void *ent)
 {
@@ -120,55 +115,17 @@ int spw_setdbname (const char *filename)
 
 bool spw_file_present (void)
 {
-#ifdef SHADOWTCB
-	if (getdef_bool("USE_TCB"))
-		return true;
-#endif
 	return commonio_present (&shadow_db);
 }
 
 int spw_lock (void)
 {
-#ifdef SHADOWTCB
-	int retval = 0;
-
-	if (!getdef_bool("USE_TCB"))
-#endif
-		return commonio_lock(&shadow_db);
-#ifdef SHADOWTCB
-	if (!s_drop_priv()) return 0;
-
-	if (lckpwdf_tcb(shadow_db.filename) == 0) {
-		shadow_db.locked = true;
-		retval = 1;
-	}
-
-	if (!s_gain_priv()) return 0;
-
-	return retval;
-#endif
+	return commonio_lock (&shadow_db);
 }
 
 int spw_open (int mode)
 {
-#ifdef SHADOWTCB
-	int retval = 0;
-	int use_tcb = getdef_bool("USE_TCB");
-
-	if (use_tcb)
-		if (!s_drop_priv() != 0)
-			return 0;
-
-	retval = commonio_open(&shadow_db, mode);
-
-	if (use_tcb)
-		if (!s_gain_priv() != 0)
-			return 0;
-
-	return retval;
-#else
 	return commonio_open (&shadow_db, mode);
-#endif
 }
 
 /*@observer@*/ /*@null@*/const struct spwd *spw_locate (const char *name)
@@ -198,46 +155,12 @@ int spw_rewind (void)
 
 int spw_close (void)
 {
-#ifdef SHADOWTCB
-	int retval = 0;
-	int use_tcb = getdef_bool("USE_TCB");
-
-	if (use_tcb)
-		if (!s_drop_priv() != 0)
-			return 0;
-
-	retval = commonio_close(&shadow_db);
-
-	if (use_tcb)
-		if (!s_gain_priv() != 0)
-			return 0;
-
-	return retval;
-#else
 	return commonio_close (&shadow_db);
-#endif
 }
 
 int spw_unlock (void)
 {
-#ifdef SHADOWTCB
-	int retval = 0;
-
-	if (!getdef_bool("USE_TCB"))
-#endif
-		return commonio_unlock(&shadow_db);
-#ifdef SHADOWTCB
-	if (!s_drop_priv()) return 0;
-
-	if (ulckpwdf_tcb() == 0) {
-		shadow_db.locked = false;
-		retval = 1;
-	}
-
-	if (!s_gain_priv()) return 0;
-
-	return retval;
-#endif
+	return commonio_unlock (&shadow_db);
 }
 
 struct commonio_entry *__spw_get_head (void)
