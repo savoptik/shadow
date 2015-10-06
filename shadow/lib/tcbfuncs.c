@@ -9,13 +9,9 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <tcb.h>
-#ifdef WITH_SELINUX
-#include <selinux/selinux.h>
-#endif
 
 #include "getdef.h"
 #include "shadowio.h"
-#include "prototypes.h"
 
 #define LOCK_SUFFIX			".lock"
 
