@@ -55,9 +55,9 @@ endif
 
 
 LDADD          = $(INTLLIBS) \
-		 $(LIBTCB) \
 		 $(top_builddir)/libmisc/libmisc.a \
-		 $(top_builddir)/lib/libshadow.la
+		 $(top_builddir)/lib/libshadow.la \
+		 $(LIBTCB)
 AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
 
 if ACCT_TOOLS_SETUID
