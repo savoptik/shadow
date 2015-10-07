@@ -31,13 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* $Id: sgroupio.h 2760 2009-04-22 21:21:14Z nekral-guest $ */
+/* $Id$ */
 #ifndef _SGROUPIO_H
 #define _SGROUPIO_H
 
 extern int sgr_close (void);
 extern bool sgr_file_present (void);
-extern /*@null@*/const struct sgrp *sgr_locate (const char *name);
+extern /*@observer@*/ /*@null@*/const struct sgrp *sgr_locate (const char *name);
 extern int sgr_lock (void);
 extern int sgr_setdbname (const char *filename);
 extern /*@observer@*/const char *sgr_dbname (void);

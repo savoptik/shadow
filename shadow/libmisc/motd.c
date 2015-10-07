@@ -32,7 +32,7 @@
  
 #include <config.h>
 
-#ident "$Id: motd.c 1980 2008-04-27 00:40:09Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include "prototypes.h"

@@ -39,7 +39,7 @@
 #include <utmp.h>
 
 #ifndef	lint
-static char rcsid[] = "$Id: utent.c 1980 2008-04-27 00:40:09Z nekral-guest $";
+static char rcsid[] = "$Id$";
 #endif
 
 static int utmp_fd = -1;
@@ -87,25 +87,6 @@ struct utmp *getutent (void)
 		return 0;
 
 	return &utmp_buf;
-}
-
-/*
- * getutline - get the utmp entry matching ut_line
- */
-
-struct utmp *getutline (const struct utmp *utent)
-{
-	struct utmp save;
-	struct utmp *new;
-
-	save = *utent;
-	while (new = getutent ())
-		if (strncmp (new->ut_line, save.ut_line, sizeof new->ut_line))
-			continue;
-		else
-			return new;
-
-	return (struct utmp *) 0;
 }
 #else
 extern int errno;		/* warning: ANSI C forbids an empty source file */

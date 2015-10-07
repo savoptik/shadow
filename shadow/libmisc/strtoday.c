@@ -36,7 +36,9 @@
 
 #include <config.h>
 
-#ident "$Id: strtoday.c 2139 2008-06-13 19:48:11Z nekral-guest $"
+#include <ctype.h>
+
+#ident "$Id$"
 
 #include "defines.h"
 #include "prototypes.h"
@@ -44,6 +46,7 @@
 #ifndef USE_GETDATE
 #define USE_GETDATE 1
 #endif
+
 #if USE_GETDATE
 #include "getdate.h"
 /*
@@ -63,6 +66,8 @@
 long strtoday (const char *str)
 {
 	time_t t;
+	bool isnum = true;
+	const char *s = str;
 
 	/*
 	 * get_date() interprets an empty string as the current date,
@@ -73,9 +78,32 @@ long strtoday (const char *str)
 		return -1;
 	}
 
-	t = get_date (str, (time_t *) 0);
+	/* If a numerical value is provided, this is already a number of
+	 * days since EPOCH.
+	 */
+	if ('-' == *s) {
+		s++;
+	}
+	while (' ' == *s) {
+		s++;
+	}
+	while (isnum && ('\0' != *s)) {
+		if (!isdigit (*s)) {
+			isnum = false;
+		}
+		s++;
+	}
+	if (isnum) {
+		long retdate;
+		if (getlong (str, &retdate) == 0) {
+			return -2;
+		}
+		return retdate;
+	}
+
+	t = get_date (str, NULL);
 	if ((time_t) - 1 == t) {
-		return -1;
+		return -2;
 	}
 	/* convert seconds to days since 1970-01-01 */
 	return (long) (t + DAY / 2) / DAY;

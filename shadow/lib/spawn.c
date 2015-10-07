@@ -29,18 +29,14 @@
 
 #include <config.h>
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include "defines.h"
 #include "exitcodes.h"
-#include "spawn.h"
-
-extern char **environ;
+#include "prototypes.h"
 
 int run_command (const char *cmd, const char *argv[],
                  /*@null@*/const char *envp[], /*@out@*/int *status)

@@ -3,7 +3,7 @@
  * Copyright (c) 1991 - 1994, Chip Rosenthal
  * Copyright (c) 1996 - 1998, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 
 #ifndef USE_PAM
 
-#ident "$Id: tz.c 2355 2008-09-06 16:42:41Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include <string.h>
@@ -49,23 +49,28 @@
  * tz() determines the name of the local timezone by reading the
  * contents of the file named by ``fname''.
  */
-char *tz (const char *fname)
+/*@observer@*/const char *tz (const char *fname)
 {
-	FILE *fp = 0;
+	FILE *fp = NULL;
 	static char tzbuf[BUFSIZ];
 	const char *def_tz = "TZ=CST6CDT";
 
-	if ((fp = fopen (fname, "r")) == NULL ||
-	    fgets (tzbuf, (int) sizeof (tzbuf), fp) == NULL) {
-		if (!(def_tz = getdef_str ("ENV_TZ")) || def_tz[0] == '/')
+	fp = fopen (fname, "r");
+	if (   (NULL == fp)
+	    || (fgets (tzbuf, (int) sizeof (tzbuf), fp) == NULL)) {
+		def_tz = getdef_str ("ENV_TZ");
+		if ((NULL == def_tz) || ('/' == def_tz[0])) {
 			def_tz = "TZ=CST6CDT";
+		}
 
 		strcpy (tzbuf, def_tz);
-	} else
+	} else {
 		tzbuf[strlen (tzbuf) - 1] = '\0';
+	}
 
-	if (fp)
+	if (NULL != fp) {
 		(void) fclose (fp);
+	}
 
 	return tzbuf;
 }

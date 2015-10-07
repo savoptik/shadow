@@ -31,7 +31,7 @@
 
 #include <config.h>
 
-#ident "$Id: list.c 2763 2009-04-23 09:57:03Z nekral-guest $"
+#ident "$Id$"
 
 #include <assert.h>
 #include "prototypes.h"
@@ -141,6 +141,12 @@
 	return tmp;
 }
 
+/*
+ * Duplicate a list.
+ * The input list is not modified, but in order to allow the use of this
+ * function with list of members, the list elements are not enforced to be
+ * constant strings here.
+ */
 /*@only@*/ /*@out@*/char **dup_list (char *const *list)
 {
 	int i;
@@ -163,6 +169,12 @@
 	return tmp;
 }
 
+/*
+ * Check if member is part of the input list
+ * The input list is not modified, but in order to allow the use of this
+ * function with list of members, the list elements are not enforced to be
+ * constant strings here.
+ */
 bool is_on_list (char *const *list, const char *member)
 {
 	assert (NULL != member);

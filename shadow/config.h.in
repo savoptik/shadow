@@ -8,6 +8,9 @@
    language is requested. */
 #undef ENABLE_NLS
 
+/* Define to support the subordinate IDs. */
+#undef ENABLE_SUBIDS
+
 /* Path for faillog file. */
 #undef FAILLOG_FILE
 
@@ -21,11 +24,20 @@
 /* Define to 1 if you have the declaration of 'pam_fail_delay' */
 #undef HAS_PAM_FAIL_DELAY
 
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+/* Define to 1 if you have the <acl/libacl.h> header file. */
+#undef HAVE_ACL_LIBACL_H
+
+/* Define to 1 if you have the <attr/error_context.h> header file. */
+#undef HAVE_ATTR_ERROR_CONTEXT_H
+
+/* Define to 1 if you have the <attr/libattr.h> header file. */
+#undef HAVE_ATTR_LIBATTR_H
+
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
 #undef HAVE_CFLOCALECOPYCURRENT
 
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
@@ -203,6 +215,9 @@
 /* Define to 1 if you have the <rpc/key_prot.h> header file. */
 #undef HAVE_RPC_KEY_PROT_H
 
+/* Define to 1 if you have the `ruserok' function. */
+#undef HAVE_RUSEROK
+
 /* Define to 1 if you have the <security/openpam.h> header file. */
 #undef HAVE_SECURITY_OPENPAM_H
 
@@ -211,6 +226,9 @@
 
 /* Define to 1 if you have the <selinux/selinux.h> header file. */
 #undef HAVE_SELINUX_SELINUX_H
+
+/* Define to 1 if you have the <semanage/semanage.h> header file. */
+#undef HAVE_SEMANAGE_SEMANAGE_H
 
 /* Define to 1 if you have the `setgroups' function. */
 #undef HAVE_SETGROUPS
@@ -269,73 +287,73 @@
 /* Define to 1 if you have the `strstr' function. */
 #undef HAVE_STRSTR
 
-/* Define to 1 if `st_atim' is member of `struct stat'. */
+/* Define to 1 if `st_atim' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_ATIM
 
-/* Define to 1 if `st_atimensec' is member of `struct stat'. */
+/* Define to 1 if `st_atimensec' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_ATIMENSEC
 
-/* Define to 1 if `st_mtim' is member of `struct stat'. */
+/* Define to 1 if `st_mtim' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_MTIM
 
-/* Define to 1 if `st_mtimensec' is member of `struct stat'. */
+/* Define to 1 if `st_mtimensec' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_MTIMENSEC
 
-/* Define to 1 if `st_rdev' is member of `struct stat'. */
+/* Define to 1 if `st_rdev' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_RDEV
 
-/* Define to 1 if `ut_addr' is member of `struct utmpx'. */
+/* Define to 1 if `ut_addr' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_ADDR
 
-/* Define to 1 if `ut_addr_v6' is member of `struct utmpx'. */
+/* Define to 1 if `ut_addr_v6' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_ADDR_V6
 
-/* Define to 1 if `ut_host' is member of `struct utmpx'. */
+/* Define to 1 if `ut_host' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_HOST
 
-/* Define to 1 if `ut_name' is member of `struct utmpx'. */
+/* Define to 1 if `ut_name' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_NAME
 
-/* Define to 1 if `ut_syslen' is member of `struct utmpx'. */
+/* Define to 1 if `ut_syslen' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_SYSLEN
 
-/* Define to 1 if `ut_time' is member of `struct utmpx'. */
+/* Define to 1 if `ut_time' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_TIME
 
-/* Define to 1 if `ut_xtime' is member of `struct utmpx'. */
+/* Define to 1 if `ut_xtime' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_XTIME
 
-/* Define to 1 if `ut_addr' is member of `struct utmp'. */
+/* Define to 1 if `ut_addr' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_ADDR
 
-/* Define to 1 if `ut_addr_v6' is member of `struct utmp'. */
+/* Define to 1 if `ut_addr_v6' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_ADDR_V6
 
-/* Define to 1 if `ut_host' is member of `struct utmp'. */
+/* Define to 1 if `ut_host' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_HOST
 
-/* Define to 1 if `ut_id' is member of `struct utmp'. */
+/* Define to 1 if `ut_id' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_ID
 
-/* Define to 1 if `ut_name' is member of `struct utmp'. */
+/* Define to 1 if `ut_name' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_NAME
 
-/* Define to 1 if `ut_syslen' is member of `struct utmp'. */
+/* Define to 1 if `ut_syslen' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_SYSLEN
 
-/* Define to 1 if `ut_time' is member of `struct utmp'. */
+/* Define to 1 if `ut_time' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_TIME
 
-/* Define to 1 if `ut_tv' is member of `struct utmp'. */
+/* Define to 1 if `ut_tv' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_TV
 
-/* Define to 1 if `ut_type' is member of `struct utmp'. */
+/* Define to 1 if `ut_type' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_TYPE
 
-/* Define to 1 if `ut_user' is member of `struct utmp'. */
+/* Define to 1 if `ut_user' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_USER
 
-/* Define to 1 if `ut_xtime' is member of `struct utmp'. */
+/* Define to 1 if `ut_xtime' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_XTIME
 
 /* Define to 1 if you have the <syslog.h> header file. */
@@ -366,6 +384,9 @@
 
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
+
+/* Define to 1 if you have the <tcb.h> header file. */
+#undef HAVE_TCB_H
 
 /* Define to 1 if you have the <termios.h> header file. */
 #undef HAVE_TERMIOS_H
@@ -428,14 +449,14 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
 /* Path to passwd program. */
 #undef PASSWD_PROGRAM
-
-/* Define to 1 if the C compiler supports function prototypes. */
-#undef PROTOTYPES
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
@@ -445,9 +466,6 @@
 
 /* Define to the ruserok() "success" return value (0 or 1). */
 #undef RUSEROK
-
-/* Define to 1 if the `setpgrp' function takes no argument. */
-#undef SETPGRP_VOID
 
 /* Define to support the shadow group file. */
 #undef SHADOWGRP
@@ -519,11 +537,25 @@
 /* Version number of package */
 #undef VERSION
 
+/* Build shadow with ACL support */
+#undef WITH_ACL
+
+/* Build shadow with Extended Attributes support */
+#undef WITH_ATTR
+
 /* Define if you want to enable Audit messages */
 #undef WITH_AUDIT
 
 /* Build shadow with SELinux support */
 #undef WITH_SELINUX
+
+/* Build shadow with tcb support (incomplete) */
+#undef WITH_TCB
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
@@ -546,9 +578,6 @@
 
 /* Path for wtmp file. */
 #undef _WTMP_FILE
-
-/* Define like PROTOTYPES; this can be used by system headers. */
-#undef __PROTOTYPES
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

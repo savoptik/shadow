@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 1998, Marek Michałkiewicz
  * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2009, Nicolas François
+ * Copyright (c) 2008 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 
 #include <config.h>
 
-#ident "$Id: setugid.c 2717 2009-04-20 11:43:36Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
 #include <grp.h>
@@ -131,7 +131,7 @@ int setup_uid_gid (const struct passwd *info)
 
 #if defined (HAVE_INITGROUPS) && ! defined (USE_PAM)
 	if (is_console) {
-		char *cp = getdef_str ("CONSOLE_GROUPS");
+		const char *cp = getdef_str ("CONSOLE_GROUPS");
 
 		if ((NULL != cp) && (add_groups (cp) != 0)) {
 			perror ("Warning: add_groups");

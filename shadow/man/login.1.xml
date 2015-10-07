@@ -63,13 +63,35 @@
 <!ENTITY ULIMIT                SYSTEM "login.defs.d/ULIMIT.xml">
 <!ENTITY UMASK                 SYSTEM "login.defs.d/UMASK.xml">
 <!ENTITY USERGROUPS_ENAB       SYSTEM "login.defs.d/USERGROUPS_ENAB.xml">
+<!-- SHADOW-CONFIG-HERE -->
 ]>
 <refentry id='login.1'>
-  <!--  $Id: login.1.xml 3010 2009-06-04 17:25:18Z nekral-guest $ -->
+  <!--  $Id$ -->
+  <refentryinfo>
+    <author>
+      <firstname>Julianne Frances</firstname>
+      <surname>Haugh</surname>
+      <contrib>Creation, 1989</contrib>
+    </author>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Kłoczko</surname>
+      <email>kloczek@pld.org.pl</email>
+      <contrib>shadow-utils maintainer, 2000 - 2007</contrib>
+    </author>
+    <author>
+      <firstname>Nicolas</firstname>
+      <surname>François</surname>
+      <email>nicolas.francois@centraliens.net</email>
+      <contrib>shadow-utils maintainer, 2007 - now</contrib>
+    </author>
+  </refentryinfo>
   <refmeta>
     <refentrytitle>login</refentrytitle>
     <manvolnum>1</manvolnum>
     <refmiscinfo class="sectdesc">User Commands</refmiscinfo>
+    <refmiscinfo class="source">shadow-utils</refmiscinfo>
+    <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>login</refname>
@@ -131,7 +153,7 @@
       </citerefentry> for more information.
     </para>
 
-    <para>
+    <para condition="no_pam">
       After a successful login, you will be informed of any system messages
       and the presence of mail. You may turn off the printing of the system
       message file, <filename>/etc/motd</filename>, by creating a

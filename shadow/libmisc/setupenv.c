@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 
 #include <config.h>
 
-#ident "$Id: setupenv.c 3034 2009-07-22 13:30:06Z nekral-guest $"
+#ident "$Id$"
 
 #include <assert.h>
 #include <sys/types.h>
@@ -74,7 +74,7 @@ static void read_env_file (const char *filename)
 	if (NULL == fp) {
 		return;
 	}
-	while (fgets (buf, sizeof buf, fp) == buf) {
+	while (fgets (buf, (int)(sizeof buf), fp) == buf) {
 		cp = strrchr (buf, '\n');
 		if (NULL == cp) {
 			break;
@@ -200,7 +200,7 @@ static void read_env_file (const char *filename)
 void setup_env (struct passwd *info)
 {
 #ifndef USE_PAM
-	char *envf;
+	const char *envf;
 #endif
 	const char *cp;
 
@@ -228,7 +228,8 @@ void setup_env (struct passwd *info)
 			exit (EXIT_FAILURE);
 		}
 		(void) puts (_("No directory, logging in with HOME=/"));
-		info->pw_dir = temp_pw_dir;
+		free (info->pw_dir);
+		info->pw_dir = xstrdup (temp_pw_dir);
 	}
 
 	/*
@@ -244,7 +245,8 @@ void setup_env (struct passwd *info)
 	if ((NULL == info->pw_shell) || ('\0' == *info->pw_shell)) {
 		static char temp_pw_shell[] = SHELL;
 
-		info->pw_shell = temp_pw_shell;
+		free (info->pw_shell);
+		info->pw_shell = xstrdup (temp_pw_shell);
 	}
 
 	addenv ("SHELL", info->pw_shell);
@@ -265,7 +267,7 @@ void setup_env (struct passwd *info)
 
 	if (NULL == cp) {
 		/* not specified, use a minimal default */
-		addenv ("PATH=/bin:/usr/bin", NULL);
+		addenv ((info->pw_uid == 0) ? "PATH=/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/bin:/usr/bin", NULL);
 	} else if (strchr (cp, '=')) {
 		/* specified as name=value (PATH=...) */
 		addenv (cp, NULL);

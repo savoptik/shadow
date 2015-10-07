@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 1999, Marek Michałkiewicz
  * Copyright (c) 2003 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,17 +33,19 @@
 /*
  * Separated from setup.c.  --marekm
  * Resource limits thanks to Cristian Gafton.
+ * Enhancements of resource limit code by Thomas Orgis <thomas@orgis.org>
  */
 
 #include <config.h>
 
 #ifndef USE_PAM
 
-#ident "$Id: limits.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "prototypes.h"
 #include "defines.h"
 #include <pwd.h>
@@ -64,22 +66,46 @@
  *	value - string value to be read
  *	multiplier - value*multiplier is the actual limit
  */
-static int
-setrlimit_value (unsigned int resource, const char *value,
-		 unsigned int multiplier)
+static int setrlimit_value (unsigned int resource,
+                            const char *value,
+                            unsigned int multiplier)
 {
 	struct rlimit rlim;
-	long limit;
+	rlim_t limit;
 
-	if (getlong (value, &limit) == 0) {
-		return 0;
+	/* The "-" is special, not belonging to a strange negative limit.
+	 * It is infinity, in a controlled way.
+	 */
+	if ('-' == value[0]) {
+		limit = RLIM_INFINITY;
 	}
-	limit *= multiplier;
-	if (limit != (rlim_t) limit) {
-		return 0;
+	else {
+		/* We cannot use getlong here because it fails when there
+		 * is more to the value than just this number!
+		 * Also, we are limited to base 10 here (hex numbers will not
+		 * work with the limit string parser as is anyway)
+		 */
+		char *endptr;
+		long longlimit = strtol (value, &endptr, 10);
+		if ((0 == longlimit) && (value == endptr)) {
+			/* No argument at all. No-op.
+			 * FIXME: We could instead throw an error, though.
+			 */
+			return 0;
+		}
+		longlimit *= multiplier;
+		limit = (rlim_t)longlimit;
+		if (longlimit != limit)
+		{
+			/* FIXME: Again, silent error handling...
+			 * Wouldn't screaming make more sense?
+			 */
+			return 0;
+		}
 	}
-	rlim.rlim_cur = (rlim_t) limit;
-	rlim.rlim_max = (rlim_t) limit;
+
+	rlim.rlim_cur = limit;
+	rlim.rlim_max = limit;
 	if (setrlimit (resource, &rlim) != 0) {
 		return LOGIN_ERROR_RLIMIT;
 	}
@@ -138,11 +164,12 @@ static int check_logins (const char *name, const char *maxlogins)
 	count = 0;
 #ifdef USE_UTMPX
 	setutxent ();
-	while ((ut = getutxent ())) {
+	while ((ut = getutxent ()))
 #else				/* !USE_UTMPX */
 	setutent ();
-	while ((ut = getutent ())) {
+	while ((ut = getutent ()))
 #endif				/* !USE_UTMPX */
+	{
 		if (USER_PROCESS != ut->ut_type) {
 			continue;
 		}
@@ -167,8 +194,9 @@ static int check_logins (const char *name, const char *maxlogins)
 	 * includes the user who is currently trying to log in.
 	 */
 	if (count > limit) {
-		SYSLOG ((LOG_WARN, "Too many logins (max %lu) for %s\n",
-			 limit, name));
+		SYSLOG ((LOG_WARN,
+		         "Too many logins (max %lu) for %s\n",
+		         limit, name));
 		return LOGIN_ERROR_LOGIN;
 	}
 	return 0;
@@ -186,17 +214,20 @@ static int check_logins (const char *name, const char *maxlogins)
  * [Cc]: c = RLIMIT_CORE	max core file size (KB)
  * [Dd]: d = RLIMIT_DATA	max data size (KB)
  * [Ff]: f = RLIMIT_FSIZE	max file size (KB)
+ * [Ii]: i = RLIMIT_NICE    max nice value (0..39 translates to 20..-19)
+ * [Kk]: k = file creation masK (umask)
+ * [Ll]: l = max number of logins for this user
  * [Mm]: m = RLIMIT_MEMLOCK	max locked-in-memory address space (KB)
  * [Nn]: n = RLIMIT_NOFILE	max number of open files
+ * [Oo]: o = RLIMIT_RTPRIO  max real time priority (linux/sched.h 0..MAX_RT_PRIO)
+ * [Pp]: p = process priority -20..20 (negative = high, positive = low)
  * [Rr]: r = RLIMIT_RSS		max resident set size (KB)
  * [Ss]: s = RLIMIT_STACK	max stack size (KB)
  * [Tt]: t = RLIMIT_CPU		max CPU time (MIN)
  * [Uu]: u = RLIMIT_NPROC	max number of processes
- * [Kk]: k = file creation masK (umask)
- * [Ll]: l = max number of logins for this user
- * [Pp]: p = process priority -20..20 (negative = high, positive = low)
- * [Ii]: i = RLIMIT_NICE    max nice value (0..39 translates to 20..-19)
- * [Oo]: o = RLIMIT_RTPRIO  max real time priority (linux/sched.h 0..MAX_RT_PRIO)
+ *
+ * NOTE: Remember to extend the "no-limits" string below when adding a new
+ * limit...
  *
  * Return value:
  *		0 = okay, of course
@@ -213,6 +244,24 @@ static int do_user_limits (const char *buf, const char *name)
 	bool reported = false;
 
 	pp = buf;
+	/* Skip leading whitespace. */
+	while ((' ' == *pp) || ('\t' == *pp)) {
+		pp++;
+	}
+
+	/* The special limit string "-" results in no limit for all known
+	 * limits.
+	 * We achieve that by parsing a full limit string, parts of it
+	 * being ignored if a limit type is not known to the system.
+	 * Though, there will be complaining for unknown limit types.
+	 */
+	if (strcmp (pp, "-") == 0) {
+		/* Remember to extend this, too, when adding new limits!
+		 * Oh... but "unlimited" does not make sense for umask,
+		 * or does it? (K-)
+		 */
+		pp = "A- C- D- F- I- L- M- N- O- P- R- S- T- U-";
+	}
 
 	while ('\0' != *pp) {
 		switch (*pp++) {
@@ -223,11 +272,11 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_AS, pp, 1024);
 			break;
 #endif
-#ifdef RLIMIT_CPU
-		case 't':
-		case 'T':
-			/* RLIMIT_CPU - max CPU time (MIN) */
-			retval |= setrlimit_value (RLIMIT_CPU, pp, 60);
+#ifdef RLIMIT_CORE
+		case 'c':
+		case 'C':
+			/* RLIMIT_CORE - max core file size (KB) */
+			retval |= setrlimit_value (RLIMIT_CORE, pp, 1024);
 			break;
 #endif
 #ifdef RLIMIT_DATA
@@ -244,20 +293,22 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_FSIZE, pp, 1024);
 			break;
 #endif
-#ifdef RLIMIT_NPROC
-		case 'u':
-		case 'U':
-			/* RLIMIT_NPROC - max number of processes */
-			retval |= setrlimit_value (RLIMIT_NPROC, pp, 1);
+#ifdef RLIMIT_NICE
+		case 'i':
+		case 'I':
+			/* RLIMIT_NICE - max scheduling priority (0..39) */
+			retval |= setrlimit_value (RLIMIT_NICE, pp, 1);
 			break;
 #endif
-#ifdef RLIMIT_CORE
-		case 'c':
-		case 'C':
-			/* RLIMIT_CORE - max core file size (KB) */
-			retval |= setrlimit_value (RLIMIT_CORE, pp, 1024);
+		case 'k':
+		case 'K':
+			retval |= set_umask (pp);
 			break;
-#endif
+		case 'l':
+		case 'L':
+			/* LIMIT the number of concurrent logins */
+			retval |= check_logins (name, pp);
+			break;
 #ifdef RLIMIT_MEMLOCK
 		case 'm':
 		case 'M':
@@ -272,6 +323,17 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_NOFILE, pp, 1);
 			break;
 #endif
+#ifdef RLIMIT_RTPRIO
+		case 'o':
+		case 'O':
+			/* RLIMIT_RTPRIO - max real time priority (0..MAX_RT_PRIO) */
+			retval |= setrlimit_value (RLIMIT_RTPRIO, pp, 1);
+			break;
+#endif
+		case 'p':
+		case 'P':
+			retval |= set_prio (pp);
+			break;
 #ifdef RLIMIT_RSS
 		case 'r':
 		case 'R':
@@ -286,35 +348,28 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_STACK, pp, 1024);
 			break;
 #endif
-#ifdef RLIMIT_NICE
-		case 'i':
-		case 'I':
-			/* RLIMIT_NICE - max scheduling priority (0..39) */
-			retval |= setrlimit_value (RLIMIT_NICE, pp, 1);
+#ifdef RLIMIT_CPU
+		case 't':
+		case 'T':
+			/* RLIMIT_CPU - max CPU time (MIN) */
+			retval |= setrlimit_value (RLIMIT_CPU, pp, 60);
 			break;
 #endif
-#ifdef RLIMIT_RTPRIO
-		case 'o':
-		case 'O':
-			/* RLIMIT_RTPRIO - max real time priority (0..MAX_RT_PRIO) */
-			retval |= setrlimit_value (RLIMIT_RTPRIO, pp, 1);
+#ifdef RLIMIT_NPROC
+		case 'u':
+		case 'U':
+			/* RLIMIT_NPROC - max number of processes */
+			retval |= setrlimit_value (RLIMIT_NPROC, pp, 1);
 			break;
 #endif
-		case 'k':
-		case 'K':
-			retval |= set_umask (pp);
-			break;
-		case 'l':
-		case 'L':
-			/* LIMIT the number of concurrent logins */
-			retval |= check_logins (name, pp);
-			break;
-		case 'p':
-		case 'P':
-			retval |= set_prio (pp);
-			break;
 		default:
 			/* Only report invalid strings once */
+			/* Note: A string can be invalid just because a
+			 * specific (theoretically valid) setting is not
+			 * supported by this build.
+			 * It is just a warning in syslog anyway. The line
+			 * is still processed
+			 */
 			if (!reported) {
 				SYSLOG ((LOG_WARN,
 				         "Invalid limit string: '%s'",
@@ -323,13 +378,51 @@ static int do_user_limits (const char *buf, const char *name)
 				retval |= LOGIN_ERROR_RLIMIT;
 			}
 		}
+		/* After parsing one limit setting (or just complaining
+		 * about it), one still needs to skip its argument to
+		 * prevent a bogus warning on trying to parse that as
+		 * limit specification.
+		 * So, let's skip all digits, "-" and our limited set of
+		 * whitespace.
+		 */
+		while (   isdigit (*pp)
+		       || ('-'  == *pp)
+		       || (' '  == *pp)
+		       || ('\t' ==*pp)) {
+			pp++;
+		}
 	}
 	return retval;
 }
 
+/* Check if user uname is in the group gname.
+ * Can I be sure that gr_mem contains no UID as string?
+ * Returns true when user is in the group, false when not.
+ * Any error is treated as false.
+ */
+static bool user_in_group (const char *uname, const char *gname)
+{
+	struct group *groupdata;
+
+	if (uname == NULL || gname == NULL){ 
+		return false;
+	}
+
+	/* We are not claiming to be re-entrant!
+	 * In case of paranoia or a multithreaded login program,
+	 * one needs to add some mess for getgrnam_r. */
+	groupdata = getgrnam (gname);
+	if (NULL == groupdata) {
+		SYSLOG ((LOG_WARN, "Nonexisting group `%s' in limits file.",
+		         gname));
+		return false;
+	}
+
+	return is_on_list (groupdata->gr_mem, uname);
+}
+
 static int setup_user_limits (const char *uname)
 {
-	/* TODO: allow and use @group syntax --cristiang */
 	FILE *fil;
 	char buf[1024];
 	char name[1024];
@@ -351,8 +444,10 @@ static int setup_user_limits (const char *uname)
 	}
 	/* The limits file have the following format:
 	 * - '#' (comment) chars only as first chars on a line;
-	 * - username must start on first column
-	 * A better (smarter) checking should be done --cristiang */
+	 * - username must start on first column (or *, or @group)
+	 *
+	 * FIXME: A better (smarter) checking should be done
+	 */
 	while (fgets (buf, 1024, fil) != NULL) {
 		if (('#' == buf[0]) || ('\n' == buf[0])) {
 			continue;
@@ -364,15 +459,35 @@ static int setup_user_limits (const char *uname)
 		 * username    L2  D2048  R4096
 		 * where spaces={' ',\t}. Also, we reject invalid limits.
 		 * Imposing a limit should be done with care, so a wrong
-		 * entry means no care anyway :-). A '-' as a limits
-		 * strings means no limits --cristiang */
-		if (sscanf (buf, "%s%[ACDFMNRSTULPIOacdfmnrstulpio0-9 \t-]",
-			    name, tempbuf) == 2) {
+		 * entry means no care anyway :-).
+		 *
+		 * A '-' as a limits strings means no limits
+		 *
+		 * The username can also be:
+		 *  '*': the default limits (only the last is taken into
+		 *       account)
+		 *  @group: the limit applies to the members of the group
+		 *
+		 * To clarify: The first entry with matching user name rules,
+		 * everything after it is ignored. If there is no user entry,
+		 * the last encountered entry for a matching group rules.
+		 * If there is no matching group entry, the default limits rule.
+		 */
+		if (sscanf (buf, "%s%[ACDFIKLMNOPRSTUacdfiklmnoprstu0-9 \t-]",
+		            name, tempbuf) == 2) {
 			if (strcmp (name, uname) == 0) {
 				strcpy (limits, tempbuf);
 				break;
 			} else if (strcmp (name, "*") == 0) {
 				strcpy (deflimits, tempbuf);
+			} else if (name[0] == '@') {
+				/* If the user is in the group, the group
+				 * limits apply unless later a line for
+				 * the specific user is found.
+				 */
+				if (user_in_group (uname, name+1)) {
+					strcpy (limits, tempbuf);
+				}
 			}
 		}
 	}
@@ -392,7 +507,6 @@ static int setup_user_limits (const char *uname)
 static void setup_usergroups (const struct passwd *info)
 {
 	const struct group *grp;
-	mode_t tmpmask;
 
 /*
  *	if not root, and UID == GID, and username is the same as primary
@@ -404,6 +518,7 @@ static void setup_usergroups (const struct passwd *info)
 		grp = getgrgid (info->pw_gid);
 		if (   (NULL != grp)
 		    && (strcmp (info->pw_name, grp->gr_name) == 0)) {
+			mode_t tmpmask;
 			tmpmask = umask (0777);
 			tmpmask = (tmpmask & ~070) | ((tmpmask >> 3) & 070);
 			(void) umask (tmpmask);
@@ -432,8 +547,7 @@ void setup_limits (const struct passwd *info)
 	if (getdef_bool ("QUOTAS_ENAB")) {
 #ifdef LIMITS
 		if (info->pw_uid != 0) {
-			if (setup_user_limits (info->pw_name) &
-			    LOGIN_ERROR_LOGIN) {
+			if ((setup_user_limits (info->pw_name) & LOGIN_ERROR_LOGIN) != 0) {
 				(void) fputs (_("Too many logins.\n"), stderr);
 				(void) sleep (2); /* XXX: Should be FAIL_DELAY */
 				exit (EXIT_FAILURE);

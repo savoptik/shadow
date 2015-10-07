@@ -40,7 +40,7 @@
 
 #include <config.h>
 
-#ident "$Id: id.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <grp.h>
 #include <pwd.h>
@@ -64,7 +64,6 @@ static void usage (void)
 {
 	uid_t ruid, euid;
 	gid_t rgid, egid;
-	int i;
 	long sys_ngroups;
 
 /*
@@ -168,6 +167,7 @@ static void usage (void)
 	 * The group numbers will be printed followed by their names.
 	 */
 	if (aflg && (ngroups = getgroups (sys_ngroups, groups)) != -1) {
+		int i;
 
 		/*
 		 * Start off the group message. It will be of the format

@@ -1,5 +1,5 @@
 /*
- * Copyright (c)        2009, Nicolas François
+ * Copyright (c) 2009 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 #include <security/pam_appl.h>
 #include "prototypes.h"
 
-/*@null@*/ /*@only@*/static char *non_interactive_password = NULL;
+/*@null@*/ /*@only@*/static const char *non_interactive_password = NULL;
 static int ni_conv (int num_msg,
                     const struct pam_message **msg,
                     struct pam_response **resp,

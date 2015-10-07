@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: getdef.c 2772 2009-04-23 11:46:46Z nekral-guest $"
+#ident "$Id$"
 
 #include "prototypes.h"
 #include "defines.h"
@@ -81,6 +81,12 @@ static struct itemdef def_table[] = {
 	{"SHA_CRYPT_MAX_ROUNDS", NULL},
 	{"SHA_CRYPT_MIN_ROUNDS", NULL},
 #endif
+	{"SUB_GID_COUNT", NULL},
+	{"SUB_GID_MAX", NULL},
+	{"SUB_GID_MIN", NULL},
+	{"SUB_UID_COUNT", NULL},
+	{"SUB_UID_MAX", NULL},
+	{"SUB_UID_MIN", NULL},
 	{"SULOG_FILE", NULL},
 	{"SU_NAME", NULL},
 	{"SYS_GID_MAX", NULL},
@@ -128,6 +134,11 @@ static struct itemdef def_table[] = {
 	{"USERNAME_MAX", NULL},
 	{"CRYPT_PREFIX", NULL},
 	{"CRYPT_ROUNDS", NULL},
+#ifdef WITH_TCB
+	{"TCB_AUTH_GROUP", NULL},
+	{"TCB_SYMLINKS", NULL},
+	{"USE_TCB", NULL},
+#endif
 	{NULL, NULL}
 };
 

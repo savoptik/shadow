@@ -2,7 +2,7 @@
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2002 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
+ * Copyright (c) 2007 - 2010, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: sulogin.c 2851 2009-04-30 21:39:38Z nekral-guest $"
+#ident "$Id$"
 
 #include <fcntl.h>
 #include <pwd.h>
@@ -49,6 +49,8 @@
 /*
  * Global variables
  */
+const char *Prog;
+
 static char name[BUFSIZ];
 static char pass[BUFSIZ];
 
@@ -80,7 +82,9 @@ static RETSIGTYPE catch_signals (unused int sig)
 
  /*ARGSUSED*/ int main (int argc, char **argv)
 {
-	char *cp;
+#ifndef USE_PAM
+	const char *env;
+#endif				/* !USE_PAM */
 	char **envp = environ;
 	TERMIO termio;
 	int err = 0;
@@ -101,6 +105,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 	tcsetattr (0, TCSANOW, &termio);
 #endif
 
+	Prog = Basename (argv[0]);
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
@@ -126,7 +131,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 		}
 	}
 	if (access (PASSWD_FILE, F_OK) == -1) {	/* must be a password file! */
-		puts (_("No password file"));
+		(void) puts (_("No password file"));
 #ifdef	USE_SYSLOG
 		SYSLOG (LOG_WARN, "No password file\n");
 		closelog ();
@@ -152,7 +157,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 	if (getppid() == 1) {
 		setsid();
 		if (ioctl(0, TIOCSCTTY, 1) != 0) {
-			fputs (_("TIOCSCTTY failed"), stderr);
+			(void) fputs (_("TIOCSCTTY failed"), stderr);
 		}
 	}
 	while (NULL != *envp) {		/* add inherited environment, */
@@ -161,14 +166,13 @@ static RETSIGTYPE catch_signals (unused int sig)
 	}
 
 #ifndef USE_PAM
-
-	cp = getdef_str ("ENV_TZ");
-	if (NULL != cp) {
-		addenv (('/' == *cp) ? tz (cp) : cp, NULL);
+	env = getdef_str ("ENV_TZ");
+	if (NULL != env) {
+		addenv (('/' == *env) ? tz (env) : env, NULL);
 	}
-	cp = getdef_str ("ENV_HZ");
-	if (NULL != cp) {
-		addenv (cp, NULL);	/* set the default $HZ, if one */
+	env = getdef_str ("ENV_HZ");
+	if (NULL != env) {
+		addenv (env, NULL);	/* set the default $HZ, if one */
 	}
 #endif				/* !USE_PAM */
 
@@ -178,12 +182,13 @@ static RETSIGTYPE catch_signals (unused int sig)
 	(void) alarm (ALARM);		/* only wait so long ... */
 
 	while (true) {		/* repeatedly get login/password pairs */
+		char *cp;
 		pw_entry (name, &pwent);	/* get entry from password file */
 		if (pwent.pw_name == (char *) 0) {
 			/*
 			 * Fail secure
 			 */
-			puts (_("No password entry for 'root'"));
+			(void) puts (_("No password entry for 'root'"));
 #ifdef	USE_SYSLOG
 			SYSLOG (LOG_WARN, "No password entry for 'root'\n");
 			closelog ();
@@ -197,10 +202,10 @@ static RETSIGTYPE catch_signals (unused int sig)
 		 */
 
 		/* get a password for root */
-		cp = getpass (_
-			      ("\n"
-			       "Type control-d to proceed with normal startup,\n"
-			       "(or give root password for system maintenance):"));
+		cp = getpass (_(
+"\n"
+"Type control-d to proceed with normal startup,\n"
+"(or give root password for system maintenance):"));
 		/*
 		 * XXX - can't enter single user mode if root password is
 		 * empty.  I think this doesn't happen very often :-). But
@@ -212,7 +217,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 			SYSLOG (LOG_INFO, "Normal startup\n");
 			closelog ();
 #endif
-			puts ("");
+			(void) puts ("");
 #ifdef	TELINIT
 			execl (PATH_TELINIT, "telinit", RUNLEVEL, (char *) 0);
 #endif
@@ -229,14 +234,14 @@ static RETSIGTYPE catch_signals (unused int sig)
 		SYSLOG (LOG_WARN, "Incorrect root password\n");
 #endif
 		sleep (2);
-		puts (_("Login incorrect"));
+		(void) puts (_("Login incorrect"));
 	}
 	strzero (pass);
 	(void) alarm (0);
 	(void) signal (SIGALRM, SIG_DFL);
 	environ = newenvp;	/* make new environment active */
 
-	puts (_("Entering System Maintenance Mode"));
+	(void) puts (_("Entering System Maintenance Mode"));
 #ifdef	USE_SYSLOG
 	SYSLOG (LOG_INFO, "System Maintenance Mode\n");
 #endif

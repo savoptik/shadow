@@ -41,25 +41,28 @@
 
 #include <config.h>
 
-#ident "$Id: xmalloc.c 2017 2008-05-25 20:39:31Z nekral-guest $"
+#ident "$Id$"
 
 #include <stdio.h>
+#include <errno.h>
 #include "defines.h"
 #include "prototypes.h"
 
-char *xmalloc (size_t size)
+/*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/char *xmalloc (size_t size)
 {
 	char *ptr;
 
 	ptr = (char *) malloc (size);
-	if ((NULL == ptr) && (0 != size)) {
-		fprintf (stderr, _("malloc(%d) failed\n"), (int) size);
+	if (NULL == ptr) {
+		(void) fprintf (stderr,
+		                _("%s: failed to allocate memory: %s\n"),
+		                Prog, strerror (errno));
 		exit (13);
 	}
 	return ptr;
 }
 
-char *xstrdup (const char *str)
+/*@maynotreturn@*/ /*@only@*//*@notnull@*/char *xstrdup (const char *str)
 {
 	return strcpy (xmalloc (strlen (str) + 1), str);
 }

@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: newgrp.c 3034 2009-07-22 13:30:06Z nekral-guest $"
+#ident "$Id$"
 
 #include <errno.h>
 #include <grp.h>
@@ -182,6 +182,16 @@ static void check_perms (const struct group *grp,
 		cpasswd = pw_encrypt (cp, grp->gr_passwd);
 		strzero (cp);
 
+		if (NULL == cpasswd) {
+			fprintf (stderr,
+			         _("%s: failed to crypt password with previous salt: %s\n"),
+			         Prog, strerror (errno));
+			SYSLOG ((LOG_INFO,
+			         "Failed to crypt password with previous salt of group '%s'",
+			         groupname));
+			goto failure;
+		}
+
 		if (grp->gr_passwd[0] == '\0' ||
 		    strcmp (cpasswd, grp->gr_passwd) != 0) {
 #ifdef WITH_AUDIT
@@ -280,7 +290,7 @@ static void syslog_sg (const char *name, const char *group)
 	 * receives SIGCHLD from the terminating subshell.  -- JWP
 	 */
 	{
-		pid_t child, pid;
+		pid_t child;
 
 		/* Ignore these signals. The signal handlers will later be
 		 * restored to the default handlers. */
@@ -314,13 +324,15 @@ static void syslog_sg (const char *name, const char *group)
 			int cst = 0;
 			gid_t gid = getgid();
 			struct group *grp = getgrgid (gid);
+			pid_t pid;
 
 			do {
 				errno = 0;
 				pid = waitpid (child, &cst, WUNTRACED);
 				if ((pid == child) && (WIFSTOPPED (cst) != 0)) {
-					/* stop when child stops */
-					kill (getpid (), WSTOPSIG(cst));
+					/* The child (shell) was suspended.
+					 * Suspend sg/newgrp. */
+					kill (getpid (), SIGSTOP);
 					/* wake child when resumed */
 					kill (child, SIGCONT);
 				}
@@ -803,7 +815,7 @@ int main (int argc, char **argv)
 	 */
 	err = shell (prog, initflag ? (char *) 0 : cp, newenvp);
 	exit ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
-	/* @notreached@ */
+	/*@notreached@*/
       failure:
 
 	/*

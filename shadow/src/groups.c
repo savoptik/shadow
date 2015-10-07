@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: groups.c 2849 2009-04-30 21:08:49Z nekral-guest $"
+#ident "$Id$"
 
 #include <grp.h>
 #include <pwd.h>
@@ -104,10 +104,7 @@ int main (int argc, char **argv)
 {
 #ifdef HAVE_GETGROUPS
 	long sys_ngroups;
-	int ngroups;
 	GETGROUPS_T *groups;
-	int pri_grp; /* TODO: should be GETGROUPS_T */
-	int i;
 #else
 	char *logname;
 	char *getlogin ();
@@ -129,12 +126,14 @@ int main (int argc, char **argv)
 		 */
 
 #ifdef HAVE_GETGROUPS
+		int i;
+		int pri_grp; /* TODO: should be GETGROUPS_T */
 		/*
 		 * This system supports concurrent group sets, so I can ask
 		 * the system to tell me which groups are currently set for
 		 * this process.
 		 */
-		ngroups = getgroups (sys_ngroups, groups);
+		int ngroups = getgroups (sys_ngroups, groups);
 		if (ngroups < 0) {
 			perror ("getgroups");
 			exit (EXIT_FAILURE);

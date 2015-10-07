@@ -2,7 +2,7 @@
  * Copyright (c) 1990 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2001, Marek Michałkiewicz
  * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2009, Nicolas François
+ * Copyright (c) 2007 - 2011, Nicolas François
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: commonio.c 2892 2009-05-10 13:49:03Z nekral-guest $"
+#ident "$Id$"
 
 #include "defines.h"
 #include <assert.h>
@@ -45,16 +45,16 @@
 #include <stdio.h>
 #include <signal.h>
 #include "nscd.h"
-#ifdef WITH_SELINUX
-#include <selinux/selinux.h>
-#endif
+#ifdef WITH_TCB
+#include <tcb.h>
+#endif				/* WITH_TCB */
 #include "prototypes.h"
 #include "commonio.h"
 
 /* local function prototypes */
 static int lrename (const char *, const char *);
 static int check_link_count (const char *file);
-static int do_lock_file (const char *file, const char *lock);
+static int do_lock_file (const char *file, const char *lock, bool log);
 static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 	const char *name,
 	const char *mode,
@@ -132,7 +132,7 @@ static int check_link_count (const char *file)
 }
 
 
-static int do_lock_file (const char *file, const char *lock)
+static int do_lock_file (const char *file, const char *lock, bool log)
 {
 	int fd;
 	pid_t pid;
@@ -142,6 +142,11 @@ static int do_lock_file (const char *file, const char *lock)
 
 	fd = open (file, O_CREAT | O_EXCL | O_WRONLY, 0600);
 	if (-1 == fd) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: %s: %s\n",
+			                Prog, file, strerror (errno));
+		}
 		return 0;
 	}
 
@@ -149,6 +154,11 @@ static int do_lock_file (const char *file, const char *lock)
 	snprintf (buf, sizeof buf, "%lu", (unsigned long) pid);
 	len = (ssize_t) strlen (buf) + 1;
 	if (write (fd, buf, (size_t) len) != len) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: %s: %s\n",
+			                Prog, file, strerror (errno));
+		}
 		(void) close (fd);
 		unlink (file);
 		return 0;
@@ -157,12 +167,22 @@ static int do_lock_file (const char *file, const char *lock)
 
 	if (link (file, lock) == 0) {
 		retval = check_link_count (file);
+		if ((0==retval) && log) {
+			(void) fprintf (stderr,
+			                "%s: %s: lock file already used\n",
+			                Prog, file);
+		}
 		unlink (file);
 		return retval;
 	}
 
 	fd = open (lock, O_RDWR);
 	if (-1 == fd) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: %s: %s\n",
+			                Prog, lock, strerror (errno));
+		}
 		unlink (file);
 		errno = EINVAL;
 		return 0;
@@ -170,29 +190,60 @@ static int do_lock_file (const char *file, const char *lock)
 	len = read (fd, buf, sizeof (buf) - 1);
 	close (fd);
 	if (len <= 0) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: existing lock file %s without a PID\n",
+			                Prog, lock);
+		}
 		unlink (file);
 		errno = EINVAL;
 		return 0;
 	}
 	buf[len] = '\0';
 	if (get_pid (buf, &pid) == 0) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: existing lock file %s with an invalid PID '%s'\n",
+			                Prog, lock, buf);
+		}
 		unlink (file);
 		errno = EINVAL;
 		return 0;
 	}
 	if (kill (pid, 0) == 0) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: lock %s already used by PID %lu\n",
+			                Prog, lock, (unsigned long) pid);
+		}
 		unlink (file);
 		errno = EEXIST;
 		return 0;
 	}
 	if (unlink (lock) != 0) {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: cannot get lock %s: %s\n",
+			                Prog, lock, strerror (errno));
+		}
 		unlink (file);
 		return 0;
 	}
 
 	retval = 0;
-	if ((link (file, lock) == 0) && (check_link_count (file) != 0)) {
-		retval = 1;
+	if (link (file, lock) == 0) {
+		retval = check_link_count (file);
+		if ((0==retval) && log) {
+			(void) fprintf (stderr,
+			                "%s: %s: lock file already used\n",
+			                Prog, file);
+		}
+	} else {
+		if (log) {
+			(void) fprintf (stderr,
+			                "%s: cannot get lock %s: %s\n",
+			                Prog, lock, strerror (errno));
+		}
 	}
 
 	unlink (file);
@@ -219,21 +270,21 @@ static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 	if (fchown (fileno (fp), sb->st_uid, sb->st_gid) != 0) {
 		goto fail;
 	}
-#else
+#else				/* !HAVE_FCHOWN */
 	if (chown (name, sb->st_mode) != 0) {
 		goto fail;
 	}
-#endif
+#endif				/* !HAVE_FCHOWN */
 
 #ifdef HAVE_FCHMOD
 	if (fchmod (fileno (fp), sb->st_mode & 0664) != 0) {
 		goto fail;
 	}
-#else
+#else				/* !HAVE_FCHMOD */
 	if (chmod (name, sb->st_mode & 0664) != 0) {
 		goto fail;
 	}
-#endif
+#endif				/* !HAVE_FCHMOD */
 	return fp;
 
       fail:
@@ -325,7 +376,7 @@ bool commonio_present (const struct commonio_db *db)
 }
 
 
-int commonio_lock_nowait (struct commonio_db *db)
+int commonio_lock_nowait (struct commonio_db *db, bool log)
 {
 	char file[1024];
 	char lock[1024];
@@ -337,7 +388,7 @@ int commonio_lock_nowait (struct commonio_db *db)
 	snprintf (file, sizeof file, "%s.%lu",
 	          db->filename, (unsigned long) getpid ());
 	snprintf (lock, sizeof lock, "%s.lock", db->filename);
-	if (do_lock_file (file, lock) != 0) {
+	if (do_lock_file (file, lock, log) != 0) {
 		db->locked = true;
 		lock_count++;
 		return 1;
@@ -361,17 +412,22 @@ int commonio_lock (struct commonio_db *db)
 	 */
 	if (0 == lock_count) {
 		if (lckpwdf () == -1) {
+			if (geteuid () != 0) {
+				(void) fprintf (stderr,
+				                "%s: Permission denied.\n",
+				                Prog);
+			}
 			return 0;	/* failure */
 		}
 	}
 
-	if (commonio_lock_nowait (db) != 0) {
+	if (commonio_lock_nowait (db, true) != 0) {
 		return 1;	/* success */
 	}
 
 	ulckpwdf ();
 	return 0;		/* failure */
-#else
+#else				/* !HAVE_LCKPWDF */
 	int i;
 
 	/*
@@ -388,16 +444,18 @@ int commonio_lock (struct commonio_db *db)
 		if (i > 0) {
 			sleep (LOCK_SLEEP);	/* delay between retries */
 		}
-		if (commonio_lock_nowait (db) != 0) {
+		if (commonio_lock_nowait (db, i==LOCK_TRIES-1) != 0) {
 			return 1;	/* success */
 		}
 		/* no unnecessary retries on "permission denied" errors */
 		if (geteuid () != 0) {
+			(void) fprintf (stderr, "%s: Permission denied.\n",
+			                Prog);
 			return 0;
 		}
 	}
 	return 0;		/* failure */
-#endif
+#endif				/* !HAVE_LCKPWDF */
 }
 
 static void dec_lock_count (void)
@@ -414,7 +472,7 @@ static void dec_lock_count (void)
 			}
 #ifdef HAVE_LCKPWDF
 			ulckpwdf ();
-#endif
+#endif				/* HAVE_LCKPWDF */
 		}
 	}
 }
@@ -533,6 +591,7 @@ int commonio_open (struct commonio_db *db, int mode)
 	void *eptr = NULL;
 	int flags = mode;
 	size_t buflen;
+	int fd;
 	int saved_errno;
 
 	mode &= ~O_CREAT;
@@ -549,11 +608,31 @@ int commonio_open (struct commonio_db *db, int mode)
 		return 0;
 	}
 
-	db->head = db->tail = NULL;
+	db->head = NULL;
+	db->tail = NULL;
 	db->cursor = NULL;
 	db->changed = false;
 
-	db->fp = fopen (db->filename, db->readonly ? "r" : "r+");
+	fd = open (db->filename,
+	             (db->readonly ? O_RDONLY : O_RDWR)
+	           | O_NOCTTY | O_NONBLOCK | O_NOFOLLOW);
+	saved_errno = errno;
+	db->fp = NULL;
+	if (fd >= 0) {
+#ifdef WITH_TCB
+		if (tcb_is_suspect (fd) != 0) {
+			(void) close (fd);
+			errno = EINVAL;
+			return 0;
+		}
+#endif				/* WITH_TCB */
+		db->fp = fdopen (fd, db->readonly ? "r" : "r+");
+		saved_errno = errno;
+		if (NULL == db->fp) {
+			(void) close (fd);
+		}
+	}
+	errno = saved_errno;
 
 	/*
 	 * If O_CREAT was specified and the file didn't exist, it will be
@@ -568,16 +647,7 @@ int commonio_open (struct commonio_db *db, int mode)
 	}
 
 	/* Do not inherit fd in spawned processes (e.g. nscd) */
-	fcntl(fileno(db->fp), F_SETFD, FD_CLOEXEC);
-
-#ifdef WITH_SELINUX
-	db->scontext = NULL;
-	if ((is_selinux_enabled () > 0) && (!db->readonly)) {
-		if (fgetfilecon (fileno (db->fp), &db->scontext) < 0) {
-			goto cleanup_errno;
-		}
-	}
-#endif
+	fcntl (fileno (db->fp), F_SETFD, FD_CLOEXEC);
 
 	buflen = BUFLEN;
 	buf = (char *) malloc (buflen);
@@ -663,12 +733,6 @@ int commonio_open (struct commonio_db *db, int mode)
       cleanup_errno:
 	saved_errno = errno;
 	free_linked_list (db);
-#ifdef WITH_SELINUX
-	if (db->scontext != NULL) {
-		freecon (db->scontext);
-		db->scontext = NULL;
-	}
-#endif
 	fclose (db->fp);
 	db->fp = NULL;
 	errno = saved_errno;
@@ -683,10 +747,26 @@ commonio_sort (struct commonio_db *db, int (*cmp) (const void *, const void *))
 {
 	struct commonio_entry **entries, *ptr;
 	size_t n = 0, i;
+#if KEEP_NIS_AT_END
+	struct commonio_entry *nis = NULL;
+#endif
 
-	for (ptr = db->head; NULL != ptr; ptr = ptr->next) {
+	for (ptr = db->head;
+	        (NULL != ptr)
+#if KEEP_NIS_AT_END
+	     && (NULL != ptr->line)
+	     && (   ('+' != ptr->line[0])
+	         && ('-' != ptr->line[0]))
+#endif
+	     ;
+	     ptr = ptr->next) {
 		n++;
 	}
+#if KEEP_NIS_AT_END
+	if ((NULL != ptr) && (NULL != ptr->line)) {
+		nis = ptr;
+	}
+#endif
 
 	if (n <= 1) {
 		return 0;
@@ -698,18 +778,40 @@ commonio_sort (struct commonio_db *db, int (*cmp) (const void *, const void *))
 	}
 
 	n = 0;
-	for (ptr = db->head; NULL != ptr; ptr = ptr->next) {
-		entries[n++] = ptr;
+	for (ptr = db->head;
+#if KEEP_NIS_AT_END
+	     nis != ptr;
+#else
+	     NULL != ptr;
+#endif
+/*@ -nullderef @*/
+	     ptr = ptr->next
+/*@ +nullderef @*/
+	    ) {
+		entries[n] = ptr;
+		n++;
 	}
 	qsort (entries, n, sizeof (struct commonio_entry *), cmp);
 
+	/* Take care of the head and tail separately */
 	db->head = entries[0];
-	db->tail = entries[--n];
+	n--;
+#if KEEP_NIS_AT_END
+	if (NULL == nis)
+#endif
+	{
+		db->tail = entries[n];
+	}
 	db->head->prev = NULL;
 	db->head->next = entries[1];
-	db->tail->prev = entries[n - 1];
-	db->tail->next = NULL;
+	entries[n]->prev = entries[n - 1];
+#if KEEP_NIS_AT_END
+	entries[n]->next = nis;
+#else
+	entries[n]->next = NULL;
+#endif
 
+	/* Now other elements have prev and next entries */
 	for (i = 1; i < n; i++) {
 		entries[i]->prev = entries[i - 1];
 		entries[i]->next = entries[i + 1];
@@ -812,10 +914,6 @@ int commonio_close (struct commonio_db *db)
 	int errors = 0;
 	struct stat sb;
 
-#ifdef WITH_SELINUX
-	/*@null@*/security_context_t old_context = NULL;
-#endif
-
 	if (!db->isopen) {
 		errno = EINVAL;
 		return 0;
@@ -823,7 +921,7 @@ int commonio_close (struct commonio_db *db)
 	db->isopen = false;
 
 	if (!db->changed || db->readonly) {
-		fclose (db->fp);
+		(void) fclose (db->fp);
 		db->fp = NULL;
 		goto success;
 	}
@@ -835,27 +933,21 @@ int commonio_close (struct commonio_db *db)
 	memzero (&sb, sizeof sb);
 	if (NULL != db->fp) {
 		if (fstat (fileno (db->fp), &sb) != 0) {
-			fclose (db->fp);
+			(void) fclose (db->fp);
 			db->fp = NULL;
 			goto fail;
 		}
-#ifdef WITH_SELINUX
-		if (db->scontext != NULL) {
-			if (getfscreatecon (&old_context) < 0) {
-				errors++;
-				goto fail;
-			}
-			if (setfscreatecon (db->scontext) < 0) {
-				errors++;
-				goto fail;
-			}
-		}
-#endif
+
 		/*
 		 * Create backup file.
 		 */
 		snprintf (buf, sizeof buf, "%s-", db->filename);
 
+#ifdef WITH_SELINUX
+		if (set_selinux_file_context (buf) != 0) {
+			errors++;
+		}
+#endif
 		if (create_backup (buf, db->fp) != 0) {
 			errors++;
 		}
@@ -864,6 +956,11 @@ int commonio_close (struct commonio_db *db)
 			errors++;
 		}
 
+#ifdef WITH_SELINUX
+		if (reset_selinux_file_context () != 0) {
+			errors++;
+		}
+#endif
 		if (errors != 0) {
 			db->fp = NULL;
 			goto fail;
@@ -879,6 +976,12 @@ int commonio_close (struct commonio_db *db)
 	}
 
 	snprintf (buf, sizeof buf, "%s+", db->filename);
+
+#ifdef WITH_SELINUX
+	if (set_selinux_file_context (buf) != 0) {
+		errors++;
+	}
+#endif
 
 	db->fp = fopen_set_perms (buf, "w", &sb);
 	if (NULL == db->fp) {
@@ -896,9 +999,9 @@ int commonio_close (struct commonio_db *db)
 	if (fsync (fileno (db->fp)) != 0) {
 		errors++;
 	}
-#else
+#else				/* !HAVE_FSYNC */
 	sync ();
-#endif
+#endif				/* !HAVE_FSYNC */
 	if (fclose (db->fp) != 0) {
 		errors++;
 	}
@@ -914,25 +1017,18 @@ int commonio_close (struct commonio_db *db)
 		goto fail;
 	}
 
+#ifdef WITH_SELINUX
+	if (reset_selinux_file_context () != 0) {
+		goto fail;
+	}
+#endif
+
 	nscd_need_reload = true;
 	goto success;
       fail:
 	errors++;
       success:
 
-#ifdef WITH_SELINUX
-	if (db->scontext != NULL) {
-		if (NULL != old_context) {
-		if (setfscreatecon (old_context) < 0) {
-			errors++;
-		}
-			freecon (old_context);
-			old_context = NULL;
-		}
-		freecon (db->scontext);
-		db->scontext = NULL;
-	}
-#endif
 	free_linked_list (db);
 	return errors == 0;
 }
@@ -963,7 +1059,7 @@ static /*@dependent@*/ /*@null@*/struct commonio_entry *find_entry_by_name (
 	struct commonio_db *db,
 	const char *name)
 {
-	return next_entry_by_name(db, db->head, name);
+	return next_entry_by_name (db, db->head, name);
 }
 
 
@@ -1009,14 +1105,46 @@ int commonio_update (struct commonio_db *db, const void *eptr)
 
 #if KEEP_NIS_AT_END
 	add_one_entry_nis (db, p);
-#else
+#else				/* !KEEP_NIS_AT_END */
 	add_one_entry (db, p);
-#endif
+#endif				/* !KEEP_NIS_AT_END */
 
 	db->changed = true;
 	return 1;
 }
 
+#ifdef ENABLE_SUBIDS
+int commonio_append (struct commonio_db *db, const void *eptr)
+{
+	struct commonio_entry *p;
+	void *nentry;
+
+	if (!db->isopen || db->readonly) {
+		errno = EINVAL;
+		return 0;
+	}
+	nentry = db->ops->dup (eptr);
+	if (NULL == nentry) {
+		errno = ENOMEM;
+		return 0;
+	}
+	/* new entry */
+	p = (struct commonio_entry *) malloc (sizeof *p);
+	if (NULL == p) {
+		db->ops->free (nentry);
+		errno = ENOMEM;
+		return 0;
+	}
+
+	p->eptr = nentry;
+	p->line = NULL;
+	p->changed = true;
+	add_one_entry (db, p);
+
+	db->changed = true;
+	return 1;
+}
+#endif				/* ENABLE_SUBIDS */
 
 void commonio_del_entry (struct commonio_db *db, const struct commonio_entry *p)
 {

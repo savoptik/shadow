@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT
-AM_INIT_AUTOMAKE(shadow, 4.1.4.2)
+AM_INIT_AUTOMAKE(shadow, 4.2.1)
 AC_CONFIG_HEADERS([config.h])
 
 dnl Some hacks...
@@ -32,7 +32,8 @@ AC_HEADER_STDBOOL
 AC_CHECK_HEADERS(errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
 	utmpx.h termios.h termio.h sgtty.h sys/ioctl.h syslog.h paths.h \
 	utime.h ulimit.h sys/resource.h gshadow.h lastlog.h \
-	locale.h rpc/key_prot.h netdb.h)
+	locale.h rpc/key_prot.h netdb.h acl/libacl.h attr/libattr.h \
+	attr/error_context.h)
 
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
@@ -40,7 +41,8 @@ AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 AC_CHECK_FUNCS(l64a fchmod fchown fsync futimes getgroups gethostname getspnam setlocale\
 	gettimeofday getusershell getutent initgroups lchown lckpwdf lstat \
 	lutimes memcpy memset setgroups sigaction strchr updwtmp updwtmpx innetgr \
-	getpwnam_r getpwuid_r getgrnam_r getgrgid_r getspnam_r getaddrinfo)
+	getpwnam_r getpwuid_r getgrnam_r getgrgid_r getspnam_r getaddrinfo \
+	ruserok)
 AC_SYS_LARGEFILE
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -111,7 +113,6 @@ AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
 AC_REPLACE_FUNCS(snprintf strcasecmp strdup strerror strstr)
 
 AC_CHECK_FUNC(setpgrp)
-AC_FUNC_SETPGRP
 
 if test "$ac_cv_header_shadow_h" = "yes"; then
 	AC_CACHE_CHECK(for working shadow group support,
@@ -188,8 +189,10 @@ AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "/usr/bin/passwd",
 
 dnl XXX - quick hack, should disappear before anyone notices :).
 AC_DEFINE(USE_SYSLOG, 1, [Define to use syslog().])
-AC_DEFINE(RLOGIN, 1, [Define if login should support the -r flag for rlogind.])
-AC_DEFINE(RUSEROK, 0, [Define to the ruserok() "success" return value (0 or 1).])
+if test "$ac_cv_func_ruserok" = "yes"; then
+	AC_DEFINE(RLOGIN, 1, [Define if login should support the -r flag for rlogind.])
+	AC_DEFINE(RUSEROK, 0, [Define to the ruserok() "success" return value (0 or 1).])
+fi
 
 AC_ARG_ENABLE(shadowgrp,
 	[AC_HELP_STRING([--enable-shadowgrp], [enable shadow group support @<:@default=yes@:>@])],
@@ -231,6 +234,13 @@ AC_ARG_ENABLE(utmpx,
 	[enable_utmpx="no"]
 )
 
+AC_ARG_ENABLE(subordinate-ids,
+	[AC_HELP_STRING([--enable-subordinate-ids],
+		[support subordinate ids @<:@default=yes@:>@])],
+	[enable_subids="${enableval}"],
+	[enable_subids="maybe"]
+)
+
 AC_ARG_WITH(audit, 
 	[AC_HELP_STRING([--with-audit], [use auditing support @<:@default=yes if found@:>@])],
 	[with_audit=$withval], [with_audit=maybe])
@@ -240,11 +250,20 @@ AC_ARG_WITH(libpam,
 AC_ARG_WITH(selinux,
 	[AC_HELP_STRING([--with-selinux], [use SELinux support @<:@default=yes if found@:>@])],
 	[with_selinux=$withval], [with_selinux=maybe])
+AC_ARG_WITH(acl,
+	[AC_HELP_STRING([--with-acl], [use ACL support @<:@default=yes if found@:>@])],
+	[with_acl=$withval], [with_acl=maybe])
+AC_ARG_WITH(attr,
+	[AC_HELP_STRING([--with-attr], [use Extended Attribute support @<:@default=yes if found@:>@])],
+	[with_attr=$withval], [with_attr=maybe])
 AC_ARG_WITH(skey,
 	[AC_HELP_STRING([--with-skey], [use S/Key support @<:@default=no@:>@])],
 	[with_skey=$withval], [with_skey=no])
+AC_ARG_WITH(tcb,
+	[AC_HELP_STRING([--with-tcb], [use tcb support (incomplete) @<:@default=yes if found@:>@])],
+	[with_tcb=$withval], [with_tcb=maybe])
 AC_ARG_WITH(libcrack,
-	[AC_HELP_STRING([--with-libcrack], [use libcrack @<:@default=yes if found and if PAM not enabled@:>@])],
+	[AC_HELP_STRING([--with-libcrack], [use libcrack @<:@default=no@:>@])],
 	[with_libcrack=$withval], [with_libcrack=no])
 AC_ARG_WITH(sha-crypt,
 	[AC_HELP_STRING([--with-sha-crypt], [allow the SHA256 and SHA512 password encryption algorithms @<:@default=yes@:>@])],
@@ -306,9 +325,86 @@ if test "$enable_man" = "yes"; then
 fi
 AM_CONDITIONAL(ENABLE_REGENERATE_MAN, test "x$enable_man" != "xno")
 
+if test "$enable_subids" != "no"; then
+	dnl
+	dnl FIXME: check if 32 bit UIDs/GIDs are supported by libc
+	dnl
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
+#include <sys/types.h>
+int main(void) {
+	uid_t u;
+	gid_t g;
+	return (sizeof u < 4) || (sizeof g < 4);
+}
+	])], [id32bit="yes"], [id32bit="no"])
+
+	if test "x$id32bit" = "xyes"; then
+		AC_DEFINE(ENABLE_SUBIDS, 1, [Define to support the subordinate IDs.])
+		enable_subids="yes"
+	else
+		if test "x$enable_subids" = "xyes"; then
+			AC_MSG_ERROR([Cannot enable support the subordinate IDs on systems where gid_t or uid_t has less than 32 bits])
+		fi
+		enable_subids="no"
+	fi
+fi
+AM_CONDITIONAL(ENABLE_SUBIDS, test "x$enable_subids" != "xno")
+
 AC_SUBST(LIBCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
+
+AC_SUBST(LIBACL)
+if test "$with_acl" != "no"; then
+	AC_CHECK_HEADERS(acl/libacl.h attr/error_context.h, [acl_header="yes"], [acl_header="no"])
+	if test "$acl_header$with_acl" = "noyes" ; then
+		AC_MSG_ERROR([acl/libacl.h or attr/error_context.h is missing])
+	elif test "$acl_header" = "yes" ; then
+		AC_CHECK_LIB(acl, perm_copy_file,
+		             [AC_CHECK_LIB(acl, perm_copy_fd,
+		                           [acl_lib="yes"],
+		                           [acl_lib="no"])],
+		             [acl_lib="no"])
+		if test "$acl_lib$with_acl" = "noyes" ; then
+			AC_MSG_ERROR([libacl not found])
+		elif test "$acl_lib" = "no" ; then
+			with_acl="no"
+		else
+			AC_DEFINE(WITH_ACL, 1,
+			          [Build shadow with ACL support])
+			LIBACL="-lacl"
+			with_acl="yes"
+		fi
+	else
+		with_acl="no"
+	fi
+fi
+
+AC_SUBST(LIBATTR)
+if test "$with_attr" != "no"; then
+	AC_CHECK_HEADERS(attr/libattr.h attr/error_context.h, [attr_header="yes"], [attr_header="no"])
+	if test "$attr_header$with_attr" = "noyes" ; then
+		AC_MSG_ERROR([attr/libattr.h or attr/error_context.h is missing])
+	elif test "$attr_header" = "yes" ; then
+		AC_CHECK_LIB(attr, attr_copy_file,
+		             [AC_CHECK_LIB(attr, attr_copy_fd,
+		                           [attr_lib="yes"],
+		                           [attr_lib="no"])],
+		             [attr_lib="no"])
+		if test "$attr_lib$with_attr" = "noyes" ; then
+			AC_MSG_ERROR([libattr not found])
+		elif test "$attr_lib" = "no" ; then
+			with_attr="no"
+		else
+			AC_DEFINE(WITH_ATTR, 1,
+			          [Build shadow with Extended Attributes support])
+			LIBATTR="-lattr"
+			with_attr="yes"
+		fi
+	else
+		with_attr="no"
+	fi
+fi
 
 AC_SUBST(LIBAUDIT)
 if test "$with_audit" != "no"; then
@@ -354,27 +450,64 @@ if test "$with_libcrack" = "yes"; then
 fi
 
 AC_SUBST(LIBSELINUX)
+AC_SUBST(LIBSEMANAGE)
 if test "$with_selinux" != "no"; then
 	AC_CHECK_HEADERS(selinux/selinux.h, [selinux_header="yes"], [selinux_header="no"])
 	if test "$selinux_header$with_selinux" = "noyes" ; then
 		AC_MSG_ERROR([selinux/selinux.h is missing])
-	elif test "$selinux_header" = "yes" ; then
-		AC_CHECK_LIB(selinux, is_selinux_enabled,
-		             [selinux_lib="yes"], [selinux_lib="no"])
+	fi
+
+	AC_CHECK_HEADERS(semanage/semanage.h, [semanage_header="yes"], [semanage_header="no"])
+	if test "$semanage_header$with_selinux" = "noyes" ; then
+		AC_MSG_ERROR([semanage/semanage.h is missing])
+	fi
+
+	if test "$selinux_header$semanage_header" = "yesyes" ; then
+		AC_CHECK_LIB(selinux, is_selinux_enabled, [selinux_lib="yes"], [selinux_lib="no"])
 		if test "$selinux_lib$with_selinux" = "noyes" ; then
 			AC_MSG_ERROR([libselinux not found])
-		elif test "$selinux_lib" = "no" ; then
-			with_selinux="no"
-		else
+		fi
+
+		AC_CHECK_LIB(semanage, semanage_connect, [semanage_lib="yes"], [semanage_lib="no"])
+		if test "$semanage_lib$with_selinux" = "noyes" ; then
+			AC_MSG_ERROR([libsemanage not found])
+		fi
+
+		if test "$selinux_lib$semanage_lib" == "yesyes" ; then
 			AC_DEFINE(WITH_SELINUX, 1,
 			          [Build shadow with SELinux support])
 			LIBSELINUX="-lselinux"
+			LIBSEMANAGE="-lsemanage"
 			with_selinux="yes"
+		else
+			with_selinux="no"
 		fi
 	else
 		with_selinux="no"
 	fi
 fi
+
+AC_SUBST(LIBTCB)
+if test "$with_tcb" != "no"; then
+	AC_CHECK_HEADERS(tcb.h, [tcb_header="yes"], [tcb_header="no"])
+	if test "$tcb_header$with_tcb" = "noyes" ; then
+		AC_MSG_ERROR([tcb.h is missing])
+	elif test "$tcb_header" = "yes" ; then
+		AC_CHECK_LIB(tcb, tcb_is_suspect, [tcb_lib="yes"], [tcb_lib="no"])
+		if test "$tcb_lib$with_tcb" = "noyes" ; then
+			AC_MSG_ERROR([libtcb not found])
+		elif test "$tcb_lib" = "no" ; then
+			with_tcb="no"
+		else
+			AC_DEFINE(WITH_TCB, 1, [Build shadow with tcb support (incomplete)])
+			LIBTCB="-ltcb"
+			with_tcb="yes"
+		fi
+	else
+		with_tcb="no"
+	fi
+fi
+AM_CONDITIONAL(WITH_TCB, test x$with_tcb = xyes)
 
 AC_SUBST(LIBPAM)
 if test "$with_libpam" != "no"; then
@@ -496,8 +629,9 @@ AC_CONFIG_FILES([
 	doc/Makefile
 	man/Makefile
 	man/config.xml
-	man/po/Makefile.in
+	man/po/Makefile
 	man/cs/Makefile
+	man/da/Makefile
 	man/de/Makefile
 	man/es/Makefile
 	man/fi/Makefile
@@ -534,8 +668,12 @@ if test "$with_libpam" = "yes"; then
 echo "	suid account management tools:	$enable_acct_tools_setuid"
 fi
 echo "	SELinux support:		$with_selinux"
+echo "	ACL support:			$with_acl"
+echo "	Extended Attributes support:	$with_attr"
+echo "	tcb support (incomplete):	$with_tcb"
 echo "	shadow group support:		$enable_shadowgrp"
 echo "	S/Key support:			$with_skey"
 echo "	SHA passwords encryption:	$with_sha_crypt"
 echo "	nscd support:			$with_nscd"
+echo "	subordinate IDs support:	$enable_subids"
 echo
