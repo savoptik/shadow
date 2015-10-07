@@ -47,6 +47,9 @@
 #include "shadowio.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#ifdef WITH_TCB
+#include "getdef.h"
+#endif              /* WITH_TCB */
 
 /*
  * Global variables

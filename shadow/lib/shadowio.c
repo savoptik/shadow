@@ -44,6 +44,7 @@
 #ifdef WITH_TCB
 #include <tcb.h>
 #include "tcbfuncs.h"
+#include "getdef.h"
 #endif				/* WITH_TCB */
 
 static /*@null@*/ /*@only@*/void *shadow_dup (const void *ent)

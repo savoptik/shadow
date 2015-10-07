@@ -51,6 +51,7 @@
 #ifdef WITH_TCB
 #include <tcb.h>
 #include "tcbfuncs.h"
+#include "getdef.h"
 #endif				/* WITH_TCB */
 
 #define MSG_WARN_EDIT_OTHER_FILE _( \
