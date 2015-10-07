@@ -49,7 +49,6 @@
 /*
  * Global variables
  */
-const char *Prog;
 
 static char name[BUFSIZ];
 static char pass[BUFSIZ];
@@ -105,7 +104,6 @@ static RETSIGTYPE catch_signals (unused int sig)
 	tcsetattr (0, TCSANOW, &termio);
 #endif
 
-	Prog = Basename (argv[0]);
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);

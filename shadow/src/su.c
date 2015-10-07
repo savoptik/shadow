@@ -658,11 +658,6 @@ static void save_caller_context (char **argv)
 	const char *password = NULL;
 #endif				/* SU_ACCESS */
 #endif				/* !USE_PAM */
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	caller_uid = getuid ();
 	caller_is_root = (caller_uid == 0);

@@ -61,7 +61,6 @@
 /*
  * Global variables
  */
-const char *Prog;
 
 static const char *filename, *fileeditname;
 static bool filelocked = false;
@@ -435,8 +434,6 @@ int main (int argc, char **argv)
 {
 	bool editshadow = false;
 	bool do_vipw;
-
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

@@ -41,11 +41,6 @@
 #include "subordinateio.h"
 #include "idmapping.h"
 
-/*
- * Global variables
- */
-const char *Prog;
-
 static bool verify_range(struct passwd *pw, struct map_range *range)
 {
 	/* An empty range is invalid */
@@ -103,8 +98,6 @@ int main(int argc, char **argv)
 	struct stat st;
 	struct passwd *pw;
 	int written;
-
-	Prog = Basename (argv[0]);
 
 	/*
 	 * The valid syntax are

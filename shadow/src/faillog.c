@@ -61,7 +61,6 @@ static void reset (void);
 /*
  * Global variables
  */
-const char *Prog;		/* Program name */
 static FILE *fail;		/* failure file stream */
 static time_t seconds;		/* that number of days in seconds */
 static unsigned long umin;	/* if uflg and has_umin, only display users with uid >= umin */
@@ -563,12 +562,6 @@ int main (int argc, char **argv)
 	long fail_locktime;
 	short fail_max;
 	long days;
-
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

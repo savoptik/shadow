@@ -796,11 +796,6 @@ int main (int argc, char **argv)
 	gid_t rgid;
 	const struct passwd *pw;
 
-	/*
-	 * Get the program name so that error messages can use it.
-	 */
-	Prog = Basename (argv[0]);
-
 	sanitize_env ();
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");

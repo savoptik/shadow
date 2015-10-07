@@ -632,12 +632,6 @@ int main (int argc, char **argv)
 	char new_gecos[BUFSIZ];	/* buffer for new GECOS fields       */
 	char *user;
 
-	/*
-	 * Get the program name. The program name is used as a
-	 * prefix to most error messages.
-	 */
-	Prog = Basename (argv[0]);
-
 	sanitize_env ();
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
