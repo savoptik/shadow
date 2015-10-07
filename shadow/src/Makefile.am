@@ -53,10 +53,6 @@ if ACCT_TOOLS_SETUID
 	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 
-if WITH_TCB
-suidubins -= passwd
-shadowsgidubins = passwd
-endif
 
 LDADD          = $(INTLLIBS) \
 		 $(LIBTCB) \
