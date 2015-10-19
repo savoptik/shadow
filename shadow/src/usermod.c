@@ -101,10 +101,10 @@
  */
 
 static char *user_name;
-static char *user_newname;
+static char *user_newname = NULL;
 static char *user_pass;
 static uid_t user_id;
-static uid_t user_newid;
+static uid_t user_newid = -1;
 static gid_t user_gid;
 static gid_t user_newgid;
 static char *user_comment;
@@ -2181,7 +2181,7 @@ int main (int argc, char **argv)
 	close_files ();
 
 #ifdef WITH_TCB
-	if (   (lflg || uflg)
+	if (   (lflg || uflg) && (user_newname || user_newid != -1)
 	    && (shadowtcb_move (user_newname, user_newid) == SHADOWTCB_FAILURE) ) {
 		exit (E_PW_UPDATE);
 	}

@@ -41,6 +41,9 @@
 #include <stdlib.h>
 #ifdef USE_PAM
 #include "pam_defs.h"
+#ifdef WITH_TCB
+#include "tcbfuncs.h"
+#endif				/* WITH_TCB */
 #endif				/* USE_PAM */
 #include "defines.h"
 #include "nscd.h"
@@ -372,6 +375,96 @@ static void close_files (void)
 	pw_locked = false;
 }
 
+static int paste_pwd_shadow (char *name, char *pwd)
+{
+	const struct spwd *sp;
+	struct spwd newsp;
+	long now = time ((long *) 0) / (24L * 3600L);
+
+	if (shadowtcb_set_user (name) == SHADOWTCB_FAILURE)
+		return 0;
+	if (!spw_lock ())
+	{
+		fprintf (stderr, "can't lock shadow file for %s\n",
+				name);
+		return 0;
+	}
+	if (!spw_open (O_RDWR))
+	{
+		fprintf (stderr, "can't open shadow file for %s\n",
+				name);
+		spw_unlock ();
+		return 0;
+	}
+	sp = spw_locate (name);
+	if (sp)
+	{
+		newsp = *sp;
+		newsp.sp_pwdp = pwd;
+		newsp.sp_lstchg = now;
+	}
+	else
+	{
+		fprintf (stderr, "can't locate shadow entry for %s\n", name);
+		return 0;
+	}
+	if (!spw_update (&newsp))
+	{
+		fprintf (stderr, "can't update shadow entry for %s\n", name);
+		return 0;
+	}
+	if (!spw_close ())
+	{
+		fprintf (stderr, "error updating shadow file\n");
+		return 0;
+	}
+	spw_unlock ();
+	return 1;
+}
+
+static int paste_pwd (char *name, char *pwd)
+{
+	const struct passwd *pw;
+	struct passwd newpw;
+
+	if (spw_file_present ())
+		return paste_pwd_shadow (name, pwd);
+
+	if (!pw_lock ())
+	{
+		fprintf (stderr, "can't lock password file\n");
+		return 0;
+	}
+	if (!pw_open (O_RDWR))
+	{
+		fprintf (stderr, "can't open password file\n");
+		return 0;
+	}
+
+	pw = pw_locate (name);
+	if (!pw)
+	{
+		fprintf (stderr, "unknown user %s\n",
+				name);
+		return 0;
+	}
+	newpw = *pw;
+	newpw.pw_passwd = pwd;
+
+	if (!pw_update (&newpw))
+	{
+		fprintf (stderr, "cannot update password entry\n");
+		return 0;
+	}
+	if (!pw_close ())
+	{
+		fprintf (stderr, "error updating password file\n");
+		return 0;
+	}
+	pw_unlock ();
+	return 1;
+}
+
 int main (int argc, char **argv)
 {
 	char buf[BUFSIZ];
@@ -395,7 +488,7 @@ int main (int argc, char **argv)
 	process_flags (argc, argv);
 
 #ifdef USE_PAM
-	if (md5flg || eflg || cflg) {
+	if (md5flg || cflg) {
 		use_pam = false;
 	}
 #endif				/* USE_PAM */
@@ -432,7 +525,7 @@ int main (int argc, char **argv)
 				         _("%s: line %d: line too long\n"),
 				         Prog, line);
 				errors++;
-				continue;
+				break;
 			}
 		}
 
@@ -455,17 +548,24 @@ int main (int argc, char **argv)
 			         _("%s: line %d: missing new password\n"),
 			         Prog, line);
 			errors++;
-			continue;
+			break;
 		}
-		newpwd = cp;
 
 #ifdef USE_PAM
 		if (use_pam){
-			if (do_pam_passwd_non_interractive ("chpasswd", name, newpwd) != 0) {
+			if (eflg) {
+				if (!paste_pwd (name, cp)) {
+					fprintf (stderr, "%s: line %d: unable to paste new hash\n",
+							Prog, line);
+					errors++;
+					break;
+				}
+			} else if (do_pam_passwd_non_interractive ("chpasswd", name, cp) != 0) {
 				fprintf (stderr,
 				         _("%s: (line %d, user %s) password not changed\n"),
 				         Prog, line, name);
 				errors++;
+				break;
 			}
 		} else
 #endif				/* USE_PAM */
@@ -474,6 +574,8 @@ int main (int argc, char **argv)
 		struct spwd newsp;
 		const struct passwd *pw;
 		struct passwd newpw;
+
+		newpwd = cp;
 
 		if (   !eflg
 		    && (   (NULL == crypt_method)

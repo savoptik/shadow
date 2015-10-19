@@ -126,6 +126,10 @@ int spw_setdbname (const char *filename)
 
 bool spw_file_present (void)
 {
+#ifdef WITH_TCB
+	if (getdef_bool("USE_TCB"))
+		return true;
+#endif
 	return commonio_present (&shadow_db);
 }
 

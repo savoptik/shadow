@@ -69,6 +69,7 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #ifdef WITH_TCB
+#include <tcb.h>
 #include "tcbfuncs.h"
 #endif
 
@@ -161,6 +162,9 @@ static bool
 #endif				/* WITH_SELINUX */
 
 static bool home_added = false;
+#ifdef WITH_TCB
+static bool tcb_added = false;
+#endif
 
 /*
  * exit status values
@@ -212,6 +216,44 @@ static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
 
+#ifdef WITH_TCB
+static int useradd_rm_tcbdir(const char *user_name, uid_t user_id)
+{
+	char *buf;
+	int ret = 0;
+
+	if (!getdef_bool("USE_TCB"))
+		return 0;
+
+	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
+		fprintf(stderr, "Can't allocate memory, "
+				"tcb entry for %s not removed.\n",
+				user_name);
+		return 1;
+	}
+	if (shadowtcb_drop_priv() == SHADOWTCB_FAILURE) {
+		perror("shadowtcb_drop_priv");
+		free(buf);
+		return 1;
+	}
+	if (remove_tree(buf, false)) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		shadowtcb_gain_priv();
+		free(buf);
+		return 1;
+	}
+	shadowtcb_gain_priv();
+	free(buf);
+	if (shadowtcb_remove(user_name) == SHADOWTCB_FAILURE) {
+		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
+				user_name, strerror(errno));
+		ret = 1;
+	}
+	return ret;
+}
+#endif
+
 /*
  * fail_exit - undo as much as possible
  */
@@ -239,6 +281,12 @@ static void fail_exit (int code)
 			/* continue */
 		}
 	}
+
+#ifdef WITH_TCB
+	if (tcb_added)
+		useradd_rm_tcbdir(user_name, user_id);
+#endif
+
 	if (pw_locked) {
 		if (pw_unlock () == 0) {
 			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
@@ -2169,6 +2217,7 @@ int main (int argc, char **argv)
 			         Prog, user_name);
 			fail_exit (E_UID_IN_USE);
 		}
+		tcb_added = true;
 	}
 #endif
 	open_shadow ();

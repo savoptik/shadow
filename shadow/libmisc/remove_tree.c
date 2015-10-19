@@ -49,7 +49,8 @@
  *
  *	remove_tree() walks a directory tree and deletes all the files
  *	and directories.
- *	At the end, it deletes the root directory itself.
+ *	At the end, if remove_root is true, it deletes the root directory
+ *  itself.
  */
 
 int remove_tree (const char *root, bool remove_root)

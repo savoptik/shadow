@@ -405,29 +405,14 @@ int commonio_lock (struct commonio_db *db)
 	 * lockpw.c calls us and would cause infinite recursion!
 	 */
 
-	/*
-	 * Call lckpwdf() on the first lock.
-	 * If it succeeds, call *_lock() only once
-	 * (no retries, it should always succeed).
-	 */
-	if (0 == lock_count) {
-		if (lckpwdf () == -1) {
-			if (geteuid () != 0) {
-				(void) fprintf (stderr,
-				                "%s: Permission denied.\n",
-				                Prog);
-			}
+	if (lock_count == 0 && lckpwdf() == -1) {
 			return 0;	/* failure */
-		}
 	}
-
-	if (commonio_lock_nowait (db, true) != 0) {
-		return 1;	/* success */
-	}
-
-	ulckpwdf ();
-	return 0;		/* failure */
+	lock_count++;
+	db->locked = true;
+	return 1; /* success */
 #else				/* !HAVE_LCKPWDF */
+#error lckpwdf() is required
 	int i;
 
 	/*
@@ -480,8 +465,6 @@ static void dec_lock_count (void)
 
 int commonio_unlock (struct commonio_db *db)
 {
-	char lock[1024];
-
 	if (db->isopen) {
 		db->readonly = true;
 		if (commonio_close (db) == 0) {
@@ -497,8 +480,10 @@ int commonio_unlock (struct commonio_db *db)
 		 * then call ulckpwdf() (if used) on last unlock.
 		 */
 		db->locked = false;
+#if 0
 		snprintf (lock, sizeof lock, "%s.lock", db->filename);
 		unlink (lock);
+#endif
 		dec_lock_count ();
 		return 1;
 	}

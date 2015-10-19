@@ -215,7 +215,8 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	if (tcb_mode) {
 		if (   (mkdir (TCB_DIR "/" SHADOWTCB_SCRATCHDIR, 0700) != 0)
 		    && (errno != EEXIST)) {
-			vipwexit (_("failed to create scratch directory"), errno, 1);
+			vipwexit (_("failed to create scratch directory"
+						"\nare you sure you're the admin here? :^)\n"), errno, 1);
 		}
 		if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 			vipwexit (_("failed to drop privileges"), errno, 1);
