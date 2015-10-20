@@ -1945,7 +1945,7 @@ static void create_home (void)
 {
 	if (access (user_home, F_OK) != 0) {
 #ifdef WITH_SELINUX
-		if (set_selinux_file_context (user_home) != 0) {
+		if (set_selinux_file_context (user_home, NULL) != 0) {
 			fail_exit (E_HOMEDIR);
 		}
 #endif

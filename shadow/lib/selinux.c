@@ -50,7 +50,7 @@ static bool selinux_enabled;
  *	Callers may have to Reset SELinux to create files with default
  *	contexts with reset_selinux_file_context
  */
-int set_selinux_file_context (const char *dst_name)
+int set_selinux_file_context (const char *dst_name, const char *orig_name)
 {
 	/*@null@*/security_context_t scontext = NULL;
 
@@ -62,17 +62,21 @@ int set_selinux_file_context (const char *dst_name)
 	if (selinux_enabled) {
 		/* Get the default security context for this file */
 		if (matchpathcon (dst_name, 0, &scontext) < 0) {
-			if (security_getenforce () != 0) {
-				return 1;
-			}
+			/* We could not get the default, copy the original */
+			if (orig_name == NULL)
+				goto error;
+			if (getfilecon (orig_name, &scontext) < 0)
+				goto error;
 		}
 		/* Set the security context for the next created file */
-		if (setfscreatecon (scontext) < 0) {
-			if (security_getenforce () != 0) {
-				return 1;
-			}
-		}
+		if (setfscreatecon (scontext) < 0)
+			goto error;
 		freecon (scontext);
+	}
+	return 0;
+    error:
+	if (security_getenforce () != 0) {
+		return 1;
 	}
 	return 0;
 }
