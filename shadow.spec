@@ -154,6 +154,17 @@ This package includes utilities for execute command as different group ID:
 + newgrp: is used to change the current group ID during a login session;
 + sg: is used to execute command as different group ID.
 
+%package submap
+Summary: Utilities for creating uid and gid mappings in user namespaces
+Group: System/Base
+PreReq: %name-utils = %serial:%version-%release
+
+%description submap
+This package includes utilities for creating uid and gid mappings
+in user namespaces:
+* newuidmap: set the uid mapping of a user namespace;
+* newgidmap: set the gid mapping of a user namespace.
+
 %package log
 Summary: Utilities for examining lastlog and faillog files
 Group: System/Base
@@ -343,6 +354,14 @@ fi
 %_mandir/man?/newgrp.*
 %_mandir/man?/sg.*
 %_man8dir/groupmems.*
+
+%files submap
+%_bindir/newuidmap
+%_bindir/newgidmap
+%_man1dir/newuidmap.*
+%_man1dir/newgidmap.*
+%_man5dir/subuid.*
+%_man5dir/subgid.*
 
 %files log
 %_bindir/*log
