@@ -562,12 +562,18 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 		OUT_OF_MEMORY;
 		return SHADOWTCB_FAILURE;
 	}
+#ifdef WITH_SELINUX
+	set_selinux_file_context (dir);
+#endif
 	if (mkdir (dir, 0700) != 0) {
 		fprintf (stderr,
 		         _("%s: mkdir: %s: %s\n"),
 		         Prog, dir, strerror (errno));
 		goto out_free;
 	}
+#ifdef WITH_SELINUX
+	set_selinux_file_context (shadow);
+#endif
 	fd = open (shadow, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (fd < 0) {
 		fprintf (stderr,
@@ -606,6 +612,10 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	}
 	ret = SHADOWTCB_SUCCESS;
 out_free:
+#ifdef WITH_SELINUX
+	/* Reset SELinux to create files with default contexts */
+	reset_selinux_file_context ();
+#endif
 	free (dir);
 	free (shadow);
 	return ret;
