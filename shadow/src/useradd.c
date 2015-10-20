@@ -2043,6 +2043,7 @@ static void create_mail (void)
  */
 int main (int argc, char **argv)
 {
+	int rv = E_SUCCESS;
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 	pam_handle_t *pamh = NULL;
@@ -2255,11 +2256,34 @@ int main (int argc, char **argv)
 
 	usr_update ();
 
+	close_files ();
+
+	nscd_flush_cache ("passwd");
+	nscd_flush_cache ("group");
+
+#ifdef WITH_SELINUX
+	if (Zflg && *user_selinux) {
+		if (is_selinux_enabled () > 0) {
+		    if (set_seuser (user_name, user_selinux) != 0) {
+			fprintf (stderr,
+			         _("%s: warning: the user name %s to %s SELinux user mapping failed.\n"),
+			         Prog, user_name, user_selinux);
+#ifdef WITH_AUDIT
+			audit_logger (AUDIT_ADD_USER, Prog,
+			              "adding SELinux user mapping",
+			              user_name, (unsigned int) user_id, 0);
+#endif				/* WITH_AUDIT */
+			rv = E_SE_UPDATE;
+		    }
+		}
+	}
+#endif
+
 	if (mflg) {
 		create_home ();
 		if (home_added) {
 			copy_tree ((access(def_template,R_OK|X_OK)?SKEL_DIR:def_template),
-			           user_home, false, false,
+			           user_home, false, true,
 			           (uid_t)-1, user_id, (gid_t)-1, user_gid);
 		} else {
 			fprintf (stderr,
@@ -2276,27 +2300,6 @@ int main (int argc, char **argv)
 		create_mail ();
 	}
 
-	close_files ();
-
-#ifdef WITH_SELINUX
-	if (Zflg) {
-		if (set_seuser (user_name, user_selinux) != 0) {
-			fprintf (stderr,
-			         _("%s: warning: the user name %s to %s SELinux user mapping failed.\n"),
-			         Prog, user_name, user_selinux);
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "adding SELinux user mapping",
-			              user_name, (unsigned int) user_id, 0);
-#endif				/* WITH_AUDIT */
-			fail_exit (E_SE_UPDATE);
-		}
-	}
-#endif				/* WITH_SELINUX */
-
-	nscd_flush_cache ("passwd");
-	nscd_flush_cache ("group");
-
-	return E_SUCCESS;
+	return rv;
 }
 
