@@ -1,6 +1,6 @@
 Name: shadow
-Version: 4.1.4.2
-Release: alt9
+Version: 4.2.1
+Release: alt1
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -33,7 +33,7 @@ BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 BuildRequires: xsltproc docbook-style-xsl docbook-dtds
 
 %if_with selinux
-BuildPreReq: libselinux-devel
+BuildPreReq: libselinux-devel libsemanage-devel
 %endif
 
 # Automatically added by buildreq on Mon Oct 28 2002
@@ -187,6 +187,7 @@ Requires: %name-edit = %serial:%version-%release
 Requires: %name-groups = %serial:%version-%release
 Requires: %name-log = %serial:%version-%release
 Requires: %name-utils = %serial:%version-%release
+Requires: %name-submap = %serial:%version-%release
 
 %description suite
 This virtual package unifies all shadow suite subpackages.
@@ -384,6 +385,17 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Tue Oct 20 2015 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt1
+- Add submap subpackage (closes: #31201).
+- Merge ALT-specific tcb patch.
+- userdel.c: Fix variable name in case of tcb.
+- Add missing include in case of tcb.
+- Fix build with --as-needed in case of tcb.
+- Makefile: Drop passwd from suidubins.
+- Update ALT-specific patches.
+- Drop obsoleted patches.
+- Updated to 4.2.1.
+
 * Thu Nov 07 2013 Mikhail Efremov <sem@altlinux.org> 1:4.1.4.2-alt9
 - Fix build: Remove deprecated AM_C_PROTOTYPES.
 
