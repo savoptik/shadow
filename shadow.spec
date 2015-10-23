@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.2.1
-Release: alt1
+Release: alt2
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -204,9 +204,10 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 
 %build
 %autoreconf
-%add_optflags -DEXTRA_CHECK_HOME_DIR -DSHADOWTCB
+%add_optflags -Werror -Wno-error=address -DEXTRA_CHECK_HOME_DIR
 %configure \
 	%{subst_enable shared} \
+	--with-tcb \
 	--with-libpam \
 	--without-libcrack \
 	%{subst_with selinux} \
@@ -249,6 +250,9 @@ install -pD -m755 %_sourcedir/chsh.control %buildroot%_controldir/chsh
 install -pD -m755 %_sourcedir/gpasswd.control %buildroot%_controldir/gpasswd
 install -pD -m755 %_sourcedir/newgrp.control %buildroot%_controldir/newgrp
 install -pD -m755 %_sourcedir/groupmems.control %buildroot%_controldir/groupmems
+
+touch %buildroot%_sysconfdir/subuid
+touch %buildroot%_sysconfdir/subgid
 
 %find_lang %name
 
@@ -357,6 +361,8 @@ fi
 %_man8dir/groupmems.*
 
 %files submap
+%config(noreplace) %_sysconfdir/subuid
+%config(noreplace) %_sysconfdir/subgid
 %_bindir/newuidmap
 %_bindir/newgidmap
 %_man1dir/newuidmap.*
@@ -385,6 +391,16 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Fri Oct 23 2015 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt2
+- Package /etc/subuid and /etc/subgid files.
+- Add -Werror to optflags.
+- Explicitly use --with-tcb configure option.
+- Fix compiler warnings.
+- vipw: Check link() return status.
+- useradd: Check chown/chmod return status.
+- Fix uninitialized variable.
+- Fix usermod's manpage.
+
 * Tue Oct 20 2015 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt1
 - Add submap subpackage (closes: #31201).
 - Merge ALT-specific tcb patch.
