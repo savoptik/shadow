@@ -402,7 +402,18 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	}
 #endif				/* WITH_TCB */
 	unlink (filebackup);
-	link (file, filebackup);
+	if (link (file, filebackup) != 0) {
+		fprintf (stderr,
+		         _("%s: can't link %s to %s: %s (your changes are in %s)\n"),
+		         Prog, file, filebackup, strerror (errno), to_rename);
+#ifdef WITH_TCB
+		if (tcb_mode) {
+			free (to_rename);
+		}
+#endif				/* WITH_TCB */
+		vipwexit (0, 0, 1);
+	}
+
 	if (rename (to_rename, file) == -1) {
 		fprintf (stderr,
 		         _("%s: can't restore %s: %s (your changes are in %s)\n"),
