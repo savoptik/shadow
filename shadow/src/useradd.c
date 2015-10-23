@@ -1962,10 +1962,24 @@ static void create_home (void)
 #endif
 			fail_exit (E_HOMEDIR);
 		}
-		chown (user_home, user_id, user_gid);
-		chmod (user_home,
-		       0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
+
 		home_added = true;
+
+		if (chown (user_home, user_id, user_gid) != 0) {
+			fprintf (stderr,
+					_("%s: Cannot change owner of %s: %s\n"),
+					Prog, user_home, strerror (errno));
+			fail_exit (E_HOMEDIR);
+		}
+
+		if (chmod (user_home,
+		       0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK)) != 0) {
+			fprintf (stderr,
+					_("%s: Cannot change mode of %s: %s\n"),
+					Prog, user_home, strerror (errno));
+			fail_exit (E_HOMEDIR);
+		}
+
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ADD_USER, Prog,
 		              "adding home directory",
