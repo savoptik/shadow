@@ -429,10 +429,10 @@ static int add_passwd (struct passwd *pwd, const char *password)
 {
 	const struct spwd *sp;
 	struct spwd spent;
-	char *cp;
 	int retval = -1;
 
 #ifndef USE_PAM
+	char *cp;
 	void *crypt_arg = NULL;
 	if (crypt_method != NULL) {
 #ifdef USE_SHA_CRYPT
