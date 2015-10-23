@@ -98,7 +98,7 @@ static void list_fields (void);
 static void process_flags (int argc, char **argv);
 static void check_flags (int argc, int opt_index);
 static void check_perms (void);
-static void open_files (bool readonly);
+static void open_files (bool readonly, const char *name, const struct passwd **pw);
 static void close_files (void);
 static /*@noreturn@*/void fail_exit (int code);
 
@@ -575,7 +575,7 @@ static void check_perms (void)
  *	In read-only mode, the databases are not locked and are opened
  *	only for reading.
  */
-static void open_files (bool readonly)
+static void open_files (bool readonly, const char *name, const struct passwd **pw)
 {
 	/*
 	 * Lock and open the password file. This loads all of the password
@@ -596,6 +596,20 @@ static void open_files (bool readonly)
 		SYSLOG ((LOG_WARN, "cannot open %s", pw_dbname ()));
 		fail_exit (E_NOPERM);
 	}
+
+	*pw = pw_locate (name);
+	if (NULL == *pw) {
+		fprintf (stderr, _("%s: user '%s' does not exist in %s\n"),
+		         Prog, name, pw_dbname ());
+		closelog ();
+		fail_exit (E_NOPERM);
+	}
+
+#ifdef WITH_TCB
+	if (shadowtcb_set_user ((*pw)->pw_name) == SHADOWTCB_FAILURE) {
+		fail_exit (E_NOPERM);
+	}
+#endif
 
 	/*
 	 * For shadow password files we have to lock the file and read in
@@ -832,7 +846,7 @@ int main (int argc, char **argv)
 		exit (E_SHADOW_NOTFOUND);
 	}
 
-	open_files (lflg);
+	open_files (lflg, argv[optind], &pw);
 	/* Drop privileges */
 	if (lflg && (   (setregid (rgid, rgid) != 0)
 	             || (setreuid (ruid, ruid) != 0))) {
@@ -841,20 +855,7 @@ int main (int argc, char **argv)
 		fail_exit (E_NOPERM);
 	}
 
-	pw = pw_locate (argv[optind]);
-	if (NULL == pw) {
-		fprintf (stderr, _("%s: user '%s' does not exist in %s\n"),
-		         Prog, argv[optind], pw_dbname ());
-		closelog ();
-		fail_exit (E_NOPERM);
-	}
-
 	STRFCPY (user_name, pw->pw_name);
-#ifdef WITH_TCB
-	if (shadowtcb_set_user (pw->pw_name) == SHADOWTCB_FAILURE) {
-		fail_exit (E_NOPERM);
-	}
-#endif
 	user_uid = pw->pw_uid;
 
 	sp = spw_locate (argv[optind]);
