@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.2.1
-Release: alt2
+Release: alt3
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -391,6 +391,9 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Mon Oct 26 2015 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt3
+- chage: Fix work with tcb.
+
 * Fri Oct 23 2015 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt2
 - Package /etc/subuid and /etc/subgid files.
 - Add -Werror to optflags.
