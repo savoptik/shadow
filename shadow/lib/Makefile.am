@@ -59,6 +59,30 @@ if WITH_TCB
 libshadow_la_SOURCES += tcbfuncs.c tcbfuncs.h
 endif
 
+semanage_filter = sed -n 's/.*\(semanage_[[:alpha:]_]\+\)[[:space:]]*(.*/\1/p'
+
+ref.list: semanage.c
+	$(semanage_filter) $^ | sort -u > $@
+
+def.list:
+	echo '#include <semanage/semanage.h>' |\
+		$(CPP) $(CPPFLAGS) -xc - |\
+		$(semanage_filter) | sort -u > $@
+
+sym.list: ref.list def.list
+	comm -12 $^ > sym.list
+
+redir_sym.h: sym.list
+	sed 's/.*/#define & (*&)/' $^ > $@
+
+redef_sym.h: sym.list
+	sed 's/.*/#undef &\n__typeof__(&) &;/' $^ > $@
+
+res_sym.h: sym.list
+	sed 's/.*/\&\& !!(& = dlsym(dlhandle, "&"))/' $^ > $@
+
+BUILT_SOURCES = redir_sym.h redef_sym.h res_sym.h
+
 # These files are unneeded for some reason, listed in
 # order of appearance:
 #

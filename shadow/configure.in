@@ -477,7 +477,7 @@ if test "$with_selinux" != "no"; then
 			AC_DEFINE(WITH_SELINUX, 1,
 			          [Build shadow with SELinux support])
 			LIBSELINUX="-lselinux"
-			LIBSEMANAGE="-lsemanage"
+			LIBSEMANAGE="-ldl"
 			with_selinux="yes"
 		else
 			with_selinux="no"

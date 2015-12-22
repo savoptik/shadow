@@ -39,8 +39,11 @@
 #endif
 #include <stdio.h>
 #include <stdarg.h>
+#include <dlfcn.h>
 #include <selinux/selinux.h>
+#include "redir_sym.h"
 #include <semanage/semanage.h>
+#include "redef_sym.h"
 #include "prototypes.h"
 
 
@@ -84,6 +87,22 @@ static semanage_handle_t *semanage_init (void)
 {
 	int ret;
 	semanage_handle_t *handle = NULL;
+	static const char const shlib[] = "libsemanage.so.1";
+	void *dlhandle = dlopen(shlib, RTLD_NOW);
+
+	if (!dlhandle) {
+		fprintf (stderr,
+			 _("Cannot load %s: %s\n"), shlib, dlerror());
+		return NULL;
+	}
+
+	if (!(1
+#include "res_sym.h"
+	     )) {
+		fprintf (stderr,
+			 _("Cannot load symbols from %s\n"), shlib);
+		return NULL;
+	}
 
 	handle = semanage_handle_create ();
 	if (NULL == handle) {
@@ -249,8 +268,7 @@ int set_seuser (const char *login_name, const char *seuser_name)
 	handle = semanage_init ();
 	if (NULL == handle) {
 		fprintf (stderr, _("Cannot init SELinux management\n"));
-		ret = 1;
-		goto done;
+		return 1;
 	}
 
 	ret = semanage_seuser_key_create (handle, login_name, &key);
@@ -314,8 +332,7 @@ int del_seuser (const char *login_name)
 	handle = semanage_init ();
 	if (NULL == handle) {
 		fprintf (stderr, _("Cannot init SELinux management\n"));
-		ret = 1;
-		goto done;
+		return 1;
 	}
 
 	ret = semanage_seuser_key_create (handle, login_name, &key);
