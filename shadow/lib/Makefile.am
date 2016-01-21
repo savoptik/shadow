@@ -81,7 +81,9 @@ redef_sym.h: sym.list
 res_sym.h: sym.list
 	sed 's/.*/\&\& !!(& = dlsym(dlhandle, "&"))/' $^ > $@
 
+if WITH_SELINUX
 BUILT_SOURCES = redir_sym.h redef_sym.h res_sym.h
+endif
 
 # These files are unneeded for some reason, listed in
 # order of appearance:

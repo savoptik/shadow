@@ -486,6 +486,7 @@ if test "$with_selinux" != "no"; then
 		with_selinux="no"
 	fi
 fi
+AM_CONDITIONAL(WITH_SELINUX, test x$with_selinux = xyes)
 
 AC_SUBST(LIBTCB)
 if test "$with_tcb" != "no"; then
