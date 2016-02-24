@@ -204,7 +204,7 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 
 %build
 %autoreconf
-%add_optflags -Werror -Wno-error=address -DEXTRA_CHECK_HOME_DIR
+%add_optflags -Werror -Wno-error=address -Wno-error=cpp -DEXTRA_CHECK_HOME_DIR
 %configure \
 	%{subst_enable shared} \
 	--with-tcb \
