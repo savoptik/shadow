@@ -193,7 +193,7 @@ Requires: %name-submap = %serial:%version-%release
 This virtual package unifies all shadow suite subpackages.
 
 %prep
-%setup -q
+%setup
 
 %patch -p1
 
@@ -204,7 +204,10 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 
 %build
 %autoreconf
-%add_optflags -Werror -Wno-error=address -Wno-error=cpp -DEXTRA_CHECK_HOME_DIR
+%ifnarch e2k
+%add_optflags -Werror -Wno-error=address -Wno-error=cpp
+%endif
+%add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
 	%{subst_enable shared} \
 	--with-tcb \
