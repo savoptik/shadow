@@ -173,8 +173,8 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 	if (0 != fl.fail_locktime) {
 		if (   ((fl.fail_time + fl.fail_locktime) > now)
 		    && (0 != fl.fail_cnt)) {
-			printf (_(" [%lus left]"),
-			        (unsigned long) fl.fail_time + fl.fail_locktime - now);
+			printf (_(" [%llus left]"),
+			        (unsigned long long) fl.fail_time + fl.fail_locktime - now);
 		} else {
 			printf (_(" [%lds lock]"),
 			        fl.fail_locktime);

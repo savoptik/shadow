@@ -379,7 +379,7 @@ static int paste_pwd_shadow (char *name, char *pwd)
 {
 	const struct spwd *sp;
 	struct spwd newsp;
-	long now = time ((long *) 0) / (24L * 3600L);
+	long now = (long) (time ((time_t *) 0) / (24L * 3600L));
 
 	if (shadowtcb_set_user (name) == SHADOWTCB_FAILURE)
 		return 0;
