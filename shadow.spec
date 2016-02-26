@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.2.1
-Release: alt5
+Release: alt6
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -394,6 +394,11 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Fri Feb 26 2016 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt6
+- E2K: avoid -Werror (lcc) (by Michael Shigorin).
+- Fix build on x32.
+- Fix build without selinux again.
+
 * Wed Feb 24 2016 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt5
 - Don't treat cpp warnings as error.
 - Fix build without selinux support.
