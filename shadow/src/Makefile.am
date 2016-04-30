@@ -7,9 +7,10 @@ usbindir = ${prefix}/sbin
 suidperms = 4755
 sgidperms = 2755
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
-	-I$(top_srcdir)/libmisc
+	-I$(top_srcdir)/libmisc \
+	-DLOCALEDIR=\"$(datadir)/locale\"
 
 # XXX why are login and su in /bin anyway (other than for
 # historical reasons)?
@@ -57,7 +58,6 @@ LDADD          = $(INTLLIBS) \
 		 $(top_builddir)/libmisc/libmisc.a \
 		 $(top_builddir)/lib/libshadow.la \
 		 $(LIBTCB)
-AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
 
 if ACCT_TOOLS_SETUID
 LIBPAM_SUID  = $(LIBPAM)
