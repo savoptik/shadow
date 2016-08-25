@@ -2094,6 +2094,8 @@ int main (int argc, char **argv)
 	is_shadow_grp = sgr_file_present ();
 #endif
 
+	get_defaults ();
+
 	process_flags (argc, argv);
 
 #ifdef ENABLE_SUBIDS
@@ -2102,8 +2104,6 @@ int main (int argc, char **argv)
 	is_sub_gid = sub_gid_file_present () && !rflg &&
 	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
 #endif				/* ENABLE_SUBIDS */
-
-	get_defaults ();
 
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
