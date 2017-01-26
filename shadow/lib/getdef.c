@@ -152,6 +152,7 @@ static struct itemdef knowndef_table[] = {
 #ifdef USE_PAM
 	PAMDEFS
 #endif
+	{NULL, NULL}
 };
 
 #ifndef LOGINDEFS
