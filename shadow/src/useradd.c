@@ -2072,8 +2072,8 @@ int main (int argc, char **argv)
 #endif				/* ACCT_TOOLS_SETUID */
 
 #ifdef ENABLE_SUBIDS
-	uid_t uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
-	uid_t uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
+	uid_t uid_min;
+	uid_t uid_max;
 #endif
 
 	(void) setlocale (LC_ALL, "");
@@ -2105,6 +2105,8 @@ int main (int argc, char **argv)
 	process_flags (argc, argv);
 
 #ifdef ENABLE_SUBIDS
+	uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
+	uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
 	is_sub_uid = sub_uid_file_present () && !rflg &&
 	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
 	is_sub_gid = sub_gid_file_present () && !rflg &&
