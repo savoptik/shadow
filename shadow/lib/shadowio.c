@@ -105,6 +105,9 @@ static struct commonio_db shadow_db = {
 #ifdef WITH_SELINUX
 	NULL,			/* scontext */
 #endif				/* WITH_SELINUX */
+	0400,                   /* st_mode */
+	0,                      /* st_uid */
+	0,                      /* st_gid */
 	NULL,			/* head */
 	NULL,			/* tail */
 	NULL,			/* cursor */
@@ -130,6 +133,8 @@ bool spw_file_present (void)
 	if (getdef_bool("USE_TCB"))
 		return true;
 #endif
+	if (getdef_bool ("FORCE_SHADOW"))
+		return true;
 	return commonio_present (&shadow_db);
 }
 

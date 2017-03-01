@@ -69,7 +69,7 @@ static RETSIGTYPE catch_signals (int);
 
 static RETSIGTYPE catch_signals (unused int sig)
 {
-	exit (1);
+	_exit (1);
 }
 
 /*

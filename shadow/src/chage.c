@@ -591,7 +591,7 @@ static void open_files (bool readonly, const char *name, const struct passwd **p
 		}
 		pw_locked = true;
 	}
-	if (pw_open (readonly ? O_RDONLY: O_RDWR) == 0) {
+	if (pw_open (readonly ? O_RDONLY: O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, pw_dbname ());
 		SYSLOG ((LOG_WARN, "cannot open %s", pw_dbname ()));
 		fail_exit (E_NOPERM);
@@ -626,7 +626,7 @@ static void open_files (bool readonly, const char *name, const struct passwd **p
 		}
 		spw_locked = true;
 	}
-	if (spw_open (readonly ? O_RDONLY: O_RDWR) == 0) {
+	if (spw_open (readonly ? O_RDONLY: O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"), Prog, spw_dbname ());
 		SYSLOG ((LOG_WARN, "cannot open %s", spw_dbname ()));

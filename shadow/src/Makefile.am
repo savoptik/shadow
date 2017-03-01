@@ -53,7 +53,6 @@ if ACCT_TOOLS_SETUID
 	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 
-
 LDADD          = $(INTLLIBS) \
 		 $(top_builddir)/libmisc/libmisc.a \
 		 $(top_builddir)/lib/libshadow.la \
@@ -87,6 +86,7 @@ groupmod_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
 grpck_LDADD    = $(LDADD) $(LIBSELINUX)
 grpconv_LDADD  = $(LDADD) $(LIBSELINUX)
 grpunconv_LDADD = $(LDADD) $(LIBSELINUX)
+lastlog_LDADD   = $(LDADD) $(LIBAUDIT)
 newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT)
 newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT) -lpam_userpass
 nologin_LDADD  =
