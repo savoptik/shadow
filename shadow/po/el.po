@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow_po_el\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2014-05-09 12:52+0200\n"
+"POT-Creation-Date: 2016-09-18 14:03-0500\n"
 "PO-Revision-Date: 2012-01-21 00:22+0200\n"
 "Last-Translator: Thomas Vasileiou <thomas-v@wildmail.com>\n"
 "Language-Team: Greek <debian-l10n-greek@lists.debian.org>\n"
@@ -1129,6 +1129,15 @@ msgstr "%s: το GID '%lu' υπάρχει\n"
 msgid "%s: Cannot setup cleanup service.\n"
 msgstr "%s: Δεν ήταν δυνατή η ρύθμιση της υπηρεσίας εκκαθάρισης.\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -r, --reset                   reset the counters of login failures\n"
+msgid ""
+"  -f, --force                   delete group even if it is the primary group "
+"of a user\n"
+msgstr ""
+"  -r, --reset                   επαναφορά μετρητή αποτυχημένων εισόδων\n"
+
 #, c-format
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s: αδυναμία απομάκρυνσης της εγγραφής '%s' από το %s\n"
@@ -1359,6 +1368,26 @@ msgstr ""
 "  -b, --before ΗΜΕΡΕΣ             προβολή των εγγραφών του lastlog που είναι "
 "παλαιότερες από ΗΜΕΡΕΣ\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -C, --clear                   clear lastlog record of an user (usable only "
+"with -u)\n"
+msgstr ""
+"  -a, --all                     προβολή των εγγραφών του faillog για όλους "
+"τους χρήστες\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -S, --set                     set lastlog record to current time (usable "
+"only with -u)\n"
+msgstr ""
+"  -a, --all                     προβολή των εγγραφών του faillog για όλους "
+"τους χρήστες\n"
+
 msgid ""
 "  -t, --time DAYS               print only lastlog records more recent than "
 "DAYS\n"
@@ -1380,6 +1409,24 @@ msgstr "Όνομα_Χρήστη            Θύρα     Τελευταία"
 
 msgid "**Never logged in**"
 msgstr "**Καμιά είσοδος στο σύστημα**"
+
+#, fuzzy, c-format
+#| msgid "%s: Failed to get the entry for UID %lu\n"
+msgid "%s: Failed to update the entry for UID %lu\n"
+msgstr "%s: Aδυναμία ανάκτησης της εγγραφής UID %lu\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't update password file\n"
+msgid "%s: Failed to update the lastlog file\n"
+msgstr "%s: αδυναμία ανανέωσης αρχείου συνθηματικών\n"
+
+#, c-format
+msgid "%s: Option -C cannot be used together with option -S\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Options -C and -S require option -u to specify the user\n"
+msgstr ""
 
 #, c-format
 msgid "Usage: %s [-p] [name]\n"
@@ -1415,14 +1462,6 @@ msgstr ""
 "[Παράκαμψη αποσύνδεσης -- Η είσοδος του root επετράπη.]"
 
 #, c-format
-msgid ""
-"\n"
-"Login timed out after %u seconds.\n"
-msgstr ""
-"\n"
-"Η διαδικασία εισόδου τερματίστηκε μετά από %u δευτερόλεπτα.\n"
-
-#, c-format
 msgid "%s: Cannot possibly work without effective root\n"
 msgstr "%s: Μάλλον δεν είναι δυνατή η λειτουργία χωρίς ενεργό χρήστη root\n"
 
@@ -1430,6 +1469,14 @@ msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
 msgstr ""
 "Δεν υπάρχει καταχώριση utmp.  Πρέπει να εκτελέσετε \"login\" από το \"sh\" "
 "του πιο χαμηλού επιπέδου"
+
+#, c-format
+msgid ""
+"\n"
+"Login timed out after %u seconds.\n"
+msgstr ""
+"\n"
+"Η διαδικασία εισόδου τερματίστηκε μετά από %u δευτερόλεπτα.\n"
 
 #, c-format
 msgid "login: PAM Failure, aborting: %s\n"
@@ -1880,12 +1927,6 @@ msgstr "Παράκαμψη εξακρίβωσης με συνθηματικό.\n
 msgid "Please enter your OWN password as authentication.\n"
 msgstr "Παρακαλώ εισάγετε το ΔΙΚΟ σας συνθηματικό για εξακρίβωση.\n"
 
-msgid " ...killed.\n"
-msgstr " ...σκοτώθηκε.\n"
-
-msgid " ...waiting for child to terminate.\n"
-msgstr ""
-
 #, c-format
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: αδυναμία διχάλωσης του φλοιού του χρήστη\n"
@@ -1900,6 +1941,12 @@ msgstr "%s: δυσλειτουργία μασκαρίσμος του σήματ�
 
 msgid "Session terminated, terminating shell..."
 msgstr "Συνεδρία τερματίστηκε, τερματισμός φλοιού..."
+
+msgid " ...killed.\n"
+msgstr " ...σκοτώθηκε.\n"
+
+msgid " ...waiting for child to terminate.\n"
+msgstr ""
 
 msgid " ...terminated.\n"
 msgstr " ...τερματίστηκε.\n"
@@ -2502,26 +2549,6 @@ msgstr ""
 "%s: ο χρήστης %s δεν είναι εξουσιοδοτημένος να αλλάξει το συνθηματικό του "
 "%s\n"
 
-#, fuzzy, c-format
-#| msgid "%s: failed to prepare the new %s entry '%s'\n"
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
-msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
-
-#, fuzzy, c-format
-#| msgid "%s: failed to prepare the new %s entry '%s'\n"
-msgid "%s: failed to add uid range %lu-%lu from '%s'\n"
-msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
-
-#, fuzzy, c-format
-#| msgid "%s: failed to prepare the new %s entry '%s'\n"
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
-msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
-
-#, fuzzy, c-format
-#| msgid "%s: failed to prepare the new %s entry '%s'\n"
-msgid "%s: failed to add gid range %lu-%lu from '%s'\n"
-msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
-
 #, c-format
 msgid "%s: directory %s exists\n"
 msgstr "%s: ο κατάλογος %s υπάρχει\n"
@@ -2569,6 +2596,26 @@ msgstr "αποτυχία αλλαγής του ιδιοκτήτη του γρα�
 
 msgid "failed to rename mailbox"
 msgstr "αποτυχία μετονομασίας γραμματοκιβωτίου"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to prepare the new %s entry '%s'\n"
+msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to prepare the new %s entry '%s'\n"
+msgid "%s: failed to add uid range %lu-%lu from '%s'\n"
+msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to prepare the new %s entry '%s'\n"
+msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to prepare the new %s entry '%s'\n"
+msgid "%s: failed to add gid range %lu-%lu from '%s'\n"
+msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
 
 #, c-format
 msgid ""
@@ -3263,9 +3310,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 
 #~ msgid "%s: can't rewrite password file\n"
 #~ msgstr "%s: αδυναμία επανεγγραφής αρχείου συνθηματικών\n"
-
-#~ msgid "%s: can't update password file\n"
-#~ msgstr "%s: αδυναμία ανανέωσης αρχείου συνθηματικών\n"
 
 #~ msgid "%s: can't update shadow password file\n"
 #~ msgstr "%s: αδυναμία ανανέωσης του αρχείου σκιωδών συνθηματικών\n"
