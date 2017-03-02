@@ -367,7 +367,7 @@ static void open_files (void)
 
 	add_cleanup (log_gpasswd_failure_system, NULL);
 
-	if (gr_open (O_CREAT | O_RDWR) == 0) {
+	if (gr_open (O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"),
 		         Prog, gr_dbname ());
@@ -377,7 +377,7 @@ static void open_files (void)
 
 #ifdef SHADOWGRP
 	if (is_shadowgrp) {
-		if (sgr_open (O_CREAT | O_RDWR) == 0) {
+		if (sgr_open (O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
