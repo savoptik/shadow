@@ -253,8 +253,6 @@ int sgr_setdbname (const char *filename)
 
 bool sgr_file_present (void)
 {
-	if (getdef_bool ("FORCE_SHADOW"))
-		return true;
 	return commonio_present (&gshadow_db);
 }
 

@@ -134,8 +134,6 @@ bool spw_file_present (void)
 	if (getdef_bool("USE_TCB"))
 		return true;
 #endif
-	if (getdef_bool ("FORCE_SHADOW"))
-		return true;
 	return commonio_present (&shadow_db);
 }
 

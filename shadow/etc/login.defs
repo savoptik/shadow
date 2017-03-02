@@ -393,8 +393,3 @@ USERGROUPS_ENAB yes
 #
 #CREATE_HOME     yes
 
-#
-# Force use shadow, even if shadow passwd & shadow group files are
-# missing.
-#
-#FORCE_SHADOW    yes
