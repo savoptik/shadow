@@ -167,7 +167,9 @@ static RETSIGTYPE catch_signals (int killed)
 	}
 
 	if (0 != killed) {
-		(void) write (STDOUT_FILENO, "\n", 1);
+		/* Ignore write() return value.
+		 * Cast to void is not enough. */
+		if (write (STDOUT_FILENO, "\n", 1)) {};
 		_exit (killed);
 	}
 }
