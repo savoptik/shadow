@@ -539,15 +539,19 @@ int main (int argc, char **argv)
 		 * Shell must be a full path name.
 		 */
 		if(loginsh[0] != '/') {
-			fprintf (stderr, _("%s: shell must be a full path name.\n"), Prog);
+			fprintf (stderr, _("%s: shell must be a full path name\n"), Prog);
 			fail_exit (1);
 		}
 		/*
-		 * Check that the shell is exist, but only print warning if not.
+		 * Check that the shell is exist and executable,
+		 * but only print warning if not.
 		 */
-		if (access (loginsh, F_OK) != 0) {
+		if (access (loginsh, F_OK | X_OK) != 0) {
 			if (errno == ENOENT || errno == ENOTDIR)
-				fprintf (stderr, _("%s: WARNING: %s does not exist.\n"),
+				fprintf (stderr, _("%s: Warning: %s does not exist\n"),
+						Prog, loginsh);
+			else if (errno == EACCES)
+				fprintf (stderr, _("%s: Warning: %s is not executable\n"),
 						Prog, loginsh);
 			else
 				fprintf (stderr, _("%s: failed to check the shell existence: %s.\n"),
@@ -556,17 +560,9 @@ int main (int argc, char **argv)
 	}
 
 	if (   !amroot
-	    && (   is_restricted_shell (loginsh)
-	        || (access (loginsh, X_OK) != 0))) {
+	    && is_restricted_shell (loginsh)) {
 		fprintf (stderr, _("%s: %s is an invalid shell\n"), Prog, loginsh);
 		fail_exit (1);
-	}
-
-	/* Even for root, warn if an invalid shell is specified. */
-	if (access (loginsh, F_OK) != 0) {
-		fprintf (stderr, _("%s: Warning: %s does not exist\n"), Prog, loginsh);
-	} else if (access (loginsh, X_OK) != 0) {
-		fprintf (stderr, _("%s: Warning: %s is not executable\n"), Prog, loginsh);
 	}
 
 	update_shell (user, loginsh);
