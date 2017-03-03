@@ -823,9 +823,15 @@ yylex (void)
 /* Yield A - B, measured in seconds.  */
 static long difftm (struct tm *a, struct tm *b)
 {
-  int ay = a->tm_year + (TM_YEAR_ORIGIN - 1);
-  int by = b->tm_year + (TM_YEAR_ORIGIN - 1);
-  long days = (
+  int ay, by;
+  long days;
+  /* a can't be NULL) */
+  if (b == NULL)
+    return 0;
+
+  ay = a->tm_year + (TM_YEAR_ORIGIN - 1);
+  by = b->tm_year + (TM_YEAR_ORIGIN - 1);
+  days = (
   /* difference in day of year */
 		a->tm_yday - b->tm_yday
   /* + intervening leap days */

@@ -209,6 +209,10 @@ static void date_to_str (/*@unique@*//*@out@*/char *buf, size_t maxsize,
 	} else {
 		time_t t = (time_t) date;
 		tp = gmtime (&t);
+		if (tp == NULL) {
+			strncpy (buf, "unknown", maxsize);
+			return;
+		}
 #ifdef HAVE_STRFTIME
 		strftime (buf, maxsize, "%Y-%m-%d", tp);
 #else

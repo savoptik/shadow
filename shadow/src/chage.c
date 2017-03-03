@@ -166,6 +166,10 @@ static void date_to_str (char *buf, size_t maxsize, time_t date)
 	struct tm *tp;
 
 	tp = gmtime (&date);
+	if (tp == NULL) {
+		(void) snprintf (buf, maxsize, "(unknown)");
+		return;
+	}
 #ifdef HAVE_STRFTIME
 	(void) strftime (buf, maxsize, "%Y-%m-%d", tp);
 #else

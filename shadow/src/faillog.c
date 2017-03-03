@@ -162,10 +162,14 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 	}
 
 	tm = localtime (&fl.fail_time);
+	if (tm == NULL) {
+		cp = "(unknown)";
+	} else {
 #ifdef HAVE_STRFTIME
-	strftime (ptime, sizeof (ptime), "%D %H:%M:%S %z", tm);
-	cp = ptime;
+		strftime (ptime, sizeof (ptime), "%D %H:%M:%S %z", tm);
+		cp = ptime;
 #endif
+	}
 	printf ("%-9s   %5d    %5d   ",
 	        pw->pw_name, fl.fail_cnt, fl.fail_max);
 	/* FIXME: cp is not defined ifndef HAVE_STRFTIME */

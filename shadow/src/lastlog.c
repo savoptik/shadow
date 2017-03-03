@@ -157,13 +157,17 @@ static void print_one (/*@null@*/const struct passwd *pw)
 
 	ll_time = ll.ll_time;
 	tm = localtime (&ll_time);
+	if (tm == NULL) {
+		cp = "(unknown)";
+	} else {
 #ifdef HAVE_STRFTIME
-	strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
-	cp = ptime;
+		strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
+		cp = ptime;
 #else
-	cp = asctime (tm);
-	cp[24] = '\0';
+		cp = asctime (tm);
+		cp[24] = '\0';
 #endif
+	}
 
 	if (ll.ll_time == (time_t) 0) {
 		cp = _("**Never logged in**\0");

@@ -453,6 +453,9 @@ static /*@observer@*/const char *date_to_str (time_t t)
 	struct tm *tm;
 
 	tm = gmtime (&t);
+	if (tm == NULL) {
+		return "(unknown)";
+	}
 #ifdef HAVE_STRFTIME
 	(void) strftime (buf, sizeof buf, "%m/%d/%Y", tm);
 #else				/* !HAVE_STRFTIME */
