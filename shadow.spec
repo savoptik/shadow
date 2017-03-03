@@ -22,6 +22,8 @@ Source9: gpasswd.control
 Source10: newgrp.control
 Source11: groupmems.control
 Source12: groupmems.pamd
+Source13: newuidmap.control
+Source14: newgidmap.control
 
 Patch: %name-%version-%release.patch
 
@@ -253,6 +255,8 @@ install -pD -m755 %_sourcedir/chsh.control %buildroot%_controldir/chsh
 install -pD -m755 %_sourcedir/gpasswd.control %buildroot%_controldir/gpasswd
 install -pD -m755 %_sourcedir/newgrp.control %buildroot%_controldir/newgrp
 install -pD -m755 %_sourcedir/groupmems.control %buildroot%_controldir/groupmems
+install -pD -m755 %_sourcedir/newuidmap.control %buildroot%_controldir/newuidmap
+install -pD -m755 %_sourcedir/newgidmap.control %buildroot%_controldir/newgidmap
 
 touch %buildroot%_sysconfdir/subuid
 touch %buildroot%_sysconfdir/subgid
@@ -280,6 +284,12 @@ fi
 
 %post groups
 %post_control -s restricted gpasswd newgrp groupmems
+
+%pre submap
+%pre_control newuidmap newgidmap
+
+%post submap
+%post_control -s restricted newuidmap newgidmap
 
 %if_enabled shadow
 %files -n lib%name
@@ -366,8 +376,10 @@ fi
 %files submap
 %config(noreplace) %_sysconfdir/subuid
 %config(noreplace) %_sysconfdir/subgid
-%_bindir/newuidmap
-%_bindir/newgidmap
+%config %_controldir/newuidmap
+%config %_controldir/newgidmap
+%attr(700,root,root) %verify(not mode,group) %_bindir/newuidmap
+%attr(700,root,root) %verify(not mode,group) %_bindir/newgidmap
 %_man1dir/newuidmap.*
 %_man1dir/newgidmap.*
 %_man5dir/subuid.*
