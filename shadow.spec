@@ -1,13 +1,12 @@
 Name: shadow
-Version: 4.2.1
-Release: alt6
+Version: 4.4
+Release: alt1
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
 License: BSD-style
 Group: System/Base
 Url: ftp://ftp.pld.org.pl/software/shadow
-Packager: Dmitry V. Levin <ldv@altlinux.org>
 
 Source0: %url/%name-%version.tar
 Source1: login.defs
@@ -29,6 +28,7 @@ Patch: %name-%version-%release.patch
 
 %def_disable shared
 %def_with selinux
+%def_with audit
 
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 # for man pages generation
@@ -37,6 +37,8 @@ BuildRequires: xsltproc docbook-style-xsl docbook-dtds
 %if_with selinux
 BuildPreReq: libselinux-devel libsemanage-devel
 %endif
+
+%{?_with_audit:BuildRequires: libaudit-devel}
 
 # Automatically added by buildreq on Mon Oct 28 2002
 BuildRequires: libpam-devel libtcb-devel pam_userpass-devel
@@ -196,13 +198,7 @@ This virtual package unifies all shadow suite subpackages.
 
 %prep
 %setup
-
 %patch -p1
-
-find -type f -name \*.orig -delete
-bzip2 -9k ChangeLog NEWS
-grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
-	echo 'ACLOCAL_AMFLAGS = -I m4' >>Makefile.am
 
 %build
 %autoreconf
@@ -216,6 +212,7 @@ grep -qs ^ACLOCAL_AMFLAGS Makefile.am ||
 	--with-libpam \
 	--without-libcrack \
 	%{subst_with selinux} \
+	%{subst_with audit} \
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
 	--enable-man
@@ -262,6 +259,7 @@ touch %buildroot%_sysconfdir/subuid
 touch %buildroot%_sysconfdir/subgid
 
 %find_lang %name
+%define _unpackaged_files_terminate_build 1
 
 %post convert
 if [ $1 = 1 ]; then
@@ -308,7 +306,6 @@ fi
 %_mandir/man?/*conv.*
 
 %files utils -f %name.lang
-%attr(751,root,root) %dir %_sysconfdir/default
 %attr(600,root,root) %config(noreplace) %_sysconfdir/default/useradd
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/login.defs
 %config(noreplace) %_sysconfdir/pam.d/user-group-mod
@@ -332,7 +329,7 @@ fi
 %_man8dir/group*.*
 %_man8dir/newusers.*
 %_man8dir/user*.*
-%doc ChangeLog.bz2 NEWS.bz2 README TODO
+%doc README TODO
 %exclude %_bindir/groupmems
 %exclude %_man8dir/groupmems.*
 
@@ -406,6 +403,30 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Fri Mar 03 2017 Mikhail Efremov <sem@altlinux.org> 1:4.4-alt1
+- Don't own %%_sysconfdir/default/ (closes: #32541).
+- Fix possible crash if gmtime() returns NULL.
+- chsh: Fix duplicate warning.
+- Enable audit support.
+- Don't package ChangeLog/NEWS files.
+- Spec cleanup.
+- submap: Add control scripts for newuidmap/newgidmap.
+- Fix build: ignore write() return value.
+- configure.ac: Drop man/po/Makefile.
+- Drop FORCE_SHADOW.
+- Don't create missing files.
+- Fixes from usptream git:
+  + Keep the permissions of the original file when creating a backup.
+  + useradd: Read defaults after changing root directories.
+  + Don't crash on bogus keys in login.defs if PAM is enabled.
+  + Last bits of enabling subuids.
+  + Make login.def files valid ASCII instead of UTF-8.
+  + include getdef.h for getdef_bool prototype.
+  + Print error message if SELinux file context manipulation fails.
+  + Fix regression in useradd not loading defaults properly.
+  + */Makefile.am: Replace INCLUDES with AM_CPPFLAGS.
+- Updated to 4.4 (fixes CVE-2016-6252).
+
 * Fri Feb 26 2016 Mikhail Efremov <sem@altlinux.org> 1:4.2.1-alt6
 - E2K: avoid -Werror (lcc) (by Michael Shigorin).
 - Fix build on x32.
