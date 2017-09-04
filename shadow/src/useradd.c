@@ -51,7 +51,9 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <time.h>
+#include <unistd.h>
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
@@ -212,6 +214,7 @@ static void open_files (void);
 static void open_shadow (void);
 static void faillog_reset (uid_t);
 static void lastlog_reset (uid_t);
+static void tallylog_reset (char *);
 static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
@@ -868,7 +871,7 @@ static void new_spent (struct spwd *spent)
 	memzero (spent, sizeof *spent);
 	spent->sp_namp = (char *) user_name;
 	spent->sp_pwdp = (char *) user_pass;
-	spent->sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+	spent->sp_lstchg = (long) gettime () / SCALE;
 	if (0 == spent->sp_lstchg) {
 		/* Better disable aging than requiring a password change */
 		spent->sp_lstchg = -1;
@@ -1839,6 +1842,52 @@ static void lastlog_reset (uid_t uid)
 	}
 }
 
+static void tallylog_reset (char *user_name)
+{
+	const char pam_tally2[] = "/sbin/pam_tally2";
+	const char *pname;
+	pid_t childpid;
+	int failed;
+	int status;
+
+	if (access(pam_tally2, X_OK) == -1)
+		return;
+
+	failed = 0;
+	switch (childpid = fork())
+	{
+	case -1: /* error */
+		failed = 1;
+		break;
+	case 0: /* child */
+		pname = strrchr(pam_tally2, '/');
+		if (pname == NULL)
+			pname = pam_tally2;
+		else
+			pname++;        /* Skip the '/' */
+		execl(pam_tally2, pname, "--user", user_name, "--reset", "--quiet", NULL);
+		/* If we come here, something has gone terribly wrong */
+		perror(pam_tally2);
+		exit(42);       /* don't continue, we now have 2 processes running! */
+		/* NOTREACHED */
+		break;
+	default: /* parent */
+		if (waitpid(childpid, &status, 0) == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0)
+			failed = 1;
+		break;
+	}
+
+	if (failed)
+	{
+		fprintf (stderr,
+		         _("%s: failed to reset the tallylog entry of user \"%s\"\n"),
+		         Prog, user_name);
+		SYSLOG ((LOG_WARN, "failed to reset the tallylog entry of user \"%s\"", user_name));
+	}
+
+	return;
+}
+
 /*
  * usr_update - create the user entries
  *
@@ -2281,6 +2330,15 @@ int main (int argc, char **argv)
 	usr_update ();
 
 	close_files ();
+
+	/*
+	 * tallylog_reset needs to be able to lookup
+	 * a valid existing user name,
+	 * so we canot call it before close_files()
+	 */
+	if (!lflg && getpwuid (user_id) != NULL) {
+		tallylog_reset (user_name);
+	}
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");

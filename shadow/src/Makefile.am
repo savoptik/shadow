@@ -51,7 +51,7 @@ usbin_PROGRAMS = \
 suidbins       =
 suidubins      =
 if ACCT_TOOLS_SETUID
-	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 
 LDADD          = $(INTLLIBS) \
@@ -104,14 +104,14 @@ install-am: all-am
 	ln -sf newgrp	$(DESTDIR)$(ubindir)/sg
 	ln -sf vipw	$(DESTDIR)$(usbindir)/vigr
 	for i in $(suidbins); do \
-		chmod -f $(suidperms) $(DESTDIR)$(bindir)/$$i; \
+		chmod $(suidperms) $(DESTDIR)$(bindir)/$$i; \
 	done
 	for i in $(suidubins); do \
-		chmod -f $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
+		chmod $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
 if WITH_TCB
 	for i in $(shadowsgidubins); do \
 		chown root:shadow $(DESTDIR)$(ubindir)/$$i; \
-		chmod -f $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
+		chmod $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
 endif

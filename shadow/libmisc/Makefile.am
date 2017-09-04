@@ -30,6 +30,7 @@ libmisc_a_SOURCES = \
 	getdate.y \
 	getgr_nam_gid.c \
 	getrange.c \
+	gettime.c \
 	hushed.c \
 	idmapping.h \
 	idmapping.c \
