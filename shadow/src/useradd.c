@@ -214,7 +214,7 @@ static void open_files (void);
 static void open_shadow (void);
 static void faillog_reset (uid_t);
 static void lastlog_reset (uid_t);
-static void tallylog_reset (char *);
+static void tallylog_reset (const char *);
 static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
@@ -1842,7 +1842,7 @@ static void lastlog_reset (uid_t uid)
 	}
 }
 
-static void tallylog_reset (char *user_name)
+static void tallylog_reset (const char *user_name)
 {
 	const char pam_tally2[] = "/sbin/pam_tally2";
 	const char *pname;
