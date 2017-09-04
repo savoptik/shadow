@@ -50,9 +50,6 @@ usbin_PROGRAMS = \
 
 suidbins       =
 suidubins      =
-if ACCT_TOOLS_SETUID
-suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
-endif
 
 LDADD          = $(INTLLIBS) \
 		 $(top_builddir)/libmisc/libmisc.a \
