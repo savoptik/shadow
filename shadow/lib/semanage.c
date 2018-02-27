@@ -87,7 +87,7 @@ static semanage_handle_t *semanage_init (void)
 {
 	int ret;
 	semanage_handle_t *handle = NULL;
-	static const char const shlib[] = "libsemanage.so.1";
+	static const char shlib[] = "libsemanage.so.1";
 	void *dlhandle = dlopen(shlib, RTLD_NOW);
 
 	if (!dlhandle) {
