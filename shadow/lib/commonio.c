@@ -375,8 +375,8 @@ bool commonio_present (const struct commonio_db *db)
 
 int commonio_lock_nowait (struct commonio_db *db, bool log)
 {
-	char file[1024];
-	char lock[1024];
+	char file[1024 + 32] ;
+	char lock[1024 + 5];
 
 	if (db->locked) {
 		return 1;
@@ -892,7 +892,7 @@ static int write_all (const struct commonio_db *db)
 int commonio_close (struct commonio_db *db)
 	/*@requires notnull db->fp@*/
 {
-	char buf[1024];
+	char buf[1024 + 1];
 	int errors = 0;
 	struct stat sb;
 
