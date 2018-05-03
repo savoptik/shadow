@@ -202,7 +202,7 @@ This virtual package unifies all shadow suite subpackages.
 
 %build
 %autoreconf
-%ifnarch e2k
+%ifnarch %e2k
 %add_optflags -Werror -Wno-error=address -Wno-error=cpp
 %endif
 %add_optflags -DEXTRA_CHECK_HOME_DIR
