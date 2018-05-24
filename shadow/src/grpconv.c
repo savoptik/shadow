@@ -194,6 +194,7 @@ int main (int argc, char **argv)
 			         Prog, sg->sg_name, sgr_dbname ());
 			fail_exit (3);
 		}
+		(void) sgr_rewind ();
 	}
 
 	/*

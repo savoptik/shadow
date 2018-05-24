@@ -560,7 +560,7 @@ int main (int argc, char **argv)
 					errors++;
 					break;
 				}
-			} else if (do_pam_passwd_non_interractive ("chpasswd", name, cp) != 0) {
+			} else if (do_pam_passwd_non_interactive ("chpasswd", name, cp) != 0) {
 				fprintf (stderr,
 				         _("%s: (line %d, user %s) password not changed\n"),
 				         Prog, line, name);
