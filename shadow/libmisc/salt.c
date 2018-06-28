@@ -29,7 +29,7 @@ crypt_make_salt(/*@null@*/const char *meth, /*@null@*/void *arg)
 {
 	char *retval;
 
-	retval = crypt_gensalt(getdef_str("CRYPT_PREFIX") ?: "",
+	retval = crypt_gensalt(getdef_str("CRYPT_PREFIX"),
 			getdef_num("CRYPT_ROUNDS", 0), NULL, 0);
 	if (!retval) {
 		fprintf(stderr, "Unable to generate a salt, "
