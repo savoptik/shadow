@@ -503,6 +503,8 @@ int main (int argc, char **argv)
 #ifdef WITH_TCB
 			case 'u':
 				user = optarg;
+				/* implies -s */
+				editshadow = true;
 				break;
 #endif				/* WITH_TCB */
 			default:
@@ -518,7 +520,13 @@ int main (int argc, char **argv)
 	if (do_vipw) {
 		if (editshadow) {
 #ifdef WITH_TCB
-			if (getdef_bool ("USE_TCB") && (NULL != user)) {
+			if (getdef_bool ("USE_TCB")) {
+				if (NULL == user) {
+					fprintf (stderr,
+					         _("%s: you must specify user in tcb mode\n"),
+					         Prog);
+					return E_SHADOW_NOTFOUND;
+				}
 				if (shadowtcb_set_user (user) == SHADOWTCB_FAILURE) {
 					fprintf (stderr,
 					         _("%s: failed to find tcb directory for %s\n"),

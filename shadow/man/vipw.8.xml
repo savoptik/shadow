@@ -155,7 +155,7 @@
       <varlistentry condition="tcb">
 	<term><option>-u</option>, <option>--user</option></term>
 	<listitem>
-	  <para>Indicates which user's tcb shadow file to edit.</para>
+	  <para>Indicates which user's tcb shadow file to edit (implies -s).</para>
 	</listitem>
       </varlistentry>
     </variablelist>
