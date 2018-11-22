@@ -731,9 +731,14 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: fields too long\n"), Prog);
 		fail_exit (E_NOPERM);
 	}
+	/* We are sure that there is no truncation, so disable
+	 * GCC warning */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
 	snprintf (new_gecos, sizeof new_gecos, "%s,%s,%s,%s%s%s",
 	          fullnm, roomno, workph, homeph,
 	          ('\0' != slop[0]) ? "," : "", slop);
+#pragma GCC diagnostic pop
 
 	/* Rewrite the user's gecos in the passwd file */
 	update_gecos (user, new_gecos);
