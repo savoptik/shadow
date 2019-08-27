@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.5
-Release: alt4
+Release: alt5
 Serial: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -403,6 +403,12 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Tue Aug 27 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt5
+- Backported patch from shadow-4.6:
+  + newgidmap: enforce setgroups=deny if self-mapping a group
+    (fixes CVE-2018-7169).
+- Don't use deprecated PreReq.
+
 * Mon Nov 26 2018 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt4
 - chfn: Silence format-truncation warning
 
