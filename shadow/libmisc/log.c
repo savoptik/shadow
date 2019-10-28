@@ -100,7 +100,7 @@ void dolastlog (
 	ll_time = newlog.ll_time;
 	(void) time (&ll_time);
 	newlog.ll_time = ll_time;
-	strncpy (newlog.ll_line, line, sizeof newlog.ll_line);
+	strncpy (newlog.ll_line, line, sizeof newlog.ll_line - 1);
 #if HAVE_LL_HOST
 	strncpy (newlog.ll_host, host, sizeof newlog.ll_host);
 #endif

@@ -128,6 +128,7 @@ void change_field (char *buf, size_t maxsize, const char *prompt)
 		cp = newf;
 		while (('\0' != *cp) && isspace (*cp)) {
 			cp++;
+			maxsize--;
 		}
 
 		strncpy (buf, cp, maxsize - 1);
