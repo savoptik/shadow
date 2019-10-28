@@ -103,6 +103,7 @@ static struct itemdef def_table[] = {
 	{"PASS_MAX_DAYS", NULL},
 	{"PASS_MIN_DAYS", NULL},
 	{"PASS_WARN_AGE", NULL},
+	{"REGEXP_NAME", NULL},
 #ifdef USE_SHA_CRYPT
 	{"SHA_CRYPT_MAX_ROUNDS", NULL},
 	{"SHA_CRYPT_MIN_ROUNDS", NULL},

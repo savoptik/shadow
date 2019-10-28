@@ -43,12 +43,46 @@
 #ident "$Id$"
 
 #include <ctype.h>
+#include <sys/types.h>
+#include <regex.h>
 #include "defines.h"
 #include "getdef.h"
 #include "chkname.h"
+#include "prototypes.h"
+
+static bool is_valid_name_regexp (const char *name, const char *regexp)
+{
+	regex_t preg;
+	int errcode;
+	bool result = false;
+
+	if (valid_field (name, ":\n") != 0)
+		return false;
+
+	errcode = regcomp(&preg, regexp, REG_NOSUB | REG_NEWLINE);
+	if (errcode) {
+		char errbuf[64];
+		regerror(errcode, &preg, errbuf, sizeof (errbuf));
+		fprintf (stderr, "regexp error: %s\n", errbuf);
+		goto out;
+	}
+
+	if (regexec(&preg, name, 0, NULL, 0) == 0)
+		result = true;
+
+out:
+	regfree (&preg);
+
+	return result;
+}
 
 static bool is_valid_name (const char *name)
 {
+	const char *name_re = getdef_str("REGEXP_NAME");
+
+	if (name_re && name_re[0] != '\0')
+		return is_valid_name_regexp (name, name_re);
+
 	/*
 	 * User/group names must match [a-z_][a-z0-9_-]*[$]
 	 */
