@@ -90,6 +90,13 @@ static bool is_valid_name_regexp (const char *name, const char *regexp)
 	if (valid_field (name, ":\n") != 0)
 		return false;
 
+	/*
+	 * Don't allow digit at the begining of user/group names.
+	 */
+	if (('\0' == *name) || (('0' <= *name) && ('9' >= *name))) {
+		return false;
+	}
+
 	errcode = regcomp(&preg, regexp, REG_NOSUB | REG_NEWLINE);
 	if (errcode) {
 		char errbuf[64];
