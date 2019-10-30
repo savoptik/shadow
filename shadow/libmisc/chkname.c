@@ -49,6 +49,37 @@
 #include "getdef.h"
 #include "chkname.h"
 #include "prototypes.h"
+#include "pwio.h"
+#include "groupio.h"
+
+#define IS_UNIQ_NAME(db_type, db_pref, name) \
+       const struct db_type *db_pref; \
+       (void) db_pref##_rewind (); \
+       while ((db_pref = db_pref##_next ()) != NULL) { \
+               if (strcasecmp (name, db_pref->db_pref##_name) == 0) \
+                       return false; \
+       } \
+       return true;
+
+bool is_uniq_user (const char *name)
+{
+       IS_UNIQ_NAME (passwd, pw, name);
+}
+
+bool is_uniq_group (const char *name)
+{
+       IS_UNIQ_NAME (group, gr, name);
+}
+
+const char *get_name_regexp (void)
+{
+	const char *name_re = getdef_str("REGEXP_NAME");
+
+	if (!name_re || name_re[0] == '\0')
+		return NULL;
+
+	return name_re;
+}
 
 static bool is_valid_name_regexp (const char *name, const char *regexp)
 {
@@ -78,9 +109,9 @@ out:
 
 static bool is_valid_name (const char *name)
 {
-	const char *name_re = getdef_str("REGEXP_NAME");
+	const char *name_re = get_name_regexp ();
 
-	if (name_re && name_re[0] != '\0')
+	if (name_re)
 		return is_valid_name_regexp (name, name_re);
 
 	/*

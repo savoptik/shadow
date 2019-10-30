@@ -2283,6 +2283,20 @@ int main (int argc, char **argv)
 		}
 	}
 
+	/* If REGEXP_NAME is defined then check that there is no another
+	 * user with the same name in different letter case.
+	 */
+	if (get_name_regexp () && !is_uniq_user (user_name)) {
+		fprintf (stderr, _("%s: user name %s is not unique\n"), Prog, user_name);
+#ifdef WITH_AUDIT
+		audit_logger (AUDIT_ADD_USER, Prog,
+		              "adding user",
+		              user_name, AUDIT_NO_ID,
+		              SHADOW_AUDIT_FAILURE);
+#endif
+		fail_exit (E_NAME_IN_USE);
+	}
+
 #ifdef WITH_TCB
 	if (getdef_bool ("USE_TCB")) {
 		if (shadowtcb_create (user_name, user_id) == SHADOWTCB_FAILURE) {
@@ -2305,6 +2319,21 @@ int main (int argc, char **argv)
 			         Prog);
 			fail_exit (4);
 		}
+
+		/* If REGEXP_NAME is defined then check that there is no another
+		 * group with the same name in different letter case.
+		 */
+		if (get_name_regexp () && !is_uniq_group (user_name)) {
+			fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, user_name);
+#ifdef WITH_AUDIT
+			audit_logger (AUDIT_ADD_USER, Prog,
+						  "adding user",
+						  user_name, AUDIT_NO_ID,
+						  SHADOW_AUDIT_FAILURE);
+#endif
+			fail_exit (E_NAME_IN_USE);
+		}
+
 		grp_add ();
 	}
 

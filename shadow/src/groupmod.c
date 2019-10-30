@@ -853,6 +853,16 @@ int main (int argc, char **argv)
 	 */
 	open_files ();
 
+	if (nflg) {
+		/* If REGEXP_NAME is defined then check that there is no another
+		 * group with the same name in different letter case.
+		 */
+		if (get_name_regexp () && !is_uniq_group (group_newname)) {
+			fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, group_newname);
+			exit (E_NAME_IN_USE);
+		}
+	}
+
 	grp_update ();
 
 	close_files ();

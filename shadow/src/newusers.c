@@ -294,6 +294,15 @@ static int add_group (const char *name, const char *gid, gid_t *ngid, uid_t uid)
 		return -1;
 	}
 
+	/* If REGEXP_NAME is defined then check that there is no another
+	 * group with the same name in different letter case.
+	 */
+	if (get_name_regexp () && !is_uniq_group (grent.gr_name)) {
+		fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, grent.gr_name);
+		free (grent.gr_name);
+		return -1;
+	}
+
 	grent.gr_passwd = "*";	/* XXX warning: const */
 	members[0] = NULL;
 	grent.gr_mem = members;
@@ -389,6 +398,14 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 		fprintf (stderr,
 		         _("%s: invalid user name '%s'\n"),
 		         Prog, name);
+		return -1;
+	}
+
+	/* If REGEXP_NAME is defined then check that there is no another
+	 * user with the same name in different letter case.
+	 */
+	if (get_name_regexp () && !is_uniq_user (name)) {
+		fprintf (stderr, _("%s: user name %s is not unique\n"), Prog, name);
 		return -1;
 	}
 

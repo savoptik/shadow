@@ -2127,6 +2127,17 @@ int main (int argc, char **argv)
 	 * change the home directory, then close and update the files.
 	 */
 	open_files ();
+
+	if (lflg) {
+		/* If REGEXP_NAME is defined then check that there is no another
+		 * user with the same name in different letter case.
+		 */
+		if (get_name_regexp () && !is_uniq_user (user_newname)) {
+			fprintf (stderr, _("%s: user name %s is not unique\n"), Prog, user_newname);
+			fail_exit (E_NAME_IN_USE);
+		}
+	}
+
 	if (   cflg || dflg || eflg || fflg || gflg || Lflg || lflg || pflg
 	    || sflg || uflg || Uflg) {
 		usr_update ();

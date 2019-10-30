@@ -44,6 +44,9 @@
 
 #include "defines.h"
 
+extern const char *get_name_regexp (void);
+extern bool is_uniq_user(const char *name);
+extern bool is_uniq_group(const char *name);
 extern bool is_valid_user_name (const char *name);
 extern bool is_valid_group_name (const char *name);
 
