@@ -1,0 +1,15 @@
+<!--
+   ALT-specific variable
+-->
+<varlistentry>
+  <term><option>REGEXP_NAME</option> (string)</term>
+  <listitem>
+    <para>
+      Regular expression to which user/group names must match.
+      If not defined or empty then traditional check will be performed.
+      Note that leading digits are still not allowed regardless of
+      defined regular expression. The names that differ by letter
+      case only are also prohibited.
+    </para>
+  </listitem>
+</varlistentry>
