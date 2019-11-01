@@ -101,3 +101,10 @@ TCB_AUTH_GROUP		yes
 # for information on why this may be needed.
 #
 TCB_SYMLINKS		no
+
+#
+# Regular expression to which user/group names must match.
+# If not defined or empty then traditional check will be performed.
+# The default is "^[a-z_][a-z0-9_-]*[$]\?$".
+#
+#REGEXP_NAME		""
