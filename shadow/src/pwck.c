@@ -455,7 +455,7 @@ static void check_pw_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (pwd->pw_name, ent->pw_name) != 0) {
+			if (strcasecmp (pwd->pw_name, ent->pw_name) != 0) {
 				continue;
 			}
 

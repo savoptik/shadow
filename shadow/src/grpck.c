@@ -548,7 +548,7 @@ static void check_grp_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (grp->gr_name, ent->gr_name) != 0) {
+			if (strcasecmp (grp->gr_name, ent->gr_name) != 0) {
 				continue;
 			}
 
