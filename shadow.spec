@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.5
-Release: alt5
+Release: alt6
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -403,6 +403,16 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Fri Nov 01 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt6
+- Use epoch instead of serial.
+- login.defs: Add REGEXP_NAME variable.
+- man: Add REGEXP_NAME description.
+- pwck,grpck: Use strcasecmp() to check names.
+- libmisc: Don't allow leading digits in the names with regexp too.
+- utils: Check that user/group is unique.
+- libmisc: Allow names to be verified by regexp (closes: #9202).
+- Fix build with gcc-9.
+
 * Tue Aug 27 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt5
 - Backported patch from shadow-4.6:
   + newgidmap: enforce setgroups=deny if self-mapping a group
