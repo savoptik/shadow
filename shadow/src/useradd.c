@@ -101,7 +101,7 @@ static const char *def_create_mail_spool = "no";
 static long def_inactive = -1;
 static const char *def_expire = "";
 
-#define	VALID(s)	(strcspn (s, ":\n") == strlen (s))
+#define	VALID(s)	(valid_field (s, ":\n") >= 0)
 
 static const char *user_name = "";
 static const char *user_pass = "!!";
