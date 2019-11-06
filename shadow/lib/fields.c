@@ -78,7 +78,7 @@ int valid_field (const char *field, const char *illegal)
 	if (0 == err) {
 		/* Search if there are some non-printable characters */
 		for (cp = field; '\0' != *cp; cp++) {
-			if (iscntrl(*cp) || fixed_iscntrl(*cp)) {
+			if (!isascii (*cp) || iscntrl(*cp) || fixed_iscntrl(*cp)) {
 				err = getdef_bool("SAFE_PWDB_FIELDS") ? -1 : 1;
 				break;
 			}
