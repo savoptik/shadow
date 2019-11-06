@@ -108,3 +108,9 @@ TCB_SYMLINKS		no
 # The default is "^[a-z_][a-z0-9_-]*[$]\?$".
 #
 #REGEXP_NAME		""
+
+#
+# If set to yes then non-ASCII characters in the password database
+# files are not allowed.
+#
+SAFE_PWDB_FIELDS		no
