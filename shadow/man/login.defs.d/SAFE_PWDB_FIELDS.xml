@@ -1,0 +1,12 @@
+<!--
+   ALT-specific variable
+-->
+<varlistentry>
+  <term><option>SAFE_PWDB_FIELDS</option> (boolean)</term>
+  <listitem>
+    <para>
+      If <replaceable>yes</replaceable> then non-ASCII characters
+      in the password database files are not allowed.
+    </para>
+  </listitem>
+</varlistentry>
