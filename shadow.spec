@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.5
-Release: alt6
+Release: alt7
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -403,6 +403,13 @@ fi
 %exclude %_man8dir/nologin.8.*
 
 %changelog
+* Wed Nov 06 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt7
+- valid_field: Check that characters are ASCII.
+- login.defs: Add SAFE_PWDB_FIELDS variable.
+- man: Add SAFE_PWDB_FIELDS description.
+- lib: Add SAFE_PWDB_FIELDS variable.
+- useradd,usermod: Use valid_field() to check fields.
+
 * Fri Nov 01 2019 Mikhail Efremov <sem@altlinux.org> 1:4.5-alt6
 - Use epoch instead of serial.
 - login.defs: Add REGEXP_NAME variable.
