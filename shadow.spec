@@ -6,7 +6,7 @@ Epoch: 1
 Summary: Utilities for managing shadow password files and user/group accounts
 License: BSD-style
 Group: System/Base
-Url: ftp://ftp.pld.org.pl/software/shadow
+Url: https://github.com/shadow-maint/shadow
 
 Source0: %url/%name-%version.tar
 Source1: login.defs
