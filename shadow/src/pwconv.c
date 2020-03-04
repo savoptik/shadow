@@ -72,6 +72,7 @@
 #include "pwio.h"
 #include "shadowio.h"
 #include "nscd.h"
+#include "sssd.h"
 
 /*
  * exit status values
@@ -266,7 +267,7 @@ int main (int argc, char **argv)
 			spent.sp_flag   = SHADOW_SP_FLAG_UNSET;
 		}
 		spent.sp_pwdp = pw->pw_passwd;
-		spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+		spent.sp_lstchg = (long) gettime () / SCALE;
 		if (0 == spent.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */
@@ -328,6 +329,7 @@ int main (int argc, char **argv)
 	}
 
 	nscd_flush_cache ("passwd");
+	sssd_flush_cache (SSSD_DB_PASSWD);
 
 	return E_SUCCESS;
 }

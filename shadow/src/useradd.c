@@ -60,6 +60,7 @@
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -147,6 +148,8 @@ static char **user_groups;	/* NULL-terminated list */
 static long sys_ngroups;
 static bool do_grp_update = false;	/* group files need to be updated */
 
+extern int allow_bad_names;
+
 static bool
     bflg = false,		/* new default root of home directory */
     cflg = false,		/* comment (GECOS) field for new account */
@@ -164,6 +167,7 @@ static bool
     oflg = false,		/* permit non-unique user ID to be specified with -u */
     rflg = false,		/* create a system account */
     sflg = false,		/* shell program for new account */
+    subvolflg = false,		/* create subvolume home on BTRFS */
     uflg = false,		/* specify user ID for new account */
     Uflg = false;		/* create a group having the same name as the user */
 
@@ -219,7 +223,7 @@ static void open_files (void);
 static void open_shadow (void);
 static void faillog_reset (uid_t);
 static void lastlog_reset (uid_t);
-static void tallylog_reset (char *);
+static void tallylog_reset (const char *);
 static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
@@ -343,7 +347,7 @@ static void fail_exit (int code)
 static void get_defaults (void)
 {
 	FILE *fp;
-	char* default_file = USER_DEFAULTS_FILE;
+	char *default_file = USER_DEFAULTS_FILE;
 	char buf[1024];
 	char *cp;
 
@@ -353,6 +357,8 @@ static void get_defaults (void)
 
 		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
 		default_file = malloc(len);
+                if (default_file == NULL)
+                       return;
 		wlen = snprintf(default_file, len, "%s/%s", prefix, USER_DEFAULTS_FILE);
 		assert (wlen == (int) len -1);
 	}
@@ -363,7 +369,7 @@ static void get_defaults (void)
 
 	fp = fopen (default_file, "r");
 	if (NULL == fp) {
-		return;
+		goto getdef_err;
 	}
 
 	/*
@@ -474,7 +480,7 @@ static void get_defaults (void)
 		}
 	}
 	(void) fclose (fp);
-
+     getdef_err:
 	if(prefix[0]) {
 		free(default_file);
 	}
@@ -509,8 +515,8 @@ static int set_defaults (void)
 	FILE *ifp;
 	FILE *ofp;
 	char buf[1024];
-	char* new_file = NEW_USER_FILE;
-	char* default_file = USER_DEFAULTS_FILE;
+	char *new_file = NULL;
+	char *default_file = USER_DEFAULTS_FILE;
 	char *cp;
 	int ofd;
 	int wlen;
@@ -521,17 +527,30 @@ static int set_defaults (void)
 	bool out_shell = false;
 	bool out_skel = false;
 	bool out_create_mail_spool = false;
+	size_t len;
+	int ret = -1;
+
+
+	len = strlen(prefix) + strlen(NEW_USER_FILE) + 2;
+	new_file = malloc(len);
+        if (new_file == NULL) {
+		fprintf (stderr,
+		         _("%s: cannot create new defaults file: %s\n"),
+		         Prog, strerror(errno));
+		return -1;
+        }
+	wlen = snprintf(new_file, len, "%s%s%s", prefix, prefix[0]?"/":"", NEW_USER_FILE);
+	assert (wlen <= (int) len -1);
 
 	if(prefix[0]) {
-		size_t len;
-
-		len = strlen(prefix) + strlen(NEW_USER_FILE) + 2;
-		new_file = malloc(len);
-		wlen = snprintf(new_file, len, "%s/%s", prefix, NEW_USER_FILE);
-		assert (wlen == (int) len -1);
-
 		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
 		default_file = malloc(len);
+		if (default_file == NULL) {
+			fprintf (stderr,
+			         _("%s: cannot create new defaults file: %s\n"),
+			         Prog, strerror(errno));
+			goto setdef_err;
+		}
 		wlen = snprintf(default_file, len, "%s/%s", prefix, USER_DEFAULTS_FILE);
 		assert (wlen == (int) len -1);
 	}
@@ -544,7 +563,7 @@ static int set_defaults (void)
 		fprintf (stderr,
 		         _("%s: cannot create new defaults file\n"),
 		         Prog);
-		return -1;
+		goto setdef_err;
 	}
 
 	ofp = fdopen (ofd, "w");
@@ -552,7 +571,7 @@ static int set_defaults (void)
 		fprintf (stderr,
 		         _("%s: cannot open new defaults file\n"),
 		         Prog);
-		return -1;
+		goto setdef_err;
 	}
 
 	/*
@@ -579,7 +598,7 @@ static int set_defaults (void)
 				         _("%s: line too long in %s: %s..."),
 				         Prog, default_file, buf);
 				(void) fclose (ifp);
-				return -1;
+				goto setdef_err;
 			}
 		}
 
@@ -643,7 +662,7 @@ static int set_defaults (void)
 	    || (fsync (fileno (ofp)) != 0)
 	    || (fclose (ofp) != 0)) {
 		unlink (new_file);
-		return -1;
+		goto setdef_err;
 	}
 
 	/*
@@ -658,7 +677,7 @@ static int set_defaults (void)
 		         _("%s: Cannot create backup file (%s): %s\n"),
 		         Prog, buf, strerror (err));
 		unlink (new_file);
-		return -1;
+		goto setdef_err;
 	}
 
 	/*
@@ -669,7 +688,7 @@ static int set_defaults (void)
 		fprintf (stderr,
 		         _("%s: rename: %s: %s\n"),
 		         Prog, new_file, strerror (err));
-		return -1;
+		goto setdef_err;
 	}
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_USYS_CONFIG, Prog,
@@ -683,13 +702,14 @@ static int set_defaults (void)
 	         (unsigned int) def_group, def_home, def_shell,
 	         def_inactive, def_expire, def_template,
 	         def_create_mail_spool));
-
+	ret = 0;
+    setdef_err:
+	free(new_file);
 	if(prefix[0]) {
-		free(new_file);
 		free(default_file);
 	}
 
-	return 0;
+	return ret;
 }
 
 /*
@@ -803,8 +823,12 @@ static void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog, Prog, Prog);
+	(void) fputs (_("      --badnames                do not check for bad names\n"), usageout);
 	(void) fputs (_("  -b, --base-dir BASE_DIR       base directory for the home directory of the\n"
 	                "                                new account\n"), usageout);
+#ifdef WITH_BTRFS
+	(void) fputs (_("      --btrfs-subvolume-home    use BTRFS subvolume for home directory\n"), usageout);
+#endif
 	(void) fputs (_("  -c, --comment COMMENT         GECOS field of the new account\n"), usageout);
 	(void) fputs (_("  -d, --home-dir HOME_DIR       home directory of the new account\n"), usageout);
 	(void) fputs (_("  -D, --defaults                print or change default useradd configuration\n"), usageout);
@@ -1077,6 +1101,7 @@ static void process_flags (int argc, char **argv)
 	const struct group *grp;
 	bool anyflag = false;
 	char *cp;
+	struct stat st;
 
 	{
 		/*
@@ -1085,6 +1110,10 @@ static void process_flags (int argc, char **argv)
 		int c;
 		static struct option long_options[] = {
 			{"base-dir",       required_argument, NULL, 'b'},
+#ifdef WITH_BTRFS
+			{"btrfs-subvolume-home", no_argument, NULL, 200},
+#endif
+			{"badnames",       no_argument,       NULL, 201},
 			{"comment",        required_argument, NULL, 'c'},
 			{"home-dir",       required_argument, NULL, 'd'},
 			{"defaults",       no_argument,       NULL, 'D'},
@@ -1130,6 +1159,12 @@ static void process_flags (int argc, char **argv)
 				}
 				def_home = optarg;
 				bflg = true;
+				break;
+			case 200:
+				subvolflg = true;
+				break;
+			case 201:
+				allow_bad_names = true;
 				break;
 			case 'c':
 				if (!VALID (optarg)) {
@@ -1298,6 +1333,16 @@ static void process_flags (int argc, char **argv)
 					         _("%s: invalid shell '%s'\n"),
 					         Prog, optarg);
 					exit (E_BAD_ARG);
+				}
+				if (    '\0' != optarg[0]
+				     && '*'  != optarg[0]
+				     && strcmp(optarg, "/sbin/nologin") != 0
+				     && (   stat(optarg, &st) != 0
+				         || S_ISDIR(st.st_mode)
+				         || access(optarg, X_OK) != 0)) {
+					fprintf (stderr,
+					         _("%s: Warning: missing or non-executable shell '%s'\n"),
+					         Prog, optarg);
 				}
 				user_shell = optarg;
 				def_shell = optarg;
@@ -1846,8 +1891,15 @@ static void lastlog_reset (uid_t uid)
 	struct lastlog ll;
 	int fd;
 	off_t offset_uid = (off_t) (sizeof ll) * uid;
+	uid_t max_uid;
 
 	if (access (LASTLOG_FILE, F_OK) != 0) {
+		return;
+	}
+
+	max_uid = (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL);
+	if (uid > max_uid) {
+		/* do not touch lastlog for large uids */
 		return;
 	}
 
@@ -1867,7 +1919,7 @@ static void lastlog_reset (uid_t uid)
 	}
 }
 
-static void tallylog_reset (char *user_name)
+static void tallylog_reset (const char *user_name)
 {
 	const char pam_tally2[] = "/sbin/pam_tally2";
 	const char *pname;
@@ -1923,6 +1975,7 @@ static void usr_update (void)
 {
 	struct passwd pwent;
 	struct spwd spent;
+	char *tty;
 
 	/*
 	 * Fill in the password structure with any new fields, making
@@ -1935,10 +1988,12 @@ static void usr_update (void)
 	 * Create a syslog entry. We need to do this now in case anything
 	 * happens so we know what we were trying to accomplish.
 	 */
+	tty=ttyname (STDIN_FILENO);
 	SYSLOG ((LOG_INFO,
-	         "new user: name=%s, UID=%u, GID=%u, home=%s, shell=%s",
+	         "new user: name=%s, UID=%u, GID=%u, home=%s, shell=%s, from=%s",
 	         user_name, (unsigned int) user_id,
-	         (unsigned int) user_gid, user_home, user_shell));
+	         (unsigned int) user_gid, user_home, user_shell,
+	         tty ? tty : "none" ));
 
 	/*
 	 * Initialize faillog and lastlog entries for this UID in case
@@ -2018,6 +2073,19 @@ static void usr_update (void)
 static void create_home (void)
 {
 	if (access (prefix_user_home, F_OK) != 0) {
+		char path[strlen (prefix_user_home) + 2];
+		char *bhome, *cp;
+
+		path[0] = '\0';
+		bhome = strdup (prefix_user_home);
+		if (!bhome) {
+			fprintf (stderr,
+							_("%s: error while duplicating string %s\n"),
+							Prog, user_home);
+			fail_exit (E_HOMEDIR);
+		}
+		++bhome;
+
 #ifdef WITH_SELINUX
 		if (set_selinux_file_context (prefix_user_home) != 0) {
 			fprintf (stderr,
@@ -2026,22 +2094,77 @@ static void create_home (void)
 			fail_exit (E_HOMEDIR);
 		}
 #endif
-		/* XXX - create missing parent directories.  --marekm */
-		if (mkdir (prefix_user_home, 0) != 0) {
+
+		/* Check for every part of the path, if the directory
+		   exists. If not, create it with permissions 755 and
+		   owner root:root.
+		 */
+		cp = strtok (bhome, "/");
+		while (cp) {
+			strcat (path, "/");
+			strcat (path, cp);
+			if (access (path, F_OK) != 0) {
+				/* Check if parent directory is BTRFS, fail if requesting
+				   subvolume but no BTRFS. The paths cound be different by the
+				   trailing slash
+				 */
+#if WITH_BTRFS
+				if (subvolflg && (strlen(prefix_user_home) - (int)strlen(path)) <= 1) {
+					char *btrfs_check = strdup(path);
+
+					if (!btrfs_check) {
+						fprintf (stderr,
+						         _("%s: error while duplicating string in BTRFS check %s\n"),
+						         Prog, path);
+						fail_exit (E_HOMEDIR);
+					}
+					btrfs_check[strlen(path) - strlen(cp) - 1] = '\0';
+					if (is_btrfs(btrfs_check) <= 0) {
+						fprintf (stderr,
+						         _("%s: home directory \"%s\" must be mounted on BTRFS\n"),
+						         Prog, path);
+						fail_exit (E_HOMEDIR);
+					}
+					// make subvolume to mount for user instead of directory
+					if (btrfs_create_subvolume(path)) {
+						fprintf (stderr,
+						         _("%s: failed to create BTRFS subvolume: %s\n"),
+						         Prog, path);
+						fail_exit (E_HOMEDIR);
+					}
+				}
+				else
+#endif
+				if (mkdir (path, 0) != 0) {
 			fprintf (stderr,
-			         _("%s: cannot create directory %s\n"),
-			         Prog, prefix_user_home);
+							_("%s: cannot create directory %s\n"),
+							Prog, path);
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_ADD_USER, Prog,
-			              "adding home directory",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
+										"adding home directory",
+										user_name, (unsigned int) user_id,
+										SHADOW_AUDIT_FAILURE);
 #endif
 			fail_exit (E_HOMEDIR);
 		}
+				if (chown (path, 0, 0) < 0) {
+					fprintf (stderr,
+									_("%s: warning: chown on `%s' failed: %m\n"),
+									Prog, path);
+				}
+				if (chmod (path, 0755) < 0) {
+					fprintf (stderr,
+									_("%s: warning: chmod on `%s' failed: %m\n"),
+									Prog, path);
+				}
+			}
+			cp = strtok (NULL, "/");
+		}
+
 		(void) chown (prefix_user_home, user_id, user_gid);
-		chmod (prefix_user_home,
-		       0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
+		mode_t mode = getdef_num ("HOME_MODE",
+		                          0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
+		chmod (prefix_user_home, mode);
 		home_added = true;
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ADD_USER, Prog,
@@ -2348,9 +2471,9 @@ int main (int argc, char **argv)
 			           (uid_t)-1, user_id, (gid_t)-1, user_gid);
 		} else {
 			fprintf (stderr,
-			         _("%s: warning: the home directory already exists.\n"
-			           "Not copying any file from skel directory into it.\n"),
-			         Prog);
+			         _("%s: warning: the home directory %s already exists.\n"
+			           "%s: Not copying any file from skel directory into it.\n"),
+			         Prog, user_home, Prog);
 		}
 
 	}
@@ -2389,6 +2512,7 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
 	return E_SUCCESS;
 }

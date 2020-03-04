@@ -152,11 +152,6 @@ static struct commonio_ops subordinate_ops = {
 	NULL,			/* close_hook */
 };
 
-static /*@observer@*/ /*@null*/const struct subordinate_range *subordinate_next(struct commonio_db *db)
-{
-	return (const struct subordinate_range *)commonio_next (db);
-}
-
 /*
  * range_exists: Check whether @owner owns any ranges
  *
@@ -550,7 +545,8 @@ static struct commonio_db subordinate_uid_db = {
 	false,			/* changed */
 	false,			/* isopen */
 	false,			/* locked */
-	false			/* readonly */
+	false,			/* readonly */
+	false			/* setname */
 };
 
 int sub_uid_setdbname (const char *filename)
@@ -631,7 +627,8 @@ static struct commonio_db subordinate_gid_db = {
 	false,			/* changed */
 	false,			/* isopen */
 	false,			/* locked */
-	false			/* readonly */
+	false,			/* readonly */
+	false			/* setname */
 };
 
 int sub_gid_setdbname (const char *filename)
