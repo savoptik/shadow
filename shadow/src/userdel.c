@@ -53,6 +53,7 @@
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -97,7 +98,7 @@ static bool fflg = false;
 static bool rflg = false;
 #ifdef WITH_SELINUX
 static bool Zflg = false;
-#endif              /* WITH_SELINUX */
+#endif
 static bool Rflg = false;
 
 static bool is_shadow_pwd;
@@ -1273,6 +1274,23 @@ int main (int argc, char **argv)
 #endif				/* EXTRA_CHECK_HOME_DIR */
 
 	if (rflg) {
+#ifdef WITH_BTRFS
+		int is_subvolume = btrfs_is_subvolume (user_home);
+		if (is_subvolume < 0) {
+		    errors++;
+		    /* continue */
+		}
+		else if (is_subvolume > 0) {
+			if (btrfs_remove_subvolume (user_home)) {
+				fprintf (stderr,
+				         _("%s: error removing subvolume %s\n"),
+				         Prog, user_home);
+				errors++;
+				/* continue */
+			}
+		}
+		else
+#endif
 		if (remove_tree (user_home, true) != 0) {
 			fprintf (stderr,
 			         _("%s: error removing directory %s\n"),
@@ -1330,6 +1348,7 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
 	return ((0 != errors) ? E_HOMEDIR : E_SUCCESS);
 }

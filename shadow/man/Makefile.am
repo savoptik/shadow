@@ -50,6 +50,10 @@ man_nopam = \
 	man5/login.access.5 \
 	man5/porttime.5
 
+if WITH_SU
+man_MANS += man1/su.1
+endif
+
 if !USE_PAM
 man_MANS += $(man_nopam)
 endif
@@ -129,6 +133,7 @@ login_defs_v = \
 	ISSUE_FILE.xml \
 	KILLCHAR.xml \
 	LASTLOG_ENAB.xml \
+	LASTLOG_UID_MAX.xml \
 	LOGIN_RETRIES.xml \
 	LOGIN_STRING.xml \
 	LOGIN_TIMEOUT.xml \

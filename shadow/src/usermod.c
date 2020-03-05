@@ -57,6 +57,7 @@
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -203,6 +204,8 @@ static void update_faillog (void);
 #ifndef NO_MOVE_MAILBOX
 static void move_mailbox (void);
 #endif
+
+extern int allow_bad_names;
 
 static void date_to_str (/*@unique@*//*@out@*/char *buf, size_t maxsize,
                          long int date)
@@ -410,6 +413,7 @@ static /*@noreturn@*/void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
+	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
 	(void) fputs (_("  -c, --comment COMMENT         new value of the GECOS field\n"), usageout);
 	(void) fputs (_("  -d, --home HOME_DIR           new home directory for the user account\n"), usageout);
 	(void) fputs (_("  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE\n"), usageout);
@@ -993,6 +997,7 @@ static void process_flags (int argc, char **argv)
 		int c;
 		static struct option long_options[] = {
 			{"append",       no_argument,       NULL, 'a'},
+			{"badnames",     no_argument,       NULL, 'b'},
 			{"comment",      required_argument, NULL, 'c'},
 			{"home",         required_argument, NULL, 'd'},
 			{"expiredate",   required_argument, NULL, 'e'},
@@ -1022,7 +1027,7 @@ static void process_flags (int argc, char **argv)
 			{NULL, 0, NULL, '\0'}
 		};
 		while ((c = getopt_long (argc, argv,
-		                         "ac:d:e:f:g:G:hl:Lmop:R:s:u:UP:"
+		                         "abc:d:e:f:g:G:hl:Lmop:R:s:u:UP:"
 #ifdef ENABLE_SUBIDS
 		                         "v:w:V:W:"
 #endif				/* ENABLE_SUBIDS */
@@ -1033,6 +1038,9 @@ static void process_flags (int argc, char **argv)
 			switch (c) {
 			case 'a':
 				aflg = true;
+				break;
+			case 'b':
+				allow_bad_names = true;
 				break;
 			case 'c':
 				if (!VALID (optarg)) {
@@ -1254,11 +1262,13 @@ static void process_flags (int argc, char **argv)
 		prefix_user_home = xmalloc(len);
 		wlen = snprintf(prefix_user_home, len, "%s/%s", prefix, user_home);
 		assert (wlen == (int) len -1);
+		if (user_newhome) {
+			len = strlen(prefix) + strlen(user_newhome) + 2;
+			prefix_user_newhome = xmalloc(len);
+			wlen = snprintf(prefix_user_newhome, len, "%s/%s", prefix, user_newhome);
+			assert (wlen == (int) len -1);
+		}
 
-		len = strlen(prefix) + strlen(user_newhome) + 2;
-		prefix_user_newhome = xmalloc(len);
-		wlen = snprintf(prefix_user_newhome, len, "%s/%s", prefix, user_newhome);
-		assert (wlen == (int) len -1);
 	}
 	else {
 		prefix_user_home = user_home;
@@ -1368,7 +1378,7 @@ static void process_flags (int argc, char **argv)
 	      || Zflg
 #endif				/* WITH_SELINUX */
 	)) {
-		fprintf (stderr, _("%s: no changes\n"), Prog);
+		fprintf (stdout, _("%s: no changes\n"), Prog);
 		exit (E_SUCCESS);
 	}
 
@@ -1819,6 +1829,15 @@ static void move_home (void)
 			return;
 		} else {
 			if (EXDEV == errno) {
+#ifdef WITH_BTRFS
+				if (btrfs_is_subvolume (prefix_user_home) > 0) {
+					fprintf (stderr,
+					        _("%s: error: cannot move subvolume from %s to %s - different device\n"),
+					        Prog, prefix_user_home, prefix_user_newhome);
+					fail_exit (E_HOMEDIR);
+				}
+#endif
+
 				if (copy_tree (prefix_user_home, prefix_user_newhome, true,
 				               true,
 				               user_id,
@@ -1864,8 +1883,15 @@ static void update_lastlog (void)
 	int fd;
 	off_t off_uid = (off_t) user_id * sizeof ll;
 	off_t off_newuid = (off_t) user_newid * sizeof ll;
+	uid_t max_uid;
 
 	if (access (LASTLOG_FILE, F_OK) != 0) {
+		return;
+	}
+
+	max_uid = (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL);
+	if (user_newid > max_uid) {
+		/* do not touch lastlog for large uids */
 		return;
 	}
 
@@ -2262,6 +2288,7 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
 #ifdef WITH_SELINUX
 	if (Zflg) {
@@ -2311,7 +2338,10 @@ int main (int argc, char **argv)
 	}
 
 	if (!mflg && (uflg || gflg)) {
-		if (access (dflg ? prefix_user_newhome : prefix_user_home, F_OK) == 0) {
+		struct stat sb;
+
+		if (stat (dflg ? prefix_user_newhome : prefix_user_home, &sb) == 0 &&
+			((uflg && sb.st_uid == user_newid) || sb.st_uid == user_id)) {
 			/*
 			 * Change the UID on all of the files owned by
 			 * `user_id' to `user_newid' in the user's home

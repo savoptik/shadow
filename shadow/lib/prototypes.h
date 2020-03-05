@@ -71,6 +71,14 @@ extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
+/* btrfs.c */
+#ifdef WITH_BTRFS
+extern int btrfs_create_subvolume(const char *path);
+extern int btrfs_remove_subvolume(const char *path);
+extern int btrfs_is_subvolume(const char *path);
+extern int is_btrfs(const char *path);
+#endif
+
 #define Basename basename
 
 /* chowndir.c */
@@ -325,6 +333,7 @@ extern /*@observer@*/const char *crypt_make_salt (/*@null@*//*@observer@*/const 
 #ifdef WITH_SELINUX
 extern int set_selinux_file_context (const char *dst_name, const char *orig_name);
 extern int reset_selinux_file_context (void);
+extern int check_selinux_permit (const char *perm_name);
 #endif
 
 /* semanage.c */
@@ -413,17 +422,19 @@ extern int set_filesize_limit (int blocks);
 extern int user_busy (const char *name, uid_t uid);
 
 /* utmp.c */
+#ifndef USE_UTMPX
 extern /*@null@*/struct utmp *get_current_utmp (void);
 extern struct utmp *prepare_utmp (const char *name,
                                   const char *line,
                                   const char *host,
                                   /*@null@*/const struct utmp *ut);
 extern int setutmp (struct utmp *ut);
-#ifdef USE_UTMPX
+#else
+extern /*@null@*/struct utmpx *get_current_utmp (void);
 extern struct utmpx *prepare_utmpx (const char *name,
                                     const char *line,
                                     const char *host,
-                                    /*@null@*/const struct utmp *ut);
+                                    /*@null@*/const struct utmpx *ut);
 extern int setutmpx (struct utmpx *utx);
 #endif				/* USE_UTMPX */
 

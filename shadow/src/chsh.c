@@ -39,13 +39,10 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef WITH_SELINUX
-#include <selinux/selinux.h>
-#include <selinux/av_permissions.h>
-#endif
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -284,8 +281,7 @@ static void check_perms (const struct passwd *pw)
 	 * check if the change is allowed by SELinux policy.
 	 */
 	if ((pw->pw_uid != getuid ())
-	    && (is_selinux_enabled () > 0)
-	    && (selinux_check_passwd_access (PASSWD__CHSH) != 0)) {
+	    && (check_selinux_permit("chsh") != 0)) {
 		SYSLOG ((LOG_WARN, "can't change shell for '%s'", pw->pw_name));
 		fprintf (stderr,
 		         _("You may not change the shell for '%s'.\n"),
@@ -570,6 +566,7 @@ int main (int argc, char **argv)
 	SYSLOG ((LOG_INFO, "changed user '%s' shell to '%s'", user, loginsh));
 
 	nscd_flush_cache ("passwd");
+	sssd_flush_cache (SSSD_DB_PASSWD);
 
 	closelog ();
 	exit (E_SUCCESS);

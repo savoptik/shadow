@@ -52,10 +52,12 @@
 <!ENTITY FTMP_FILE             SYSTEM "login.defs.d/FTMP_FILE.xml">
 <!ENTITY GID_MAX               SYSTEM "login.defs.d/GID_MAX.xml">
 <!ENTITY GROUPNAME_MAX         SYSTEM "login.defs.d/GROUPNAME_MAX.xml">
+<!ENTITY HOME_MODE             SYSTEM "login.defs.d/HOME_MODE.xml">
 <!ENTITY HUSHLOGIN_FILE        SYSTEM "login.defs.d/HUSHLOGIN_FILE.xml">
 <!ENTITY ISSUE_FILE            SYSTEM "login.defs.d/ISSUE_FILE.xml">
 <!ENTITY KILLCHAR              SYSTEM "login.defs.d/KILLCHAR.xml">
 <!ENTITY LASTLOG_ENAB          SYSTEM "login.defs.d/LASTLOG_ENAB.xml">
+<!ENTITY LASTLOG_UID_MAX       SYSTEM "login.defs.d/LASTLOG_UID_MAX.xml">
 <!ENTITY LOG_OK_LOGINS         SYSTEM "login.defs.d/LOG_OK_LOGINS.xml">
 <!ENTITY LOG_UNKFAIL_ENAB      SYSTEM "login.defs.d/LOG_UNKFAIL_ENAB.xml">
 <!ENTITY LOGIN_RETRIES         SYSTEM "login.defs.d/LOGIN_RETRIES.xml">
@@ -191,10 +193,12 @@
       &FTMP_FILE;
       &GID_MAX; <!-- documents also GID_MIN -->
       &GROUPNAME_MAX;
+      &HOME_MODE;
       &HUSHLOGIN_FILE;
       &ISSUE_FILE;
       &KILLCHAR;
       &LASTLOG_ENAB;
+      &LASTLOG_UID_MAX;
       &LOG_OK_LOGINS;
       &LOG_UNKFAIL_ENAB;
       &LOGIN_RETRIES;
@@ -362,7 +366,12 @@
 	</listitem>
       </varlistentry>
       <!-- id: no variables -->
-      <!-- lastlog: no variables -->
+      <varlistentry>
+	<term>lastlog</term>
+	<listitem>
+	  <para>LASTLOG_UID_MAX</para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term>login</term>
 	<listitem>
@@ -378,7 +387,7 @@
 	    HUSHLOGIN_FILE
 	    <phrase condition="no_pam">ISSUE_FILE</phrase>
 	    KILLCHAR
-	    <phrase condition="no_pam">LASTLOG_ENAB</phrase>
+	    <phrase condition="no_pam">LASTLOG_ENAB LASTLOG_UID_MAX</phrase>
 	    LOGIN_RETRIES
 	    <phrase condition="no_pam">LOGIN_STRING</phrase>
 	    LOGIN_TIMEOUT LOG_OK_LOGINS LOG_UNKFAIL_ENAB
@@ -407,6 +416,7 @@
 	    ENCRYPT_METHOD
 	    GID_MAX GID_MIN
 	    MAX_MEMBERS_PER_GROUP MD5_CRYPT_ENAB
+	    HOME_MODE
 	    PASS_MAX_DAYS PASS_MIN_DAYS PASS_WARN_AGE
 	    REGEXP_NAME
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
@@ -488,6 +498,8 @@
 	  <para>
 	    CREATE_HOME
 	    GID_MAX GID_MIN
+	    HOME_MODE
+	    LASTLOG_UID_MAX
 	    MAIL_DIR MAX_MEMBERS_PER_GROUP
 	    PASS_MAX_DAYS PASS_MIN_DAYS PASS_WARN_AGE
 	    REGEXP_NAME SAFE_PWDB_FIELDS
@@ -513,6 +525,7 @@
 	<term>usermod</term>
 	<listitem>
 	  <para>
+	    LASTLOG_UID_MAX
 	    MAIL_DIR MAIL_FILE MAX_MEMBERS_PER_GROUP USERNAME_MAX
 	    REGEXP_NAME SAFE_PWDB_FIELDS
 	    <phrase condition="tcb">TCB_SYMLINKS USE_TCB</phrase>
