@@ -251,9 +251,9 @@ extern void motd (void);
 /* myname.c */
 extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
 
-/* pam_pass_non_interractive.c */
+/* pam_pass_non_interactive.c */
 #ifdef USE_PAM
-extern int do_pam_passwd_non_interractive (const char *pam_service,
+extern int do_pam_passwd_non_interactive (const char *pam_service,
                                            const char *username,
                                            const char* password);
 #endif				/* USE_PAM */
@@ -270,6 +270,21 @@ extern void do_pam_passwd (const char *user, bool silent, bool change_expired);
 
 /* port.c */
 extern bool isttytime (const char *, const char *, time_t);
+
+/* prefix_flag.c */
+extern const char* process_prefix_flag (const char* short_opt, int argc, char **argv);
+extern struct group *prefix_getgrnam(const char *name);
+extern struct group *prefix_getgrgid(gid_t gid);
+extern struct passwd *prefix_getpwuid(uid_t uid);
+extern struct passwd *prefix_getpwnam(const char* name);
+extern struct spwd *prefix_getspnam(const char* name);
+extern struct group *prefix_getgr_nam_gid(const char *grname);
+extern void prefix_setpwent();
+extern struct passwd* prefix_getpwent();
+extern void prefix_endpwent();
+extern void prefix_setgrent();
+extern struct group* prefix_getgrent();
+extern void prefix_endgrent();
 
 /* pwd2spwd.c */
 #ifndef USE_PAM

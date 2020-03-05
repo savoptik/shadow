@@ -41,7 +41,6 @@
 #include "subordinateio.h"
 #include "idmapping.h"
 
-
 static bool verify_range(struct passwd *pw, struct map_range *range, bool *allow_setgroups)
 {
 	/* An empty range is invalid */
