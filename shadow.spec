@@ -4,7 +4,7 @@ Release: alt8
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
-License: BSD-style
+License: BSD-3-Clause and GPL-2.0-or-later
 Group: System/Base
 Url: https://github.com/shadow-maint/shadow
 
