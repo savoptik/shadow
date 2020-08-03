@@ -312,9 +312,6 @@ int set_seuser (const char *login_name, const char *seuser_name)
 
 	ret = 0;
 
-        /* drop obsolete matchpathcon cache */
-        matchpathcon_fini();
-
 done:
 	semanage_seuser_key_free (key);
 	semanage_handle_destroy (handle);
@@ -389,9 +386,6 @@ int del_seuser (const char *login_name)
 	}
 
 	ret = 0;
-
-        /* drop obsolete matchpathcon cache */
-        matchpathcon_fini();
 
 done:
 	semanage_handle_destroy (handle);

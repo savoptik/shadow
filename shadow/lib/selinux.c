@@ -35,6 +35,7 @@
 
 #include <selinux/selinux.h>
 #include <selinux/context.h>
+#include <selinux/label.h>
 #include "prototypes.h"
 
 
@@ -54,6 +55,7 @@ static bool selinux_enabled;
 int set_selinux_file_context (const char *dst_name, const char *orig_name)
 {
 	/*@null@*/char *scontext = NULL;
+	struct selabel_handle *label_handle = NULL;
 
 	if (!selinux_checked) {
 		selinux_enabled = is_selinux_enabled () > 0;
@@ -62,7 +64,11 @@ int set_selinux_file_context (const char *dst_name, const char *orig_name)
 
 	if (selinux_enabled) {
 		/* Get the default security context for this file */
-		if (matchpathcon (dst_name, 0, &scontext) < 0) {
+		label_handle = selabel_open(SELABEL_CTX_FILE, NULL, 0);
+		if (label_handle == NULL)
+			goto error;
+
+		if (selabel_lookup (label_handle, &scontext, dst_name, 0) < 0) {
 			/* We could not get the default, copy the original */
 			if (orig_name == NULL)
 				goto error;
@@ -73,9 +79,18 @@ int set_selinux_file_context (const char *dst_name, const char *orig_name)
 		if (setfscreatecon (scontext) < 0)
 			goto error;
 		freecon (scontext);
+		scontext = NULL;
+		selabel_close(label_handle);
+		label_handle = NULL;
 	}
 	return 0;
     error:
+	if (scontext != NULL) {
+		freecon(scontext);
+	}
+	if (label_handle != NULL) {
+		selabel_close(label_handle);
+	}
 	if (security_getenforce () != 0) {
 		return 1;
 	}
