@@ -53,7 +53,7 @@ static bool selinux_enabled;
  */
 int set_selinux_file_context (const char *dst_name, const char *orig_name)
 {
-	/*@null@*/security_context_t scontext = NULL;
+	/*@null@*/char *scontext = NULL;
 
 	if (!selinux_checked) {
 		selinux_enabled = is_selinux_enabled () > 0;

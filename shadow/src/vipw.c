@@ -241,7 +241,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	/* if SE Linux is enabled then set the context of all new files
 	   to be the context of the file we are editing */
 	if (is_selinux_enabled () != 0) {
-		security_context_t passwd_context=NULL;
+		char *passwd_context=NULL;
 		int ret = 0;
 		if (getfilecon (file, &passwd_context) < 0) {
 			vipwexit (_("Couldn't get file context"), errno, 1);
