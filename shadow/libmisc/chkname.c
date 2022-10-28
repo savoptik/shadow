@@ -114,16 +114,24 @@ out:
 	return result;
 }
 
+int allow_bad_names = false;
+
 static bool is_valid_name (const char *name)
 {
+
 	const char *name_re = get_name_regexp ();
 
 	if (name_re)
 		return is_valid_name_regexp (name, name_re);
 
+	if (allow_bad_names) {
+		return true;
+	}
+
 	/*
 	 * User/group names must match [a-z_][a-z0-9_-]*[$]
 	 */
+
 	if (('\0' == *name) ||
 	    !((('a' <= *name) && ('z' >= *name)) || ('_' == *name))) {
 		return false;

@@ -49,6 +49,7 @@
 #include "defines.h"
 #include "groupio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
@@ -59,6 +60,8 @@
 static char *group_name;
 static gid_t group_id = -1;
 static bool check_group_busy = true;
+
+static const char* prefix = "";
 
 #ifdef	SHADOWGRP
 static bool is_shadow_grp;
@@ -95,6 +98,7 @@ static /*@noreturn@*/void usage (int status)
 	                Prog);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
 	(void) fputs (_("  -f, --force                   delete group even if it is the primary group of a user\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
@@ -281,11 +285,11 @@ static void group_busy (gid_t gid)
 	 * Nice slow linear search.
 	 */
 
-	setpwent ();
+	prefix_setpwent ();
 
-	while ( ((pwd = getpwent ()) != NULL) && (pwd->pw_gid != gid) );
+	while ( ((pwd = prefix_getpwent ()) != NULL) && (pwd->pw_gid != gid) );
 
-	endpwent ();
+	prefix_endpwent ();
 
 	/*
 	 * If pwd isn't NULL, it stopped because the gid's matched.
@@ -318,16 +322,19 @@ static void process_flags (int argc, char **argv)
 	static struct option long_options[] = {
 		{"help", no_argument,       NULL, 'h'},
 		{"root", required_argument, NULL, 'R'},
+		{"prefix", required_argument, NULL, 'P'},
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((c = getopt_long (argc, argv, "hfR:",
+	while ((c = getopt_long (argc, argv, "hfR:P:",
 	                         long_options, NULL)) != -1) {
 		switch (c) {
 		case 'h':
 			usage (E_SUCCESS);
 			/*@notreached@*/break;
 		case 'R': /* no-op, handled in process_root_flag () */
+			break;
+		case 'P': /* no-op, handled in process_prefix_flag () */
 			break;
 		case 'f':
 			check_group_busy = false;
@@ -367,6 +374,7 @@ int main (int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
 
 	OPENLOG ("groupdel");
 #ifdef WITH_AUDIT
@@ -427,7 +435,7 @@ int main (int argc, char **argv)
 		/*
 		 * Start with a quick check to see if the group exists.
 		 */
-		grp = getgrnam (group_name); /* local, no need for xgetgrnam */
+		grp = prefix_getgrnam (group_name); /* local, no need for xgetgrnam */
 		if (NULL == grp) {
 			fprintf (stderr,
 			         _("%s: group '%s' does not exist\n"),
@@ -478,6 +486,7 @@ int main (int argc, char **argv)
 	close_files ();
 
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_GROUP);
 
 	return E_SUCCESS;
 }

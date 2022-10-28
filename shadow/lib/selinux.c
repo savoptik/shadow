@@ -31,13 +31,16 @@
 
 #ifdef WITH_SELINUX
 
+#include <stdio.h>
 #include "defines.h"
 
 #include <selinux/selinux.h>
 #include <selinux/context.h>
+<<<<<<< HEAD
 #include <selinux/label.h>
+=======
+>>>>>>> wip-try-update-4.8_2
 #include "prototypes.h"
-
 
 static bool selinux_checked = false;
 static bool selinux_enabled;

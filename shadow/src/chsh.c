@@ -42,6 +42,7 @@
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -565,6 +566,7 @@ int main (int argc, char **argv)
 	SYSLOG ((LOG_INFO, "changed user '%s' shell to '%s'", user, loginsh));
 
 	nscd_flush_cache ("passwd");
+	sssd_flush_cache (SSSD_DB_PASSWD);
 
 	closelog ();
 	exit (E_SUCCESS);

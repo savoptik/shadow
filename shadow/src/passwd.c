@@ -45,6 +45,7 @@
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -276,7 +277,11 @@ static int new_password (const struct passwd *pw)
 #ifdef USE_SHA_CRYPT
 		    || (strcmp (method, "SHA256") == 0)
 		    || (strcmp (method, "SHA512") == 0)
-#endif				/* USE_SHA_CRYPT */
+#endif /* USE_SHA_CRYPT */
+#ifdef USE_BCRYPT
+		    || (strcmp (method, "BCRYPT") == 0)
+#endif /* USE_SHA_CRYPT */
+
 		    ) {
 			pass_max_len = -1;
 		} else {
@@ -1078,6 +1083,7 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
 	SYSLOG ((LOG_INFO, "password for '%s' changed by '%s'", name, myname));
 	closelog ();

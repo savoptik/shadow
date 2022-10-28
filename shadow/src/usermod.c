@@ -34,6 +34,7 @@
 
 #ident "$Id$"
 
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -56,6 +57,7 @@
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -122,6 +124,10 @@ static long user_inactive;
 static long user_newinactive;
 static long sys_ngroups;
 static char **user_groups;	/* NULL-terminated list */
+
+static const char* prefix = "";
+static char* prefix_user_home = NULL;
+static char* prefix_user_newhome = NULL;
 
 static bool
     aflg = false,		/* append to existing secondary group set */
@@ -199,6 +205,8 @@ static void update_faillog (void);
 static void move_mailbox (void);
 #endif
 
+extern int allow_bad_names;
+
 static void date_to_str (/*@unique@*//*@out@*/char *buf, size_t maxsize,
                          long int date)
 {
@@ -267,7 +275,7 @@ static int get_groups (char *list)
 		 * Names starting with digits are treated as numerical GID
 		 * values, otherwise the string is looked up as is.
 		 */
-		grp = getgr_nam_gid (list);
+		grp = prefix_getgr_nam_gid (list);
 
 		/*
 		 * There must be a match, either by GID value or by
@@ -405,6 +413,7 @@ static /*@noreturn@*/void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
+	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
 	(void) fputs (_("  -c, --comment COMMENT         new value of the GECOS field\n"), usageout);
 	(void) fputs (_("  -d, --home HOME_DIR           new home directory for the user account\n"), usageout);
 	(void) fputs (_("  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE\n"), usageout);
@@ -414,7 +423,7 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -G, --groups GROUPS           new list of supplementary GROUPS\n"), usageout);
 	(void) fputs (_("  -a, --append                  append the user to the supplemental GROUPS\n"
 	                "                                mentioned by the -G option without removing\n"
-	                "                                him/her from other groups\n"), usageout);
+	                "                                the user from other groups\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -l, --login NEW_LOGIN         new value of the login name\n"), usageout);
 	(void) fputs (_("  -L, --lock                    lock the user account\n"), usageout);
@@ -423,6 +432,7 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -o, --non-unique              allow using duplicate (non-unique) UID\n"), usageout);
 	(void) fputs (_("  -p, --password PASSWORD       use encrypted password for the new password\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
 	(void) fputs (_("  -s, --shell SHELL             new login shell for the user account\n"), usageout);
 	(void) fputs (_("  -u, --uid UID                 new UID for the user account\n"), usageout);
 	(void) fputs (_("  -U, --unlock                  unlock the user account\n"), usageout);
@@ -987,6 +997,7 @@ static void process_flags (int argc, char **argv)
 		int c;
 		static struct option long_options[] = {
 			{"append",       no_argument,       NULL, 'a'},
+			{"badnames",     no_argument,       NULL, 'b'},
 			{"comment",      required_argument, NULL, 'c'},
 			{"home",         required_argument, NULL, 'd'},
 			{"expiredate",   required_argument, NULL, 'e'},
@@ -1000,6 +1011,7 @@ static void process_flags (int argc, char **argv)
 			{"non-unique",   no_argument,       NULL, 'o'},
 			{"password",     required_argument, NULL, 'p'},
 			{"root",         required_argument, NULL, 'R'},
+			{"prefix",       required_argument, NULL, 'P'},
 			{"shell",        required_argument, NULL, 's'},
 			{"uid",          required_argument, NULL, 'u'},
 			{"unlock",       no_argument,       NULL, 'U'},
@@ -1015,7 +1027,7 @@ static void process_flags (int argc, char **argv)
 			{NULL, 0, NULL, '\0'}
 		};
 		while ((c = getopt_long (argc, argv,
-		                         "ac:d:e:f:g:G:hl:Lmop:R:s:u:U"
+		                         "abc:d:e:f:g:G:hl:Lmop:R:s:u:UP:"
 #ifdef ENABLE_SUBIDS
 		                         "v:w:V:W:"
 #endif				/* ENABLE_SUBIDS */
@@ -1026,6 +1038,9 @@ static void process_flags (int argc, char **argv)
 			switch (c) {
 			case 'a':
 				aflg = true;
+				break;
+			case 'b':
+				allow_bad_names = true;
 				break;
 			case 'c':
 				if (!VALID (optarg)) {
@@ -1117,6 +1132,8 @@ static void process_flags (int argc, char **argv)
 				break;
 			case 'R': /* no-op, handled in process_root_flag () */
 				break;
+			case 'P': /* no-op, handled in process_prefix_flag () */
+				break;
 			case 's':
 				if (!VALID (optarg)) {
 					fprintf (stderr,
@@ -1180,6 +1197,12 @@ static void process_flags (int argc, char **argv)
 #endif				/* ENABLE_SUBIDS */
 #ifdef WITH_SELINUX
 			case 'Z':
+				if (prefix[0]) {
+					fprintf (stderr,
+					         _("%s: -Z cannot be used with --prefix\n"),
+					         Prog);
+					exit (E_BAD_ARG);
+				}
 				if (is_selinux_enabled () > 0) {
 					user_selinux = optarg;
 					Zflg = true;
@@ -1207,7 +1230,7 @@ static void process_flags (int argc, char **argv)
 	{
 		const struct passwd *pwd;
 		/* local, no need for xgetpwnam */
-		pwd = getpwnam (user_name);
+		pwd = prefix_getpwnam (user_name);
 		if (NULL == pwd) {
 			fprintf (stderr,
 			         _("%s: user '%s' does not exist\n"),
@@ -1232,6 +1255,24 @@ static void process_flags (int argc, char **argv)
 	}
 	if (!gflg) {
 		user_newgid = user_gid;
+	}
+	if(prefix[0]) {
+		size_t len = strlen(prefix) + strlen(user_home) + 2;
+		int wlen;
+		prefix_user_home = xmalloc(len);
+		wlen = snprintf(prefix_user_home, len, "%s/%s", prefix, user_home);
+		assert (wlen == (int) len -1);
+		if (user_newhome) {
+			len = strlen(prefix) + strlen(user_newhome) + 2;
+			prefix_user_newhome = xmalloc(len);
+			wlen = snprintf(prefix_user_newhome, len, "%s/%s", prefix, user_newhome);
+			assert (wlen == (int) len -1);
+		}
+
+	}
+	else {
+		prefix_user_home = user_home;
+		prefix_user_newhome = user_newhome;
 	}
 
 #ifdef	USE_NIS
@@ -1259,7 +1300,7 @@ static void process_flags (int argc, char **argv)
 	{
 		const struct spwd *spwd = NULL;
 		/* local, no need for xgetspnam */
-		if (is_shadow_pwd && ((spwd = getspnam (user_name)) != NULL)) {
+		if (is_shadow_pwd && ((spwd = prefix_getspnam (user_name)) != NULL)) {
 			user_expire = spwd->sp_expire;
 			user_inactive = spwd->sp_inact;
 		}
@@ -1337,7 +1378,7 @@ static void process_flags (int argc, char **argv)
 	      || Zflg
 #endif				/* WITH_SELINUX */
 	)) {
-		fprintf (stderr, _("%s: no changes\n"), Prog);
+		fprintf (stdout, _("%s: no changes\n"), Prog);
 		exit (E_SUCCESS);
 	}
 
@@ -1349,7 +1390,7 @@ static void process_flags (int argc, char **argv)
 	}
 
 	/* local, no need for xgetpwnam */
-	if (lflg && (getpwnam (user_newname) != NULL)) {
+	if (lflg && (prefix_getpwnam (user_newname) != NULL)) {
 		fprintf (stderr,
 		         _("%s: user '%s' already exists\n"),
 		         Prog, user_newname);
@@ -1357,7 +1398,7 @@ static void process_flags (int argc, char **argv)
 	}
 
 	/* local, no need for xgetpwuid */
-	if (uflg && !oflg && (getpwuid (user_newid) != NULL)) {
+	if (uflg && !oflg && (prefix_getpwuid (user_newid) != NULL)) {
 		fprintf (stderr,
 		         _("%s: UID '%lu' already exists\n"),
 		         Prog, (unsigned long) user_newid);
@@ -1734,7 +1775,7 @@ static void move_home (void)
 {
 	struct stat sb;
 
-	if (access (user_newhome, F_OK) == 0) {
+	if (access (prefix_user_newhome, F_OK) == 0) {
 		/*
 		 * If the new home directory already exist, the user
 		 * should not use -m.
@@ -1745,7 +1786,7 @@ static void move_home (void)
 		fail_exit (E_HOMEDIR);
 	}
 
-	if (stat (user_home, &sb) == 0) {
+	if (stat (prefix_user_home, &sb) == 0) {
 		/*
 		 * Don't try to move it if it is not a directory
 		 * (but /dev/null for example).  --marekm
@@ -1767,11 +1808,11 @@ static void move_home (void)
 		}
 #endif
 
-		if (rename (user_home, user_newhome) == 0) {
+		if (rename (prefix_user_home, prefix_user_newhome) == 0) {
 			/* FIXME: rename above may have broken symlinks
 			 *        pointing to the user's home directory
 			 *        with an absolute path. */
-			if (chown_tree (user_newhome,
+			if (chown_tree (prefix_user_newhome,
 			                user_id,  uflg ? user_newid  : (uid_t)-1,
 			                user_gid, gflg ? user_newgid : (gid_t)-1) != 0) {
 				fprintf (stderr,
@@ -1788,16 +1829,25 @@ static void move_home (void)
 			return;
 		} else {
 			if (EXDEV == errno) {
-				if (copy_tree (user_home, user_newhome, true,
+#ifdef WITH_BTRFS
+				if (btrfs_is_subvolume (prefix_user_home) > 0) {
+					fprintf (stderr,
+					        _("%s: error: cannot move subvolume from %s to %s - different device\n"),
+					        Prog, prefix_user_home, prefix_user_newhome);
+					fail_exit (E_HOMEDIR);
+				}
+#endif
+
+				if (copy_tree (prefix_user_home, prefix_user_newhome, true,
 				               true,
 				               user_id,
 				               uflg ? user_newid : (uid_t)-1,
 				               user_gid,
 				               gflg ? user_newgid : (gid_t)-1) == 0) {
-					if (remove_tree (user_home, true) != 0) {
+					if (remove_tree (prefix_user_home, true) != 0) {
 						fprintf (stderr,
 						         _("%s: warning: failed to completely remove old home directory %s"),
-						         Prog, user_home);
+						         Prog, prefix_user_home);
 					}
 #ifdef WITH_AUDIT
 					audit_logger (AUDIT_USER_CHAUTHTOK,
@@ -1810,11 +1860,11 @@ static void move_home (void)
 					return;
 				}
 
-				(void) remove_tree (user_newhome, true);
+				(void) remove_tree (prefix_user_newhome, true);
 			}
 			fprintf (stderr,
 			         _("%s: cannot rename directory %s to %s\n"),
-			         Prog, user_home, user_newhome);
+			         Prog, prefix_user_home, prefix_user_newhome);
 			fail_exit (E_HOMEDIR);
 		}
 	}
@@ -1833,8 +1883,15 @@ static void update_lastlog (void)
 	int fd;
 	off_t off_uid = (off_t) user_id * sizeof ll;
 	off_t off_newuid = (off_t) user_newid * sizeof ll;
+	uid_t max_uid;
 
 	if (access (LASTLOG_FILE, F_OK) != 0) {
+		return;
+	}
+
+	max_uid = (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL);
+	if (user_newid > max_uid) {
+		/* do not touch lastlog for large uids */
 		return;
 	}
 
@@ -1952,9 +2009,11 @@ static void update_faillog (void)
 static void move_mailbox (void)
 {
 	const char *maildir;
-	char mailfile[1024], newmailfile[1024];
+	char* mailfile;
+	char* newmailfile;
 	int fd;
 	struct stat st;
+	size_t len;
 
 	maildir = getdef_str ("MAIL_DIR");
 #ifdef MAIL_SPOOL_DIR
@@ -1965,6 +2024,8 @@ static void move_mailbox (void)
 	if (NULL == maildir) {
 		return;
 	}
+	len = strlen (prefix) + strlen (maildir) + strlen (user_name) + 2;
+	mailfile = alloca (len);
 
 	/*
 	 * O_NONBLOCK is to make sure open won't hang on mandatory locks.
@@ -1972,9 +2033,16 @@ static void move_mailbox (void)
 	 * replacing /var/spool/mail/luser with a hard link to /etc/passwd
 	 * between stat and chown).  --marekm
 	 */
-	(void) snprintf (mailfile, sizeof mailfile, "%s/%s",
-	                 maildir, user_name);
-	mailfile[(sizeof mailfile) - 1] = '\0';
+	if (prefix[0]) {
+		(void) snprintf (mailfile, len, "%s/%s/%s",
+	    	             prefix, maildir, user_name);
+	}
+	else {
+		(void) snprintf (mailfile, len, "%s/%s",
+	    	             maildir, user_name);
+	}
+	mailfile[len-1] = '\0';
+
 	fd = open (mailfile, O_RDONLY | O_NONBLOCK, 0);
 	if (fd < 0) {
 		/* no need for warnings if the mailbox doesn't exist */
@@ -2011,9 +2079,17 @@ static void move_mailbox (void)
 	(void) close (fd);
 
 	if (lflg) {
-		(void) snprintf (newmailfile, sizeof newmailfile, "%s/%s",
-		                 maildir, user_newname);
-		newmailfile[(sizeof newmailfile) - 1] = '\0';
+		len = strlen (prefix) + strlen (maildir) + strlen (user_newname) + 2;
+		newmailfile = alloca(len);
+		if (prefix[0]) {
+			(void) snprintf (newmailfile, len, "%s/%s/%s",
+			                 prefix, maildir, user_newname);
+		}
+		else {
+			(void) snprintf (newmailfile, len, "%s/%s",
+			                 maildir, user_newname);
+		}
+		newmailfile[len - 1] = '\0';
 		if (   (link (mailfile, newmailfile) != 0)
 		    || (unlink (mailfile) != 0)) {
 			perror (_("failed to rename mailbox"));
@@ -2046,6 +2122,7 @@ int main (int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
 
 	OPENLOG ("usermod");
 #ifdef WITH_AUDIT
@@ -2070,8 +2147,9 @@ int main (int argc, char **argv)
 	/*
 	 * The home directory, the username and the user's UID should not
 	 * be changed while the user is logged in.
+	 * Note: no need to check if a prefix is specified...
 	 */
-	if (   (uflg || lflg || dflg
+	if ( (prefix[0] == '\0') &&  (uflg || lflg || dflg
 #ifdef ENABLE_SUBIDS
 	        || Vflg || Wflg
 #endif				/* ENABLE_SUBIDS */
@@ -2210,6 +2288,7 @@ int main (int argc, char **argv)
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
 #ifdef WITH_SELINUX
 	if (Zflg) {
@@ -2259,7 +2338,10 @@ int main (int argc, char **argv)
 	}
 
 	if (!mflg && (uflg || gflg)) {
-		if (access (dflg ? user_newhome : user_home, F_OK) == 0) {
+		struct stat sb;
+
+		if (stat (dflg ? prefix_user_newhome : prefix_user_home, &sb) == 0 &&
+			((uflg && sb.st_uid == user_newid) || sb.st_uid == user_id)) {
 			/*
 			 * Change the UID on all of the files owned by
 			 * `user_id' to `user_newid' in the user's home
@@ -2276,7 +2358,7 @@ int main (int argc, char **argv)
 					      user_newname, (unsigned int) user_newid, 1);
 			}
 #endif
-			if (chown_tree (dflg ? user_newhome : user_home,
+			if (chown_tree (dflg ? prefix_user_newhome : prefix_user_home,
 			                user_id,
 			                uflg ? user_newid  : (uid_t)-1,
 			                user_gid,

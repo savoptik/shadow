@@ -46,6 +46,7 @@
 #endif				/* ACCT_TOOLS_SETUID */
 #include "defines.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #include "groupio.h"
 #ifdef	SHADOWGRP
@@ -59,14 +60,17 @@
  */
 static bool eflg   = false;
 static bool md5flg = false;
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
 static bool sflg   = false;
-#endif
+#endif /* USE_SHA_CRYPT || USE_BCRYPT */
 
 static /*@null@*//*@observer@*/const char *crypt_method = NULL;
 #define cflg (NULL != crypt_method)
 #ifdef USE_SHA_CRYPT
 static long sha_rounds = 5000;
+#endif
+#ifdef USE_BCRYPT
+static long bcrypt_rounds = 13;
 #endif
 
 #ifdef SHADOWGRP
@@ -123,11 +127,15 @@ static /*@noreturn@*/void usage (int status)
 	                Prog);
 	(void) fprintf (usageout,
 	                _("  -c, --crypt-method METHOD     the crypt method (one of %s)\n"),
-#ifndef USE_SHA_CRYPT
+#if !defined(USE_SHA_CRYPT) && !defined(USE_BCRYPT)
 	                "NONE DES MD5"
-#else				/* USE_SHA_CRYPT */
+#elif defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+	                "NONE DES MD5 SHA256 SHA512 BCRYPT"
+#elif defined(USE_SHA_CRYPT)
 	                "NONE DES MD5 SHA256 SHA512"
-#endif				/* USE_SHA_CRYPT */
+#else
+	                "NONE DES MD5 BCRYPT"
+#endif
 	               );
 	(void) fputs (_("  -e, --encrypted               supplied passwords are encrypted\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
@@ -135,11 +143,11 @@ static /*@noreturn@*/void usage (int status)
 	                "                                the MD5 algorithm\n"),
 	              usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
-#ifdef USE_SHA_CRYPT
-	(void) fputs (_("  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
 	                "                                crypt algorithms\n"),
 	              usageout);
-#endif				/* USE_SHA_CRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
 	(void) fputs ("\n", usageout);
 
 	exit (status);
@@ -159,14 +167,13 @@ static void process_flags (int argc, char **argv)
 		{"help",         no_argument,       NULL, 'h'},
 		{"md5",          no_argument,       NULL, 'm'},
 		{"root",         required_argument, NULL, 'R'},
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
 		{"sha-rounds",   required_argument, NULL, 's'},
-#endif
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
 		{NULL, 0, NULL, '\0'}
 	};
-
 	while ((c = getopt_long (argc, argv,
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
 	                         "c:ehmR:s:",
 #else
 	                         "c:ehmR:",
@@ -187,10 +194,33 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
 		case 's':
 			sflg = true;
-			if (getlong(optarg, &sha_rounds) == 0) {
+			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
+			       && (0 == getlong(optarg, &sha_rounds))) 
+			   || (   (0 == strcmp (crypt_method, "BCRYPT"))
+			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+				fprintf (stderr,
+				         _("%s: invalid numeric argument '%s'\n"),
+				         Prog, optarg);
+				usage (E_USAGE);
+			}
+			break;
+#elif defined(USE_SHA_CRYPT)
+		case 's':
+			sflg = true;
+			if (0 == getlong(optarg, &sha_rounds)) { 
+				fprintf (stderr,
+				         _("%s: invalid numeric argument '%s'\n"),
+				         Prog, optarg);
+				usage (E_USAGE);
+			}
+			break;
+#elif defined(USE_BCRYPT)
+		case 's':
+			sflg = true;
+			if (0 == getlong(optarg, &bcrypt_rounds)) { 
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
 				         Prog, optarg);
@@ -198,6 +228,7 @@ static void process_flags (int argc, char **argv)
 			}
 			break;
 #endif
+
 		default:
 			usage (E_USAGE);
 			/*@notreached@*/break;
@@ -215,7 +246,7 @@ static void process_flags (int argc, char **argv)
  */
 static void check_flags (void)
 {
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
 	if (sflg && !cflg) {
 		fprintf (stderr,
 		         _("%s: %s flag is only allowed with the %s flag\n"),
@@ -239,6 +270,9 @@ static void check_flags (void)
 #ifdef USE_SHA_CRYPT
 		    && (0 != strcmp (crypt_method, "SHA256"))
 		    && (0 != strcmp (crypt_method, "SHA512"))
+#endif
+#ifdef USE_BCRYPT
+		    && (0 != strcmp (crypt_method, "BCRYPT"))
 #endif
 		    ) {
 			fprintf (stderr,
@@ -460,9 +494,23 @@ int main (int argc, char **argv)
 			if (md5flg) {
 				crypt_method = "MD5";
 			}
-#ifdef USE_SHA_CRYPT
+#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+			if (sflg) {
+				if (   (0 == strcmp (crypt_method, "SHA256"))
+					|| (0 == strcmp (crypt_method, "SHA512"))) {
+					arg = &sha_rounds;
+				}
+				else if (0 == strcmp (crypt_method, "BCRYPT")) {
+					arg = &bcrypt_rounds;
+				}
+			}
+#elif defined(USE_SHA_CRYPT)
 			if (sflg) {
 				arg = &sha_rounds;
+			}
+#elif defined(USE_BCRYPT)
+			if (sflg) {
+				arg = &bcrypt_rounds;
 			}
 #endif
 			salt = crypt_make_salt (crypt_method, arg);
@@ -578,6 +626,7 @@ int main (int argc, char **argv)
 	close_files ();
 
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_GROUP);
 
 	return (0);
 }
