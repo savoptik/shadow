@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow_po_el\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2016-09-18 14:03-0500\n"
+"POT-Creation-Date: 2022-07-27 22:49+0800\n"
 "PO-Revision-Date: 2012-01-21 00:22+0200\n"
 "Last-Translator: Thomas Vasileiou <thomas-v@wildmail.com>\n"
 "Language-Team: Greek <debian-l10n-greek@lists.debian.org>\n"
@@ -56,6 +56,15 @@ msgstr "Συνθηματικό: "
 #, c-format
 msgid "%s's Password: "
 msgstr "Του %s το Συνθηματικό: "
+
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Αδυναμία εγκαθίδρυσης διεπαφής ελέγχου - ματαίωσης.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
 
 #, c-format
 msgid "[libsemanage]: %s\n"
@@ -311,10 +320,6 @@ msgstr[1] ""
 " Η τελευταία ήταν στις %s στο %s.\n"
 
 #, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr "%s: Μη έγκυρη διαμόρφωση: GID_MIN (%lu), GID_MAX (%lu)\n"
-
-#, c-format
 msgid ""
 "%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
 "(%lu)\n"
@@ -323,21 +328,62 @@ msgstr ""
 "(%lu)\n"
 
 #, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr "%s: Μη έγκυρη διαμόρφωση: GID_MIN (%lu), GID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, c-format
 msgid "%s: failed to allocate memory: %s\n"
 msgstr "%s: αποτυχία εκχώρησης μνήμης: %s\n"
 
-#, c-format
-msgid "%s: Can't get unique system GID (no more available GIDs)\n"
+#, fuzzy, c-format
+#| msgid "%s: Can't get unique system GID (no more available GIDs)\n"
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
 msgstr ""
 "%s: αδυναμία λήψης μοναδικού GID συστήματος (δεν υπάρχουν διαθέσιμα GID)\n"
+
+#, fuzzy, c-format
+#| msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: αδυναμία λήψης μοναδικού GID (δεν υπάρχουν διαθέσιμα GID)\n"
 
 #, c-format
 msgid "%s: Can't get unique GID (no more available GIDs)\n"
 msgstr "%s: αδυναμία λήψης μοναδικού GID (δεν υπάρχουν διαθέσιμα GID)\n"
 
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr "%s: Μη έγκυρη διαμόρφωση: UID_MIN (%lu), UID_MAX (%lu)\n"
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+#| "(%lu)\n"
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+"%s: Μη έγκυρη διαμόρφωση: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: αδυναμία δημιουργίας του χρήστη\n"
+
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+#| "(%lu)\n"
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+"%s: Μη έγκυρη διαμόρφωση: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: αδυναμία δημιουργίας του χρήστη\n"
 
 #, c-format
 msgid ""
@@ -348,13 +394,75 @@ msgstr ""
 "(%lu)\n"
 
 #, c-format
-msgid "%s: Can't get unique system UID (no more available UIDs)\n"
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr "%s: Μη έγκυρη διαμόρφωση: UID_MIN (%lu), UID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: Can't get unique system UID (no more available UIDs)\n"
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
 msgstr ""
 "%s: αδυναμία λήψης μοναδικού UID συστήματος (δεν υπάρχουν διαθέσιμα UID)\n"
+
+#, fuzzy, c-format
+#| msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: αδυναμία λήψης μοναδικού UID (δεν υπάρχουν διαθέσιμα UID)\n"
 
 #, c-format
 msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: αδυναμία λήψης μοναδικού UID (δεν υπάρχουν διαθέσιμα UID)\n"
+
+#, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: Authentication failure\n"
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: Αποτυχία εξακρίβωσης\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: Μη έγκυρο πεδίο '%s'\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "Could not set name for %s\n"
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Αδυναμία ρύθμισης του ονόματος χρήστη %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set name for %s\n"
+msgid "%s: Could not set caps\n"
+msgstr "Αδυναμία ρύθμισης του ονόματος χρήστη %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: snprintf failed!\n"
+msgstr "%s: αδυναμία ανοίγματος του αρχείου\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
 
 msgid "Too many logins.\n"
 msgstr "Πολλές είσοδοι στο σύστημα.\n"
@@ -408,6 +516,27 @@ msgid "passwd: password updated successfully\n"
 msgstr "passwd: το συνθηματικό ενημερώθηκε επιτυχώς\n"
 
 #, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: η αποθήκη %s δεν υποστηρίζεται\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: σφάλμα %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "συνθηματικό: pam_start() απέτυχε, σφάλμα %d\n"
+
+#, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Εσφαλμένο συνθηματικό για %s.\n"
 
@@ -423,8 +552,9 @@ msgstr "%s: η επιλογή '%s' απαιτεί μία τιμή\n"
 msgid "%s: failed to drop privileges (%s)\n"
 msgstr "%s: αποτυχία απόρριψης προνομίων (%s)\n"
 
-#, c-format
-msgid "%s: invalid chroot path '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid chroot path '%s'\n"
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
 msgstr "%s: διαδρομή chroot μη έγκυρη '%s'\n"
 
 #, c-format
@@ -441,12 +571,23 @@ msgstr ""
 "%s: αδυναμία αλλαγής του φαινομενικού γονικού καταλόγου (chroot)  %s: %s\n"
 
 #, c-format
+msgid "Unable to obtain random bytes.\n"
+msgstr ""
+
+#, c-format
 msgid ""
 "Invalid ENCRYPT_METHOD value: '%s'.\n"
 "Defaulting to DES.\n"
 msgstr ""
 "Μη έγκυρη τιμή για το ENCRYPT_METHOD: '%s'.\n"
 "Επιλέγεται η προκαθορισμένη DES.\n"
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, c-format
 msgid "Unable to cd to '%s'\n"
@@ -466,6 +607,15 @@ msgstr "Μη έγκυρος πρωταρχικός κατάλογος '%s'\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Αδυναμία αλλαγής του πρωταρχικού καταλόγου σε '%s'\n"
+
+#, c-format
+msgid "%s: user %s is currently logged in\n"
+msgstr "%s: Ο χρήστης %s βρίσκεται στο σύστημα\n"
+
+#, fuzzy, c-format
+#| msgid "%s: user %s is currently logged in\n"
+msgid "%s: user %s is currently used by process %d\n"
+msgstr "%s: Ο χρήστης %s βρίσκεται στο σύστημα\n"
 
 msgid "Unable to determine your tty name."
 msgstr "Δεν είναι δυνατόν να καθοριστεί το όνομα tty."
@@ -500,6 +650,11 @@ msgid "  -h, --help                    display this help message and exit\n"
 msgstr ""
 "  -h, --help                    προβολή αυτού του μηνύματος βοήθειας και "
 "έξοδος\n"
+
+#, fuzzy
+#| msgid "  -g, --group                   edit group database\n"
+msgid "  -i, --iso8601                 use YYYY-MM-DD when printing dates\n"
+msgstr "  -g, --group                   επεξεργασία βάσης δεδομένων ομάδων\n"
 
 msgid ""
 "  -I, --inactive INACTIVE       set password inactive after expiration\n"
@@ -702,6 +857,10 @@ msgstr "Τηλέφωνο Οικίας"
 msgid "Other"
 msgstr "Άλλο"
 
+#, c-format
+msgid "%s: fields too long\n"
+msgstr "%s: Πολύ μακριά πεδία\n"
+
 msgid "Cannot change ID to root.\n"
 msgstr "Αδυναμία αλλαγής ταυτότητας χρήστη σε root.\n"
 
@@ -754,10 +913,6 @@ msgid "Changing the user information for %s\n"
 msgstr "Αλλαγή πληροφοριών χρήστη για τον %s\n"
 
 #, c-format
-msgid "%s: fields too long\n"
-msgstr "%s: Πολύ μακριά πεδία\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -783,9 +938,13 @@ msgstr ""
 "  -m, --md5                     κρυπτογράφηση το κειμένου του συνθηματικού\n"
 "                                με χρήση του αλγόριθμου MD5\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
+#| "                                crypt algorithms\n"
 msgid ""
-"  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-"                                crypt algorithms\n"
+"  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+"                                or YESCRYPT crypt algorithms\n"
 msgstr ""
 "  -s, --sha-rounds              αριθμός κύκλων SHA για τους \n"
 "                                 αλγόριθμους κρυπτογράφησης SHA*\n"
@@ -1103,6 +1262,23 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  δημιουργία λογαριασμού συστήματος\n"
 
+#, fuzzy
+#| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
+msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
+msgstr ""
+"  -R, --root ΚΑΤΑΛΟΓΟΣ_CHROOT         κατάλογος στον οποίο να εφαρμοστεί "
+"chroot\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid "  -U, --users USERS             list of user members of this group\n"
+msgstr "  -l, --list                    λίστα όλων των μελών της ομάδας\n"
+
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Invalid member username %s\n"
+msgstr "Μη έγκυρο όνομα χρήστη '%s'\n"
+
 #, c-format
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: Το '%s' δεν είναι έγκυρο όνομα ομάδας\n"
@@ -1126,6 +1302,11 @@ msgstr "%s: το GID '%lu' υπάρχει\n"
 #, c-format
 msgid "%s: Cannot setup cleanup service.\n"
 msgstr "%s: Δεν ήταν δυνατή η ρύθμιση της υπηρεσίας εκκαθάρισης.\n"
+
+msgid ""
+"  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/"
+"* files\n"
+msgstr ""
 
 #, fuzzy
 msgid ""
@@ -1214,6 +1395,23 @@ msgstr "%s: το όνομα της ομάδας σας δεν ταιριάζει
 msgid "%s: only root can use the -g/--group option\n"
 msgstr "%s:  μόνο ο root μπορεί να χρησιμοποιήσει την επιλογή -g/--group\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -a, --append                  append the user to the supplemental "
+#| "GROUPS\n"
+#| "                                mentioned by the -G option without "
+#| "removing\n"
+#| "                                the user from other groups\n"
+msgid ""
+"  -a, --append                  append the users mentioned by -U option to "
+"the group \n"
+"                                without removing existing user members\n"
+msgstr ""
+"  -a, --append                  προσθήκη του χρήστη στις συμπληρωματικές "
+"ΟΜΑΔΕΣ\n"
+"                                που προσδιορίζονται από την επιλογή -G, \n"
+"                                χωρίς να διαγράφεται από τις άλλες ομάδες\n"
+
 msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgstr "  -g, --gid GID                 αλλαγή του ID της ομάδας σε GID\n"
 
@@ -1273,6 +1471,10 @@ msgstr ""
 
 msgid "  -s, --sort                    sort entries by UID\n"
 msgstr "  -s, --sort                    ταξινόμηση εγγραφών κατά UID\n"
+
+msgid ""
+"  -S, --silence-warnings        silence controversial/paranoid warnings\n"
+msgstr ""
 
 #, c-format
 msgid "%s: -s and -r are incompatible\n"
@@ -1352,9 +1554,6 @@ msgstr "%s: αδυναμία διαγραφής του %s\n"
 msgid "Usage: id [-a]\n"
 msgstr "Χρήση: id [-a]\n"
 
-msgid "Usage: id\n"
-msgstr "Χρήση: id\n"
-
 msgid " groups="
 msgstr " ομάδες="
 
@@ -1393,8 +1592,10 @@ msgstr ""
 "  -u, --user ΟΝΟΜΑ              προβολή των εγγραφών του lastlog για το "
 "συγκεκριμένο ΟΝΟΜΑ\n"
 
-msgid "Username         Port     From             Latest"
-msgstr "Όνομα_Χρήστη     Θύρα     Από              Τελευταία"
+#, fuzzy, c-format
+#| msgid "Username                Port     Latest"
+msgid "Username         Port     From%*sLatest\n"
+msgstr "Όνομα_Χρήστη            Θύρα     Τελευταία"
 
 msgid "Username                Port     Latest"
 msgstr "Όνομα_Χρήστη            Θύρα     Τελευταία"
@@ -1402,9 +1603,21 @@ msgstr "Όνομα_Χρήστη            Θύρα     Τελευταία"
 msgid "**Never logged in**"
 msgstr "**Καμιά είσοδος στο σύστημα**"
 
+#, c-format
+msgid ""
+"%s: Selected uid(s) are higher than LASTLOG_UID_MAX (%lu),\n"
+"\tthe output might be incorrect.\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: Failed to update the entry for UID %lu\n"
 msgstr "%s: Aδυναμία ανάκτησης της εγγραφής UID %lu\n"
+
+#, c-format
+msgid ""
+"%s: Selected uid(s) are higher than LASTLOG_UID_MAX (%lu),\n"
+"\tthey will not be updated.\n"
+msgstr ""
 
 #, fuzzy, c-format
 msgid "%s: Failed to update the lastlog file\n"
@@ -1518,10 +1731,6 @@ msgid "Last login: %s on %s"
 msgstr "Τελευταία είσοδος: %s στο %s"
 
 #, c-format
-msgid "Last login: %.19s on %s"
-msgstr "Τελευταία είσοδος: %.19s στο %s"
-
-#, c-format
 msgid " from %.*s"
 msgstr " από %.*s"
 
@@ -1534,6 +1743,55 @@ msgstr ""
 
 msgid "Usage: logoutd\n"
 msgstr "Χρήση: logoutd\n"
+
+#, c-format
+msgid "%s: gid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> <count> ] ... \n"
+msgstr ""
+
+#, c-format
+msgid "%s: kernel doesn't support setgroups restrictions\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: can't open group file\n"
+msgid "%s: couldn't open process setgroups: %s\n"
+msgstr "%s: αδυναμία ανοίγματος του αρχείου ομάδων\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to remove %s\n"
+msgid "%s: failed to read setgroups: %s\n"
+msgstr "%s: αποτυχία απομάκρυνσης του %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to remove %s\n"
+msgid "%s: failed to seek setgroups: %s\n"
+msgstr "%s: αποτυχία απομάκρυνσης του %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to unlock %s\n"
+msgid "%s: failed to setgroups %s policy: %s\n"
+msgstr "%s: Αποτυχία ξεκλειδώματος %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to find tcb directory for %s\n"
+msgid "%s: Could not open proc directory for target %u\n"
+msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: Failed to create tcb directory for %s\n"
+msgid "%s: Could not stat directory for target %u\n"
+msgstr "%s: Αδυναμία δημιουργίας tcb καταλόγου για το χρήστη %s\n"
+
+#, c-format
+msgid ""
+"%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, "
+"gid:%lu pw_gid:%lu st_gid:%lu\n"
+msgstr ""
 
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Χρήση: newgrp [-] [ομάδα]\n"
@@ -1559,6 +1817,26 @@ msgstr "%s: Ο GID '%lu' δεν υπάρχει\n"
 msgid "too many groups\n"
 msgstr "πάρα πολλές ομάδες\n"
 
+#, c-format
+msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> <count> ] ... \n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
+"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
+msgstr ""
+
+#, fuzzy
+#| msgid "  -q, --quiet                   quiet mode\n"
+msgid "  -b, --badname                 allow bad names\n"
+msgstr "  -q, --quiet                   σιωπηλή λειτουργία\n"
+
 msgid "  -r, --system                  create system accounts\n"
 msgstr "  -r, --system                  δημιουργία λογαριασμών συστήματος\n"
 
@@ -1571,8 +1849,9 @@ msgstr ""
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: μη έγκυρο ID χρήστη '%s'\n"
 
-#, c-format
-msgid "%s: invalid user name '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: μη έγκυρο όνομα χρήστη '%s'\n"
 
 #, c-format
@@ -1600,6 +1879,11 @@ msgstr "%s: γραμμή %d: Ο χρήστης '%s' δεν υπάρχει στο
 #, c-format
 msgid "%s: line %d: can't update password\n"
 msgstr "%s: γραμμή %d: αδυναμία ανανέωση συνθηματικού\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %d: homedir must be an absolute path\n"
+msgstr "%s: γραμμή %d: αποτυχία δημιουργίας καταλόγου %s (mkdir) : %s\n"
 
 #, c-format
 msgid "%s: line %d: mkdir %s failed: %s\n"
@@ -1751,6 +2035,11 @@ msgstr "Το συνθηματικό για τον %s δεν μπορεί να α
 msgid "The password for %s cannot be changed yet.\n"
 msgstr "Το συνθηματικό για το χρήστη %s δεν μπορεί να αλλάξει.\n"
 
+#, fuzzy, c-format
+#| msgid "%s: shadow passwords required for -e\n"
+msgid "%s: malformed password data obtained for user %s\n"
+msgstr "%s: σκιώδη συνθηματικά απαιτούνται για το -e\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the password would result in a passwordless account.\n"
@@ -1766,8 +2055,9 @@ msgstr ""
 msgid "%s: repository %s not supported\n"
 msgstr "%s: η αποθήκη %s δεν υποστηρίζεται\n"
 
-#, c-format
-msgid "%s: %s is not authorized to change the password of %s\n"
+#, fuzzy, c-format
+#| msgid "%s: %s is not authorized to change the password of %s\n"
+msgid "%s: root is not authorized by SELinux to change the password of %s\n"
 msgstr ""
 "%s: ο χρήστης %s δεν είναι εξουσιοδοτημένος να αλλάξει το συνθηματικό του "
 "%s\n"
@@ -1787,10 +2077,6 @@ msgstr "Το συνθηματικό για τον %s δεν άλλαξε.\n"
 #, c-format
 msgid "%s: password changed.\n"
 msgstr "%s: το συνθηματικό άλλαξε.\n"
-
-#, c-format
-msgid "%s: password expiry information changed.\n"
-msgstr "%s: αλλαγή πληροφοριών λήξης συνθηματικού.\n"
 
 #, c-format
 msgid ""
@@ -1828,9 +2114,10 @@ msgstr "Μη έγκυρη καταχώρηση στο αρχείο συνθημ�
 msgid "duplicate password entry"
 msgstr "διπλότυπη καταχώριση στο αρχείο συνθηματικών"
 
-#, c-format
-msgid "invalid user name '%s'\n"
-msgstr "Μη έγκυρο όνομα χρήστη '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: μη έγκυρο όνομα χρήστη '%s'\n"
 
 #, c-format
 msgid "invalid user ID '%lu'\n"
@@ -1912,6 +2199,10 @@ msgid "Please enter your OWN password as authentication.\n"
 msgstr "Παρακαλώ εισάγετε το ΔΙΚΟ σας συνθηματικό για εξακρίβωση.\n"
 
 #, c-format
+msgid "%s: signal masking malfunction\n"
+msgstr "%s: δυσλειτουργία μασκαρίσμος του σήματος\n"
+
+#, c-format
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: αδυναμία διχάλωσης του φλοιού του χρήστη\n"
 
@@ -1919,16 +2210,14 @@ msgstr "%s: αδυναμία διχάλωσης του φλοιού του χρ�
 msgid "%s: signal malfunction\n"
 msgstr "%s: δυσλειτουργία σήματος\n"
 
-#, c-format
-msgid "%s: signal masking malfunction\n"
-msgstr "%s: δυσλειτουργία μασκαρίσμος του σήματος\n"
-
 msgid "Session terminated, terminating shell..."
 msgstr "Συνεδρία τερματίστηκε, τερματισμός φλοιού..."
 
+#, c-format
 msgid " ...killed.\n"
 msgstr " ...σκοτώθηκε.\n"
 
+#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -1939,8 +2228,22 @@ msgstr " ...τερματίστηκε.\n"
 msgid "%s: %s\n"
 msgstr "%s: %s\n"
 
+#, fuzzy
+#| msgid ""
+#| "Usage: su [options] [LOGIN]\n"
+#| "\n"
+#| "Options:\n"
+#| "  -c, --command COMMAND         pass COMMAND to the invoked shell\n"
+#| "  -h, --help                    display this help message and exit\n"
+#| "  -, -l, --login                make the shell a login shell\n"
+#| "  -m, -p,\n"
+#| "  --preserve-environment        do not reset environment variables, and\n"
+#| "                                keep the same shell\n"
+#| "  -s, --shell SHELL             use SHELL instead of the default in "
+#| "passwd\n"
+#| "\n"
 msgid ""
-"Usage: su [options] [LOGIN]\n"
+"Usage: su [options] [-] [username [args]]\n"
 "\n"
 "Options:\n"
 "  -c, --command COMMAND         pass COMMAND to the invoked shell\n"
@@ -1951,6 +2254,7 @@ msgid ""
 "                                keep the same shell\n"
 "  -s, --shell SHELL             use SHELL instead of the default in passwd\n"
 "\n"
+"If no username is given, assume root.\n"
 msgstr ""
 "Χρήση: su [επιλογές] [ΟΝΟΜΑ]\n"
 "\n"
@@ -1973,6 +2277,14 @@ msgid ""
 msgstr ""
 "%s: %s\n"
 "(Αγνοήθηκε)\n"
+
+#, c-format
+msgid "Password field is empty, this is forbidden for all accounts.\n"
+msgstr ""
+
+#, c-format
+msgid "Password field is empty, this is forbidden for super-user.\n"
+msgstr ""
 
 #, c-format
 msgid "You are not authorized to su %s\n"
@@ -2038,6 +2350,16 @@ msgstr "%s: το %s δημιουργήθηκε, αλλά δεν μπορεί ν�
 msgid "%s: the %s configuration in %s will be ignored\n"
 msgstr "%s: η %s διαμόρφωση στο %s θα αγνοηθεί\n"
 
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "%s: cannot create new defaults file: %s\n"
+msgstr "%s: αδυναμία δημιουργίας νέου αρχείου προκαθορισμένων ρυθμίσεων\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "%s: cannot create directory for defaults file\n"
+msgstr "%s: αδυναμία δημιουργίας νέου αρχείου προκαθορισμένων ρυθμίσεων\n"
+
 #, c-format
 msgid "%s: cannot create new defaults file\n"
 msgstr "%s: αδυναμία δημιουργίας νέου αρχείου προκαθορισμένων ρυθμίσεων\n"
@@ -2066,6 +2388,11 @@ msgstr "%s: Η ομάδα '%s' είναι NIS ομάδα.\n"
 msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: Προσδιορίστηκαν υπερβολικές ομάδες (μεγ. %d).\n"
 
+#, fuzzy, c-format
+#| msgid "%s: Out of memory. Cannot update %s.\n"
+msgid "%s: Out of memory. Cannot find group '%s'.\n"
+msgstr "%s: Δεν υπάρχει ελεύθερη μνήμη. Αδυναμία ενημέρωσης του %s.\n"
+
 #, c-format
 msgid ""
 "Usage: %s [options] LOGIN\n"
@@ -2080,6 +2407,13 @@ msgstr ""
 "\n"
 "Επιλογές:\n"
 
+#, fuzzy
+#| msgid "  -s, --shadow                  edit shadow or gshadow database\n"
+msgid "      --badname                 do not check for bad names\n"
+msgstr ""
+"  -s, --shadow                  επεξεργασία βάσης δεδομένων shadow ή "
+"gshadow\n"
+
 msgid ""
 "  -b, --base-dir BASE_DIR       base directory for the home directory of "
 "the\n"
@@ -2088,6 +2422,10 @@ msgstr ""
 "  -b, --base-dir ΒΑΣΙΚΟΣ_ΚΑΤ       βασικός κατάλογος για τον αρχικό κατάλογο "
 "του χρήστη γιατον\n"
 "                                καινούργιο λογαριασμό\n"
+
+msgid ""
+"      --btrfs-subvolume-home    use BTRFS subvolume for home directory\n"
+msgstr ""
 
 msgid "  -c, --comment COMMENT         GECOS field of the new account\n"
 msgstr "  -c, --comment ΣΧΟΛΙΟ         πεδίο GECOS του νέου λογαριασμού\n"
@@ -2215,25 +2553,108 @@ msgstr "%s: Μη έγκυρο πεδίο '%s'\n"
 msgid "%s: invalid shell '%s'\n"
 msgstr "%s: Μη έγκυρος φλοιός '%s'\n"
 
+#, fuzzy, c-format
+#| msgid "%s: Warning: %s is not executable\n"
+msgid "%s: Warning: missing or non-executable shell '%s'\n"
+msgstr "%s: Προειδοποίηση: το %s δεν είναι εκτελέσιμο\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot rewrite password file\n"
+msgid "%s: -Z cannot be used with --prefix\n"
+msgstr "%s: αδυναμία επανεγγραφής του αρχείου συνθηματικών\n"
+
 #, c-format
 msgid "%s: -Z requires SELinux enabled kernel\n"
 msgstr "%s: -Z απαιτεί πυρήνα με ενεργοποιημένο το SELinux\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
+msgid "%s: failed to open the faillog file for UID %lu: %s\n"
+msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο faillog του UID %lu: %s\n"
+
 #, c-format
 msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
 msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο faillog του UID %lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
+msgid "%s: failed to close the faillog file for UID %lu: %s\n"
+msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο faillog του UID %lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
+msgid "%s: failed to open the lastlog file for UID %lu: %s\n"
+msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο lastlog του UID %lu: %s\n"
 
 #, c-format
 msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
 msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο lastlog του UID %lu: %s\n"
 
 #, fuzzy, c-format
+#| msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
+msgid "%s: failed to close the lastlog file for UID %lu: %s\n"
+msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο lastlog του UID %lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
+msgid "%s: failed to reset the tallylog entry of user \"%s\"\n"
+msgstr "%s: αποτυχία επαναφοράς της καταχώρησης στο faillog του UID %lu: %s\n"
+
+#, fuzzy, c-format
 msgid "%s: failed to prepare the new %s entry\n"
 msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
+
+#, fuzzy, c-format
+#| msgid "%s: error updating files\n"
+msgid "%s: error while duplicating string %s\n"
+msgstr "%s: Σφάλμα κατά την ενημέρωση αρχείων\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot create directory %s\n"
+msgid "%s: cannot set SELinux context for home directory %s\n"
+msgstr "%s: αδυναμία δημιουργίας καταλόγου %s\n"
+
+#, c-format
+msgid "%s: error while duplicating string in BTRFS check %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: %s home directory (%s) not found\n"
+msgid "%s: home directory \"%s\" must be mounted on BTRFS\n"
+msgstr "%s: %s ο αρχικός κατάλογος χρήστη (%s) δεν βρέθηκε\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to allocate memory: %s\n"
+msgid "%s: failed to create BTRFS subvolume: %s\n"
+msgstr "%s: αποτυχία εκχώρησης μνήμης: %s\n"
 
 #, c-format
 msgid "%s: cannot create directory %s\n"
 msgstr "%s: αδυναμία δημιουργίας καταλόγου %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: warning: chown on `%s' failed: %m\n"
+msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: warning: chmod on `%s' failed: %m\n"
+msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: warning: chown on '%s' failed: %m\n"
+msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
+
+#, c-format
+msgid "%s: cannot reset SELinux file creation context\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "Cannot create SELinux login mapping for %s\n"
+msgid "%s: cannot set SELinux context for mailbox file %s\n"
+msgstr "Αδυναμία δημιουργίας χαρτογράφησης σύνδεσης SELinux για το χρήστη %s\n"
 
 msgid "Creating mailbox file"
 msgstr "Δημιουργία αρχείου mailbox"
@@ -2245,6 +2666,15 @@ msgstr ""
 
 msgid "Setting mailbox file permissions"
 msgstr "Ρύθμιση αδειών του αρχείου mailbox"
+
+#, c-format
+msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s warning: %s's uid %d outside of the UID_MIN %d and UID_MAX %d range.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: user '%s' already exists\n"
@@ -2282,22 +2712,31 @@ msgid "%s: can't create subordinate group IDs\n"
 msgstr "%s: αδυναμία δημιουργίας ομάδας\n"
 
 #, c-format
-msgid ""
-"%s: warning: the home directory already exists.\n"
-"Not copying any file from skel directory into it.\n"
-msgstr ""
-"%s: προειδοποίηση: ο αρχικός κατάλογος χρήστη υπάρχει ήδη.\n"
-"Δεν έγινε αντιγραφή σε αυτό οποιουδήποτε καταλόγου skel.\n"
-
-#, c-format
 msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
 msgstr ""
 "%s: προειδοποίηση: απέτυχε η προσθήκη του χρήστη %s  στην χαρτογράφηση "
 "SELinux %s.\n"
 
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: warning: the home directory already exists.\n"
+#| "Not copying any file from skel directory into it.\n"
 msgid ""
-"  -f, --force                   force removal of files,\n"
-"                                even if not owned by user\n"
+"%s: warning: the home directory %s already exists.\n"
+"%s: Not copying any file from skel directory into it.\n"
+msgstr ""
+"%s: προειδοποίηση: ο αρχικός κατάλογος χρήστη υπάρχει ήδη.\n"
+"Δεν έγινε αντιγραφή σε αυτό οποιουδήποτε καταλόγου skel.\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -f, --force                   force removal of files,\n"
+#| "                                even if not owned by user\n"
+msgid ""
+"  -f, --force                   force some actions that would fail "
+"otherwise\n"
+"                                e.g. removal of user still logged in\n"
+"                                or files, even if not owned by the user\n"
 msgstr ""
 "  -f, --force                   εξαναγκασμένη απομάκρυνση αρχείων,\n"
 "                                ακόμα και εάν ο χρήστης δεν είναι ιδιοκτήτης "
@@ -2379,6 +2818,11 @@ msgstr ""
 "%s: Δεν διαγράφεται ο κατάλογος %s (θα αφαιρούσε τον αρχικό κατάλογο του "
 "χρήστη %s)\n"
 
+#, fuzzy, c-format
+#| msgid "%s: error removing directory %s\n"
+msgid "%s: error removing subvolume %s\n"
+msgstr "%s: Σφάλμα κατά την διαγραφή του καταλόγου %s\n"
+
 #, c-format
 msgid "%s: error removing directory %s\n"
 msgstr "%s: Σφάλμα κατά την διαγραφή του καταλόγου %s\n"
@@ -2388,6 +2832,16 @@ msgid "%s: warning: the user name %s to SELinux user mapping removal failed.\n"
 msgstr ""
 "%s: προειδοποίηση: η απομάκρυνση του ονόματος χρήστη %s από την χαρτογράφηση "
 "χρηστών του SELinux απέτυχε.\n"
+
+msgid ""
+"  -a, --append                  append the user to the supplemental GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+"  -a, --append                  προσθήκη του χρήστη στις συμπληρωματικές "
+"ΟΜΑΔΕΣ\n"
+"                                που προσδιορίζονται από την επιλογή -G, \n"
+"                                χωρίς να διαγράφεται από τις άλλες ομάδες\n"
 
 msgid "  -c, --comment COMMENT         new value of the GECOS field\n"
 msgstr "  -c, --comment ΣΧΟΛΙΟ         νέα τιμή του πεδίου GECOS\n"
@@ -2420,16 +2874,6 @@ msgid "  -G, --groups GROUPS           new list of supplementary GROUPS\n"
 msgstr ""
 "  -G, --groups ΟΜΑΔΕΣ           νέα λίστα με τις συμπληρωματικές ΟΜΑΔΕΣ\n"
 
-msgid ""
-"  -a, --append                  append the user to the supplemental GROUPS\n"
-"                                mentioned by the -G option without removing\n"
-"                                the user from other groups\n"
-msgstr ""
-"  -a, --append                  προσθήκη του χρήστη στις συμπληρωματικές "
-"ΟΜΑΔΕΣ\n"
-"                                που προσδιορίζονται από την επιλογή -G, \n"
-"                                χωρίς να διαγράφεται από τις άλλες ομάδες\n"
-
 msgid "  -l, --login NEW_LOGIN         new value of the login name\n"
 msgstr "  -l, --login ΝΕΟ_ΟΝΟΜΑ        νέο όνομα χρήστη\n"
 
@@ -2454,6 +2898,24 @@ msgid ""
 msgstr ""
 "  -p, --password ΣΥΝΘΗΜΑΤΙΚΟ       χρήση κρυπτογραφημένου συνθηματικού ως "
 "νέο συνθηματικό\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --append                  append the user to the supplemental "
+#| "GROUPS\n"
+#| "                                mentioned by the -G option without "
+#| "removing\n"
+#| "                                the user from other groups\n"
+msgid ""
+"  -r, --remove                  remove the user from only the supplemental "
+"GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+"  -a, --append                  προσθήκη του χρήστη στις συμπληρωματικές "
+"ΟΜΑΔΕΣ\n"
+"                                που προσδιορίζονται από την επιλογή -G, \n"
+"                                χωρίς να διαγράφεται από τις άλλες ομάδες\n"
 
 msgid "  -u, --uid UID                 new UID for the user account\n"
 msgstr "  -u, --uid UID                 νέο UID για το λογαριασμό του χρήστη\n"
@@ -2495,6 +2957,10 @@ msgstr ""
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: Ο χρήστης %s υπάρχει ήδη στο %s\n"
 
+#, c-format
+msgid "%s: homedir must be an absolute path\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: invalid subordinate uid range '%s'\n"
 msgstr "%s: Μη έγκυρη ημερομηνία '%s'\n"
@@ -2506,6 +2972,10 @@ msgstr "%s: Μη έγκυρη ημερομηνία '%s'\n"
 #, c-format
 msgid "%s: no options\n"
 msgstr "%s: χωρίς επιλογές\n"
+
+#, c-format
+msgid "%s: %s and %s are mutually exclusive flags\n"
+msgstr ""
 
 #, c-format
 msgid "%s: the -L, -p, and -U flags are exclusive\n"
@@ -2540,6 +3010,10 @@ msgstr ""
 #, c-format
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: Αδυναμία αλλαγής ιδιοκτήτη του αρχικού καταλόγου του χρήστη"
+
+#, c-format
+msgid "%s: error: cannot move subvolume from %s to %s - different device\n"
+msgstr ""
 
 #, c-format
 msgid "%s: warning: failed to completely remove old home directory %s"
@@ -2578,7 +3052,7 @@ msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
 msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
 msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
 
 #, fuzzy, c-format
@@ -2586,7 +3060,7 @@ msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
 msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
 msgstr "%s: αποτυχία προετοιμασίας της νέας εγγραφής %s '%s'\n"
 
 #, c-format
@@ -2678,6 +3152,28 @@ msgstr "%s: αδυναμία επαναφοράς %s: %s (οι αλλαγές ε
 #, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
+
+#~ msgid "Usage: id\n"
+#~ msgstr "Χρήση: id\n"
+
+#, c-format
+#~ msgid "Last login: %.19s on %s"
+#~ msgstr "Τελευταία είσοδος: %.19s στο %s"
+
+#, c-format
+#~ msgid "%s: invalid user name '%s'\n"
+#~ msgstr "%s: μη έγκυρο όνομα χρήστη '%s'\n"
+
+#, c-format
+#~ msgid "%s: password expiry information changed.\n"
+#~ msgstr "%s: αλλαγή πληροφοριών λήξης συνθηματικού.\n"
+
+#, c-format
+#~ msgid "invalid user name '%s'\n"
+#~ msgstr "Μη έγκυρο όνομα χρήστη '%s'\n"
+
+#~ msgid "Username         Port     From             Latest"
+#~ msgstr "Όνομα_Χρήστη     Θύρα     Από              Τελευταία"
 
 #~| msgid "Usage: %s [input]\n"
 #~ msgid ""
@@ -2930,9 +3426,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 
 #~ msgid "No shell\n"
 #~ msgstr "Δεν υπάρχει φλοιός\n"
-
-#~ msgid "%s: user %s is currently logged in\n"
-#~ msgstr "%s: Ο χρήστης %s βρίσκεται στο σύστημα\n"
 
 #, fuzzy
 #~ msgid ""
@@ -3318,9 +3811,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 #~ msgid "%s: can't lock group file\n"
 #~ msgstr "%s: αδυναμία κλειδώματος του αρχείου ομάδων\n"
 
-#~ msgid "%s: can't open group file\n"
-#~ msgstr "%s: αδυναμία ανοίγματος του αρχείου ομάδων\n"
-
 #, fuzzy
 #~ msgid "%s: can't lock gshadow file\n"
 #~ msgstr "%s: αδυναμία κλειδώματος του αρχείου σκιωδών συνθηματικών\n"
@@ -3390,9 +3880,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 #~ msgid "%s: can't get shadow lock\n"
 #~ msgstr ""
 #~ "%s: Αδυναμία δημιουργίας κλειδώματος του αρχείου σκιωδών συνθηματικών\n"
-
-#~ msgid "%s: can't open file\n"
-#~ msgstr "%s: αδυναμία ανοίγματος του αρχείου\n"
 
 #~ msgid "%s: can't re-write shadow file\n"
 #~ msgstr "%s: αδυναμία επανεγγραφής αρχείου σκιωδών συνθηματικών\n"
@@ -3553,9 +4040,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 #~ msgid "%s: can't open files\n"
 #~ msgstr "%s: αδυναμία ανοίγματος των αρχείων\n"
 
-#~ msgid "%s: error updating files\n"
-#~ msgstr "%s: Σφάλμα κατά την ενημέρωση αρχείων\n"
-
 #~ msgid "%s: can't update passwd entry for %s\n"
 #~ msgstr "%s: αδυναμία ανανέωσης καταχώρησης συνθηματικού για τον %s\n"
 
@@ -3587,9 +4071,6 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 #, fuzzy
 #~ msgid "%s: Out of memory. Cannot update the shadow group database.\n"
 #~ msgstr "%s:  στο update_gshadow\n"
-
-#~ msgid "%s: cannot rewrite password file\n"
-#~ msgstr "%s: αδυναμία επανεγγραφής του αρχείου συνθηματικών\n"
 
 #~ msgid "%s: cannot rewrite shadow password file\n"
 #~ msgstr "%s: αδυναμία επανεγγραφής του αρχείου σκιωδών συνθηματικών\n"
