@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.5\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2012-05-21 02:52+0900\n"
 "Last-Translator: NAKANO Takeo <nakano@webmasters.gr.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -2360,6 +2360,11 @@ msgid ""
 msgstr "  -f, --inactive INACTIVE       新アカウントのパスワード無効化日数\n"
 
 msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
+msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
 msgstr ""
@@ -2899,6 +2904,17 @@ msgstr "%s: 警告: 古いホームディレクトリ %s を完全削除でき�
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: ディレクトリ %s の名前を %s に変更できません\n"
+
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: The previous home directory (%s) was not a directory. It is not "
+#| "removed and no home directories are created.\n"
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
+"%s: 以前のホームディレクトリ (%s) がディレクトリではありません。これは削除さ"
+"れず、ホームディレクトリは作成しません。\n"
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"

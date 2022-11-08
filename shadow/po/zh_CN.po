@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.15\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2022-07-27 23:04+0800\n"
 "Last-Translator: Celeste Liu <coelacanthus@outlook.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -2290,6 +2290,11 @@ msgid ""
 msgstr "  -f, --inactive INACTIVE       新账户的密码不活动期\n"
 
 msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
+msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
 msgstr "  -g, --gid GROUP               新账户主组的名称或 ID\n"
@@ -2795,6 +2800,15 @@ msgstr "%s：警告：无法将旧的主目录 %s 完全删除"
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s：无法将目录 %s 改名为 %s\n"
+
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: The previous home directory (%s) was not a directory. It is not "
+#| "removed and no home directories are created.\n"
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr "%s：先前的主目录 (%s) 不是一个目录。没有移除它，也没有创建主目录。\n"
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"

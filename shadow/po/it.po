@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2008-03-27 14:40+0100\n"
 "Last-Translator: Danilo Piazzalunga <danilopiazza@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -2273,6 +2273,11 @@ msgid ""
 "account\n"
 msgstr ""
 
+msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
 #, fuzzy
 msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
@@ -2795,6 +2800,12 @@ msgstr ""
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: impossibile rinominare la directory %s in %s\n"
+
+#, c-format
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"

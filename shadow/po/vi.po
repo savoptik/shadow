@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -2409,6 +2409,11 @@ msgstr ""
 "khoản mới\n"
 
 msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
+msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
 msgstr ""
@@ -2954,6 +2959,17 @@ msgstr "%s: cảnh báo: gặp lỗi khi gỡ bỏ hoàn toàn thư mục riêng
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: không thể thay đổi lại tên thư mục %s thành %s\n"
+
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: The previous home directory (%s) was not a directory. It is not "
+#| "removed and no home directories are created.\n"
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
+"%s: Thư mục riêng trước đó (%s) không là một thư mục. Nó chưa được gỡ bỏ và "
+"chưa tạo thư mục riêng (home).\n"
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"

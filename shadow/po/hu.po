@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2007-11-25 20:56+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -2187,6 +2187,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
+msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
 msgstr ""
@@ -2666,6 +2671,12 @@ msgstr "%s: figyelem: nem sikerült a régi %s saját könyvtár teljes törlés
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: nem tudom átnevezni %s könyvtárat erre: %s\n"
+
+#, c-format
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"

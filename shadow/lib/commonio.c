@@ -32,7 +32,7 @@
 
 /* local function prototypes */
 static int lrename (const char *, const char *);
-static int check_link_count (const char *file);
+static int check_link_count (const char *file, bool log);
 static int do_lock_file (const char *file, const char *lock, bool log);
 static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 	const char *name,
@@ -85,23 +85,31 @@ int lrename (const char *old, const char *new)
 	res = rename (old, new);
 
 #ifdef __GLIBC__
-	if (NULL != r) {
-		free (r);
-	}
+	free (r);
 #endif				/* __GLIBC__ */
 
 	return res;
 }
 
-static int check_link_count (const char *file)
+static int check_link_count (const char *file, bool log)
 {
 	struct stat sb;
 
 	if (stat (file, &sb) != 0) {
+		if (log) {
+			(void) fprintf (shadow_logfd,
+			                "%s: %s file stat error: %s\n",
+			                shadow_progname, file, strerror (errno));
+		}
 		return 0;
 	}
 
 	if (sb.st_nlink != 2) {
+		if (log) {
+			(void) fprintf (shadow_logfd,
+			                "%s: %s: lock file already used (nlink: %u)\n",
+			                shadow_progname, file, sb.st_nlink);
+		}
 		return 0;
 	}
 
@@ -153,12 +161,7 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	close (fd);
 
 	if (link (file, lock) == 0) {
-		retval = check_link_count (file);
-		if ((0==retval) && log) {
-			(void) fprintf (shadow_logfd,
-			                "%s: %s: lock file already used\n",
-			                shadow_progname, file);
-		}
+		retval = check_link_count (file, log);
 		unlink (file);
 		return retval;
 	}
@@ -219,12 +222,7 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 
 	retval = 0;
 	if (link (file, lock) == 0) {
-		retval = check_link_count (file);
-		if ((0==retval) && log) {
-			(void) fprintf (shadow_logfd,
-			                "%s: %s: lock file already used\n",
-			                shadow_progname, file);
-		}
+		retval = check_link_count (file, log);
 	} else {
 		if (log) {
 			(void) fprintf (shadow_logfd,
@@ -337,9 +335,7 @@ static void free_linked_list (struct commonio_db *db)
 		p = db->head;
 		db->head = p->next;
 
-		if (NULL != p->line) {
-			free (p->line);
-		}
+		free (p->line);
 
 		if (NULL != p->eptr) {
 			db->ops->free (p->eptr);
@@ -395,10 +391,8 @@ int commonio_lock_nowait (struct commonio_db *db, bool log)
 		err = 1;
 	}
 cleanup_ENOMEM:
-	if (file)
-		free(file);
-	if (lock)
-		free(lock);
+	free(file);
+	free(lock);
 	return err;
 }
 
@@ -1200,9 +1194,7 @@ int commonio_remove (struct commonio_db *db, const char *name)
 
 	commonio_del_entry (db, p);
 
-	if (NULL != p->line) {
-		free (p->line);
-	}
+	free (p->line);
 
 	if (NULL != p->eptr) {
 		db->ops->free (p->eptr);
