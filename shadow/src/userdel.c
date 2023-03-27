@@ -932,22 +932,20 @@ static int remove_mailbox (void)
 #ifdef WITH_TCB
 static int remove_tcbdir (const char *user_name, uid_t user_id)
 {
-	char *buf;
+	char *buf = NULL;
 	int ret = 0;
-	size_t buflen = (sizeof TCB_DIR) + strlen (user_name) + 2;
 
 	if (!getdef_bool ("USE_TCB")) {
 		return 0;
 	}
 
-	buf = malloc (buflen);
-	if (NULL == buf) {
-		fprintf (stderr, _("%s: Can't allocate memory, "
-		                   "tcb entry for %s not removed.\n"),
-		         Prog, user_name);
+	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix, user_name) < 0) {
+		fprintf(stderr, "%s: Can't allocate memory, "
+				"tcb entry for %s not removed.\n",
+				Prog, user_name);
 		return 1;
 	}
-	snprintf (buf, buflen, TCB_DIR "/%s", user_name);
+
 	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 		fprintf (stderr, _("%s: Cannot drop privileges: %s\n"),
 		         Prog, strerror (errno));
@@ -955,6 +953,7 @@ static int remove_tcbdir (const char *user_name, uid_t user_id)
 		free (buf);
 		return 1;
 	}
+
 	/* Only remove directory contents with dropped privileges.
 	 * We will regain them and remove the user's tcb directory afterwards.
 	 */

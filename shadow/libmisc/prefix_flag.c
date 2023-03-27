@@ -94,6 +94,15 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 			exit (E_BAD_ARG);
 		}
 		size_t len;
+#ifdef USE_ECONF
+		setdef_config_file(prefix);
+#else
+		len = strlen(prefix) + strlen("/etc/login.defs") + 2;
+		def_conf_file = xmalloc(len);
+		snprintf(def_conf_file, len, "%s/%s", prefix, "/etc/login.defs");
+		setdef_config_file(def_conf_file);
+#endif
+
 		len = strlen(prefix) + strlen(PASSWD_FILE) + 2;
 		passwd_db_file = xmalloc(len);
 		snprintf(passwd_db_file, len, "%s/%s", prefix, PASSWD_FILE);
@@ -114,10 +123,15 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		__setspNIS(0); /* disable NIS for now, at least until it is properly supporting a "prefix" */
 #endif
 
-		len = strlen(prefix) + strlen(SHADOW_FILE) + 2;
-		spw_db_file = xmalloc(len);
-		snprintf(spw_db_file, len, "%s/%s", prefix, SHADOW_FILE);
-		spw_setdbname(spw_db_file);
+#ifdef WITH_TCB
+		if (!getdef_bool("USE_TCB"))
+#endif
+		{
+			len = strlen(prefix) + strlen(SHADOW_FILE) + 2;
+			spw_db_file = xmalloc(len);
+			snprintf(spw_db_file, len, "%s/%s", prefix, SHADOW_FILE);
+			spw_setdbname(spw_db_file);
+		}
 
 #ifdef ENABLE_SUBIDS
 		len = strlen(prefix) + strlen("/etc/subuid") + 2;
@@ -131,21 +145,15 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		sub_gid_setdbname(sgid_db_file);
 #endif
 
-#ifdef USE_ECONF
-		setdef_config_file(prefix);
-#else
-		len = strlen(prefix) + strlen("/etc/login.defs") + 2;
-		def_conf_file = xmalloc(len);
-		snprintf(def_conf_file, len, "%s/%s", prefix, "/etc/login.defs");
-		setdef_config_file(def_conf_file);
-#endif
 	}
 
 	if (prefix == NULL)
 		return "";
+
+	set_root_prefix (prefix);
+
 	return prefix;
 }
-
 
 extern struct group *prefix_getgrnam(const char *name)
 {

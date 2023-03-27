@@ -141,4 +141,8 @@ extern int commonio_sort_wrt (struct commonio_db *shadow,
 extern int commonio_sort (struct commonio_db *db,
                           int (*cmp) (const void *, const void *));
 
+extern bool has_root_prefix (void);
+extern void set_root_prefix (const char *prefix);
+extern const char *get_root_prefix (void);
+
 #endif

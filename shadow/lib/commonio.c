@@ -56,6 +56,23 @@ static /*@dependent@*/ /*@null@*/struct commonio_entry *next_entry_by_name (
 static int lock_count = 0;
 static bool nscd_need_reload = false;
 
+static const char *root_prefix = "";
+
+void set_root_prefix (const char *prefix)
+{
+	root_prefix = prefix;
+}
+
+const char *get_root_prefix (void)
+{
+	return root_prefix ?: "";
+}
+
+extern bool has_root_prefix (void)
+{
+	return root_prefix && root_prefix[0];
+}
+
 /*
  * Simple rename(P) alternative that attempts to rename to symlink
  * target.
@@ -408,7 +425,9 @@ int commonio_lock (struct commonio_db *db)
 	int i;
 
 #ifdef HAVE_LCKPWDF
-	if (!db->setname) {
+	/* In case of TCB we can't rely on db->setname field:
+	 * we setting shadow database name even without prefix. */
+	if (!has_root_prefix ()) {
 		if (lock_count == 0 && lckpwdf() == -1) {
 				return 0;	/* failure */
 		}

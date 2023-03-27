@@ -228,7 +228,7 @@ static int useradd_rm_tcbdir(const char *user_name, uid_t user_id)
 	if (!getdef_bool("USE_TCB"))
 		return 0;
 
-	if (asprintf(&buf, TCB_DIR "/%s", user_name) < 0) {
+	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix, user_name) < 0) {
 		fprintf(stderr, "Can't allocate memory, "
 				"tcb entry for %s not removed.\n",
 				user_name);
