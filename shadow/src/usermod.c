@@ -966,7 +966,7 @@ static void grp_update (void)
  */
 static void process_flags (int argc, char **argv)
 {
-	const struct group *grp;
+	struct group *grp;
 	struct stat st;
 	bool anyflag = false;
 
