@@ -562,7 +562,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 		return SHADOWTCB_FAILURE;
 	}
 #ifdef WITH_SELINUX
-	set_selinux_file_context (dir, NULL);
+	set_selinux_file_context (dir, S_IFDIR);
 #endif
 	if (mkdir (dir, 0700) != 0) {
 		fprintf (shadow_logfd,
@@ -571,7 +571,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 		goto out_free;
 	}
 #ifdef WITH_SELINUX
-	set_selinux_file_context (shadow, NULL);
+	set_selinux_file_context (shadow, S_IFREG);
 #endif
 	fd = open (shadow, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (fd < 0) {
