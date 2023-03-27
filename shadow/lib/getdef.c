@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2002 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2002 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2008, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -44,6 +21,7 @@
 #include <libeconf.h>
 #endif
 #include "getdef.h"
+#include "shadowlog_internal.h"
 /*
  * A configuration item definition.
  */
@@ -61,6 +39,7 @@ struct itemdef {
 	{"ENV_TZ", NULL},			\
 	{"FAILLOG_ENAB", NULL},			\
 	{"FTMP_FILE", NULL},			\
+	{"HMAC_CRYPTO_ALGO", NULL},		\
 	{"ISSUE_FILE", NULL},			\
 	{"LASTLOG_ENAB", NULL},			\
 	{"LOGIN_STRING", NULL},			\
@@ -76,6 +55,16 @@ struct itemdef {
 	{"QUOTAS_ENAB", NULL},			\
 	{"SU_WHEEL_ONLY", NULL},		\
 	{"ULIMIT", NULL},
+
+/*
+ * Items used in other tools (util-linux, etc.)
+ */
+#define FOREIGNDEFS				\
+	{"ALWAYS_SET_PATH", NULL},		\
+	{"ENV_ROOTPATH", NULL},			\
+	{"LOGIN_KEEP_USERNAME", NULL},		\
+	{"LOGIN_PLAIN_PROMPT", NULL},		\
+	{"MOTD_FIRSTONLY", NULL},		\
 
 
 #define NUMDEFS	(sizeof(def_table)/sizeof(def_table[0]))
@@ -105,6 +94,7 @@ static struct itemdef def_table[] = {
 	{"MAIL_FILE", NULL},
 	{"MAX_MEMBERS_PER_GROUP", NULL},
 	{"MD5_CRYPT_ENAB", NULL},
+	{"NONEXISTENT", NULL},
 	{"PASS_MAX_DAYS", NULL},
 	{"PASS_MIN_DAYS", NULL},
 	{"PASS_WARN_AGE", NULL},
@@ -117,6 +107,9 @@ static struct itemdef def_table[] = {
 #ifdef USE_BCRYPT
 	{"BCRYPT_MAX_ROUNDS", NULL},
 	{"BCRYPT_MIN_ROUNDS", NULL},
+#endif
+#ifdef USE_YESCRYPT
+	{"YESCRYPT_COST_FACTOR", NULL},
 #endif
 	{"SUB_GID_COUNT", NULL},
 	{"SUB_GID_MAX", NULL},
@@ -154,6 +147,8 @@ static struct itemdef def_table[] = {
 	{"TCB_SYMLINKS", NULL},
 	{"USE_TCB", NULL},
 #endif
+	{"GRANT_AUX_GROUP_SUBIDS", NULL},
+	{"PREVENT_NO_AUTH", NULL},
 	{NULL, NULL}
 };
 
@@ -162,6 +157,7 @@ static struct itemdef knowndef_table[] = {
 #ifdef USE_PAM
 	PAMDEFS
 #endif
+	FOREIGNDEFS
 	{NULL, NULL}
 };
 
@@ -254,7 +250,7 @@ int getdef_num (const char *item, int dflt)
 	if (   (getlong (d->value, &val) == 0)
 	    || (val > INT_MAX)
 	    || (val < INT_MIN)) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
@@ -289,7 +285,7 @@ unsigned int getdef_unum (const char *item, unsigned int dflt)
 	if (   (getlong (d->value, &val) == 0)
 	    || (val < 0)
 	    || (val > INT_MAX)) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
@@ -322,7 +318,7 @@ long getdef_long (const char *item, long dflt)
 	}
 
 	if (getlong (d->value, &val) == 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
@@ -354,8 +350,7 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
 	}
 
 	if (getulong (d->value, &val) == 0) {
-		/* FIXME: we should have a getulong */
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
@@ -393,7 +388,7 @@ int putdef_str (const char *name, const char *value)
 	cp = strdup (value);
 	if (NULL == cp) {
 		(void) fputs (_("Could not allocate space for config info.\n"),
-		              stderr);
+		              shadow_logfd);
 		SYSLOG ((LOG_ERR, "could not allocate space for config info"));
 		return -1;
 	}
@@ -418,7 +413,6 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 {
 	struct itemdef *ptr;
 
-
 	/*
 	 * Search into the table.
 	 */
@@ -438,7 +432,7 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 			goto out;
 		}
 	}
-	fprintf (stderr,
+	fprintf (shadow_logfd,
 	         _("configuration error - unknown item '%s' (notify administrator)\n"),
 	         name);
 	SYSLOG ((LOG_CRIT, "unknown configuration item `%s'", name));

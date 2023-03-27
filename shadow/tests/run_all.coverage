@@ -16,8 +16,8 @@ failed_tests=""
 
 run_test()
 {
-	find $build_path -name "*.gcda" -delete
-	find $build_path -name "*.gcno" | while read f
+	find "$build_path" -name "*.gcda" -delete
+	find "$build_path" -name "*.gcno" | while read f
 	do
 		g=${f%gcno}gcda
 		touch $g
@@ -1307,6 +1307,11 @@ run_test ./subids/67_invalid_subuid_file1/useradd.test
 run_test ./subids/68_invalid_subuid_file2/useradd.test
 run_test ./subids/69_invalid_subuid_file3/useradd.test
 run_test ./subids/70_invalid_subuid_file4/useradd.test
+run_test ./subids/71_useradd_subids_for_system/useradd.test
+run_test ./newuidmap/01_newuidmap/newuidmap.test
+run_test ./newuidmap/02_newuidmap_relaxed_gid_check/newuidmap.test
+run_test ./newgidmap/01_newgidmap/newgidmap.test
+run_test ./newgidmap/02_newgidmap_relaxed_gid_check/newgidmap.test
 
 echo
 
@@ -1316,9 +1321,8 @@ echo
 echo "$succeeded test(s) passed"
 echo "$failed test(s) failed"
 echo "log written in 'testsuite.log'"
-if [ "$failed" != "0" ]
+if [ "$failed" != 0 ]
 then
 	echo "the following tests failed:"
-	echo $failed_tests
+	echo "$failed_tests"
 fi
-

@@ -33,3 +33,8 @@
 /userdel
 /usermod
 /vipw
+/get_subid_owners
+/getsubids
+/new_subid_range
+/free_subid_range
+/check_subid_range

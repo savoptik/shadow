@@ -1,30 +1,7 @@
 /*
- * Copyright (c) 2011       , Peter Vrabec <pvrabec@redhat.com>
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2011       , Peter Vrabec <pvrabec@redhat.com>
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -35,15 +12,27 @@
 #include "defines.h"
 
 #include <selinux/selinux.h>
-#include <selinux/context.h>
-<<<<<<< HEAD
 #include <selinux/label.h>
-=======
->>>>>>> wip-try-update-4.8_2
 #include "prototypes.h"
+
+#include "shadowlog_internal.h"
 
 static bool selinux_checked = false;
 static bool selinux_enabled;
+static /*@null@*/struct selabel_handle *selabel_hnd = NULL;
+
+static void cleanup(void)
+{
+	if (selabel_hnd) {
+		selabel_close(selabel_hnd);
+		selabel_hnd = NULL;
+	}
+}
+
+void reset_selinux_handle (void)
+{
+    cleanup();
+}
 
 /*
  * set_selinux_file_context - Set the security context before any file or
@@ -55,11 +44,8 @@ static bool selinux_enabled;
  *	Callers may have to Reset SELinux to create files with default
  *	contexts with reset_selinux_file_context
  */
-int set_selinux_file_context (const char *dst_name, const char *orig_name)
+int set_selinux_file_context (const char *dst_name, mode_t mode)
 {
-	/*@null@*/char *scontext = NULL;
-	struct selabel_handle *label_handle = NULL;
-
 	if (!selinux_checked) {
 		selinux_enabled = is_selinux_enabled () > 0;
 		selinux_checked = true;
@@ -67,35 +53,34 @@ int set_selinux_file_context (const char *dst_name, const char *orig_name)
 
 	if (selinux_enabled) {
 		/* Get the default security context for this file */
-		label_handle = selabel_open(SELABEL_CTX_FILE, NULL, 0);
-		if (label_handle == NULL)
-			goto error;
 
-		if (selabel_lookup (label_handle, &scontext, dst_name, 0) < 0) {
-			/* We could not get the default, copy the original */
-			if (orig_name == NULL)
-				goto error;
-			if (getfilecon (orig_name, &scontext) < 0)
-				goto error;
+		/*@null@*/char *fcontext_raw = NULL;
+		int r;
+
+		if (selabel_hnd == NULL) {
+			selabel_hnd = selabel_open(SELABEL_CTX_FILE, NULL, 0);
+			if (selabel_hnd == NULL) {
+				return security_getenforce () != 0;
+			}
+			(void) atexit(cleanup);
 		}
+
+		r = selabel_lookup_raw(selabel_hnd, &fcontext_raw, dst_name, mode);
+		if (r < 0) {
+			/* No context specified for the searched path */
+			if (errno == ENOENT) {
+				return 0;
+			}
+
+			return security_getenforce () != 0;
+		}
+
 		/* Set the security context for the next created file */
-		if (setfscreatecon (scontext) < 0)
-			goto error;
-		freecon (scontext);
-		scontext = NULL;
-		selabel_close(label_handle);
-		label_handle = NULL;
-	}
-	return 0;
-    error:
-	if (scontext != NULL) {
-		freecon(scontext);
-	}
-	if (label_handle != NULL) {
-		selabel_close(label_handle);
-	}
-	if (security_getenforce () != 0) {
-		return 1;
+		r = setfscreatecon_raw (fcontext_raw);
+		freecon (fcontext_raw);
+		if (r < 0) {
+			return security_getenforce () != 0;
+		}
 	}
 	return 0;
 }
@@ -114,8 +99,8 @@ int reset_selinux_file_context (void)
 		selinux_checked = true;
 	}
 	if (selinux_enabled) {
-		if (setfscreatecon (NULL) != 0) {
-			return 1;
+		if (setfscreatecon_raw (NULL) != 0) {
+			return security_getenforce () != 0;
 		}
 	}
 	return 0;
@@ -124,7 +109,7 @@ int reset_selinux_file_context (void)
 /*
  *  Log callback for libselinux internal error reporting.
  */
-__attribute__((__format__ (printf, 2, 3)))
+format_attr(printf, 2, 3)
 static int selinux_log_cb (int type, const char *fmt, ...) {
 	va_list ap;
 	char *buf;
@@ -153,7 +138,7 @@ static int selinux_log_cb (int type, const char *fmt, ...) {
 			    && (errno != EAFNOSUPPORT)) {
 
 			    (void) fputs (_("Cannot open audit interface.\n"),
-			              stderr);
+			              shadow_logfd);
 			    SYSLOG ((LOG_WARN, "Cannot open audit interface."));
 			}
 		}
@@ -196,7 +181,7 @@ skip_syslog:
  */
 int check_selinux_permit (const char *perm_name)
 {
-	char *user_context_str;
+	char *user_context_raw;
 	int r;
 
 	if (0 == is_selinux_enabled ()) {
@@ -205,18 +190,18 @@ int check_selinux_permit (const char *perm_name)
 
 	selinux_set_callback (SELINUX_CB_LOG, (union selinux_callback) selinux_log_cb);
 
-	if (getprevcon (&user_context_str) != 0) {
-		fprintf (stderr,
+	if (getprevcon_raw (&user_context_raw) != 0) {
+		fprintf (shadow_logfd,
 		    _("%s: can not get previous SELinux process context: %s\n"),
-		    Prog, strerror (errno));
+		    shadow_progname, strerror (errno));
 		SYSLOG ((LOG_WARN,
 		    "can not get previous SELinux process context: %s",
 		    strerror (errno)));
 		return (security_getenforce () != 0);
 	}
 
-	r = selinux_check_access (user_context_str, user_context_str, "passwd", perm_name, NULL);
-	freecon (user_context_str);
+	r = selinux_check_access (user_context_raw, user_context_raw, "passwd", perm_name, NULL);
+	freecon (user_context_raw);
 	return r;
 }
 
