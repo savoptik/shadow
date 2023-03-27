@@ -124,7 +124,7 @@ if FCAPS
 endif
 
 bin_PROGRAMS    +=  getsubids
-noinst_PROGRAMS +=  get_subid_owners \
+noinst_PROGRAMS =  get_subid_owners \
 					new_subid_range \
 					free_subid_range \
 					check_subid_range
