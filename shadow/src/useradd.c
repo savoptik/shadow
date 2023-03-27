@@ -518,10 +518,7 @@ static void get_defaults (void)
 		 * By default do we add the user to the lastlog and faillog databases ?
 		 */
 		else if (MATCH (buf, DLOG_INIT)) {
-			if (*cp == '\0') {
-				cp = def_log_init;	/* XXX warning: const */
-			}
-			def_log_init = xstrdup (cp);
+			def_log_init = *cp != '\0' ? xstrdup (cp) : xstrdup (def_log_init);
 		}
 	}
 	(void) fclose (fp);
