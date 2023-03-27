@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 
+#define _GNU_SOURCE  /* for program_invocation_short_name in prototypes.h */
+
 #include <stdio.h>
 #include "subid.h"
 #include "stdlib.h"
 #include "prototypes.h"
 #include "shadowlog.h"
-
-const char *Prog;
 
 static void usage(void)
 {
@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
 	int i, n;
 	uid_t *uids;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	if (argc < 2) {

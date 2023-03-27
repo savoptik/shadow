@@ -3,6 +3,8 @@
 // Exits 0 if owner has subid range starting start, of size count
 // Exits 1 otherwise.
 
+#define _GNU_SOURCE  /* for program_invocation_short_name in prototypes.h */
+
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,14 +20,11 @@
 #include "idmapping.h"
 #include "shadowlog.h"
 
-const char *Prog;
-
 int main(int argc, char **argv)
 {
 	char *owner;
 	unsigned long start, count;
 	bool check_uids;
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 

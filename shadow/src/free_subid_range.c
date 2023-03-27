@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 
+#define _GNU_SOURCE  /* for program_invocation_short_name in prototypes.h */
+
 #include <stdio.h>
 #include <unistd.h>
 #include "subid.h"
@@ -8,8 +10,6 @@
 #include "shadowlog.h"
 
 /* Test program for the subid freeing routine */
-
-const char *Prog;
 
 static void usage(void)
 {
@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
 	struct subordinate_range range;
 	bool group = false;   // get subuids by default
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	while ((c = getopt(argc, argv, "g")) != EOF) {
