@@ -819,7 +819,7 @@ static int remove_mailbox (void)
 		return 0;
 	}
 
-	len = strlen (prefix) + strlen (maildir) + strlen (user_name) + 2;
+	len = strlen (prefix) + strlen (maildir) + strlen (user_name) + 3;
 	mailfile = xmalloc (len);
 
 	if (prefix[0]) {
