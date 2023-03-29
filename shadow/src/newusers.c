@@ -103,8 +103,6 @@ static void check_perms (void);
 static void open_files (void);
 static void close_files (void);
 
-extern int allow_bad_names;
-
 /*
  * usage - display usage message and exit
  */
@@ -116,7 +114,6 @@ static void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
-	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
 #ifndef USE_PAM
 	(void) fprintf (usageout,
 	                _("  -c, --crypt-method METHOD     the crypt method (one of %s)\n"),
@@ -392,7 +389,7 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 	/* Check if this is a valid user name */
 	if (!is_valid_user_name (name)) {
 		fprintf (stderr,
-		         _("%s: invalid user name '%s': use --badname to ignore\n"),
+		         _("%s: invalid user name '%s'\n"),
 		         Prog, name);
 		return -1;
 	}
@@ -601,7 +598,6 @@ static void process_flags (int argc, char **argv)
 #endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #endif 				/* !USE_PAM */
 	static struct option long_options[] = {
-		{"badname",      no_argument,       NULL, 'b'},
 #ifndef USE_PAM
 		{"crypt-method", required_argument, NULL, 'c'},
 #endif				/* !USE_PAM */
@@ -619,18 +615,15 @@ static void process_flags (int argc, char **argv)
 	while ((c = getopt_long (argc, argv,
 #ifndef USE_PAM
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
-	                         "c:bhrs:",
+	                         "c:hrs:",
 #else				/* !USE_SHA_CRYPT && !USE_BCRYPT && !USE_YESCRYPT */
-	                         "c:bhr",
+	                         "c:hr",
 #endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #else				/* USE_PAM */
-	                         "bhr",
+	                         "hr",
 #endif
 	                         long_options, NULL)) != -1) {
 		switch (c) {
-		case 'b':
-			allow_bad_names = true;
-			break;
 #ifndef USE_PAM
 		case 'c':
 			crypt_method = optarg;
