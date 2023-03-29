@@ -83,9 +83,8 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 
 
 	if (prefix != NULL) {
-		if ( prefix[0] == '\0' || !strcmp(prefix, "/"))
-			return ""; /* if prefix is "/" then we ignore the flag option */
-		/* should we prevent symbolic link from being used as a prefix? */
+		if (prefix[0] == '\0')
+			return "";
 
 		if ( prefix[0] != '/') {
 			fprintf (log_get_logfd(),
@@ -93,6 +92,24 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 				 log_get_progname());
 			exit (E_BAD_ARG);
 		}
+
+		char *rp;
+		rp = realpath (prefix, NULL);
+		if (rp == NULL) {
+			fprintf (log_get_logfd(),
+				 "%s: can't get prefix real path: %s\n",
+				 log_get_progname(), strerror (errno));
+			exit (E_BAD_ARG);
+		}
+		if (strcmp(rp, "/") == 0) {
+			fprintf (log_get_logfd(),
+				 "%s: prefix can't be root directory\n",
+				 log_get_progname());
+			free (rp);
+			exit (E_BAD_ARG);
+		}
+		free (rp);
+
 		size_t len;
 #ifdef USE_ECONF
 		setdef_config_file(prefix);
