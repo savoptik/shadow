@@ -2036,8 +2036,9 @@ static void faillog_reset (uid_t uid)
 	struct faillog fl;
 	int fd;
 	off_t offset_uid = (off_t) (sizeof fl) * uid;
+	struct stat st;
 
-	if (access (FAILLOG_FILE, F_OK) != 0) {
+	if (stat (FAILLOG_FILE, &st) != 0 || st.st_size <= offset_uid) {
 		return;
 	}
 
@@ -2073,8 +2074,9 @@ static void lastlog_reset (uid_t uid)
 	int fd;
 	off_t offset_uid = (off_t) (sizeof ll) * uid;
 	uid_t max_uid;
+	struct stat st;
 
-	if (access (LASTLOG_FILE, F_OK) != 0) {
+	if (stat (LASTLOG_FILE, &st) != 0 || st.st_size <= offset_uid) {
 		return;
 	}
 
@@ -2424,7 +2426,7 @@ static void create_mail (void)
 		if (NULL == spool) {
 			return;
 		}
-		file = alloca (strlen (prefix) + strlen (spool) + strlen (user_name) + 2);
+		file = alloca (strlen (prefix) + strlen (spool) + strlen (user_name) + 3);
 		if (prefix[0])
 			sprintf (file, "%s/%s/%s", prefix, spool, user_name);
 		else

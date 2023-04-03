@@ -100,25 +100,44 @@ static bool is_valid_name (const char *name)
 		return is_valid_name_regexp (name, name_re);
 
 	/*
-	 * User/group names must match [a-z_][a-z0-9_-]*[$]
-	 */
-	if (('\0' == *name) ||
-	    !((('a' <= *name) && ('z' >= *name)) || ('_' == *name))) {
+         * User/group names must match gnu e-regex:
+         *    [a-zA-Z0-9_.][a-zA-Z0-9_.-]{0,30}[a-zA-Z0-9_.$-]?
+         *
+         * as a non-POSIX, extension, allow "$" as the last char for
+         * sake of Samba 3.x "add machine script"
+         *
+         * Also do not allow fully numeric names or just "." or "..".
+         */
+	int numeric;
+
+	if ('\0' == *name ||
+	    ('.' == *name && (('.' == name[1] && '\0' == name[2]) ||
+			      '\0' == name[1])) ||
+	    !((*name >= 'a' && *name <= 'z') ||
+	      (*name >= 'A' && *name <= 'Z') ||
+	      (*name >= '0' && *name <= '9') ||
+	      *name == '_' ||
+	      *name == '.')) {
 		return false;
 	}
 
+	numeric = isdigit(*name);
+
 	while ('\0' != *++name) {
-		if (!(( ('a' <= *name) && ('z' >= *name) ) ||
-		      ( ('0' <= *name) && ('9' >= *name) ) ||
-		      ('_' == *name) ||
-		      ('-' == *name) ||
-		      ( ('$' == *name) && ('\0' == *(name + 1)) )
+		if (!((*name >= 'a' && *name <= 'z') ||
+		      (*name >= 'A' && *name <= 'Z') ||
+		      (*name >= '0' && *name <= '9') ||
+		      *name == '_' ||
+		      *name == '.' ||
+		      *name == '-' ||
+		      (*name == '$' && name[1] == '\0')
 		     )) {
 			return false;
 		}
+		numeric &= isdigit(*name);
 	}
 
-	return true;
+	return !numeric;
 }
 
 static size_t min (size_t a, size_t b)

@@ -126,12 +126,12 @@ static int perm_copy_path(const struct path_info *src,
 {
 	int src_fd, dst_fd, ret;
 
-	src_fd = openat(src->dirfd, src->name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+	src_fd = openat(src->dirfd, src->name, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
 	if (src_fd < 0) {
 		return -1;
 	}
 
-	dst_fd = openat(dst->dirfd, dst->name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+	dst_fd = openat(dst->dirfd, dst->name, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
 	if (dst_fd < 0) {
 		(void) close (src_fd);
 		return -1;
@@ -152,12 +152,12 @@ static int attr_copy_path(const struct path_info *src,
 {
 	int src_fd, dst_fd, ret;
 
-	src_fd = openat(src->dirfd, src->name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+	src_fd = openat(src->dirfd, src->name, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
 	if (src_fd < 0) {
 		return -1;
 	}
 
-	dst_fd = openat(dst->dirfd, dst->name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+	dst_fd = openat(dst->dirfd, dst->name, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
 	if (dst_fd < 0) {
 		(void) close (src_fd);
 		return -1;
@@ -354,12 +354,8 @@ static int copy_tree_impl (const struct path_info *src, const struct path_info *
 				                  old_uid, new_uid,
 				                  old_gid, new_gid);
 			}
-			if (NULL != src_name) {
-				free (src_name);
-			}
-			if (NULL != dst_name) {
-				free (dst_name);
-			}
+			free (src_name);
+			free (dst_name);
 		}
 	}
 	(void) closedir (dir);
@@ -525,12 +521,11 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
 	if (   (mkdirat (dst->dirfd, dst->name, statp->st_mode & 0700) != 0)
 	    || (chownat_if_needed (dst, statp,
 	                         old_uid, new_uid, old_gid, new_gid) != 0)
+	    || (fchmodat (dst->dirfd, dst->name, statp->st_mode & 07700, AT_SYMLINK_NOFOLLOW) != 0)
 #ifdef WITH_ACL
 	    || (   (perm_copy_path (src, dst, &ctx) != 0)
 	        && (errno != 0))
-#else				/* !WITH_ACL */
-	    || (fchmodat (dst->dirfd, dst->name, statp->st_mode & 07700, AT_SYMLINK_NOFOLLOW) != 0)
-#endif				/* !WITH_ACL */
+#endif				/* WITH_ACL */
 #ifdef WITH_ATTR
 	/*
 	 * If the third parameter is NULL, all extended attributes
@@ -719,12 +714,11 @@ static int copy_special (const struct path_info *src, const struct path_info *ds
 	if (   (mknodat (dst->dirfd, dst->name, statp->st_mode & ~07700U, statp->st_rdev) != 0)
 	    || (chownat_if_needed (dst, statp,
 	                         old_uid, new_uid, old_gid, new_gid) != 0)
+	    || (fchmodat (dst->dirfd, dst->name, statp->st_mode & 07700, AT_SYMLINK_NOFOLLOW) != 0)
 #ifdef WITH_ACL
 	    || (   (perm_copy_path (src, dst, &ctx) != 0)
 	        && (errno != 0))
-#else				/* !WITH_ACL */
-	    || (fchmodat (dst->dirfd, dst->name, statp->st_mode & 07700, AT_SYMLINK_NOFOLLOW) != 0)
-#endif				/* !WITH_ACL */
+#endif				/* WITH_ACL */
 #ifdef WITH_ATTR
 	/*
 	 * If the third parameter is NULL, all extended attributes
@@ -814,12 +808,11 @@ static int copy_file (const struct path_info *src, const struct path_info *dst,
 	if (   (ofd < 0)
 	    || (fchown_if_needed (ofd, statp,
 	                          old_uid, new_uid, old_gid, new_gid) != 0)
+	    || (fchmod (ofd, statp->st_mode & 07700) != 0)
 #ifdef WITH_ACL
 	    || (   (perm_copy_fd (src->full_path, ifd, dst->full_path, ofd, &ctx) != 0)
 	        && (errno != 0))
-#else				/* !WITH_ACL */
-	    || (fchmod (ofd, statp->st_mode & 07700) != 0)
-#endif				/* !WITH_ACL */
+#endif				/* WITH_ACL */
 #ifdef WITH_ATTR
 	/*
 	 * If the third parameter is NULL, all extended attributes

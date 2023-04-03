@@ -390,9 +390,7 @@ shadowtcb_status _shadowtcb_set_user (const char *prefix_dir, const char* name)
 	char *buf;
 	shadowtcb_status retval;
 
-	if (NULL != stored_tcb_user) {
-		free (stored_tcb_user);
-	}
+	free (stored_tcb_user);
 
 	stored_tcb_user = strdup (name);
 	if (NULL == stored_tcb_user) {

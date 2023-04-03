@@ -313,14 +313,6 @@ extern char *strerror ();
 # define format_attr(type, index, check)
 #endif
 
-/* ! Arguments evaluated twice ! */
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
-#endif
-
 /* Maximum length of usernames */
 #ifdef HAVE_UTMPX_H
 # include <utmpx.h>
@@ -337,6 +329,9 @@ extern char *strerror ();
 #  endif
 # endif
 #endif
+
+/* Maximum length of passwd entry */
+#define PASSWD_ENTRY_MAX_LENGTH 32768
 
 #ifdef HAVE_SECURE_GETENV
 #  define shadow_getenv(name) secure_getenv(name)

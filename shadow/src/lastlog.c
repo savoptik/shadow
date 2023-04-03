@@ -155,7 +155,6 @@ static void print_one (/*@null@*/const struct passwd *pw)
 		strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
 		cp = ptime;
 	}
-
 	if (ll.ll_time == (time_t) 0) {
 		cp = _("**Never logged in**\0");
 	}

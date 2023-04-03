@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-07-27 22:49+0800\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2009-04-19 21:32+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <debian-l10n-korean@lists.debian.org>\n"
@@ -2216,6 +2216,11 @@ msgid ""
 "account\n"
 msgstr ""
 
+msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
+
 #, fuzzy
 msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
@@ -2715,6 +2720,12 @@ msgstr "%s: 경고: 이전 홈 디렉터리 %s을(를) 완전히 제거하는 �
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: 디렉터리 %s의 이름을 %s(으)로 바꿀 수 없습니다\n"
+
+#, c-format
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
