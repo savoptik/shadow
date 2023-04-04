@@ -201,6 +201,7 @@ This virtual package unifies all shadow suite subpackages.
 %patch -p1
 
 %build
+%add_optflags %(getconf LFS_CFLAGS)
 %autoreconf
 %ifnarch %e2k
 %add_optflags -Werror -Wno-error=address -Wno-error=cpp
