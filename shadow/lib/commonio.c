@@ -124,8 +124,8 @@ static int check_link_count (const char *file, bool log)
 	if (sb.st_nlink != 2) {
 		if (log) {
 			(void) fprintf (shadow_logfd,
-			                "%s: %s: lock file already used (nlink: %u)\n",
-			                shadow_progname, file, sb.st_nlink);
+			                "%s: %s: lock file already used (nlink: %lu)\n",
+			                shadow_progname, file, (unsigned long)sb.st_nlink);
 		}
 		return 0;
 	}
