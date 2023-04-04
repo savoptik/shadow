@@ -114,9 +114,6 @@ static bool path_prefix (const char *, const char *);
 #endif				/* EXTRA_CHECK_HOME_DIR */
 static int is_owner (uid_t, const char *);
 static int remove_mailbox (void);
-#ifdef WITH_TCB
-static int remove_tcbdir (const char *user_name, uid_t user_id);
-#endif				/* WITH_TCB */
 
 /*
  * usage - display usage message and exit
@@ -929,52 +926,6 @@ static int remove_mailbox (void)
 	return errors;
 }
 
-#ifdef WITH_TCB
-static int remove_tcbdir (const char *user_name, uid_t user_id)
-{
-	char *buf = NULL;
-	int ret = 0;
-
-	if (!getdef_bool ("USE_TCB")) {
-		return 0;
-	}
-
-	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix, user_name) < 0) {
-		fprintf(stderr, "%s: Can't allocate memory, "
-				"tcb entry for %s not removed.\n",
-				Prog, user_name);
-		return 1;
-	}
-
-	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
-		fprintf (stderr, _("%s: Cannot drop privileges: %s\n"),
-		         Prog, strerror (errno));
-		shadowtcb_gain_priv ();
-		free (buf);
-		return 1;
-	}
-
-	/* Only remove directory contents with dropped privileges.
-	 * We will regain them and remove the user's tcb directory afterwards.
-	 */
-	if (remove_tree (buf, false) != 0) {
-		fprintf (stderr, _("%s: Cannot remove the content of %s: %s\n"),
-		         Prog, buf, strerror (errno));
-		shadowtcb_gain_priv ();
-		free (buf);
-		return 1;
-	}
-	shadowtcb_gain_priv ();
-	free (buf);
-	if (shadowtcb_remove (user_name) == SHADOWTCB_FAILURE) {
-		fprintf (stderr, _("%s: Cannot remove tcb files for %s: %s\n"),
-		         Prog, user_name, strerror (errno));
-		ret = 1;
-	}
-	return ret;
-}
-#endif				/* WITH_TCB */
-
 /*
  * main - userdel command
  */
@@ -1330,7 +1281,8 @@ int main (int argc, char **argv)
 	}
 
 #ifdef WITH_TCB
-	errors += remove_tcbdir (user_name, user_id);
+	if (!remove_tcbdir (user_name, user_id))
+		errors++;
 #endif				/* WITH_TCB */
 
 	nscd_flush_cache ("passwd");

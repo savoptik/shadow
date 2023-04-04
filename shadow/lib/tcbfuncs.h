@@ -11,7 +11,7 @@ typedef enum {
 extern shadowtcb_status shadowtcb_drop_priv (void);
 extern shadowtcb_status shadowtcb_gain_priv (void);
 extern shadowtcb_status shadowtcb_set_user (const char *name);
-extern shadowtcb_status shadowtcb_remove (const char *name);
+extern shadowtcb_status shadowtcb_remove (const char *prefix_dir, const char *name);
 extern shadowtcb_status shadowtcb_move (/*@null@*/const char *user_newname,
                                         uid_t user_newid);
 extern shadowtcb_status shadowtcb_create (const char *name, uid_t uid);

@@ -419,10 +419,9 @@ shadowtcb_status shadowtcb_set_user (const char* name)
 }
 
 /* tcb directory must be empty before shadowtcb_remove is called. */
-shadowtcb_status shadowtcb_remove (const char *name)
+shadowtcb_status shadowtcb_remove (const char *prefix_dir, const char *name)
 {
 	shadowtcb_status ret = SHADOWTCB_SUCCESS;
-	const char *prefix_dir = get_root_prefix ();
 	char *path = shadowtcb_path_existing (prefix_dir, name);
 	char *rel = shadowtcb_path_rel_existing (prefix_dir, name);
 

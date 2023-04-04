@@ -217,44 +217,6 @@ static void create_home (void);
 static void create_mail (void);
 static void check_uid_range(int rflg, uid_t user_id);
 
-#ifdef WITH_TCB
-static int useradd_rm_tcbdir(const char *user_name, uid_t user_id)
-{
-	char *buf;
-	int ret = 0;
-
-	if (!getdef_bool("USE_TCB"))
-		return 0;
-
-	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix, user_name) < 0) {
-		fprintf(stderr, "Can't allocate memory, "
-				"tcb entry for %s not removed.\n",
-				user_name);
-		return 1;
-	}
-	if (shadowtcb_drop_priv() == SHADOWTCB_FAILURE) {
-		perror("shadowtcb_drop_priv");
-		free(buf);
-		return 1;
-	}
-	if (remove_tree(buf, false)) {
-		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
-				user_name, strerror(errno));
-		shadowtcb_gain_priv();
-		free(buf);
-		return 1;
-	}
-	shadowtcb_gain_priv();
-	free(buf);
-	if (shadowtcb_remove(user_name) == SHADOWTCB_FAILURE) {
-		fprintf(stderr, "Cannot remove tcb files for %s: %s\n",
-				user_name, strerror(errno));
-		ret = 1;
-	}
-	return ret;
-}
-#endif
-
 /*
  * fail_exit - undo as much as possible
  */
@@ -285,7 +247,7 @@ static void fail_exit (int code)
 
 #ifdef WITH_TCB
 	if (tcb_added)
-		useradd_rm_tcbdir(user_name, user_id);
+		remove_tcbdir(user_name, user_id);
 #endif
 
 	if (pw_locked) {

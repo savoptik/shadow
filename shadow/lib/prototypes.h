@@ -352,6 +352,9 @@ extern /*@dependent@*/ /*@null@*/struct commonio_entry *__pw_get_head (void);
 extern /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent);
 extern void pw_free (/*@out@*/ /*@only@*/struct passwd *pwent);
 
+/* remove_tcbdir.c */
+extern bool remove_tcbdir (const char *user_name, uid_t user_id);
+
 /* remove_tree.c */
 extern int remove_tree (const char *root, bool remove_root);
 

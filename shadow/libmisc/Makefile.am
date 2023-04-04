@@ -70,7 +70,8 @@ libmisc_la_SOURCES = \
 	xgetgrgid.c \
 	xgetspnam.c \
 	xmalloc.c \
-	yesno.c
+	yesno.c \
+	remove_tcbdir.c
 
 if WITH_BTRFS
 libmisc_la_SOURCES += btrfs.c
