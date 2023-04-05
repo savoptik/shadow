@@ -66,6 +66,11 @@ NONEXISTENT    /nonexistent
 #
 #UMASK			077
 
+# HOME_MODE is used by useradd(8) and newusers(8) to set the mode for new
+# home directories.
+# If HOME_MODE is not set, the value of UMASK is used to create the mode.
+#HOME_MODE  0700
+
 #
 # If defined, this command is run when removing a user.  It should
 # remove any at/cron/print jobs etc. owned by the user to be removed
