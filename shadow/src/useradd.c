@@ -75,8 +75,8 @@
 /*
  * These defaults are used if there is no defaults file.
  */
-static gid_t def_group = 1000;
-static const char *def_gname = "other";
+static gid_t def_group = 100;
+static const char *def_gname = "users";
 static const char *def_home = "/home";
 static const char *def_shell = "/sbin/nologin";
 static const char *def_template = SKEL_DIR;
