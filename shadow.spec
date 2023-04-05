@@ -30,6 +30,8 @@ Patch: %name-%version-%release.patch
 %def_with selinux
 %def_with audit
 
+%set_verify_elf_method strict
+
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 # for man pages generation
 BuildRequires: xsltproc docbook-style-xsl docbook-dtds
