@@ -1152,6 +1152,7 @@ int main (int argc, char **argv)
 			errors++;
 			break;
 		}
+#ifdef WITH_TCB
 		if (shadowtcb_create (fields[0], uid) == SHADOWTCB_FAILURE) {
 			fprintf(stderr, "Problems creating /etc/tcb/%s; "
 					"there may be a stale entry left.\n", fields[0]);
@@ -1159,6 +1160,7 @@ int main (int argc, char **argv)
 			errors++;
 			break;
 		}
+#endif				/* WITH_TCB */
 
 		/*
 		 * The password, gecos field, directory, and shell fields

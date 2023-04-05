@@ -396,14 +396,17 @@ static void close_files (void)
 	pw_locked = false;
 }
 
+#ifdef USE_PAM
 static int paste_pwd_shadow (char *name, char *pwd)
 {
 	const struct spwd *sp;
 	struct spwd newsp;
 	long now = (long) (time ((time_t *) 0) / (24L * 3600L));
 
+#ifdef WITH_TCB
 	if (shadowtcb_set_user (name) == SHADOWTCB_FAILURE)
 		return 0;
+#endif				/* WITH_TCB */
 	if (!spw_lock ())
 	{
 		fprintf (stderr, "can't lock shadow file for %s\n",
@@ -485,6 +488,7 @@ static int paste_pwd (char *name, char *pwd)
 	pw_unlock ();
 	return 1;
 }
+#endif				/* USE_PAM */
 
 static const char *get_salt(void)
 {
