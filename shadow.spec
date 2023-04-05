@@ -26,16 +26,29 @@ Source14: newgidmap.control
 
 Patch: %name-%version-%release.patch
 
+%def_disable bootstrap
 %def_disable shared
+%if_enabled bootstrap
+%def_without selinux
+%def_without audit
+%def_without btrfs
+%def_without pam
+%def_disable man
+%else
 %def_with selinux
 %def_with audit
 %def_with btrfs
+%def_with pam
+%def_enable man
+%endif
 
 %set_verify_elf_method strict
 
 BuildPreReq: mktemp >= 1:1.3.1, rpm-build >= 4.0.4-alt10
 # for man pages generation
+%if_enabled man
 BuildRequires: xsltproc docbook-style-xsl docbook-dtds
+%endif
 
 %if_with selinux
 BuildPreReq: libselinux-devel libsemanage-devel
@@ -43,7 +56,9 @@ BuildPreReq: libselinux-devel libsemanage-devel
 
 %{?_with_audit:BuildRequires: libaudit-devel}
 
+%if_with pam
 BuildRequires: libpam-devel libtcb-devel pam_userpass-devel
+%endif
 BuildRequires: libcrypt-devel >= 4.0.1-alt1
 
 %description
@@ -84,7 +99,10 @@ linked software based on lib%name.
 %package utils
 Summary: Utilities for managing shadow password files and user/group accounts
 Group: System/Base
-Requires: %name-convert = %EVR, tcb-utils >= 0.9.8
+Requires: %name-convert = %EVR
+%if_with pam
+Requires: tcb-utils >= 0.9.8
+%endif
 Obsoletes: adduser
 
 %description utils
@@ -212,15 +230,15 @@ This virtual package unifies all shadow suite subpackages.
 %add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
 	%{subst_enable shared} \
-	--with-tcb \
-	--with-libpam \
+	%{?_with_pam:--with-tcb} \
+	%{?_with_pam:--with-libpam} \
 	--without-libcrack \
 	%{subst_with selinux} \
 	%{subst_with audit} \
 	%{subst_with btrfs} \
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
-	--enable-man
+	%{subst_enable man}
 %make_build
 
 make -C po/ ru.gmo
@@ -229,9 +247,18 @@ make -C po/ ru.gmo
 %makeinstall
 
 install -pD -m640 %_sourcedir/login.defs %buildroot%_sysconfdir/login.defs
+%if_without pam
+sed -i %buildroot%_sysconfdir/login.defs \
+	-r \
+	-e 's/^(TCB_AUTH_GROUP.*)$/# \1/' \
+	-e 's/^(USE_TCB.*)$/# \1/' \
+	-e 's/^(TCB_SYMLINKS.*)$/# \1/' \
+	%nil
+%endif
 install -pD -m600 %_sourcedir/useradd.default %buildroot%_sysconfdir/default/useradd
 
 rm -rf %buildroot%_sysconfdir/pam.d
+%if_with pam
 mkdir -p %buildroot%_sysconfdir/pam.d
 pushd %buildroot%_sysconfdir/pam.d
 install -pm600 %_sourcedir/user-group-mod.pamd user-group-mod
@@ -250,6 +277,7 @@ ln -s chpasswd-newusers chpasswd
 ln -s chpasswd-newusers newusers
 install -pm600 %_sourcedir/groupmems.pamd groupmems
 popd
+%endif
 
 ln -s useradd %buildroot%_sbindir/adduser
 
@@ -312,13 +340,16 @@ fi
 
 %files convert
 %_sbindir/*conv
+%if_enabled man
 %_mandir/man?/*conv.*
+%endif
 
 %files utils -f %name.lang
 %attr(600,root,root) %config(noreplace) %_sysconfdir/default/useradd
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/login.defs
 %dir %attr(770,root,root) %_sysconfdir/shadow-maint/
 %dir %attr(770,root,root) %_sysconfdir/shadow-maint/user*.d/
+%if_with pam
 %config(noreplace) %_sysconfdir/pam.d/user-group-mod
 %_sysconfdir/pam.d/groupadd
 %_sysconfdir/pam.d/groupdel
@@ -329,46 +360,61 @@ fi
 %config(noreplace) %_sysconfdir/pam.d/chpasswd-newusers
 %_sysconfdir/pam.d/chpasswd
 %_sysconfdir/pam.d/newusers
+%endif
 %_sbindir/user*
 %_sbindir/group*
 %_sbindir/adduser
 %_sbindir/newusers
 %_sbindir/chpasswd
+%if_enabled man
 %_man5dir/login.defs.*
 %_man5dir/shadow.*
 %_man8dir/chpasswd.*
 %_man8dir/group*.*
 %_man8dir/newusers.*
 %_man8dir/user*.*
+%endif
 %doc README TODO
 %exclude %_bindir/groupmems
+%if_enabled man
 %exclude %_man8dir/groupmems.*
+%endif
 
 %files check
 %_sbindir/*ck
+%if_enabled man
 %_mandir/man?/*ck.*
+%endif
 
 %files change
 %config %_controldir/chage
 %config %_controldir/chfn
 %config %_controldir/chsh
+%if_with pam
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/pam.d/chage-chfn-chsh
 %_sysconfdir/pam.d/chage
 %_sysconfdir/pam.d/chfn
 %_sysconfdir/pam.d/chsh
+%endif
 %attr(700,root,root) %verify(not mode,group) %_bindir/chage
 %attr(700,root,root) %verify(not mode) %_bindir/chfn
 %attr(700,root,root) %verify(not mode) %_bindir/chsh
+%if_enabled man
 %_mandir/man?/chage.*
 %_mandir/man?/chfn.*
 %_mandir/man?/chsh.*
+%endif
 
 %files edit
 %_sbindir/vi??
+%if_enabled man
 %_mandir/man?/vi??.*
+%endif
 
 %files groups
+%if_with pam
 %_sysconfdir/pam.d/groupmems
+%endif
 %config %_controldir/gpasswd
 %config %_controldir/newgrp
 %config %_controldir/groupmems
@@ -376,10 +422,12 @@ fi
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgrp
 %_bindir/sg
 %attr(700,root,root) %verify(not mode,group) %_bindir/groupmems
+%if_enabled man
 %_mandir/man?/gpasswd.*
 %_mandir/man?/newgrp.*
 %_mandir/man?/sg.*
 %_man8dir/groupmems.*
+%endif
 
 %files submap
 %config(noreplace) %_sysconfdir/subuid
@@ -388,14 +436,18 @@ fi
 %config %_controldir/newgidmap
 %attr(700,root,root) %verify(not mode,group) %_bindir/newuidmap
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgidmap
+%if_enabled man
 %_man1dir/newuidmap.*
 %_man1dir/newgidmap.*
 %_man5dir/subuid.*
 %_man5dir/subgid.*
+%endif
 
 %files log
 %_bindir/*log
+%if_enabled man
 %_mandir/man?/*log.*
+%endif
 
 %files suite
 
@@ -403,6 +455,7 @@ fi
 %exclude %_sbindir/chgpasswd
 %exclude %_sbindir/logoutd
 %exclude %_sbindir/nologin
+%if_enabled man
 %exclude %_man1dir/expiry.1.*
 %exclude %_man3dir/getspnam.3.*
 %exclude %_man3dir/shadow.3.*
@@ -412,6 +465,11 @@ fi
 %exclude %_man8dir/chgpasswd.8.*
 %exclude %_man8dir/logoutd.8.*
 %exclude %_man8dir/nologin.8.*
+%endif
+%if_without pam
+%exclude %_sysconfdir/limits
+%exclude %_sysconfdir/login.access
+%endif
 
 %changelog
 * Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:4.5-alt8
