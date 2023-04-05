@@ -86,6 +86,12 @@ USERGROUPS_ENAB yes
 SYSLOG_SG_ENAB      yes
 
 #
+# Allow newuidmap and newgidmap when running under an alternative
+# primary group.
+#
+#GRANT_AUX_GROUP_SUBIDS no
+
+#
 # The password hashing method and iteration count to use for group
 # passwords that may be set with gpasswd(1).
 #
