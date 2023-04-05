@@ -29,6 +29,7 @@ Patch: %name-%version-%release.patch
 %def_disable shared
 %def_with selinux
 %def_with audit
+%def_with btrfs
 
 %set_verify_elf_method strict
 
@@ -216,6 +217,7 @@ This virtual package unifies all shadow suite subpackages.
 	--without-libcrack \
 	%{subst_with selinux} \
 	%{subst_with audit} \
+	%{subst_with btrfs} \
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
 	--enable-man
