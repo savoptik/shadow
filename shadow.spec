@@ -263,6 +263,8 @@ install -pD -m755 %_sourcedir/newgidmap.control %buildroot%_controldir/newgidmap
 touch %buildroot%_sysconfdir/subuid
 touch %buildroot%_sysconfdir/subgid
 
+mkdir -p %buildroot%_sysconfdir/shadow-maint/user{add,del}-{pre,post}.d
+
 %find_lang %name
 %define _unpackaged_files_terminate_build 1
 
@@ -313,6 +315,8 @@ fi
 %files utils -f %name.lang
 %attr(600,root,root) %config(noreplace) %_sysconfdir/default/useradd
 %attr(640,root,shadow) %config(noreplace) %_sysconfdir/login.defs
+%dir %attr(770,root,root) %_sysconfdir/shadow-maint/
+%dir %attr(770,root,root) %_sysconfdir/shadow-maint/user*.d/
 %config(noreplace) %_sysconfdir/pam.d/user-group-mod
 %_sysconfdir/pam.d/groupadd
 %_sysconfdir/pam.d/groupdel
