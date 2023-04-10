@@ -2446,7 +2446,7 @@ msgstr ""
 msgid ""
 "  -k, --skel SKEL_DIR           use this alternative skeleton directory\n"
 msgstr ""
-"  -k, --skel КАБ_ШАБ            использовать альтернативный каталог с "
+"  -k, --skel КАТ_ШАБ            использовать альтернативный каталог с "
 "шаблонами\n"
 
 msgid ""
