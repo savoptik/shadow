@@ -444,7 +444,6 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	int retval = -1;
 
 #ifndef USE_PAM
-	char *cp;
 	void *crypt_arg = NULL;
 	if (NULL != crypt_method) {
 #if defined(USE_SHA_CRYPT)
