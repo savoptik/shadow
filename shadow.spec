@@ -223,6 +223,8 @@ This virtual package unifies all shadow suite subpackages.
 	--enable-man
 %make_build
 
+make -C po/ ru.gmo
+
 %install
 %makeinstall
 
