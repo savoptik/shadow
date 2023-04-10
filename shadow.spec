@@ -1,6 +1,6 @@
 Name: shadow
-Version: 4.5
-Release: alt8
+Version: 4.13
+Release: alt1
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -238,6 +238,8 @@ This virtual package unifies all shadow suite subpackages.
 	%{subst_with btrfs} \
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
+	--without-su \
+	%{?_with_pam:--enable-account-tools-setuid} \
 	%{subst_enable man}
 %make_build
 
@@ -436,9 +438,11 @@ fi
 %config %_controldir/newgidmap
 %attr(700,root,root) %verify(not mode,group) %_bindir/newuidmap
 %attr(700,root,root) %verify(not mode,group) %_bindir/newgidmap
+%_bindir/getsubids
 %if_enabled man
 %_man1dir/newuidmap.*
 %_man1dir/newgidmap.*
+%_man1dir/getsubids.*
 %_man5dir/subuid.*
 %_man5dir/subgid.*
 %endif
@@ -472,6 +476,40 @@ fi
 %endif
 
 %changelog
+* Mon Apr 10 2023 Mikhail Efremov <sem@altlinux.org> 1:4.13-alt1
+- Fixed build without TCB.
+- spec: simplified the bootstrap sequence (by Alexey Sheplyakov).
+- Fixed build without PAM.
+- fixed build without TCB and/or PAM (by Alexey Sheplyakov).
+- useradd: Fixed Russian translation.
+- Use /bin/run-parts if able.
+- utils: Packaged user{add,del}-{pre,post}.d directories.
+- useradd: Set default group to 100 (users).
+- login.defs: Added HOME_MODE variable.
+- login.defs: Added HMAC_CRYPTO_ALGO variable.
+- login.defs: Added GRANT_AUX_GROUP_SUBIDS variable.
+- login.defs: Added NONEXISTENT variable.
+- Explicitly enabled btrfs support.
+- Use 'set_verify_elf_method strict'.
+- Enabled LFS on 32-bit systems.
+- lib/commonio: Fixed fprintf() format.
+- tcb: Added remove_tcbdir() function.
+- shadow: Don't use relaxed usernames.
+- newusers,pwck,useradd,usermod: Removed --badname option.
+- Ensured that prefix is not '/'.
+- userdel: Fixed mailbox removing.
+- Added prefix support for TCB.
+- Don't install libsubid static library.
+- usermod: Don't call gr_free() with const variable.
+- useradd: Fixed "discards 'const' qualifiers" warning.
+- Updated 'alt-progname' patch.
+- tcbfuncs.c: Fixed and updated selinux support.
+- Updated 'copy_dir perms' patch.
+- src/Makefile.am: Fixed noinst_PROGRAMS.
+- Fixed license.
+- Updated url.
+- Updated to 4.13 (closes: #45794).
+
 * Mon Aug 03 2020 Aleksei Nikiforov <darktemplar@altlinux.org> 1:4.5-alt8
 - NMU: fixed build with new selinux.
 
