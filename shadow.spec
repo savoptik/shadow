@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.13
-Release: alt1
+Release: alt2
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -454,6 +454,10 @@ fi
 %endif
 
 %changelog
+* Tue Apr 11 2023 Mikhail Efremov <sem@altlinux.org> 1:4.13-alt2
+- Added libsubid subpackage.
+- Dropped disabled libshadow* subpackages.
+
 * Mon Apr 10 2023 Mikhail Efremov <sem@altlinux.org> 1:4.13-alt1
 - Fixed build without TCB.
 - spec: simplified the bootstrap sequence (by Alexey Sheplyakov).
