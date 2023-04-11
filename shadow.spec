@@ -27,7 +27,6 @@ Source14: newgidmap.control
 Patch: %name-%version-%release.patch
 
 %def_disable bootstrap
-%def_disable shared
 %if_enabled bootstrap
 %def_without selinux
 %def_without audit
@@ -65,37 +64,6 @@ BuildRequires: libcrypt-devel >= 4.0.1-alt1
 This package includes the tools necessary for manipulating local user and
 group databases. It supports both traditional and tcb shadow password files.
 
-%package -n lib%name
-Summary: Shadow password file routines library
-Group: System/Libraries
-
-%description -n lib%name
-Shadow library manipulates local user and group databases. It supports both
-traditional and tcb shadow password files.
-This package contains shared library required for various shadow utils.
-
-%package -n lib%name-devel
-Summary: Development files for the shadow password file routines library
-Group: Development/C
-Requires: lib%name = %EVR
-
-%description -n lib%name-devel
-Shadow library manipulates local user and group databases. It supports both
-traditional and tcb shadow password files.
-This package contains files required for development software based
-on lib%name.
-
-%package -n lib%name-devel-static
-Summary: Shadow password file routines static library
-Group: Development/C
-Requires: lib%name-devel = %EVR
-
-%description -n lib%name-devel-static
-Shadow library manipulates local user and group databases. It supports both
-traditional and tcb shadow password files.
-This package contains static library required for development statically
-linked software based on lib%name.
-
 %package utils
 Summary: Utilities for managing shadow password files and user/group accounts
 Group: System/Base
@@ -131,9 +99,6 @@ shadow-password, or shadow-group files:
 %package convert
 Summary: Utilities for convertion to and from shadow passwords and groups
 Group: System/Base
-%if_enabled shadow
-Requires: lib%name = %EVR
-%endif
 
 %description convert
 This package includes utilities for convertion to and from shadow passwords
@@ -229,7 +194,6 @@ This virtual package unifies all shadow suite subpackages.
 %endif
 %add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
-	%{subst_enable shared} \
 	%{?_with_pam:--with-tcb} \
 	%{?_with_pam:--with-libpam} \
 	--without-libcrack \
@@ -327,18 +291,6 @@ fi
 
 %post submap
 %post_control -s restricted newuidmap newgidmap
-
-%if_enabled shadow
-%files -n lib%name
-%_libdir/*.so*
-
-%files -n lib%name-devel
-%_libdir/*.so
-%_man3dir/*
-
-%files -n lib%name-devel-static
-%_libdir/*.a
-%endif
 
 %files convert
 %_sbindir/*conv
