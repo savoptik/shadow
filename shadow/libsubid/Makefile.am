@@ -1,9 +1,8 @@
-noinst_LTLIBRARIES = libsubid.la
-
+lib_LTLIBRARIES = libsubid.la
 libsubid_la_SOURCES = api.c
-#libsubid_la_LDFLAGS = -version-info @LIBSUBID_ABI_MAJOR@ -export-symbols-regex '^subid_'
+libsubid_la_LDFLAGS = -version-info @LIBSUBID_ABI_MAJOR@ -export-symbols-regex '^subid_'
 
-#pkginclude_HEADERS = subid.h
+pkginclude_HEADERS = subid.h
 
 MISCLIBS = \
 	$(LIBAUDIT) \
