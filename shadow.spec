@@ -155,6 +155,24 @@ in user namespaces:
 * newuidmap: set the uid mapping of a user namespace;
 * newgidmap: set the gid mapping of a user namespace.
 
+%package -n libsubid
+Summary: Subordinate id handling library
+Group: System/Libraries
+
+%description -n libsubid
+The library provides an interface for querying, granding and ungranting
+subordinate user and group ids.
+
+%package -n libsubid-devel
+Summary: Development files for the subordinate id handling library
+Group: Development/C
+Requires: libsubid = %EVR
+
+%description -n libsubid-devel
+The library provides an interface for querying, granding and ungranting
+subordinate user and group ids.
+This package contains development files for libsubid.
+
 %package log
 Summary: Utilities for examining lastlog and faillog files
 Group: System/Base
@@ -194,6 +212,7 @@ This virtual package unifies all shadow suite subpackages.
 %endif
 %add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
+	--disable-static \
 	%{?_with_pam:--with-tcb} \
 	%{?_with_pam:--with-libpam} \
 	--without-libcrack \
@@ -398,6 +417,13 @@ fi
 %_man5dir/subuid.*
 %_man5dir/subgid.*
 %endif
+
+%files -n libsubid
+%_libdir/libsubid.so.*
+
+%files -n libsubid-devel
+%_libdir/libsubid.so
+%_includedir/shadow/
 
 %files log
 %_bindir/*log
