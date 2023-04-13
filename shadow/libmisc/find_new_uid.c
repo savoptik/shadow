@@ -46,7 +46,7 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 		 * If SYS_UID_MAX is unspecified, we should assume it to be one
 		 * less than the UID_MIN (which is reserved for non-system accounts)
 		 */
-		uid_def_max = (uid_t) getdef_ulong ("UID_MIN", 500UL) - 1;
+		uid_def_max = (uid_t) getdef_ulong ("UID_MIN", 1000UL) - 1;
 		*max_id = (uid_t) getdef_ulong ("SYS_UID_MAX",
 				(unsigned long) uid_def_max);
 
@@ -56,7 +56,7 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
                             _("%s: Invalid configuration: SYS_UID_MIN (%lu), "
                               "UID_MIN (%lu), SYS_UID_MAX (%lu)\n"),
                             log_get_progname(), (unsigned long) *min_id,
-                            getdef_ulong ("UID_MIN", 500UL),
+                            getdef_ulong ("UID_MIN", 1000UL),
                             (unsigned long) *max_id);
 			return EINVAL;
 		}
@@ -71,7 +71,7 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 		/* Non-system users */
 
 		/* Get the values from login.defs or use reasonable defaults */
-		*min_id = (uid_t) getdef_ulong ("UID_MIN", 500UL);
+		*min_id = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
 		*max_id = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
 
 		/*
