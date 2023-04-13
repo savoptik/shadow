@@ -27,8 +27,13 @@ static int remove_tree_at (int at_fd, const char *path, bool remove_root)
 	DIR *dir;
 	const struct dirent *ent;
 	int dir_fd, rc = 0;
+	int flags = O_RDONLY | O_DIRECTORY | O_CLOEXEC;
 
-	dir_fd = openat (at_fd, path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
+	/* Allow symlink as root directory if it is not removed */
+	if (remove_root)
+		flags |= O_NOFOLLOW;
+
+	dir_fd = openat (at_fd, path, flags);
 	if (dir_fd < 0) {
 		return -1;
 	}
