@@ -1,6 +1,6 @@
 Name: shadow
 Version: 4.13
-Release: alt2
+Release: alt3
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -475,6 +475,11 @@ rm -f %save_login_defs_file
 %endif
 
 %changelog
+* Tue Apr 25 2023 Mikhail Efremov <sem@altlinux.org> 1:4.13-alt3
+- Keep old login.defs when UID_MIN/GID_MIN changed.
+- Increase default UID_MIN/GID_MIN to 1000.
+- remove_tree: Allow a symlink as root if it shouldn't be removed.
+
 * Tue Apr 11 2023 Mikhail Efremov <sem@altlinux.org> 1:4.13-alt2
 - Added libsubid subpackage.
 - Dropped disabled libshadow* subpackages.
