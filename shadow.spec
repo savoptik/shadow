@@ -283,6 +283,8 @@ mkdir -p %buildroot%_sysconfdir/shadow-maint/user{add,del}-{pre,post}.d
 %find_lang %name
 %define _unpackaged_files_terminate_build 1
 
+%define save_login_defs_file  /tmp/shadow-utils-update-save-old-login.defs
+
 %post convert
 if [ $1 = 1 ]; then
 	if [ ! -e /etc/gshadow ]; then
@@ -292,6 +294,25 @@ if [ $1 = 1 ]; then
 		%_sbindir/pwconv
 	fi
 fi
+
+%pre utils
+if [ $1 -eq 2 ]; then
+	OLD_VERSION="$(rpm -q --qf '%%{EPOCH}:%%{VERSION}-%%{RELEASE}' %name-utils)"
+	[ -z "$OLD_VERSION" ] || RES="$(rpmevrcmp "$OLD_VERSION" 1:4.13-alt3)"
+	if [ -n "$RES" ] && [ $RES -lt 0 ]; then
+		cp -a /etc/login.defs %save_login_defs_file
+		# Ensure that old /etc/login.defs.rpmnew doesn't exist
+		rm -f /etc/login.defs.rpmnew
+	fi
+fi
+
+%triggerpostun utils -- %name-utils < 1:4.13-alt3
+if [ -e %save_login_defs_file ] && [ ! -e /etc/login.defs.rpmnew ]; then
+		mv /etc/login.defs /etc/login.defs.rpmnew && \
+		  mv %save_login_defs_file /etc/login.defs && \
+		  echo "warning: /etc/login.defs created as /etc/login.defs.rpmnew due to UID_MIN/GID_MIN change"
+fi
+rm -f %save_login_defs_file
 
 %pre change
 %pre_control chage chfn chsh
