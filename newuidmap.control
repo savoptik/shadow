@@ -4,12 +4,14 @@
 
 BINARY=/usr/bin/newuidmap
 
-new_fmode public 4711 root root
-new_fmode wheelonly 4710 root wheel
+new_fmode public 711 root root 'cap_setuid+ep'
+new_fmode wheelonly 710 root wheel 'cap_setuid+ep'
+new_fmode podmanonly 710 root podman 'cap_setuid+ep'
 new_fmode restricted 700 root root
 
 new_help public "Any user can execute $BINARY"
 new_help wheelonly "Only \"wheel\" group members can execute $BINARY"
+new_help podmanonly "Only \"podman\" group members can execute $BINARY"
 new_help restricted "Only root can execute $BINARY"
 
 new_summary 'Set the uid mapping of a user namespace'
