@@ -224,8 +224,10 @@ int main (int argc, char **argv)
 			} else {
 				tty_name[0] = '\0';
 			}
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overread"
 			strncat (tty_name, ut->ut_line, UT_LINESIZE);
+#pragma GCC diagnostic pop
 #ifndef O_NOCTTY
 #define O_NOCTTY 0
 #endif
