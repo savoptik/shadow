@@ -19,6 +19,10 @@ MISCLIBS = \
 	$(LIBTCB) \
 	$(LIBPAM)
 
+if USE_PAM
+MISCLIBS += -lpam_userpass
+endif
+
 libsubid_la_LIBADD = \
 	$(top_builddir)/lib/libshadow.la \
 	$(top_builddir)/libmisc/libmisc.la \
