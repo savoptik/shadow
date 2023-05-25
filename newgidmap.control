@@ -5,13 +5,17 @@
 BINARY=/usr/bin/newgidmap
 
 new_fmode public 711 root root 'cap_setgid+ep'
-new_fmode wheelonly 710 root wheel 'cap_setgid+ep'
-new_fmode podmanonly 710 root podman 'cap_setgid+ep'
-new_fmode restricted 700 root root
-
 new_help public "Any user can execute $BINARY"
+
+new_fmode wheelonly 710 root wheel 'cap_setgid+ep'
 new_help wheelonly "Only \"wheel\" group members can execute $BINARY"
-new_help podmanonly "Only \"podman\" group members can execute $BINARY"
+
+if getent group podman >/dev/null; then
+	new_fmode podmanonly 710 root podman 'cap_setgid+ep'
+	new_help podmanonly "Only \"podman\" group members can execute $BINARY"
+fi
+
+new_fmode restricted 700 root root
 new_help restricted "Only root can execute $BINARY"
 
 new_summary 'Set the gid mapping of a user namespace'
