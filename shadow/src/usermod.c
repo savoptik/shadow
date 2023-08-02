@@ -160,6 +160,8 @@ static bool sub_gid_locked = false;
 #endif				/* ENABLE_SUBIDS */
 
 
+#define USR_UPDATE_FLAGS (cflg || dflg || eflg || fflg || gflg || Lflg || lflg || pflg || sflg || uflg || Uflg)
+
 /* local function prototypes */
 static int get_groups (char *);
 static /*@noreturn@*/void usage (int status);
@@ -1439,21 +1441,23 @@ static void process_flags (int argc, char **argv)
  */
 static void close_files (void)
 {
-	if (pw_close () == 0) {
-		fprintf (stderr,
-		         _("%s: failure while writing changes to %s\n"),
-		         Prog, pw_dbname ());
-		SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
-		fail_exit (E_PW_UPDATE);
-	}
-	if (is_shadow_pwd && (spw_close () == 0)) {
-		fprintf (stderr,
-		         _("%s: failure while writing changes to %s\n"),
-		         Prog, spw_dbname ());
-		SYSLOG ((LOG_ERR,
-		         "failure while writing changes to %s",
-		         spw_dbname ()));
-		fail_exit (E_PW_UPDATE);
+	if (USR_UPDATE_FLAGS) {
+		if (pw_close () == 0) {
+			fprintf (stderr,
+					 _("%s: failure while writing changes to %s\n"),
+					 Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
+			fail_exit (E_PW_UPDATE);
+		}
+		if (is_shadow_pwd && (spw_close () == 0)) {
+			fprintf (stderr,
+					 _("%s: failure while writing changes to %s\n"),
+					 Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR,
+					 "failure while writing changes to %s",
+					 spw_dbname ()));
+			fail_exit (E_PW_UPDATE);
+		}
 	}
 
 	if (Gflg || lflg) {
@@ -1503,7 +1507,7 @@ static void close_files (void)
 		}
 	}
 
-	if (is_shadow_pwd) {
+	if (is_shadow_pwd && spw_locked) {
 		if (spw_unlock () == 0) {
 			fprintf (stderr,
 			         _("%s: failed to unlock %s\n"),
@@ -1514,12 +1518,14 @@ static void close_files (void)
 			/* continue */
 		}
 	}
-	if (pw_unlock () == 0) {
-		fprintf (stderr,
-		         _("%s: failed to unlock %s\n"),
-		         Prog, pw_dbname ());
-		SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
-		/* continue */
+	if (pw_locked) {
+		if (pw_unlock () == 0) {
+			fprintf (stderr,
+					 _("%s: failed to unlock %s\n"),
+					 Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+			/* continue */
+		}
 	}
 
 	pw_locked = false;
@@ -1576,31 +1582,33 @@ static void close_files (void)
  */
 static void open_files (void)
 {
-	if (pw_lock () == 0) {
-		fprintf (stderr,
-		         _("%s: cannot lock %s; try again later.\n"),
-		         Prog, pw_dbname ());
-		fail_exit (E_PW_UPDATE);
-	}
-	pw_locked = true;
-	if (pw_open (O_RDWR) == 0) {
-		fprintf (stderr,
-		         _("%s: cannot open %s\n"),
-		         Prog, pw_dbname ());
-		fail_exit (E_PW_UPDATE);
-	}
-	if (is_shadow_pwd && (spw_lock () == 0)) {
-		fprintf (stderr,
-		         _("%s: cannot lock %s; try again later.\n"),
-		         Prog, spw_dbname ());
-		fail_exit (E_PW_UPDATE);
-	}
-	spw_locked = true;
-	if (is_shadow_pwd && (spw_open (O_RDWR) == 0)) {
-		fprintf (stderr,
-		         _("%s: cannot open %s\n"),
-		         Prog, spw_dbname ());
-		fail_exit (E_PW_UPDATE);
+	if (USR_UPDATE_FLAGS) {
+		if (pw_lock () == 0) {
+			fprintf (stderr,
+					 _("%s: cannot lock %s; try again later.\n"),
+					 Prog, pw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
+		pw_locked = true;
+		if (pw_open (O_RDWR) == 0) {
+			fprintf (stderr,
+					 _("%s: cannot open %s\n"),
+					 Prog, pw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
+		if (is_shadow_pwd && (spw_lock () == 0)) {
+			fprintf (stderr,
+					 _("%s: cannot lock %s; try again later.\n"),
+					 Prog, spw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
+		spw_locked = true;
+		if (is_shadow_pwd && (spw_open (O_RDWR) == 0)) {
+			fprintf (stderr,
+					 _("%s: cannot open %s\n"),
+					 Prog, spw_dbname ());
+			fail_exit (E_PW_UPDATE);
+		}
 	}
 
 	if (Gflg || lflg) {
@@ -2227,8 +2235,7 @@ int main (int argc, char **argv)
 		}
 	}
 
-	if (   cflg || dflg || eflg || fflg || gflg || Lflg || lflg || pflg
-	    || sflg || uflg || Uflg) {
+	if (USR_UPDATE_FLAGS) {
 		usr_update ();
 	}
 	if (Gflg || lflg) {
