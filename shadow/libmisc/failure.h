@@ -13,11 +13,6 @@
 
 #include "defines.h"
 #include "faillog.h"
-#ifdef USE_UTMPX
-#include <utmpx.h>
-#else					/* !USE_UTMPX */
-#include <utmp.h>
-#endif					/* !USE_UTMPX */
 
 /*
  * failure - make failure entry
@@ -44,18 +39,6 @@ extern int failcheck (uid_t uid, struct faillog *fl, bool failed);
  *	message which is displayed at login time.
  */
 extern void failprint (const struct faillog *);
-
-/*
- * failtmp - update the cumulative failure log
- *
- *	failtmp updates the (struct utmp) formatted failure log which
- *	maintains a record of all login failures.
- */
-#ifdef USE_UTMPX
-extern void failtmp (const char *username, const struct utmpx *);
-#else				/* !USE_UTMPX */
-extern void failtmp (const char *username, const struct utmp *);
-#endif				/* !USE_UTMPX */
 
 #endif
 

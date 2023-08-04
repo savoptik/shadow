@@ -11,7 +11,10 @@ AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-DLOCALEDIR=\"$(datadir)/locale\"
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	$(ECONF_CPPFLAGS)
+
+AM_CFLAGS = $(LIBBSD_CFLAGS)
 
 # XXX why are login and su in /bin anyway (other than for
 # historical reasons)?
@@ -26,9 +29,12 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS   = groups login
 sbin_PROGRAMS  = nologin
-ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
+ubin_PROGRAMS  = faillog chage chfn chsh expiry gpasswd newgrp passwd
 if ENABLE_SUBIDS
 ubin_PROGRAMS += newgidmap newuidmap
+endif
+if ENABLE_LASTLOG
+ubin_PROGRAMS += lastlog
 endif
 if WITH_SU
 bin_PROGRAMS  += su
@@ -95,13 +101,13 @@ else
 LIBCRYPT_NOPAM = $(LIBCRYPT)
 endif
 
-chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 newuidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 newgidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 expiry_LDADD = $(LDADD) $(LIBECONF)
 gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
@@ -115,18 +121,18 @@ lastlog_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBECONF)
 login_SOURCES  = \
 	login.c \
 	login_nopam.c
-login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT) $(LIBECONF)
 newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 nologin_LDADD  =
-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF)
+passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF) -ldl
 pwck_LDADD     = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwconv_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwunconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 su_SOURCES     = \
 	su.c \
 	suauth.c
-su_LDADD       = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+su_LDADD       = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 sulogin_LDADD  = $(LDADD) $(LIBCRYPT) $(LIBECONF)
 useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR) $(LIBECONF) -ldl
 userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBECONF) -ldl
@@ -185,7 +191,7 @@ getsubids_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 get_subid_owners_LDADD = \
 	$(top_builddir)/lib/libshadow.la \
@@ -197,13 +203,13 @@ get_subid_owners_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 new_subid_range_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 new_subid_range_LDADD = \
 	$(top_builddir)/lib/libshadow.la \
@@ -215,7 +221,7 @@ free_subid_range_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 free_subid_range_LDADD = \
 	$(top_builddir)/lib/libshadow.la \

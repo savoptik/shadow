@@ -91,11 +91,12 @@ host_triplet = @host@
 bin_PROGRAMS = groups$(EXEEXT) login$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2)
 sbin_PROGRAMS = nologin$(EXEEXT)
-ubin_PROGRAMS = faillog$(EXEEXT) lastlog$(EXEEXT) chage$(EXEEXT) \
-	chfn$(EXEEXT) chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) \
-	newgrp$(EXEEXT) passwd$(EXEEXT) $(am__EXEEXT_4)
+ubin_PROGRAMS = faillog$(EXEEXT) chage$(EXEEXT) chfn$(EXEEXT) \
+	chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) newgrp$(EXEEXT) \
+	passwd$(EXEEXT) $(am__EXEEXT_4) $(am__EXEEXT_5)
 @ENABLE_SUBIDS_TRUE@am__append_1 = newgidmap newuidmap
-@WITH_SU_TRUE@am__append_2 = su
+@ENABLE_LASTLOG_TRUE@am__append_2 = lastlog
+@WITH_SU_TRUE@am__append_3 = su
 usbin_PROGRAMS = chgpasswd$(EXEEXT) chpasswd$(EXEEXT) \
 	groupadd$(EXEEXT) groupdel$(EXEEXT) groupmems$(EXEEXT) \
 	groupmod$(EXEEXT) grpck$(EXEEXT) grpconv$(EXEEXT) \
@@ -104,12 +105,12 @@ usbin_PROGRAMS = chgpasswd$(EXEEXT) chpasswd$(EXEEXT) \
 	useradd$(EXEEXT) userdel$(EXEEXT) usermod$(EXEEXT) \
 	vipw$(EXEEXT)
 noinst_PROGRAMS = id$(EXEEXT) sulogin$(EXEEXT) $(am__EXEEXT_3)
-@WITH_SU_TRUE@am__append_3 = su
-@WITH_TCB_FALSE@am__append_4 = passwd
-@ACCT_TOOLS_SETUID_TRUE@am__append_5 = chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
-@ENABLE_SUBIDS_TRUE@@FCAPS_FALSE@am__append_6 = newgidmap newuidmap
-@ENABLE_SUBIDS_TRUE@am__append_7 = getsubids
-@ENABLE_SUBIDS_TRUE@am__append_8 = get_subid_owners \
+@WITH_SU_TRUE@am__append_4 = su
+@WITH_TCB_FALSE@am__append_5 = passwd
+@ACCT_TOOLS_SETUID_TRUE@am__append_6 = chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+@ENABLE_SUBIDS_TRUE@@FCAPS_FALSE@am__append_7 = newgidmap newuidmap
+@ENABLE_SUBIDS_TRUE@am__append_8 = getsubids
+@ENABLE_SUBIDS_TRUE@am__append_9 = get_subid_owners \
 @ENABLE_SUBIDS_TRUE@					new_subid_range \
 @ENABLE_SUBIDS_TRUE@					free_subid_range \
 @ENABLE_SUBIDS_TRUE@					check_subid_range
@@ -142,6 +143,7 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" \
 @ENABLE_SUBIDS_TRUE@	check_subid_range$(EXEEXT)
 @ENABLE_SUBIDS_TRUE@am__EXEEXT_4 = newgidmap$(EXEEXT) \
 @ENABLE_SUBIDS_TRUE@	newuidmap$(EXEEXT)
+@ENABLE_LASTLOG_TRUE@am__EXEEXT_5 = lastlog$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(sbin_PROGRAMS) \
 	$(ubin_PROGRAMS) $(usbin_PROGRAMS)
 chage_SOURCES = chage.c
@@ -287,7 +289,7 @@ login_OBJECTS = $(am_login_OBJECTS)
 login_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 logoutd_SOURCES = logoutd.c
 logoutd_OBJECTS = logoutd.$(OBJEXT)
 logoutd_LDADD = $(LDADD)
@@ -344,7 +346,7 @@ su_OBJECTS = $(am_su_OBJECTS)
 su_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 sulogin_SOURCES = sulogin.c
 sulogin_OBJECTS = sulogin.$(OBJEXT)
 sulogin_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -513,6 +515,8 @@ LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
@@ -529,6 +533,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -559,6 +564,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -641,12 +649,14 @@ AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-DLOCALEDIR=\"$(datadir)/locale\"
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	$(ECONF_CPPFLAGS)
 
-suidusbins = $(am__append_5)
-suidbins = $(am__append_3)
-suidubins = chage chfn chsh expiry gpasswd newgrp $(am__append_4) \
-	$(am__append_6)
+AM_CFLAGS = $(LIBBSD_CFLAGS)
+suidusbins = $(am__append_6)
+suidbins = $(am__append_4)
+suidubins = chage chfn chsh expiry gpasswd newgrp $(am__append_5) \
+	$(am__append_7)
 @WITH_TCB_TRUE@shadowsgidubins = passwd
 LDADD = $(INTLLIBS) \
 		 $(top_builddir)/libmisc/libmisc.la \
@@ -657,13 +667,13 @@ LDADD = $(INTLLIBS) \
 @ACCT_TOOLS_SETUID_TRUE@LIBPAM_SUID = $(LIBPAM)
 @USE_PAM_FALSE@LIBCRYPT_NOPAM = $(LIBCRYPT)
 @USE_PAM_TRUE@LIBCRYPT_NOPAM = 
-chage_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+chage_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 newuidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 newgidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 chfn_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 chsh_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 expiry_LDADD = $(LDADD) $(LIBECONF)
 gpasswd_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
@@ -678,11 +688,11 @@ login_SOURCES = \
 	login.c \
 	login_nopam.c
 
-login_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+login_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 newgrp_LDADD = $(LDADD) $(LIBAUDIT) $(LIBCRYPT) $(LIBECONF)
 newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 nologin_LDADD = 
-passwd_LDADD = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF)
+passwd_LDADD = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF) -ldl
 pwck_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwunconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
@@ -690,7 +700,7 @@ su_SOURCES = \
 	su.c \
 	suauth.c
 
-su_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+su_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 sulogin_LDADD = $(LDADD) $(LIBCRYPT) $(LIBECONF)
 useradd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR) $(LIBECONF) -ldl
 userdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBECONF) -ldl
@@ -717,7 +727,7 @@ vipw_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@get_subid_owners_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
@@ -729,13 +739,13 @@ vipw_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
@@ -747,7 +757,7 @@ vipw_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@free_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \

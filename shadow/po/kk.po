@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadowutils\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-11-08 10:37-0600\n"
+"POT-Creation-Date: 2023-08-04 16:25-0500\n"
 "PO-Revision-Date: 2017-02-07 17:09+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -92,8 +92,9 @@ msgstr "SELinux әрекетін бастау мүмкін емес\n"
 msgid "Could not query seuser for %s\n"
 msgstr "seuser %s үшін сұрау сәтсіз\n"
 
-#, c-format
-msgid "Could not set serange for %s\n"
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
 msgstr "%s үшін serange орнату мүмкін емес\n"
 
 #, c-format
@@ -435,9 +436,10 @@ msgstr "%s үшін атын орнату мүмкін емес\n"
 msgid "%s: Could not set caps\n"
 msgstr "%s үшін атын орнату мүмкін емес\n"
 
-#, c-format
-msgid "%s: snprintf failed!\n"
-msgstr ""
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: жол %d: chown %s сәтсіз: %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: line %d: chown %s failed: %s\n"
@@ -451,6 +453,14 @@ msgstr "%s: жол %d: chown %s сәтсіз: %s\n"
 
 msgid "Too many logins.\n"
 msgstr "Жүйеге кірудің шектен көп талап саны.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s пайдаланушы аты: "
 
 msgid "You have new mail."
 msgstr "Сізде жаңа пошта бар."
@@ -472,9 +482,6 @@ msgstr "өзгерістер тек таңбалардың регистрінд�
 
 msgid "too similar"
 msgstr "өте ұқсас"
-
-msgid "too simple"
-msgstr "өте оңай"
 
 msgid "rotated"
 msgstr "аударылған"
@@ -547,16 +554,13 @@ msgid "%s: cannot access chroot directory %s: %s\n"
 msgstr "%s: %s chroot бумасына қатынау мүмкін емес: %s\n"
 
 #, c-format
-msgid "%s: cannot chdir to chroot directory %s: %s\n"
-msgstr "%s: %s chroot бумасына өту (chdir) мүмкін емес: %s\n"
-
-#, c-format
 msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: %s бумасына chroot жасау мүмкін емес: %s\n"
 
-#, c-format
-msgid "Unable to obtain random bytes.\n"
-msgstr ""
+#, fuzzy, c-format
+#| msgid "%s: cannot chdir to chroot directory %s: %s\n"
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: %s chroot бумасына өту (chdir) мүмкін емес: %s\n"
 
 #, c-format
 msgid ""
@@ -583,6 +587,10 @@ msgstr "Бума табылмады, HOME=/ бумасына кіру орынд
 #, c-format
 msgid "Cannot execute %s"
 msgstr "%s орындау мүмкін емес"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
 
 #, c-format
 msgid "Invalid root directory '%s'\n"
@@ -668,6 +676,11 @@ msgstr ""
 "                                MAX_DAYS мәніне орнату\n"
 
 msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
+msgstr "  -R, --root CHROOT_DIR         chroot үшін бума\n"
+
+#, fuzzy
+#| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
+msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
 msgstr "  -R, --root CHROOT_DIR         chroot үшін бума\n"
 
 msgid ""
@@ -923,6 +936,11 @@ msgstr ""
 "  -s, --sha-rounds              SHA* тектес алгоритмдер үшін SHA\n"
 "                                раундтар саны\n"
 
+#, fuzzy, c-format
+#| msgid "%s: unsupported crypt method: %s\n"
+msgid "%s: no crypt method defined\n"
+msgstr "%s: қолдауы жоқ шифрлеу тәсілі: %s\n"
+
 #, c-format
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s: %s жалаушасын тек %s жалаушасымен бірге қолдануға болады\n"
@@ -974,6 +992,16 @@ msgstr ""
 msgid "Login Shell"
 msgstr "Қоршам"
 
+#, fuzzy, c-format
+#| msgid "%s: Cannot get the size of %s: %s\n"
+msgid "Cannot parse shell files: %s"
+msgstr "%s: %s өлшемін алу мүмкін емес: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "Cannot evaluate entries in shell files: %s"
+msgstr "%s: жаңа defaults файлын жасау мүмкін емес\n"
+
 #, c-format
 msgid "You may not change the shell for '%s'.\n"
 msgstr "Сіз '%s' үшін қоршамды өзгерте алмайсыз.\n"
@@ -985,6 +1013,11 @@ msgstr "%s үшін қоршамды өзгерту\n"
 #, c-format
 msgid "%s: Invalid entry: %s\n"
 msgstr "%s: Қате мән: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: %s is an invalid shell\n"
+msgid "%s: Warning: %s is an invalid shell\n"
+msgstr "%s: %s дұрыс қоршам емес\n"
 
 #, c-format
 msgid "%s: %s is an invalid shell\n"
@@ -1228,11 +1261,6 @@ msgstr ""
 
 msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  жүйелік тіркелгіні жасау\n"
-
-#, fuzzy
-#| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
-msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
-msgstr "  -R, --root CHROOT_DIR         chroot үшін бума\n"
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
@@ -1524,8 +1552,12 @@ msgstr ""
 "  -b, --before КҮН              мерзімі КҮНнен үлкен ғана lastlog жазбаларын "
 "көрсету\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -C, --clear                   clear lastlog record of an user (usable "
+#| "only with -u)\n"
 msgid ""
-"  -C, --clear                   clear lastlog record of an user (usable only "
+"  -C, --clear                   clear lastlog record of a user (usable only "
 "with -u)\n"
 msgstr ""
 "  -C, --clear                   пайдаланушының lastlog жазбасын тазарту (тек "
@@ -1629,11 +1661,6 @@ msgstr ""
 msgid "%s: Cannot possibly work without effective root\n"
 msgstr "%s: Эффективті root-сыз жұмыс істемеуі мүмкін\n"
 
-msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
-msgstr ""
-"Utmp жазбасы жоқ. Сізге exec \"login\" командасын бірінші деңгейден \"sh\" "
-"қосу керек"
-
 #, c-format
 msgid ""
 "\n"
@@ -1666,14 +1693,6 @@ msgstr "Жүйеге кіру орындалмады"
 #, c-format
 msgid "Cannot find user (%s)\n"
 msgstr "Пайдаланушыны табу мүмкін емес (%s)\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s пайдаланушы аты: "
 
 #, c-format
 msgid "%s: failure forking: %s"
@@ -1710,7 +1729,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> <count> ] ... \n"
+"usage: %s [<pid|fd:<pidfd>] <gid> <lowergid> <count> [ <gid> <lowergid> "
+"<count> ] ... \n"
 msgstr ""
 
 #, c-format
@@ -1737,19 +1757,14 @@ msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr "%s: %s босату сәтсіз\n"
 
 #, fuzzy, c-format
-#| msgid "%s: failed to find tcb directory for %s\n"
-msgid "%s: Could not open proc directory for target %u\n"
-msgstr "%s: %s үшін tcb бумасын табу сәтсіз\n"
-
-#, fuzzy, c-format
 #| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for process\n"
 msgstr "%s: %s үшін tcb бумасын жасау мүмкін емес\n"
 
 #, c-format
 msgid ""
-"%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, "
-"gid:%lu pw_gid:%lu st_gid:%lu\n"
+"%s: Target process is owned by a different user: uid:%lu pw_uid:%lu st_uid:"
+"%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
 
 msgid "Usage: newgrp [-] [group]\n"
@@ -1782,14 +1797,14 @@ msgstr ""
 
 #, c-format
 msgid ""
-"usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> <count> ] ... \n"
+"usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
+"<count> ] ... \n"
 msgstr ""
 
-#, c-format
-msgid ""
-"%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
-"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
-msgstr ""
+#, fuzzy, c-format
+#| msgid "%s: Failed to create tcb directory for %s\n"
+msgid "%s: Could not stat directory for target process\n"
+msgstr "%s: %s үшін tcb бумасын жасау мүмкін емес\n"
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
@@ -1814,6 +1829,10 @@ msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: '%s' пайдаланушы аты қате\n"
 
 #, c-format
+msgid "%s: Provide '--crypt-method' before number of rounds\n"
+msgstr ""
+
+#, c-format
 msgid "%s: line %d: invalid line\n"
 msgstr "%s: жол %d: жол қате\n"
 
@@ -1833,6 +1852,11 @@ msgstr "%s: жол %d: топты жасау мүмкін емес\n"
 #, c-format
 msgid "%s: line %d: user '%s' does not exist in %s\n"
 msgstr "%s: жол %d: '%s' пайдаланушысы %s ішінде жоқ\n"
+
+#, fuzzy, c-format
+#| msgid "%s: unlink: %s: %s\n"
+msgid "%s: line %d: %s\n"
+msgstr "%s: unlink: %s: %s\n"
 
 #, c-format
 msgid "%s: line %d: can't update password\n"
@@ -1856,12 +1880,12 @@ msgid "%s: line %d: can't update entry\n"
 msgstr "%s: жол %d: жазбаны жаңарту мүмкін емес\n"
 
 #, c-format
-msgid "%s: failed to prepare new %s entry\n"
-msgstr "%s: жаңа %s жазбасын дайындау сәтсіз аяқталды\n"
-
-#, c-format
 msgid "%s: can't find subordinate user range\n"
 msgstr "%s: бағынышты пайдаланушы ауқымын табу мүмкін емес\n"
+
+#, c-format
+msgid "%s: failed to prepare new %s entry\n"
+msgstr "%s: жаңа %s жазбасын дайындау сәтсіз аяқталды\n"
 
 #, c-format
 msgid "%s: can't find subordinate group range\n"
@@ -2248,6 +2272,11 @@ msgstr "%s: Сізде қазір su жасау үшін құқығыңыз жо
 msgid "No passwd entry for user '%s'\n"
 msgstr "'%s' пайд.-сы үшін passwd жазбасы жоқ\n"
 
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Overlong user name '%s'\n"
+msgstr "қате пайдаланушы аты '%s'\n"
+
 #, c-format
 msgid "%s: must be run from a terminal\n"
 msgstr "%s: терминалда орындалуы керек\n"
@@ -2291,6 +2320,13 @@ msgstr "%s: %s жасалды, бірақ оны өшіру мүмкін еме�
 
 #, c-format
 msgid "%s: the %s configuration in %s will be ignored\n"
+msgstr "%s: %s баптауы,  ол %s ішінде, есепке алынбайды\n"
+
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid ""
+"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"group\n"
 msgstr "%s: %s баптауы,  ол %s ішінде, есепке алынбайды\n"
 
 #, fuzzy, c-format
@@ -2455,6 +2491,17 @@ msgstr "  -U, --user-group              пайдаланушымен аттас 
 msgid ""
 "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user "
 "mapping\n"
+msgstr ""
+"  -Z, --selinux-user SEUSER     SELinux пайдаланушы сәйкестігі үшін "
+"көрсетілген SEUSER қолдану\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux "
+#| "user mapping\n"
+msgid ""
+"      --selinux-range SERANGE   use a specific MLS range for the SELinux "
+"user mapping\n"
 msgstr ""
 "  -Z, --selinux-user SEUSER     SELinux пайдаланушы сәйкестігі үшін "
 "көрсетілген SEUSER қолдану\n"
@@ -2868,6 +2915,16 @@ msgstr ""
 "  -Z, --selinux-user SEUSER     пайдаланушы тіркелгісі үшін жаңа SELinux "
 "сәйкестігі\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     new SELinux user mapping for the user "
+#| "account\n"
+msgid ""
+"      --selinux-range SERANGE   new SELinux MLS range for the user account\n"
+msgstr ""
+"  -Z, --selinux-user SEUSER     пайдаланушы тіркелгісі үшін жаңа SELinux "
+"сәйкестігі\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the user's password would result in a passwordless account.\n"
@@ -3081,6 +3138,19 @@ msgstr "%s: %s қайтару мүмкін емес: %s (сіздің өзгер
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: %s үшін tcb бумасын табу сәтсіз\n"
 
+#~ msgid "too simple"
+#~ msgstr "өте оңай"
+
+#~ msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
+#~ msgstr ""
+#~ "Utmp жазбасы жоқ. Сізге exec \"login\" командасын бірінші деңгейден "
+#~ "\"sh\" қосу керек"
+
+#, fuzzy, c-format
+#~| msgid "%s: failed to find tcb directory for %s\n"
+#~ msgid "%s: Could not open proc directory for target %u\n"
+#~ msgstr "%s: %s үшін tcb бумасын табу сәтсіз\n"
+
 #~ msgid "Usage: id\n"
 #~ msgstr "Қолданылуы: id\n"
 
@@ -3095,10 +3165,6 @@ msgstr "%s: %s үшін tcb бумасын табу сәтсіз\n"
 #, c-format
 #~ msgid "%s: password expiry information changed.\n"
 #~ msgstr "%s: пароль мерзімі туралы ақпарат өзгертілді.\n"
-
-#, c-format
-#~ msgid "invalid user name '%s'\n"
-#~ msgstr "қате пайдаланушы аты '%s'\n"
 
 #~ msgid "Username         Port     From             Latest"
 #~ msgstr "Пайдаланушы      Порт     Қайдан           Соңғы"

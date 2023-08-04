@@ -16,6 +16,8 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
@@ -33,6 +35,13 @@
 #ifndef SHELLS_FILE
 #define SHELLS_FILE "/etc/shells"
 #endif
+
+#ifdef HAVE_VENDORDIR
+#include <libeconf.h>
+#define SHELLS "shells"
+#define ETCDIR "/etc"
+#endif
+
 /*
  * Global variables
  */
@@ -46,8 +55,8 @@ static bool pw_locked = false;
 /* external identifiers */
 
 /* local function prototypes */
-static /*@noreturn@*/void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void fail_exit (int code);
+NORETURN static void usage (int status);
 static void new_fields (void);
 static bool shell_is_listed (const char *);
 static bool is_restricted_shell (const char *);
@@ -58,7 +67,9 @@ static void update_shell (const char *user, char *loginsh);
 /*
  * fail_exit - do some cleanup and exit with the given error code
  */
-static /*@noreturn@*/void fail_exit (int code)
+NORETURN
+static void
+fail_exit (int code)
 {
 	if (pw_locked) {
 		if (pw_unlock () == 0) {
@@ -76,7 +87,9 @@ static /*@noreturn@*/void fail_exit (int code)
 /*
  * usage - print command line syntax and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -127,17 +140,60 @@ static bool is_restricted_shell (const char *sh)
  * If getusershell() is available (Linux, *BSD, possibly others), use it
  * instead of re-implementing it.
  */
+
+#ifdef HAVE_VENDORDIR
 static bool shell_is_listed (const char *sh)
 {
-	char *cp;
 	bool found = false;
 
-#ifndef HAVE_GETUSERSHELL
-	char buf[BUFSIZ];
-	FILE *fp;
-#endif
+	size_t size = 0;
+	econf_err error;
+	char **keys;
+	econf_file *key_file;
+
+	error = econf_readDirs(&key_file,
+			       VENDORDIR,
+			       ETCDIR,
+			       SHELLS,
+			       NULL,
+			       "", /* key only */
+			       "#" /* comment */);
+	if (error) {
+		fprintf (stderr,
+			 _("Cannot parse shell files: %s"),
+			 econf_errString(error));
+		fail_exit (1);
+	}
+
+	error = econf_getKeys(key_file, NULL, &size, &keys);
+	if (error) {
+		fprintf (stderr,
+			 _("Cannot evaluate entries in shell files: %s"),
+			 econf_errString(error));
+		econf_free (key_file);
+		fail_exit (1);
+	}
+
+	for (size_t i = 0; i < size; i++) {
+		if (strcmp (keys[i], sh) == 0) {
+			found = true;
+			break;
+		}
+	}
+	econf_free (keys);
+	econf_free (key_file);
+
+	return found;
+}
+
+#else /* without HAVE_VENDORDIR */
+
+static bool shell_is_listed (const char *sh)
+{
+	bool found = false;
 
 #ifdef HAVE_GETUSERSHELL
+	char *cp;
 	setusershell ();
 	while ((cp = getusershell ())) {
 		if (strcmp (cp, sh) == 0) {
@@ -147,6 +203,9 @@ static bool shell_is_listed (const char *sh)
 	}
 	endusershell ();
 #else
+	char buf[BUFSIZ];
+	FILE *fp;
+
 	fp = fopen (SHELLS_FILE, "r");
 	if (NULL == fp) {
 		return false;
@@ -171,6 +230,7 @@ static bool shell_is_listed (const char *sh)
 #endif
 	return found;
 }
+#endif /* with HAVE_VENDORDIR */
 
 /*
  * process_flags - parse the command line options
@@ -514,11 +574,15 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: Invalid entry: %s\n"), Prog, loginsh);
 		fail_exit (1);
 	}
-	if (   !amroot
-	    && (   is_restricted_shell (loginsh)
-	        || (access (loginsh, X_OK) != 0))) {
-		fprintf (stderr, _("%s: %s is an invalid shell\n"), Prog, loginsh);
-		fail_exit (1);
+	if (loginsh[0] != '/'
+			|| is_restricted_shell (loginsh)
+			|| (access (loginsh, X_OK) != 0)) {
+		if (amroot) {
+			fprintf (stderr, _("%s: Warning: %s is an invalid shell\n"), Prog, loginsh);
+		} else {
+			fprintf (stderr, _("%s: %s is an invalid shell\n"), Prog, loginsh);
+			fail_exit (1);
+		}
 	}
 
 	/* Even for root, warn if an invalid shell is specified. */

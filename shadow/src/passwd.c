@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <time.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
@@ -49,6 +51,8 @@ static char *name;		/* The name of user whose password is being changed */
 static char *myname;		/* The current user's name */
 static bool amroot;		/* The caller's real UID was 0 */
 
+static const char *prefix = "";
+
 static bool
     aflg = false,			/* -a - show status for all users */
     dflg = false,			/* -d - delete password */
@@ -74,14 +78,16 @@ static long age_max = 0;	/* Maximum days until change     */
 static long warn = 0;		/* Warning days before change   */
 static long inact = 0;		/* Days without change before locked */
 
-#ifndef USE_PAM
 static bool do_update_age = false;
-#endif				/* ! USE_PAM */
+#ifdef USE_PAM
+static bool use_pam = true;
+#else
+static bool use_pam = false;
+#endif				/* USE_PAM */
 
 static bool pw_locked = false;
 static bool spw_locked = false;
 
-#ifndef USE_PAM
 /*
  * Size of the biggest passwd:
  *   $6$	3
@@ -97,25 +103,22 @@ static bool spw_locked = false;
  */
 static char crypt_passwd[256];
 static bool do_update_pwd = false;
-#endif				/* !USE_PAM */
 
 /*
  * External identifiers
  */
 
 /* local function prototypes */
-static /*@noreturn@*/void usage (int);
+NORETURN static void usage (int);
 
-#ifndef USE_PAM
 static bool reuse (const char *, const struct passwd *);
 static int new_password (const struct passwd *);
 
 static void check_password (const struct passwd *, const struct spwd *);
-#endif				/* !USE_PAM */
 static /*@observer@*/const char *pw_status (const char *);
 static void print_status (const struct passwd *);
-static /*@noreturn@*/void fail_exit (int);
-static /*@noreturn@*/void oom (void);
+NORETURN static void fail_exit (int);
+NORETURN static void oom (void);
 static char *update_crypt_pw (char *);
 static void update_noshadow (void);
 
@@ -124,7 +127,9 @@ static void update_shadow (void);
 /*
  * usage - print command usage and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -145,6 +150,7 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -q, --quiet                   quiet mode\n"), usageout);
 	(void) fputs (_("  -r, --repository REPOSITORY   change password in REPOSITORY repository\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       directory prefix\n"), usageout);
 	(void) fputs (_("  -S, --status                  report password status on the named account\n"), usageout);
 	(void) fputs (_("  -u, --unlock                  unlock the password of the named account\n"), usageout);
 	(void) fputs (_("  -w, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"), usageout);
@@ -154,7 +160,6 @@ static /*@noreturn@*/void usage (int status)
 	exit (status);
 }
 
-#ifndef USE_PAM
 static bool reuse (const char *pass, const struct passwd *pw)
 {
 #ifdef HAVE_LIBCRACK_HIST
@@ -186,7 +191,7 @@ static int new_password (const struct passwd *pw)
 	char *clear;		/* Pointer to clear text */
 	char *cipher;		/* Pointer to cipher text */
 	const char *salt;	/* Pointer to new salt */
-	char *cp;		/* Pointer to getpass() response */
+	char *cp;		/* Pointer to agetpass() response */
 	char orig[200];		/* Original password */
 	char pass[200];		/* New password */
 	int i;			/* Counter for retries */
@@ -204,7 +209,7 @@ static int new_password (const struct passwd *pw)
 	 */
 
 	if (!amroot && ('\0' != crypt_passwd[0])) {
-		clear = getpass (_("Old password: "));
+		clear = agetpass (_("Old password: "));
 		if (NULL == clear) {
 			return -1;
 		}
@@ -212,7 +217,7 @@ static int new_password (const struct passwd *pw)
 		cipher = pw_encrypt (clear, crypt_passwd);
 
 		if (NULL == cipher) {
-			strzero (clear);
+			erase_pass (clear);
 			fprintf (stderr,
 			         _("%s: failed to crypt password with previous salt: %s\n"),
 			         Prog, strerror (errno));
@@ -223,7 +228,7 @@ static int new_password (const struct passwd *pw)
 		}
 
 		if (strcmp (cipher, crypt_passwd) != 0) {
-			strzero (clear);
+			erase_pass (clear);
 			strzero (cipher);
 			SYSLOG ((LOG_WARN, "incorrect password for %s",
 			         pw->pw_name));
@@ -234,7 +239,7 @@ static int new_password (const struct passwd *pw)
 			return -1;
 		}
 		STRFCPY (orig, clear);
-		strzero (clear);
+		erase_pass (clear);
 		strzero (cipher);
 	} else {
 		orig[0] = '\0';
@@ -286,7 +291,7 @@ static int new_password (const struct passwd *pw)
 
 	warned = false;
 	for (i = getdef_num ("PASS_CHANGE_TRIES", 5); i > 0; i--) {
-		cp = getpass (_("New password: "));
+		cp = agetpass (_("New password: "));
 		if (NULL == cp) {
 			memzero (orig, sizeof orig);
 			memzero (pass, sizeof pass);
@@ -296,7 +301,7 @@ static int new_password (const struct passwd *pw)
 			warned = false;
 		}
 		STRFCPY (pass, cp);
-		strzero (cp);
+		erase_pass (cp);
 
 		if (!amroot && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
 			(void) puts (_("Try again."));
@@ -314,16 +319,17 @@ static int new_password (const struct passwd *pw)
 			warned = true;
 			continue;
 		}
-		cp = getpass (_("Re-enter new password: "));
+		cp = agetpass (_("Re-enter new password: "));
 		if (NULL == cp) {
 			memzero (orig, sizeof orig);
 			memzero (pass, sizeof pass);
 			return -1;
 		}
 		if (strcmp (cp, pass) != 0) {
+			erase_pass (cp);
 			(void) fputs (_("They don't match; try again.\n"), stderr);
 		} else {
-			strzero (cp);
+			erase_pass (cp);
 			break;
 		}
 	}
@@ -423,7 +429,6 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 		}
 	}
 }
-#endif				/* !USE_PAM */
 
 static /*@observer@*/const char *pw_status (const char *pass)
 {
@@ -444,7 +449,7 @@ static void print_status (const struct passwd *pw)
 	char         date[80];
 	struct spwd *sp;
 
-	sp = getspnam (pw->pw_name); /* local, no need for xgetspnam */
+	sp = prefix_getspnam (pw->pw_name); /* local, no need for xprefix_getspnam */
 	if (NULL != sp) {
 		date_to_str (sizeof(date), date, sp->sp_lstchg * SCALE),
 		(void) printf ("%s %s %s %lld %lld %lld %lld\n",
@@ -465,7 +470,9 @@ static void print_status (const struct passwd *pw)
 }
 
 
-static /*@noreturn@*/void fail_exit (int status)
+NORETURN
+static void
+fail_exit (int status)
 {
 	if (pw_locked) {
 		if (pw_unlock () == 0) {
@@ -486,7 +493,9 @@ static /*@noreturn@*/void fail_exit (int status)
 	exit (status);
 }
 
-static /*@noreturn@*/void oom (void)
+NORETURN
+static void
+oom (void)
 {
 	(void) fprintf (stderr, _("%s: out of memory\n"), Prog);
 	fail_exit (E_FAILURE);
@@ -494,11 +503,12 @@ static /*@noreturn@*/void oom (void)
 
 static char *update_crypt_pw (char *cp)
 {
-#ifndef USE_PAM
-	if (do_update_pwd) {
-		cp = xstrdup (crypt_passwd);
+	if (!use_pam)
+	{
+		if (do_update_pwd) {
+			cp = xstrdup (crypt_passwd);
+		}
 	}
-#endif				/* !USE_PAM */
 
 	if (dflg) {
 		*cp = '\0';
@@ -517,15 +527,16 @@ static char *update_crypt_pw (char *cp)
 	}
 
 	if (lflg && *cp != '!') {
-		char *newpw = xmalloc (strlen (cp) + 2);
+		char *newpw = XMALLOC(strlen(cp) + 2, char);
 
 		strcpy (newpw, "!");
 		strcat (newpw, cp);
-#ifndef USE_PAM
-		if (do_update_pwd) {
-			free (cp);
+		if (!use_pam)
+		{
+			if (do_update_pwd) {
+				free (cp);
+			}
 		}
-#endif /* USE_PAM */
 		cp = newpw;
 	}
 	return cp;
@@ -637,16 +648,17 @@ static void update_shadow (void)
 	if (iflg) {
 		nsp->sp_inact = (inact * DAY) / SCALE;
 	}
-#ifndef USE_PAM
-	if (do_update_age) {
-		nsp->sp_lstchg = (long) gettime () / SCALE;
-		if (0 == nsp->sp_lstchg) {
-			/* Better disable aging than requiring a password
-			 * change */
-			nsp->sp_lstchg = -1;
+	if (!use_pam)
+	{
+		if (do_update_age) {
+			nsp->sp_lstchg = gettime () / SCALE;
+			if (0 == nsp->sp_lstchg) {
+				/* Better disable aging than requiring a password
+				 * change */
+				nsp->sp_lstchg = -1;
+			}
 		}
 	}
-#endif				/* !USE_PAM */
 
 	/*
 	 * Force change on next login, like SunOS 4.x passwd -e or Solaris
@@ -713,11 +725,9 @@ int main (int argc, char **argv)
 {
 	const struct passwd *pw;	/* Password file entry for user      */
 
-#ifndef USE_PAM
 	char *cp;		/* Miscellaneous character pointing  */
 
 	const struct spwd *sp;	/* Shadow file entry for user   */
-#endif				/* !USE_PAM */
 
 	sanitize_env ();
 
@@ -734,6 +744,12 @@ int main (int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
+
+	if (prefix[0]) {
+		use_pam = false;
+		do_update_age = true;
+	}
 
 	/*
 	 * The program behaves differently when executed by root than when
@@ -760,6 +776,7 @@ int main (int argc, char **argv)
 			{"quiet",       no_argument,       NULL, 'q'},
 			{"repository",  required_argument, NULL, 'r'},
 			{"root",        required_argument, NULL, 'R'},
+			{"prefix",      required_argument, NULL, 'P'},
 			{"status",      no_argument,       NULL, 'S'},
 			{"unlock",      no_argument,       NULL, 'u'},
 			{"warndays",    required_argument, NULL, 'w'},
@@ -767,7 +784,7 @@ int main (int argc, char **argv)
 			{NULL, 0, NULL, '\0'}
 		};
 
-		while ((c = getopt_long (argc, argv, "adehi:kln:qr:R:Suw:x:",
+		while ((c = getopt_long (argc, argv, "adehi:kln:qr:R:P:Suw:x:",
 		                         long_options, NULL)) != -1) {
 			switch (c) {
 			case 'a':
@@ -828,6 +845,8 @@ int main (int argc, char **argv)
 				}
 				break;
 			case 'R': /* no-op, handled in process_root_flag () */
+				break;
+			case 'P': /* no-op, handled in process_prefix_flag () */
 				break;
 			case 'S':
 				Sflg = true;	/* ok for users */
@@ -906,11 +925,11 @@ int main (int argc, char **argv)
 			                Prog);
 			exit (E_NOPERM);
 		}
-		setpwent ();
-		while ( (pw = getpwent ()) != NULL ) {
+		prefix_setpwent ();
+		while ( (pw = prefix_getpwent ()) != NULL ) {
 			print_status (pw);
 		}
-		endpwent ();
+		prefix_endpwent ();
 		exit (E_SUCCESS);
 	}
 #if 0
@@ -947,7 +966,7 @@ int main (int argc, char **argv)
 		exit (E_NOPERM);
 	}
 
-	pw = xgetpwnam (name);
+	pw = xprefix_getpwnam (name);
 	if (NULL == pw) {
 		(void) fprintf (stderr,
 		                _("%s: user '%s' does not exist\n"),
@@ -987,53 +1006,55 @@ int main (int argc, char **argv)
 		print_status (pw);
 		exit (E_SUCCESS);
 	}
-#ifndef USE_PAM
-	/*
-	 * The user name is valid, so let's get the shadow file entry.
-	 */
-	sp = getspnam (name); /* !USE_PAM, no need for xgetspnam */
-	if (NULL == sp) {
-		if (errno == EACCES) {
-			(void) fprintf (stderr,
-			                _("%s: Permission denied.\n"),
-			                Prog);
-			exit (E_NOPERM);
+	if (!use_pam)
+	{
+		/*
+		 * The user name is valid, so let's get the shadow file entry.
+		 */
+		sp = prefix_getspnam (name); /* !use_pam, no need for xprefix_getspnam */
+		if (NULL == sp) {
+			if (errno == EACCES) {
+				(void) fprintf (stderr,
+				                _("%s: Permission denied.\n"),
+				                Prog);
+				exit (E_NOPERM);
+			}
+			sp = pwd_to_spwd (pw);
 		}
-		sp = pwd_to_spwd (pw);
-	}
 
-	cp = sp->sp_pwdp;
-
-	/*
-	 * If there are no other flags, just change the password.
-	 */
-	if (!anyflag) {
-		STRFCPY (crypt_passwd, cp);
+		cp = sp->sp_pwdp;
 
 		/*
-		 * See if the user is permitted to change the password.
-		 * Otherwise, go ahead and set a new password.
+		 * If there are no other flags, just change the password.
 		 */
-		check_password (pw, sp);
+		if (!anyflag) {
+			STRFCPY (crypt_passwd, cp);
 
-		/*
-		 * Let the user know whose password is being changed.
-		 */
-		if (!qflg) {
-			(void) printf (_("Changing password for %s\n"), name);
-		}
+			/*
+			 * See if the user is permitted to change the password.
+			 * Otherwise, go ahead and set a new password.
+			 */
+			check_password (pw, sp);
 
-		if (new_password (pw) != 0) {
-			(void) fprintf (stderr,
-			                _("The password for %s is unchanged.\n"),
-			                name);
-			closelog ();
-			exit (E_NOPERM);
+			/*
+			 * Let the user know whose password is being changed.
+			 */
+			if (!qflg) {
+				(void) printf (_("Changing password for %s\n"), name);
+			}
+
+			if (new_password (pw) != 0) {
+				(void) fprintf (stderr,
+				                _("The password for %s is unchanged.\n"),
+				                name);
+				closelog ();
+				exit (E_NOPERM);
+			}
+			do_update_pwd = true;
+			do_update_age = true;
 		}
-		do_update_pwd = true;
-		do_update_age = true;
 	}
-#endif				/* !USE_PAM */
+
 	/*
 	 * Before going any further, raise the ulimit to prevent colliding
 	 * into a lowered ulimit, and set the real UID to root to protect
@@ -1046,7 +1067,7 @@ int main (int argc, char **argv)
 	/*
 	 * Don't set the real UID for PAM...
 	 */
-	if (!anyflag) {
+	if (!anyflag && use_pam) {
 		do_pam_passwd (name, qflg, kflg);
 		exit (E_SUCCESS);
 	}

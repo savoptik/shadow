@@ -14,6 +14,7 @@
 
 #ident "$Id$"
 
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "commonio.h"
@@ -25,13 +26,12 @@
 	struct sgrp *sg;
 	int i;
 
-	sg = (struct sgrp *) malloc (sizeof *sg);
+	sg = CALLOC (1, struct sgrp);
 	if (NULL == sg) {
 		return NULL;
 	}
 	/* Do the same as the other _dup function, even if we know the
 	 * structure. */
-	memset (sg, 0, sizeof *sg);
 	/*@-mustfreeonly@*/
 	sg->sg_name = strdup (sgent->sg_name);
 	/*@=mustfreeonly@*/
@@ -50,7 +50,7 @@
 
 	for (i = 0; NULL != sgent->sg_adm[i]; i++);
 	/*@-mustfreeonly@*/
-	sg->sg_adm = (char **) malloc ((i + 1) * sizeof (char *));
+	sg->sg_adm = MALLOC(i + 1, char *);
 	/*@=mustfreeonly@*/
 	if (NULL == sg->sg_adm) {
 		free (sg->sg_passwd);
@@ -75,7 +75,7 @@
 
 	for (i = 0; NULL != sgent->sg_mem[i]; i++);
 	/*@-mustfreeonly@*/
-	sg->sg_mem = (char **) malloc ((i + 1) * sizeof (char *));
+	sg->sg_mem = MALLOC(i + 1, char *);
 	/*@=mustfreeonly@*/
 	if (NULL == sg->sg_mem) {
 		for (i = 0; NULL != sg->sg_adm[i]; i++) {
@@ -151,7 +151,7 @@ static const char *gshadow_getname (const void *ent)
 
 static void *gshadow_parse (const char *line)
 {
-	return (void *) sgetsgent (line);
+	return sgetsgent (line);
 }
 
 static int gshadow_put (const void *ent, FILE * file)
@@ -253,7 +253,7 @@ int sgr_open (int mode)
 
 int sgr_update (const struct sgrp *sg)
 {
-	return commonio_update (&gshadow_db, (const void *) sg);
+	return commonio_update (&gshadow_db, sg);
 }
 
 int sgr_remove (const char *name)
@@ -302,5 +302,5 @@ int sgr_sort ()
 	return commonio_sort_wrt (&gshadow_db, __gr_get_db ());
 }
 #else
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif

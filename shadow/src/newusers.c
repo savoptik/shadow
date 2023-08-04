@@ -29,6 +29,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
+
+#include "alloc.h"
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -58,7 +60,7 @@ static bool rflg = false;	/* create a system account */
 #ifndef USE_PAM
 static /*@null@*//*@observer@*/char *crypt_method = NULL;
 #define cflg (NULL != crypt_method)
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 static bool sflg = false;
 #endif
 #ifdef USE_SHA_CRYPT
@@ -245,11 +247,11 @@ static int add_group (const char *name, const char *gid, gid_t *ngid, uid_t uid)
 		/* Look in both the system database (getgrgid) and in the
 		 * internal database (gr_locate_gid), which may contain
 		 * uncommitted changes */
-		if (   (getgrgid ((gid_t) grent.gr_gid) != NULL)
-		    || (gr_locate_gid ((gid_t) grent.gr_gid) != NULL)) {
+		if (   (getgrgid (grent.gr_gid) != NULL)
+		    || (gr_locate_gid (grent.gr_gid) != NULL)) {
 			/* The user will use this ID for her
 			 * primary group */
-			*ngid = (gid_t) grent.gr_gid;
+			*ngid = grent.gr_gid;
 			return 0;
 		}
 
@@ -350,22 +352,20 @@ static int get_user_id (const char *uid, uid_t *nuid) {
 			const struct passwd *pwd;
 			/* local, no need for xgetpwnam */
 			pwd = getpwnam (uid);
-			if (NULL == pwd) {
+			if (pwd == NULL)
 				pwd = pw_locate (uid);
-			}
 
-			if (NULL != pwd) {
-				*nuid = pwd->pw_uid;
-			} else {
+			if (pwd == NULL) {
 				fprintf (stderr,
 				         _("%s: user '%s' does not exist\n"),
 				         Prog, uid);
 				return -1;
 			}
+
+			*nuid = pwd->pw_uid;
 		} else {
-			if (find_new_uid (rflg, nuid, NULL) < 0) {
+			if (find_new_uid (rflg, nuid, NULL) < 0)
 				return -1;
-			}
 		}
 	}
 
@@ -527,7 +527,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 			}
 			spent.sp_pwdp = cp;
 		}
-		spent.sp_lstchg = (long) gettime () / SCALE;
+		spent.sp_lstchg = gettime () / SCALE;
 		if (0 == spent.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */
@@ -584,7 +584,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 */
 	spent.sp_pwdp = "!";
 #endif
-	spent.sp_lstchg = (long) gettime () / SCALE;
+	spent.sp_lstchg = gettime () / SCALE;
 	if (0 == spent.sp_lstchg) {
 		/* Better disable aging than requiring a password change */
 		spent.sp_lstchg = -1;
@@ -662,6 +662,13 @@ static void process_flags (int argc, char **argv)
 		case 's':
 			sflg = true;
                         bad_s = 0;
+
+			if (!crypt_method){
+				fprintf(stderr,
+						_("%s: Provide '--crypt-method' before number of rounds\n"),
+						Prog);
+				usage (EXIT_FAILURE);
+			}
 #if defined(USE_SHA_CRYPT)
 			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
 			       && (0 == getlong(optarg, &sha_rounds)))) {
@@ -1039,7 +1046,6 @@ int main (int argc, char **argv)
 	char *cp;
 	const struct passwd *pw;
 	struct passwd newpw;
-	int errors = 0;
 	int line = 0;
 	uid_t uid;
 	gid_t gid;
@@ -1088,19 +1094,16 @@ int main (int argc, char **argv)
 	 * over 100 is allocated. The pw_gid field will be updated with that
 	 * value.
 	 */
-	while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+	while (fgets (buf, sizeof buf, stdin) != NULL) {
 		line++;
 		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
+		if (cp == NULL && feof (stdin) == 0) {
+			fprintf (stderr, _("%s: line %d: line too long\n"),
+				 Prog, line);
+			fail_exit (EXIT_FAILURE);
+		}
+		if (cp != NULL) {
 			*cp = '\0';
-		} else {
-			if (feof (stdin) == 0) {
-				fprintf (stderr,
-				         _("%s: line %d: line too long\n"),
-				         Prog, line);
-				errors++;
-				continue;
-			}
 		}
 
 		/*
@@ -1111,39 +1114,35 @@ int main (int argc, char **argv)
 		for (cp = buf, nfields = 0; nfields < 7; nfields++) {
 			fields[nfields] = cp;
 			cp = strchr (cp, ':');
-			if (NULL != cp) {
-				*cp = '\0';
-				cp++;
-			} else {
+			if (cp == NULL)
 				break;
-			}
+
+			*cp = '\0';
+			cp++;
 		}
 		if (nfields != 6) {
 			fprintf (stderr, _("%s: line %d: invalid line\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 
 		/*
-		 * First check if we have to create or update an user
+		 * First check if we have to create or update a user
 		 */
 		pw = pw_locate (fields[0]);
 		/* local, no need for xgetpwnam */
-		if (   (NULL == pw)
-		    && (getpwnam (fields[0]) != NULL)) {
-			fprintf (stderr, _("%s: cannot update the entry of user %s (not in the passwd database)\n"), Prog, fields[0]);
-			errors++;
-			continue;
+		if (NULL == pw && getpwnam(fields[0]) != NULL) {
+			fprintf (stderr,
+				 _("%s: cannot update the entry of user %s (not in the passwd database)\n"),
+				 Prog, fields[0]);
+			fail_exit (EXIT_FAILURE);
 		}
 
-		if (   (NULL == pw)
-		    && (get_user_id (fields[2], &uid) != 0)) {
+		if (NULL == pw && get_user_id(fields[2], &uid) != 0) {
 			fprintf (stderr,
 			         _("%s: line %d: can't create user\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 
 		/*
@@ -1163,8 +1162,7 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: line %d: can't create group\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 
 		/*
@@ -1179,8 +1177,7 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: line %d: can't create user\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 
 		/*
@@ -1192,17 +1189,22 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: line %d: user '%s' does not exist in %s\n"),
 			         Prog, line, fields[0], pw_dbname ());
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 		newpw = *pw;
 
 #ifdef USE_PAM
 		/* keep the list of user/password for later update by PAM */
 		nusers++;
-		lines     = realloc (lines,     sizeof (lines[0])     * nusers);
-		usernames = realloc (usernames, sizeof (usernames[0]) * nusers);
-		passwords = realloc (passwords, sizeof (passwords[0]) * nusers);
+		lines     = REALLOCF(lines, nusers, int);
+		usernames = REALLOCF(usernames, nusers, char *);
+		passwords = REALLOCF(passwords, nusers, char *);
+		if (lines == NULL || usernames == NULL || passwords == NULL) {
+			fprintf (stderr,
+			         _("%s: line %d: %s\n"),
+			         Prog, line, strerror(errno));
+			fail_exit (EXIT_FAILURE);
+		}
 		lines[nusers-1]     = line;
 		usernames[nusers-1] = strdup (fields[0]);
 		passwords[nusers-1] = strdup (fields[1]);
@@ -1211,8 +1213,7 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: line %d: can't update password\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 		if ('\0' != fields[4][0]) {
 			newpw.pw_gecos = fields[4];
@@ -1235,21 +1236,24 @@ int main (int argc, char **argv)
 				fprintf(stderr,
 					_("%s: line %d: homedir must be an absolute path\n"),
 					Prog, line);
-				errors++;
-				continue;
-			};
+				fail_exit (EXIT_FAILURE);
+			}
 			if (mkdir (newpw.pw_dir, mode) != 0) {
 				fprintf (stderr,
 				         _("%s: line %d: mkdir %s failed: %s\n"),
 				         Prog, line, newpw.pw_dir,
 				         strerror (errno));
-			} else if (chown (newpw.pw_dir,
-			                  newpw.pw_uid,
-			                  newpw.pw_gid) != 0) {
+				if (errno != EEXIST) {
+					fail_exit (EXIT_FAILURE);
+				}
+			}
+			if (chown(newpw.pw_dir, newpw.pw_uid, newpw.pw_gid) != 0)
+			{
 				fprintf (stderr,
 				         _("%s: line %d: chown %s failed: %s\n"),
 				         Prog, line, newpw.pw_dir,
 				         strerror (errno));
+				fail_exit (EXIT_FAILURE);
 			}
 		}
 
@@ -1260,8 +1264,7 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: line %d: can't update entry\n"),
 			         Prog, line);
-			errors++;
-			continue;
+			fail_exit (EXIT_FAILURE);
 		}
 
 #ifdef ENABLE_SUBIDS
@@ -1271,17 +1274,19 @@ int main (int argc, char **argv)
 		if (is_sub_uid && want_subuids() && !local_sub_uid_assigned(fields[0])) {
 			uid_t sub_uid_start = 0;
 			unsigned long sub_uid_count = 0;
-			if (find_new_sub_uids(&sub_uid_start, &sub_uid_count) == 0) {
-				if (sub_uid_add(fields[0], sub_uid_start, sub_uid_count) == 0) {
-					fprintf (stderr,
-						_("%s: failed to prepare new %s entry\n"),
-						Prog, sub_uid_dbname ());
-				}
-			} else {
+			if (find_new_sub_uids(&sub_uid_start, &sub_uid_count) != 0)
+			{
 				fprintf (stderr,
 					_("%s: can't find subordinate user range\n"),
 					Prog);
-				errors++;
+				fail_exit (EXIT_FAILURE);
+			}
+			if (sub_uid_add(fields[0], sub_uid_start, sub_uid_count) == 0)
+			{
+				fprintf (stderr,
+					_("%s: failed to prepare new %s entry\n"),
+					Prog, sub_uid_dbname ());
+				fail_exit (EXIT_FAILURE);
 			}
 		}
 
@@ -1291,17 +1296,17 @@ int main (int argc, char **argv)
 		if (is_sub_gid && want_subgids() && !local_sub_gid_assigned(fields[0])) {
 			gid_t sub_gid_start = 0;
 			unsigned long sub_gid_count = 0;
-			if (find_new_sub_gids(&sub_gid_start, &sub_gid_count) == 0) {
-				if (sub_gid_add(fields[0], sub_gid_start, sub_gid_count) == 0) {
-					fprintf (stderr,
-						_("%s: failed to prepare new %s entry\n"),
-						Prog, sub_uid_dbname ());
-				}
-			} else {
+			if (find_new_sub_gids(&sub_gid_start, &sub_gid_count) != 0) {
 				fprintf (stderr,
 					_("%s: can't find subordinate group range\n"),
 					Prog);
-				errors++;
+				fail_exit (EXIT_FAILURE);
+			}
+			if (sub_gid_add(fields[0], sub_gid_start, sub_gid_count) == 0) {
+				fprintf (stderr,
+					_("%s: failed to prepare new %s entry\n"),
+					Prog, sub_uid_dbname ());
+				fail_exit (EXIT_FAILURE);
 			}
 		}
 #endif				/* ENABLE_SUBIDS */
@@ -1314,12 +1319,6 @@ int main (int argc, char **argv)
 	 * changes to be written out all at once, and then unlocked
 	 * afterwards.
 	 */
-	if (0 != errors) {
-		fprintf (stderr,
-		         _("%s: error detected, changes ignored\n"), Prog);
-		fail_exit (EXIT_FAILURE);
-	}
-
 	close_files ();
 
 	nscd_flush_cache ("passwd");
@@ -1334,11 +1333,11 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: (line %d, user %s) password not changed\n"),
 			         Prog, lines[i], usernames[i]);
-			errors++;
+			exit (EXIT_FAILURE);
 		}
 	}
 #endif				/* USE_PAM */
 
-	return ((0 == errors) ? EXIT_SUCCESS : EXIT_FAILURE);
+	exit (EXIT_SUCCESS);
 }
 

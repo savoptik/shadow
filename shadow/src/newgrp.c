@@ -16,6 +16,8 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <assert.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
 #include "prototypes.h"
@@ -29,7 +31,6 @@
 const char *Prog;
 
 extern char **newenvp;
-extern char **environ;
 
 #ifdef HAVE_SETGROUPS
 static int ngroups;
@@ -158,7 +159,7 @@ static void check_perms (const struct group *grp,
 		 * get the password from her, and set the salt for
 		 * the decryption from the group file.
 		 */
-		cp = getpass (_("Password: "));
+		cp = agetpass (_("Password: "));
 		if (NULL == cp) {
 			goto failure;
 		}
@@ -169,7 +170,7 @@ static void check_perms (const struct group *grp,
 		 * must match the previously encrypted value in the file.
 		 */
 		cpasswd = pw_encrypt (cp, grp->gr_passwd);
-		strzero (cp);
+		erase_pass (cp);
 
 		if (NULL == cpasswd) {
 			fprintf (stderr,
@@ -188,8 +189,7 @@ static void check_perms (const struct group *grp,
 			          "authentication new-gid=%lu",
 			          (unsigned long) grp->gr_gid);
 			audit_logger (AUDIT_GRP_AUTH, Prog,
-			              audit_buf, NULL,
-			              (unsigned int) getuid (), 0);
+			              audit_buf, NULL, getuid (), 0);
 #endif
 			SYSLOG ((LOG_INFO,
 				 "Invalid password for group '%s' from '%s'",
@@ -203,8 +203,7 @@ static void check_perms (const struct group *grp,
 		          "authentication new-gid=%lu",
 		          (unsigned long) grp->gr_gid);
 		audit_logger (AUDIT_GRP_AUTH, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 1);
+		              audit_buf, NULL, getuid (), 1);
 #endif
 	}
 
@@ -220,18 +219,15 @@ failure:
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-group=%s", groupname);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 0);
+		              audit_buf, NULL, getuid (), 0);
 	} else {
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              "changing", NULL,
-		              (unsigned int) getuid (), 0);
+		              "changing", NULL, getuid (), 0);
 	}
 #endif
 	exit (EXIT_FAILURE);
 }
 
-#ifdef USE_SYSLOG
 /*
  * syslog_sg - log the change of group to syslog
  *
@@ -292,6 +288,9 @@ static void syslog_sg (const char *name, const char *group)
 		(void) signal (SIGTSTP, SIG_IGN);
 		(void) signal (SIGTTIN, SIG_IGN);
 		(void) signal (SIGTTOU, SIG_IGN);
+		/* set SIGCHLD to default for waitpid */
+		(void) signal(SIGCHLD, SIG_DFL);
+
 		child = fork ();
 		if ((pid_t)-1 == child) {
 			/* error in fork() */
@@ -302,12 +301,10 @@ static void syslog_sg (const char *name, const char *group)
 				snprintf (audit_buf, sizeof(audit_buf),
 				          "changing new-group=%s", group);
 				audit_logger (AUDIT_CHGRP_ID, Prog,
-				              audit_buf, NULL,
-				              (unsigned int) getuid (), 0);
+				              audit_buf, NULL, getuid (), 0);
 			} else {
 				audit_logger (AUDIT_CHGRP_ID, Prog,
-				              "changing", NULL,
-				              (unsigned int) getuid (), 0);
+				              "changing", NULL, getuid (), 0);
 			}
 #endif
 			exit (EXIT_FAILURE);
@@ -365,7 +362,6 @@ static void syslog_sg (const char *name, const char *group)
 	free(free_login);
 	free(free_tty);
 }
-#endif				/* USE_SYSLOG */
 
 /*
  * newgrp - change the invokers current real and effective group id
@@ -399,7 +395,7 @@ int main (int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 	/*
-	 * Save my name for error messages and save my real gid incase of
+	 * Save my name for error messages and save my real gid in case of
 	 * errors. If there is an error i have to exec a new login shell for
 	 * the user since her old shell won't have fork'd to create the
 	 * process. Skip over the program name to the next command line
@@ -421,11 +417,18 @@ int main (int argc, char **argv)
 	 * but we do not need to restore the previous process persona and we
 	 * don't need to re-exec anything.  -- JWP
 	 */
-	Prog = Basename (argv[0]);
+
+	/*
+	 * Ensure that "Prog" is always either "newgrp" or "sg" to avoid
+	 * injecting arbitrary strings into our stderr/stdout, as this can
+	 * be an exploit vector.
+	 */
+	is_newgrp = (strcmp (Basename (argv[0]), "newgrp") == 0);
+	Prog = is_newgrp ? "newgrp" : "sg";
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
-	is_newgrp = (strcmp (Prog, "newgrp") == 0);
-	OPENLOG (is_newgrp ? "newgrp" : "sg");
+	OPENLOG (Prog);
 	argc--;
 	argv++;
 
@@ -437,8 +440,7 @@ int main (int argc, char **argv)
 		         Prog);
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              "changing", NULL,
-		              (unsigned int) getuid (), 0);
+		              "changing", NULL, getuid (), 0);
 #endif
 		SYSLOG ((LOG_WARN, "Cannot determine the user name of the caller (UID %lu)",
 		         (unsigned long) getuid ()));
@@ -507,7 +509,7 @@ int main (int argc, char **argv)
 		if ((argc > 0) && (argv[0][0] == '-')) {
 			usage ();
 			goto failure;
-		} else if (argv[0] != (char *) 0) {
+		} else if (argv[0] != NULL) {
 			group = argv[0];
 		} else {
 			/*
@@ -541,7 +543,7 @@ int main (int argc, char **argv)
 	/* don't use getgroups(0, 0) - it doesn't work on some systems */
 	i = 16;
 	for (;;) {
-		grouplist = (GETGROUPS_T *) xmalloc (i * sizeof (GETGROUPS_T));
+		grouplist = XMALLOC(i, GETGROUPS_T);
 		ngroups = getgroups (i, grouplist);
 		if (i > ngroups && !(ngroups == -1 && errno == EINVAL)) {
 			break;
@@ -557,12 +559,10 @@ int main (int argc, char **argv)
 			snprintf (audit_buf, sizeof(audit_buf),
 			          "changing new-group=%s", group);
 			audit_logger (AUDIT_CHGRP_ID, Prog,
-			              audit_buf, NULL,
-			              (unsigned int) getuid (), 0);
+			              audit_buf, NULL, getuid (), 0);
 		} else {
 			audit_logger (AUDIT_CHGRP_ID, Prog,
-			              "changing", NULL,
-			              (unsigned int) getuid (), 0);
+			              "changing", NULL, getuid (), 0);
 		}
 #endif
 		exit (EXIT_FAILURE);
@@ -628,7 +628,7 @@ int main (int argc, char **argv)
 	}
 #endif                          /* HAVE_SETGROUPS */
 	/*
-	 * For splitted groups (due to limitations of NIS), check all
+	 * For split groups (due to limitations of NIS), check all
 	 * groups of the same GID like the requested group for
 	 * membership of the current user.
 	 */
@@ -665,11 +665,9 @@ int main (int argc, char **argv)
 	 * all successful validations pass through this point. The group id
 	 * will be set, and the group added to the concurrent groupset.
 	 */
-#ifdef	USE_SYSLOG
 	if (getdef_bool ("SYSLOG_SG_ENAB")) {
 		syslog_sg (name, group);
 	}
-#endif				/* USE_SYSLOG */
 
 	gid = grp->gr_gid;
 
@@ -721,8 +719,7 @@ int main (int argc, char **argv)
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 0);
+		              audit_buf, NULL, getuid (), 0);
 #endif
 		exit (EXIT_FAILURE);
 	}
@@ -733,8 +730,7 @@ int main (int argc, char **argv)
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 0);
+		              audit_buf, NULL, getuid (), 0);
 #endif
 		exit (EXIT_FAILURE);
 	}
@@ -745,13 +741,12 @@ int main (int argc, char **argv)
 	 */
 	if (cflag) {
 		closelog ();
-		execl (SHELL, "sh", "-c", command, (char *) 0);
+		execl (SHELL, "sh", "-c", command, (char *) NULL);
 #ifdef WITH_AUDIT
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 0);
+		              audit_buf, NULL, getuid (), 0);
 #endif
 		perror (SHELL);
 		exit ((errno == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
@@ -818,14 +813,13 @@ int main (int argc, char **argv)
 	snprintf (audit_buf, sizeof(audit_buf), "changing new-gid=%lu",
 	          (unsigned long) gid);
 	audit_logger (AUDIT_CHGRP_ID, Prog,
-	              audit_buf, NULL,
-	              (unsigned int) getuid (), 1);
+	              audit_buf, NULL, getuid (), 1);
 #endif
 	/*
 	 * Exec the login shell and go away. We are trying to get back to
 	 * the previous environment which should be the user's login shell.
 	 */
-	err = shell (prog, initflag ? (char *) 0 : progbase, newenvp);
+	err = shell (prog, initflag ? NULL : progbase, newenvp);
 	exit ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
 	/*@notreached@*/
       failure:
@@ -846,12 +840,10 @@ int main (int argc, char **argv)
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-group=%s", group);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              audit_buf, NULL,
-		              (unsigned int) getuid (), 0);
+		              audit_buf, NULL, getuid (), 0);
 	} else {
 		audit_logger (AUDIT_CHGRP_ID, Prog,
-		              "changing", NULL,
-		              (unsigned int) getuid (), 0);
+		              "changing", NULL, getuid (), 0);
 	}
 #endif
 	exit (EXIT_FAILURE);

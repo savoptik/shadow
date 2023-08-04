@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <security/pam_appl.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 
@@ -43,8 +45,7 @@ static int ni_conv (int num_msg,
 		return PAM_CONV_ERR;
 	}
 
-	responses = (struct pam_response *) calloc ((size_t) num_msg,
-	                                            sizeof (*responses));
+	responses = CALLOC (num_msg, struct pam_response);
 	if (NULL == responses) {
 		return PAM_CONV_ERR;
 	}
@@ -141,5 +142,5 @@ int do_pam_passwd_non_interactive (const char *pam_service,
 	return ((PAM_SUCCESS == ret) ? 0 : 1);
 }
 #else				/* !USE_PAM */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !USE_PAM */

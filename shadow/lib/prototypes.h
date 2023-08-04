@@ -21,17 +21,15 @@
 
 #include <config.h>
 
+#include <sys/socket.h>
 #include <sys/stat.h>
-#ifdef USE_UTMPX
-#include <utmpx.h>
-#else
-#include <utmp.h>
-#endif
 #include <sys/types.h>
 #include <pwd.h>
 #include <grp.h>
 #include <shadow.h>
+#ifdef ENABLE_LASTLOG
 #include <lastlog.h>
+#endif /* ENABLE_LASTLOG */
 
 #include "defines.h"
 #include "commonio.h"
@@ -44,6 +42,12 @@ extern int add_groups (const char *);
 /* age.c */
 extern void agecheck (/*@null@*/const struct spwd *);
 extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
+
+/* agetpass.c */
+extern void erase_pass(char *pass);
+ATTR_MALLOC(erase_pass)
+extern char *agetpass(const char *prompt);
+
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
@@ -157,6 +161,8 @@ extern int getlong (const char *numstr, /*@out@*/long int *result);
 
 /* get_pid.c */
 extern int get_pid (const char *pidstr, pid_t *pid);
+extern int get_pidfd_from_fd(const char *pidfdstr);
+extern int open_pidfd(const char *pidstr);
 
 /* getrange */
 extern int getrange (const char *range,
@@ -186,7 +192,6 @@ extern void __gr_set_changed (void);
 extern /*@null@*/ /*@only@*/struct group *__gr_dup (const struct group *grent);
 extern void gr_free_members (struct group *grent);
 extern void gr_free (/*@out@*/ /*@only@*/struct group *grent);
-extern bool gr_append_member (struct group *grp, char *member);
 
 /* hushed.c */
 extern bool hushed (const char *username);
@@ -218,18 +223,20 @@ extern /*@only@*/ /*@out@*/char **dup_list (char *const *);
 extern bool is_on_list (char *const *list, const char *member);
 extern /*@only@*/char **comma_to_list (const char *);
 
+#ifdef ENABLE_LASTLOG
 /* log.c */
 extern void dolastlog (
 	struct lastlog *ll,
 	const struct passwd *pw,
 	/*@unique@*/const char *line,
 	/*@unique@*/const char *host);
+#endif /* ENABLE_LASTLOG */
 
 /* login_nopam.c */
 extern int login_access (const char *user, const char *from);
 
 /* loginprompt.c */
-extern void login_prompt (const char *, char *, int);
+extern void login_prompt (char *, int);
 
 /* mail.c */
 extern void mailcheck (void);
@@ -304,9 +311,7 @@ extern int do_pam_passwd_non_interactive (const char *pam_service,
 #endif				/* USE_PAM */
 
 /* obscure.c */
-#ifndef USE_PAM
 extern bool obscure (const char *, const char *, const struct passwd *);
-#endif
 
 /* pam_pass.c */
 #ifdef USE_PAM
@@ -322,6 +327,10 @@ extern struct group *prefix_getgrnam(const char *name);
 extern struct group *prefix_getgrgid(gid_t gid);
 extern struct passwd *prefix_getpwuid(uid_t uid);
 extern struct passwd *prefix_getpwnam(const char* name);
+#if HAVE_FGETPWENT_R
+extern int prefix_getpwnam_r(const char* name, struct passwd* pwd,
+                             char* buf, size_t buflen, struct passwd** result);
+#endif
 extern struct spwd *prefix_getspnam(const char* name);
 extern struct group *prefix_getgr_nam_gid(const char *grname);
 extern void prefix_setpwent(void);
@@ -332,9 +341,7 @@ extern struct group* prefix_getgrent(void);
 extern void prefix_endgrent(void);
 
 /* pwd2spwd.c */
-#ifndef USE_PAM
 extern struct spwd *pwd_to_spwd (const struct passwd *);
-#endif
 
 /* pwdcheck.c */
 #ifndef USE_PAM
@@ -352,6 +359,11 @@ extern /*@dependent@*/ /*@null@*/struct commonio_entry *__pw_get_head (void);
 /* pwmem.c */
 extern /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent);
 extern void pw_free (/*@out@*/ /*@only@*/struct passwd *pwent);
+
+/* csrand.c */
+unsigned long csrand (void);
+unsigned long csrand_uniform (unsigned long n);
+unsigned long csrand_interval (unsigned long min, unsigned long max);
 
 /* remove_tree.c */
 extern int remove_tree (const char *root, bool remove_root);
@@ -376,7 +388,7 @@ extern int check_selinux_permit (const char *perm_name);
 
 /* semanage.c */
 #ifdef WITH_SELINUX
-extern int set_seuser(const char *login_name, const char *seuser_name);
+extern int set_seuser(const char *login_name, const char *seuser_name, const char *serange);
 extern int del_seuser(const char *login_name);
 #endif
 
@@ -459,33 +471,65 @@ extern int set_filesize_limit (int blocks);
 /* user_busy.c */
 extern int user_busy (const char *name, uid_t uid);
 
-/* utmp.c */
-#ifndef USE_UTMPX
-extern /*@null@*/struct utmp *get_current_utmp (void);
-extern struct utmp *prepare_utmp (const char *name,
-                                  const char *line,
-                                  const char *host,
-                                  /*@null@*/const struct utmp *ut);
-extern int setutmp (struct utmp *ut);
-#else
-extern /*@null@*/struct utmpx *get_current_utmp (void);
-extern struct utmpx *prepare_utmpx (const char *name,
-                                    const char *line,
-                                    const char *host,
-                                    /*@null@*/const struct utmpx *ut);
-extern int setutmpx (struct utmpx *utx);
-#endif				/* USE_UTMPX */
+/*
+ * Session management: utmp.c or logind.c
+ */
+
+/**
+ * @brief Get host for the current session
+ *
+ * @param[out] out Host name
+ *
+ * @return 0 or a positive integer if the host was obtained properly,
+ *         another value on error.
+ */
+extern int get_session_host (char **out);
+#ifndef ENABLE_LOGIND
+/**
+ * @brief Update or create an utmp entry in utmp, wtmp, utmpw, or wtmpx
+ *
+ * @param[in] user username
+ * @param[in] tty tty
+ * @param[in] host hostname
+ *
+ * @return 0 if utmp was updated properly,
+ *         1 on error.
+ */
+extern int update_utmp (const char *user,
+                        const char *tty,
+                        const char *host);
+/**
+ * @brief Update the cumulative failure log
+ *
+ * @param[in] failent_user username
+ * @param[in] tty tty
+ * @param[in] host hostname
+ *
+ */
+extern void record_failure(const char *failent_user,
+                           const char *tty,
+                           const char *hostname);
+#endif /* ENABLE_LOGIND */
+
+/**
+ * @brief Number of active user sessions
+ *
+ * @param[in] name username
+ * @param[in] limit maximum number of active sessions
+ *
+ * @return number of active sessions.
+ *
+ */
+extern unsigned long active_sessions_count(const char *name,
+                                           unsigned long limit);
 
 /* valid.c */
 extern bool valid (const char *, const struct passwd *);
 
-/* xmalloc.c */
-extern /*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/void *xmalloc (size_t size)
-  /*@ensures MaxSet(result) == (size - 1); @*/;
-extern /*@maynotreturn@*/ /*@only@*//*@notnull@*/char *xstrdup (const char *);
-
 /* xgetpwnam.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwnam (const char *);
+/* xprefix_getpwnam.c */
+extern /*@null@*/ /*@only@*/struct passwd *xprefix_getpwnam (const char *);
 /* xgetpwuid.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwuid (uid_t);
 /* xgetgrnam.c */

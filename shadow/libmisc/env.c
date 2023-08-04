@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "shadowlog.h"
@@ -26,7 +28,6 @@
 #define NEWENVP_STEP 16
 size_t newenvc = 0;
 /*@null@*/char **newenvp = NULL;
-extern char **environ;
 
 static const char *const forbid[] = {
 	"_RLD_=",
@@ -42,7 +43,7 @@ static const char *const forbid[] = {
 	"PATH=",
 	"SHELL=",
 	"SHLIB_PATH=",
-	(char *) 0
+	NULL
 };
 
 /* these are allowed, but with no slashes inside
@@ -51,7 +52,7 @@ static const char *const noslash[] = {
 	"LANG=",
 	"LANGUAGE=",
 	"LC_",			/* anything with the LC_ prefix */
-	(char *) 0
+	NULL
 };
 
 /*
@@ -59,7 +60,7 @@ static const char *const noslash[] = {
  */
 void initenv (void)
 {
-	newenvp = (char **) xmalloc (NEWENVP_STEP * sizeof (char *));
+	newenvp = XMALLOC(NEWENVP_STEP, char *);
 	*newenvp = NULL;
 }
 
@@ -73,7 +74,7 @@ void addenv (const char *string, /*@null@*/const char *value)
 	if (NULL != value) {
 		size_t len = strlen (string) + strlen (value) + 2;
 		int wlen;
-		newstring = xmalloc (len);
+		newstring = XMALLOC(len, char);
 		wlen = snprintf (newstring, len, "%s=%s", string, value);
 		assert (wlen == (int) len -1);
 	} else {
@@ -127,16 +128,16 @@ void addenv (const char *string, /*@null@*/const char *value)
 	 */
 
 	if ((newenvc & (NEWENVP_STEP - 1)) == 0) {
-		char **__newenvp;
-		size_t newsize;
+		bool  update_environ;
+		char  **__newenvp;
 
 		/*
 		 * If the resize operation succeeds we can
 		 * happily go on, else print a message.
 		 */
+		update_environ = (environ == newenvp);
 
-		newsize = (newenvc + NEWENVP_STEP) * sizeof (char *);
-		__newenvp = (char **) realloc (newenvp, newsize);
+		__newenvp = REALLOC(newenvp, newenvc + NEWENVP_STEP, char *);
 
 		if (NULL != __newenvp) {
 			/*
@@ -144,9 +145,8 @@ void addenv (const char *string, /*@null@*/const char *value)
 			 * environ so that it doesn't point to some
 			 * free memory area (realloc() could move it).
 			 */
-			if (environ == newenvp) {
+			if (update_environ)
 				environ = __newenvp;
-			}
 			newenvp = __newenvp;
 		} else {
 			(void) fputs (_("Environment overflow\n"), log_get_logfd());

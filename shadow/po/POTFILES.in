@@ -28,7 +28,6 @@ lib/shadowio.c
 lib/shadowmem.c
 lib/spawn.c
 lib/tcbfuncs.c
-lib/utent.c
 libmisc/addgrps.c
 libmisc/age.c
 libmisc/audit_help.c
@@ -84,7 +83,6 @@ libmisc/user_busy.c
 libmisc/utmp.c
 libmisc/valid.c
 libmisc/xgetXXbyYY.c
-libmisc/xmalloc.c
 libmisc/yesno.c
 src/chage.c
 src/chfn.c

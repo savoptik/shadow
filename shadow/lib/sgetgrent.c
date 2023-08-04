@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <grp.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "prototypes.h"
 
@@ -34,10 +36,9 @@
  */
 static char **list (char *s)
 {
-	static char **members = 0;
+	static char **members = NULL;
 	static int size = 0;	/* max members + 1 */
 	int i;
-	char **rbuf;
 
 	i = 0;
 	for (;;) {
@@ -45,21 +46,9 @@ static char **list (char *s)
 		   member name, or terminating NULL).  */
 		if (i >= size) {
 			size = i + 100;	/* at least: i + 1 */
-			if (members) {
-				rbuf =
-				    realloc (members, size * sizeof (char *));
-			} else {
-				/* for old (before ANSI C) implementations of
-				   realloc() that don't handle NULL properly */
-				rbuf = malloc (size * sizeof (char *));
-			}
-			if (!rbuf) {
-				free (members);
-				members = 0;
-				size = 0;
-				return (char **) 0;
-			}
-			members = rbuf;
+			members = REALLOCF(members, size, char *);
+			if (!members)
+				return NULL;
 		}
 		if (!s || s[0] == '\0')
 			break;
@@ -71,14 +60,14 @@ static char **list (char *s)
 			*s++ = '\0';
 		}
 	}
-	members[i] = (char *) 0;
+	members[i] = NULL;
 	return members;
 }
 
 
 struct group *sgetgrent (const char *buf)
 {
-	static char *grpbuf = 0;
+	static char *grpbuf = NULL;
 	static size_t size = 0;
 	static char *grpfields[NFIELDS];
 	static struct group grent;
@@ -90,10 +79,10 @@ struct group *sgetgrent (const char *buf)
 		   allocate a larger block */
 		free (grpbuf);
 		size = strlen (buf) + 1000;	/* at least: strlen(buf) + 1 */
-		grpbuf = malloc (size);
-		if (!grpbuf) {
+		grpbuf = MALLOC(size, char);
+		if (grpbuf == NULL) {
 			size = 0;
-			return 0;
+			return NULL;
 		}
 	}
 	strcpy (grpbuf, buf);
@@ -112,16 +101,16 @@ struct group *sgetgrent (const char *buf)
 		}
 	}
 	if (i < (NFIELDS - 1) || *grpfields[2] == '\0' || cp != NULL) {
-		return (struct group *) 0;
+		return NULL;
 	}
 	grent.gr_name = grpfields[0];
 	grent.gr_passwd = grpfields[1];
 	if (get_gid (grpfields[2], &grent.gr_gid) == 0) {
-		return (struct group *) 0;
+		return NULL;
 	}
 	grent.gr_mem = list (grpfields[3]);
 	if (NULL == grent.gr_mem) {
-		return (struct group *) 0;	/* out of memory */
+		return NULL;	/* out of memory */
 	}
 
 	return &grent;

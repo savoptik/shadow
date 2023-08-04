@@ -50,15 +50,17 @@ static time_t inverse_seconds;	/* that number of days in seconds */
 static struct stat statbuf;	/* fstat buffer for file size */
 
 
-static bool uflg = false;	/* print only an user of range of users */
+static bool uflg = false;	/* print only a user of range of users */
 static bool tflg = false;	/* print is restricted to most recent days */
 static bool bflg = false;	/* print excludes most recent days */
 static bool Cflg = false;	/* clear record for user */
 static bool Sflg = false;	/* set record for user */
 
-#define	NOW	(time ((time_t *) 0))
+#define	NOW	time(NULL)
 
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -67,7 +69,7 @@ static /*@noreturn@*/void usage (int status)
 	                  "Options:\n"),
 	                Prog);
 	(void) fputs (_("  -b, --before DAYS             print only lastlog records older than DAYS\n"), usageout);
-	(void) fputs (_("  -C, --clear                   clear lastlog record of an user (usable only with -u)\n"), usageout);
+	(void) fputs (_("  -C, --clear                   clear lastlog record of a user (usable only with -u)\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -S, --set                     set lastlog record to current time (usable only with -u)\n"), usageout);
@@ -114,7 +116,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &ll, sizeof (ll), 1, lastlogfile) != 1) {
+		if (fread (&ll, sizeof (ll), 1, lastlogfile) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long int)pw->pw_uid);
@@ -141,7 +143,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	/* Print the header only once */
 	if (!once) {
 #ifdef HAVE_LL_HOST
-		printf (_("Username         Port     From%*sLatest\n"), maxIPv6Addrlen-3, " ");
+		printf (_("Username         Port     From%*sLatest\n"), maxIPv6Addrlen-4, " ");
 #else
 		puts (_("Username                Port     Latest"));
 #endif
@@ -182,7 +184,7 @@ static void print (void)
 	}
 
 	if (uflg && has_umin && has_umax && (umin == umax)) {
-		print_one (getpwuid ((uid_t)umin));
+		print_one (getpwuid (umin));
 	} else {
 		setpwent ();
 		while ( (pwent = getpwent ()) != NULL ) {
@@ -225,14 +227,14 @@ static void update_one (/*@null@*/const struct passwd *pw)
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
 			"clearing-lastlog",
-			pw->pw_name, (unsigned int) pw->pw_uid, SHADOW_AUDIT_SUCCESS);
+			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 #endif
 	}
 #ifdef WITH_AUDIT
 	else {
 		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
 			"refreshing-lastlog",
-			pw->pw_name, (unsigned int) pw->pw_uid, SHADOW_AUDIT_SUCCESS);
+			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 	}
 #endif
 
@@ -261,7 +263,7 @@ static void update (void)
 	}
 
 	if (has_umin && has_umax && (umin == umax)) {
-		update_one (getpwuid ((uid_t)umin));
+		update_one (getpwuid (umin));
 	} else {
 		setpwent ();
 		while ( (pwent = getpwent ()) != NULL ) {
@@ -373,7 +375,7 @@ int main (int argc, char **argv)
 				/* local, no need for xgetpwnam */
 				pwent = getpwnam (optarg);
 				if (NULL != pwent) {
-					umin = (unsigned long) pwent->pw_uid;
+					umin = pwent->pw_uid;
 					has_umin = true;
 					umax = umin;
 					has_umax = true;

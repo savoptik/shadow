@@ -17,6 +17,8 @@
 #include <ctype.h>
 #include <fcntl.h>
 
+#include "alloc.h"
+
 #define ID_SIZE 31
 
 /*
@@ -32,7 +34,7 @@ static /*@null@*/ /*@only@*/void *subordinate_dup (const void *ent)
 	const struct subordinate_range *rangeent = ent;
 	struct subordinate_range *range;
 
-	range = (struct subordinate_range *) malloc (sizeof *range);
+	range = MALLOC(1, struct subordinate_range);
 	if (NULL == range) {
 		return NULL;
 	}
@@ -313,19 +315,16 @@ static bool have_range(struct commonio_db *db,
 
 static bool append_range(struct subid_range **ranges, const struct subordinate_range *new, int n)
 {
-	if (!*ranges) {
-		*ranges = malloc(sizeof(struct subid_range));
-		if (!*ranges)
-			return false;
-	} else {
-		struct subid_range *alloced;
-		alloced = realloc(*ranges, (n + 1) * (sizeof(struct subid_range)));
-		if (!alloced)
-			return false;
-		*ranges = alloced;
-	}
-	(*ranges)[n].start = new->start;
-	(*ranges)[n].count = new->count;
+	struct subid_range  *sr;
+
+	sr = REALLOC(*ranges, n + 1, struct subid_range);
+	if (!sr)
+		return false;
+
+	sr[n].start = new->start;
+	sr[n].count = new->count;
+	*ranges = sr;
+
 	return true;
 }
 
@@ -355,13 +354,14 @@ static int subordinate_range_cmp (const void *p1, const void *p2)
 {
 	struct subordinate_range *range1, *range2;
 
-	if ((*(struct commonio_entry **) p1)->eptr == NULL)
-		return 1;
-	if ((*(struct commonio_entry **) p2)->eptr == NULL)
-		return -1;
 
-	range1 = ((struct subordinate_range *) (*(struct commonio_entry **) p1)->eptr);
-	range2 = ((struct subordinate_range *) (*(struct commonio_entry **) p2)->eptr);
+	range1 = (*(struct commonio_entry **) p1)->eptr;
+	if (range1 == NULL)
+		return 1;
+
+	range2 = (*(struct commonio_entry **) p2)->eptr;
+	if (range2 == NULL)
+		return -1;
 
 	if (range1->start < range2->start)
 		return -1;
@@ -620,17 +620,28 @@ bool have_sub_uids(const char *owner, uid_t start, unsigned long count)
 	return have_range (&subordinate_uid_db, owner, start, count);
 }
 
+/*
+ * sub_uid_add: add a subuid range, perhaps through nss.
+ *
+ * Return 1 if the range is already present or on success.  On error
+ * return 0 and set errno appropriately.
+ */
 int sub_uid_add (const char *owner, uid_t start, unsigned long count)
 {
-	if (get_subid_nss_handle())
-		return -EOPNOTSUPP;
+	if (get_subid_nss_handle()) {
+		errno = EOPNOTSUPP;
+		return 0;
+	}
 	return add_range (&subordinate_uid_db, owner, start, count);
 }
 
+/* Return 1 on success.  on failure, return 0 and set errno appropriately */
 int sub_uid_remove (const char *owner, uid_t start, unsigned long count)
 {
-	if (get_subid_nss_handle())
-		return -EOPNOTSUPP;
+	if (get_subid_nss_handle()) {
+		errno = EOPNOTSUPP;
+		return 0;
+	}
 	return remove_range (&subordinate_uid_db, owner, start, count);
 }
 
@@ -716,17 +727,28 @@ bool local_sub_gid_assigned(const char *owner)
 	return range_exists (&subordinate_gid_db, owner);
 }
 
+/*
+ * sub_gid_add: add a subgid range, perhaps through nss.
+ *
+ * Return 1 if the range is already present or on success.  On error
+ * return 0 and set errno appropriately.
+ */
 int sub_gid_add (const char *owner, gid_t start, unsigned long count)
 {
-	if (get_subid_nss_handle())
-		return -EOPNOTSUPP;
+	if (get_subid_nss_handle()) {
+		errno = EOPNOTSUPP;
+		return 0;
+	}
 	return add_range (&subordinate_gid_db, owner, start, count);
 }
 
+/* Return 1 on success.  on failure, return 0 and set errno appropriately */
 int sub_gid_remove (const char *owner, gid_t start, unsigned long count)
 {
-	if (get_subid_nss_handle())
-		return -EOPNOTSUPP;
+	if (get_subid_nss_handle()) {
+		errno = EOPNOTSUPP;
+		return 0;
+	}
 	return remove_range (&subordinate_gid_db, owner, start, count);
 }
 
@@ -910,7 +932,7 @@ static int append_uids(uid_t **uids, const char *owner, int n)
 			return n;
 	}
 
-	ret = realloc(*uids, (n + 1) * sizeof(uid_t));
+	ret = REALLOC(*uids, n + 1, uid_t);
 	if (!ret) {
 		free(*uids);
 		return -1;
@@ -985,7 +1007,7 @@ bool new_subid_range(struct subordinate_range *range, enum subid_type id_type, b
 	switch (id_type) {
 	case ID_TYPE_UID:
 		if (!sub_uid_lock()) {
-			printf("Failed loging subuids (errno %d)\n", errno);
+			printf("Failed locking subuids (errno %d)\n", errno);
 			return false;
 		}
 		if (!sub_uid_open(O_CREAT | O_RDWR)) {
@@ -997,7 +1019,7 @@ bool new_subid_range(struct subordinate_range *range, enum subid_type id_type, b
 		break;
 	case ID_TYPE_GID:
 		if (!sub_gid_lock()) {
-			printf("Failed loging subgids (errno %d)\n", errno);
+			printf("Failed locking subgids (errno %d)\n", errno);
 			return false;
 		}
 		if (!sub_gid_open(O_CREAT | O_RDWR)) {
@@ -1057,7 +1079,7 @@ bool release_subid_range(struct subordinate_range *range, enum subid_type id_typ
 	switch (id_type) {
 	case ID_TYPE_UID:
 		if (!sub_uid_lock()) {
-			printf("Failed loging subuids (errno %d)\n", errno);
+			printf("Failed locking subuids (errno %d)\n", errno);
 			return false;
 		}
 		if (!sub_uid_open(O_CREAT | O_RDWR)) {
@@ -1069,7 +1091,7 @@ bool release_subid_range(struct subordinate_range *range, enum subid_type id_typ
 		break;
 	case ID_TYPE_GID:
 		if (!sub_gid_lock()) {
-			printf("Failed loging subgids (errno %d)\n", errno);
+			printf("Failed locking subgids (errno %d)\n", errno);
 			return false;
 		}
 		if (!sub_gid_open(O_CREAT | O_RDWR)) {
@@ -1097,6 +1119,6 @@ bool release_subid_range(struct subordinate_range *range, enum subid_type id_typ
 }
 
 #else				/* !ENABLE_SUBIDS */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !ENABLE_SUBIDS */
 

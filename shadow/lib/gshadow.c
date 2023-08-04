@@ -15,8 +15,12 @@
 #ident "$Id$"
 
 #include <stdio.h>
+#include <string.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
+
 static /*@null@*/FILE *shadow;
 static /*@null@*//*@only@*/char **members = NULL;
 static size_t nmembers = 0;
@@ -62,7 +66,7 @@ static /*@null@*/char **build_list (char *s, char **list[], size_t * nlist)
 
 	while (s != NULL && *s != '\0') {
 		size = (nelem + 1) * sizeof (ptr);
-		ptr = realloc (*list, size);
+		ptr = REALLOC(*list, size, char *);
 		if (NULL != ptr) {
 			ptr[nelem] = s;
 			nelem++;
@@ -76,7 +80,7 @@ static /*@null@*/char **build_list (char *s, char **list[], size_t * nlist)
 		}
 	}
 	size = (nelem + 1) * sizeof (ptr);
-	ptr = realloc (*list, size);
+	ptr = REALLOC(*list, size, char *);
 	if (NULL != ptr) {
 		ptr[nelem] = NULL;
 		*list = ptr;
@@ -102,7 +106,7 @@ void endsgent (void)
 		(void) fclose (shadow);
 	}
 
-	shadow = (FILE *) 0;
+	shadow = NULL;
 }
 
 /*@observer@*//*@null@*/struct sgrp *sgetsgent (const char *string)
@@ -116,7 +120,7 @@ void endsgent (void)
 	size_t len = strlen (string) + 1;
 
 	if (len > sgrbuflen) {
-		char *buf = (char *) realloc (sgrbuf, sizeof (char) * len);
+		char *buf = REALLOC(sgrbuf, len, char);
 		if (NULL == buf) {
 			return NULL;
 		}
@@ -124,8 +128,7 @@ void endsgent (void)
 		sgrbuflen = len;
 	}
 
-	strncpy (sgrbuf, string, len);
-	sgrbuf[len-1] = '\0';
+	strcpy (sgrbuf, string);
 
 	cp = strrchr (sgrbuf, '\n');
 	if (NULL != cp) {
@@ -195,7 +198,7 @@ void endsgent (void)
 	char *cp;
 
 	if (0 == buflen) {
-		buf = (char *) malloc (BUFSIZ);
+		buf = MALLOC(BUFSIZ, char);
 		if (NULL == buf) {
 			return NULL;
 		}
@@ -207,16 +210,16 @@ void endsgent (void)
 	}
 
 #ifdef	USE_NIS
-	while (fgetsx (buf, (int) buflen, fp) == buf)
+	while (fgetsx (buf, buflen, fp) == buf)
 #else
-	if (fgetsx (buf, (int) buflen, fp) == buf)
+	if (fgetsx (buf, buflen, fp) == buf)
 #endif
 	{
 		while (   ((cp = strrchr (buf, '\n')) == NULL)
 		       && (feof (fp) == 0)) {
 			size_t len;
 
-			cp = (char *) realloc (buf, buflen*2);
+			cp = REALLOC(buf, buflen * 2, char);
 			if (NULL == cp) {
 				return NULL;
 			}
@@ -399,7 +402,7 @@ void endsgent (void)
 		nis_disabled = true;
 	}
 #endif
-	while ((sgrp = getsgent ()) != (struct sgrp *) 0) {
+	while ((sgrp = getsgent ()) != NULL) {
 		if (strcmp (name, sgrp->sg_name) == 0) {
 			break;
 		}
@@ -437,7 +440,7 @@ int putsgent (const struct sgrp *sgrp, FILE * fp)
 		size += strlen (sgrp->sg_mem[i]) + 1;
 	}
 
-	buf = malloc (size);
+	buf = MALLOC(size, char);
 	if (NULL == buf) {
 		return -1;
 	}
@@ -502,5 +505,5 @@ int putsgent (const struct sgrp *sgrp, FILE * fp)
 	return 0;
 }
 #else
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/*} SHADOWGRP */

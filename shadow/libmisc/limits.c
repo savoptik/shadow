@@ -28,11 +28,7 @@
 #include <pwd.h>
 #include "getdef.h"
 #include "shadowlog.h"
-#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
-#define LIMITS
-#endif
-#ifdef LIMITS
 #ifndef LIMITS_FILE
 #define LIMITS_FILE "/etc/limits"
 #endif
@@ -72,7 +68,7 @@ static int setrlimit_value (unsigned int resource,
 			return 0;
 		}
 		longlimit *= multiplier;
-		limit = (rlim_t)longlimit;
+		limit = longlimit;
 		if (longlimit != limit)
 		{
 			/* FIXME: Again, silent error handling...
@@ -99,7 +95,7 @@ static int set_prio (const char *value)
 	    || (prio != (int) prio)) {
 		return 0;
 	}
-	if (setpriority (PRIO_PROCESS, 0, (int) prio) != 0) {
+	if (setpriority (PRIO_PROCESS, 0, prio) != 0) {
 		return LOGIN_ERROR_RLIMIT;
 	}
 	return 0;
@@ -115,7 +111,7 @@ static int set_umask (const char *value)
 		return 0;
 	}
 
-	(void) umask ((mode_t) mask);
+	(void) umask (mask);
 	return 0;
 }
 
@@ -123,11 +119,6 @@ static int set_umask (const char *value)
 /* Counts the number of user logins and check against the limit */
 static int check_logins (const char *name, const char *maxlogins)
 {
-#ifdef USE_UTMPX
-	struct utmpx *ut;
-#else				/* !USE_UTMPX */
-	struct utmp *ut;
-#endif				/* !USE_UTMPX */
 	unsigned long limit, count;
 
 	if (getulong (maxlogins, &limit) == 0) {
@@ -139,38 +130,8 @@ static int check_logins (const char *name, const char *maxlogins)
 		return LOGIN_ERROR_LOGIN;
 	}
 
-	count = 0;
-#ifdef USE_UTMPX
-	setutxent ();
-	while ((ut = getutxent ()))
-#else				/* !USE_UTMPX */
-	setutent ();
-	while ((ut = getutent ()))
-#endif				/* !USE_UTMPX */
-	{
-		if (USER_PROCESS != ut->ut_type) {
-			continue;
-		}
-		if ('\0' == ut->ut_user[0]) {
-			continue;
-		}
-		if (strncmp (name, ut->ut_user, sizeof (ut->ut_user)) != 0) {
-			continue;
-		}
-		count++;
-		if (count > limit) {
-			break;
-		}
-	}
-#ifdef USE_UTMPX
-	endutxent ();
-#else				/* !USE_UTMPX */
-	endutent ();
-#endif				/* !USE_UTMPX */
-	/*
-	 * This is called after setutmp(), so the number of logins counted
-	 * includes the user who is currently trying to log in.
-	 */
+	count = active_sessions_count(name, limit);
+
 	if (count > limit) {
 		SYSLOG ((LOG_WARN,
 		         "Too many logins (max %lu) for %s\n",
@@ -243,34 +204,26 @@ static int do_user_limits (const char *buf, const char *name)
 
 	while ('\0' != *pp) {
 		switch (*pp++) {
-#ifdef RLIMIT_AS
 		case 'a':
 		case 'A':
 			/* RLIMIT_AS - max address space (KB) */
 			retval |= setrlimit_value (RLIMIT_AS, pp, 1024);
 			break;
-#endif
-#ifdef RLIMIT_CORE
 		case 'c':
 		case 'C':
 			/* RLIMIT_CORE - max core file size (KB) */
 			retval |= setrlimit_value (RLIMIT_CORE, pp, 1024);
 			break;
-#endif
-#ifdef RLIMIT_DATA
 		case 'd':
 		case 'D':
 			/* RLIMIT_DATA - max data size (KB) */
 			retval |= setrlimit_value (RLIMIT_DATA, pp, 1024);
 			break;
-#endif
-#ifdef RLIMIT_FSIZE
 		case 'f':
 		case 'F':
 			/* RLIMIT_FSIZE - Maximum filesize (KB) */
 			retval |= setrlimit_value (RLIMIT_FSIZE, pp, 1024);
 			break;
-#endif
 #ifdef RLIMIT_NICE
 		case 'i':
 		case 'I':
@@ -294,13 +247,11 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_MEMLOCK, pp, 1024);
 			break;
 #endif
-#ifdef RLIMIT_NOFILE
 		case 'n':
 		case 'N':
 			/* RLIMIT_NOFILE - max number of open files */
 			retval |= setrlimit_value (RLIMIT_NOFILE, pp, 1);
 			break;
-#endif
 #ifdef RLIMIT_RTPRIO
 		case 'o':
 		case 'O':
@@ -319,20 +270,16 @@ static int do_user_limits (const char *buf, const char *name)
 			retval |= setrlimit_value (RLIMIT_RSS, pp, 1024);
 			break;
 #endif
-#ifdef RLIMIT_STACK
 		case 's':
 		case 'S':
 			/* RLIMIT_STACK - max stack size (KB) */
 			retval |= setrlimit_value (RLIMIT_STACK, pp, 1024);
 			break;
-#endif
-#ifdef RLIMIT_CPU
 		case 't':
 		case 'T':
 			/* RLIMIT_CPU - max CPU time (MIN) */
 			retval |= setrlimit_value (RLIMIT_CPU, pp, 60);
 			break;
-#endif
 #ifdef RLIMIT_NPROC
 		case 'u':
 		case 'U':
@@ -479,7 +426,6 @@ static int setup_user_limits (const char *uname)
 	}
 	return do_user_limits (limits, uname);
 }
-#endif				/* LIMITS */
 
 
 static void setup_usergroups (const struct passwd *info)
@@ -523,7 +469,6 @@ void setup_limits (const struct passwd *info)
 	 */
 
 	if (getdef_bool ("QUOTAS_ENAB")) {
-#ifdef LIMITS
 		if (info->pw_uid != 0) {
 			if ((setup_user_limits (info->pw_name) & LOGIN_ERROR_LOGIN) != 0) {
 				(void) fputs (_("Too many logins.\n"), log_get_logfd());
@@ -531,7 +476,6 @@ void setup_limits (const struct passwd *info)
 				exit (EXIT_FAILURE);
 			}
 		}
-#endif
 		for (cp = info->pw_gecos; cp != NULL; cp = strchr (cp, ',')) {
 			if (',' == *cp) {
 				cp++;
@@ -542,7 +486,7 @@ void setup_limits (const struct passwd *info)
 				if (   (getlong (cp + 4, &inc) == 1)
 				    && (inc >= -20) && (inc <= 20)) {
 					errno = 0;
-					if (   (nice ((int) inc) != -1)
+					if (   (nice (inc) != -1)
 					    || (0 != errno)) {
 						continue;
 					}
@@ -559,7 +503,7 @@ void setup_limits (const struct passwd *info)
 				long int blocks;
 				if (   (getlong (cp + 7, &blocks) == 0)
 				    || (blocks != (int) blocks)
-				    || (set_filesize_limit ((int) blocks) != 0)) {
+				    || (set_filesize_limit (blocks) != 0)) {
 					SYSLOG ((LOG_WARN,
 					         "Can't set the ulimit for user %s",
 					         info->pw_name));
@@ -574,7 +518,7 @@ void setup_limits (const struct passwd *info)
 					         "Can't set umask value for user %s",
 					         info->pw_name));
 				} else {
-					(void) umask ((mode_t) mask);
+					(void) umask (mask);
 				}
 
 				continue;
@@ -584,6 +528,6 @@ void setup_limits (const struct passwd *info)
 }
 
 #else				/* !USE_PAM */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !USE_PAM */
 

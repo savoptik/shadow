@@ -14,7 +14,9 @@
 #include <errno.h>
 #include <grp.h>
 #ifndef USE_PAM
+#ifdef ENABLE_LASTLOG
 #include <lastlog.h>
+#endif 				/* ENABLE_LASTLOG */
 #endif				/* !USE_PAM */
 #include <pwd.h>
 #include <signal.h>
@@ -22,6 +24,8 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <assert.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "faillog.h"
 #include "failure.h"
@@ -67,7 +71,9 @@ static /*@null@*/ /*@only@*/char *username = NULL;
 static int reason = PW_LOGIN;
 
 #ifndef USE_PAM
+#ifdef ENABLE_LASTLOG
 static struct lastlog ll;
+#endif				/* ENABLE_LASTLOG */
 #endif				/* !USE_PAM */
 static bool pflg = false;
 static bool fflg = false;
@@ -89,7 +95,6 @@ static char tmsg[256];
 
 extern char **newenvp;
 extern size_t newenvc;
-extern char **environ;
 
 #ifndef	ALARM
 #define	ALARM	60
@@ -104,15 +109,6 @@ static void usage (void);
 static void setup_tty (void);
 static void process_flags (int argc, char *const *argv);
 static /*@observer@*/const char *get_failent_user (/*@returned@*/const char *user);
-static void update_utmp (const char *user,
-                         const char *tty,
-                         const char *host,
-#ifdef USE_UTMPX
-                         /*@null@*/const struct utmpx *utent
-#else
-                         /*@null@*/const struct utmp *utent
-#endif
-			);
 
 #ifndef USE_PAM
 static struct faillog faillog;
@@ -125,6 +121,7 @@ static void get_pam_user (char **ptr_pam_user);
 
 static void init_env (void);
 static void alarm_handler (int);
+static void exit_handler (int);
 
 /*
  * usage - print login command usage and exit
@@ -172,10 +169,10 @@ static void setup_tty (void)
 #endif
 
 		/* leave these values unchanged if not specified in login.defs */
-		erasechar = getdef_num ("ERASECHAR", (int) termio.c_cc[VERASE]);
-		killchar = getdef_num ("KILLCHAR", (int) termio.c_cc[VKILL]);
-		termio.c_cc[VERASE] = (cc_t) erasechar;
-		termio.c_cc[VKILL] = (cc_t) killchar;
+		erasechar = getdef_num ("ERASECHAR", termio.c_cc[VERASE]);
+		killchar = getdef_num ("KILLCHAR", termio.c_cc[VKILL]);
+		termio.c_cc[VERASE] = erasechar;
+		termio.c_cc[VKILL] = killchar;
 		/* Make sure the values were valid.
 		 * getdef_num cannot validate this.
 		 */
@@ -396,11 +393,16 @@ static void init_env (void)
 #endif				/* !USE_PAM */
 }
 
+static void exit_handler (unused int sig)
+{
+	_exit (0);
+}
 
 static void alarm_handler (unused int sig)
 {
 	write (STDERR_FILENO, tmsg, strlen (tmsg));
-	_exit (0);
+	signal(SIGALRM, exit_handler);
+	alarm(2);
 }
 
 #ifdef USE_PAM
@@ -411,17 +413,17 @@ static void alarm_handler (unused int sig)
  */
 static void get_pam_user (char **ptr_pam_user)
 {
-	int retcode;
-	void *ptr_user;
+	int         retcode;
+	const void  *ptr_user;
 
 	assert (NULL != ptr_pam_user);
 
-	retcode = pam_get_item (pamh, PAM_USER, (const void **)&ptr_user);
+	retcode = pam_get_item (pamh, PAM_USER, &ptr_user);
 	PAM_FAIL_CHECK;
 
 	free (*ptr_pam_user);
 	if (NULL != ptr_user) {
-		*ptr_pam_user = xstrdup ((const char *)ptr_user);
+		*ptr_pam_user = xstrdup (ptr_user);
 	} else {
 		*ptr_pam_user = NULL;
 	}
@@ -430,7 +432,7 @@ static void get_pam_user (char **ptr_pam_user)
 
 /*
  * get_failent_user - Return a string that can be used to log failure
- *                    from an user.
+ *                    from a user.
  *
  * This will be either the user argument, or "UNKNOWN".
  *
@@ -450,38 +452,6 @@ static /*@observer@*/const char *get_failent_user (/*@returned@*/const char *use
 	}
 
 	return failent_user;
-}
-
-/*
- * update_utmp - Update or create an utmp entry in utmp, wtmp, utmpw, and
- *               wtmpx
- *
- *	utent should be the utmp entry returned by get_current_utmp (or
- *	NULL).
- */
-static void update_utmp (const char *user,
-                         const char *tty,
-                         const char *host,
-#ifdef USE_UTMPX
-                         /*@null@*/const struct utmpx *utent
-#else
-                         /*@null@*/const struct utmp *utent
-#endif
-			 )
-{
-#ifdef USE_UTMPX
-	struct utmpx *utx = prepare_utmpx (user, tty, host, utent);
-#else
-	struct utmp  *ut  = prepare_utmp  (user, tty, host, utent);
-#endif				/* USE_UTMPX */
-
-#ifndef USE_UTMPX
-	(void) setutmp  (ut);	/* make entry in the utmp & wtmp files */
-	free (ut);
-#else
-	(void) setutmpx (utx);	/* make entry in the utmpx & wtmpx files */
-	free (utx);
-#endif				/* USE_UTMPX */
 }
 
 /*
@@ -510,7 +480,9 @@ int main (int argc, char **argv)
 	char term[128] = "";
 #endif				/* RLOGIN */
 #if !defined(USE_PAM)
+#ifdef ENABLE_LASTLOG
 	char ptime[80];
+#endif /* ENABLE_LASTLOG */
 #endif
 	unsigned int delay;
 	unsigned int retries;
@@ -526,11 +498,7 @@ int main (int argc, char **argv)
 	struct passwd *pwd = NULL;
 	char **envp = environ;
 	const char *failent_user;
-#ifdef USE_UTMPX
-	/*@null@*/struct utmpx *utent;
-#else
-	/*@null@*/struct utmp *utent;
-#endif
+	char *host = NULL;
 
 #ifdef USE_PAM
 	int retcode;
@@ -567,19 +535,17 @@ int main (int argc, char **argv)
 		exit (1);	/* must be a terminal */
 	}
 
-	utent = get_current_utmp ();
+	err = get_session_host(&host);
 	/*
 	 * Be picky if run by normal users (possible if installed setuid
-	 * root), but not if run by root. This way it still allows logins
-	 * even if your getty is broken, or if something corrupts utmp,
-	 * but users must "exec login" which will use the existing utmp
-	 * entry (will not overwrite remote hostname).  --marekm
+	 * root), but not if run by root.
 	 */
-	if (!amroot && (NULL == utent)) {
-		(void) puts (_("No utmp entry.  You must exec \"login\" from the lowest level \"sh\""));
+	if (!amroot && (err != 0)) {
+		SYSLOG ((LOG_ERR,
+				 "No session entry, error %d.  You must exec \"login\" from the lowest level \"sh\"",
+				 err));
 		exit (1);
 	}
-	/* NOTE: utent might be NULL afterwards */
 
 	tmptty = ttyname (0);
 	if (NULL == tmptty) {
@@ -606,10 +572,11 @@ int main (int argc, char **argv)
 	}
 #ifdef RLOGIN
 	if (rflg) {
+		size_t max_size = sysconf(_SC_LOGIN_NAME_MAX);
 		assert (NULL == username);
-		username = xmalloc (USER_NAME_MAX_LENGTH + 1);
-		username[USER_NAME_MAX_LENGTH] = '\0';
-		if (do_rlogin (hostname, username, USER_NAME_MAX_LENGTH, term, sizeof term)) {
+		username = XMALLOC(max_size + 1, char);
+		username[max_size] = '\0';
+		if (do_rlogin (hostname, username, max_size, term, sizeof term)) {
 			preauth_flag = true;
 		} else {
 			free (username);
@@ -674,10 +641,8 @@ int main (int argc, char **argv)
 
 	if (rflg || hflg) {
 		cp = hostname;
-#if defined(HAVE_STRUCT_UTMP_UT_HOST) || defined(USE_UTMPX)
-	} else if ((NULL != utent) && ('\0' != utent->ut_host[0])) {
-		cp = utent->ut_host;
-#endif				/* HAVE_STRUCT_UTMP_UT_HOST */
+	} else if ((host != NULL) && (host[0] != '\0')) {
+		cp = host;
 	} else {
 		cp = "";
 	}
@@ -689,6 +654,7 @@ int main (int argc, char **argv)
 		snprintf (fromhost, sizeof fromhost,
 		          " on '%.100s'", tty);
 	}
+	free(host);
 
       top:
 	/* only allow ALARM sec. for login */
@@ -919,14 +885,15 @@ int main (int argc, char **argv)
 
 		failed = false;	/* haven't failed authentication yet */
 		if (NULL == username) {	/* need to get a login id */
+			size_t max_size = sysconf(_SC_LOGIN_NAME_MAX);
 			if (subroot) {
 				closelog ();
 				exit (1);
 			}
 			preauth_flag = false;
-			username = xmalloc (USER_NAME_MAX_LENGTH + 1);
-			username[USER_NAME_MAX_LENGTH] = '\0';
-			login_prompt (_("\n%s login: "), username, USER_NAME_MAX_LENGTH);
+			username = XMALLOC(max_size + 1, char);
+			username[max_size] = '\0';
+			login_prompt (username, max_size);
 
 			if ('\0' == username[0]) {
 				/* Prompt for a new login */
@@ -956,7 +923,8 @@ int main (int argc, char **argv)
 			}
 
 			if (strcmp (user_passwd, "") == 0) {
-				char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+				const char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+
 				if (prevent_no_auth == NULL) {
 					prevent_no_auth = "superuser";
 				}
@@ -992,7 +960,7 @@ int main (int argc, char **argv)
 			goto auth_ok;
 		}
 
-		if (pw_auth (user_passwd, username, reason, (char *) 0) == 0) {
+		if (pw_auth (user_passwd, username, reason, NULL) == 0) {
 			goto auth_ok;
 		}
 
@@ -1035,23 +1003,9 @@ int main (int argc, char **argv)
 		if ((NULL != pwd) && getdef_bool ("FAILLOG_ENAB")) {
 			failure (pwd->pw_uid, tty, &faillog);
 		}
-		if (getdef_str ("FTMP_FILE") != NULL) {
-#ifdef USE_UTMPX
-			struct utmpx *failent =
-				prepare_utmpx (failent_user,
-				               tty,
-			/* FIXME: or fromhost? */hostname,
-				               utent);
-#else				/* !USE_UTMPX */
-			struct utmp *failent =
-				prepare_utmp (failent_user,
-				              tty,
-				              hostname,
-				              utent);
-#endif				/* !USE_UTMPX */
-			failtmp (failent_user, failent);
-			free (failent);
-		}
+#ifndef ENABLE_LOGIND
+		record_failure(failent_user, tty, hostname);
+#endif /* ENABLE_LOGIND */
 
 		retries--;
 		if (retries <= 0) {
@@ -1067,7 +1021,7 @@ int main (int argc, char **argv)
 		 * all).  --marekm
 		 */
 		if (user_passwd[0] == '\0') {
-			pw_auth ("!", username, reason, (char *) 0);
+			pw_auth ("!", username, reason, NULL);
 		}
 
 		/*
@@ -1107,7 +1061,7 @@ int main (int argc, char **argv)
 	 * by Ivan Nejgebauer <ian@unsux.ns.ac.yu>.  --marekm
 	 */
 	if (   getdef_bool ("PORTTIME_CHECKS_ENAB")
-	    && !isttytime (username, tty, time ((time_t *) 0))) {
+	    && !isttytime (username, tty, time (NULL))) {
 		SYSLOG ((LOG_WARN, "invalid login time for '%s'%s",
 		         username, fromhost));
 		closelog ();
@@ -1151,11 +1105,13 @@ int main (int argc, char **argv)
 #endif				/* WITH_AUDIT */
 
 #ifndef USE_PAM			/* pam_lastlog handles this */
+#ifdef ENABLE_LASTLOG
 	if (   getdef_bool ("LASTLOG_ENAB")
 	    && pwd->pw_uid <= (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL)) {
 		/* give last login and log this one */
 		dolastlog (&ll, pwd, tty, hostname);
 	}
+#endif /* ENABLE_LASTLOG */
 #endif
 
 #ifndef USE_PAM			/* PAM handles this as well */
@@ -1220,11 +1176,16 @@ int main (int argc, char **argv)
 		}
 	}
 
+#ifndef ENABLE_LOGIND
 	/*
 	 * The utmp entry needs to be updated to indicate the new status
 	 * of the session, the new PID and SID.
 	 */
-	update_utmp (username, tty, hostname, utent);
+	err = update_utmp (username, tty, hostname);
+	if (err != 0) {
+		SYSLOG ((LOG_WARN, "Unable to update utmp entry for %s", username));
+	}
+#endif /* ENABLE_LOGIND */
 
 	/* The pwd and spwd entries for the user have been copied.
 	 *
@@ -1289,6 +1250,7 @@ int main (int argc, char **argv)
 				         username, (int) faillog.fail_cnt));
 			}
 		}
+#ifdef ENABLE_LASTLOG
 		if (   getdef_bool ("LASTLOG_ENAB")
 		    && pwd->pw_uid <= (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL)
 		    && (ll.ll_time != 0)) {
@@ -1307,6 +1269,7 @@ int main (int argc, char **argv)
 #endif
 			printf (".\n");
 		}
+#endif /* ENABLE_LASTLOG */
 		agecheck (spwd);
 
 		mailcheck ();	/* report on the status of mail */
@@ -1334,7 +1297,7 @@ int main (int argc, char **argv)
 		err = shell (tmp, pwd->pw_shell, newenvp); /* fake shell */
 	} else {
 		/* exec the shell finally */
-		err = shell (pwd->pw_shell, (char *) 0, newenvp);
+		err = shell (pwd->pw_shell, NULL, newenvp);
 	}
 
 	return ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);

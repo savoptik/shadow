@@ -13,6 +13,8 @@
 #ident "$Id$"
 
 #include <stdio.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "pwio.h"
@@ -21,12 +23,11 @@
 {
 	struct passwd *pw;
 
-	pw = (struct passwd *) malloc (sizeof *pw);
+	pw = CALLOC (1, struct passwd);
 	if (NULL == pw) {
 		return NULL;
 	}
 	/* The libc might define other fields. They won't be copied. */
-	memset (pw, 0, sizeof *pw);
 	pw->pw_uid = pwent->pw_uid;
 	pw->pw_gid = pwent->pw_gid;
 	/*@-mustfreeonly@*/

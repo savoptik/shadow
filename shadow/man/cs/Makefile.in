@@ -87,6 +87,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@ENABLE_LASTLOG_TRUE@am__append_1 = man8/lastlog.8
 subdir = man/cs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -207,6 +208,8 @@ LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
@@ -223,6 +226,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -253,6 +257,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -324,24 +331,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-man_MANS = \
-	man1/expiry.1 \
-	man5/faillog.5 \
-	man8/faillog.8 \
-	man1/gpasswd.1 \
-	man8/groupadd.8 \
-	man8/groupdel.8 \
-	man8/groupmod.8 \
-	man1/groups.1 \
-	man8/grpck.8 \
-	man5/gshadow.5 \
-	man8/lastlog.8 \
-	man8/nologin.8 \
-	man5/passwd.5 \
-	man5/shadow.5 \
-	man1/su.1 \
-	man8/vipw.8
-
+man_MANS = man1/expiry.1 man5/faillog.5 man8/faillog.8 man1/gpasswd.1 \
+	man8/groupadd.8 man8/groupdel.8 man8/groupmod.8 man1/groups.1 \
+	man8/grpck.8 man5/gshadow.5 man8/nologin.8 man5/passwd.5 \
+	man5/shadow.5 man1/su.1 man8/vipw.8 $(am__append_1)
 EXTRA_DIST = $(man_MANS) \
 	man1/id.1 \
 	man8/groupmems.8 \

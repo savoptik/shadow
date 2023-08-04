@@ -26,7 +26,6 @@ man_MANS = \
 	man8/grpconv.8 \
 	man8/grpunconv.8 \
 	man5/gshadow.5 \
-	man8/lastlog.8 \
 	man1/login.1 \
 	man5/login.defs.5 \
 	man8/logoutd.8 \
@@ -47,6 +46,10 @@ man_MANS = \
 	man8/usermod.8 \
 	man8/vigr.8 \
 	man8/vipw.8
+
+if ENABLE_LASTLOG
+man_MANS += man8/lastlog.8
+endif
 
 man_nopam = \
 	man5/limits.5 \
@@ -90,7 +93,6 @@ man_XMANS = \
 	groups.1.xml \
 	grpck.8.xml \
 	gshadow.5.xml \
-	lastlog.8.xml \
 	limits.5.xml \
 	login.1.xml \
 	login.access.5.xml \
@@ -117,6 +119,10 @@ man_XMANS = \
 	userdel.8.xml \
 	usermod.8.xml \
 	vipw.8.xml
+
+if ENABLE_LASTLOG
+man_XMANS += lastlog.8.xml
+endif
 
 login_defs_v = \
 	CHFN_AUTH.xml \
@@ -206,9 +212,9 @@ if !ENABLE_SUBIDS
 EXTRA_DIST += $(man_subids)
 endif
 
-generate_mans.deps: *.xml
+generate_mans.deps: $(man_XMANS)
 	echo "# This file is generated" > $@
-	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $(man_XMANS) >> $@
+	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $< >> $@
 
 if ENABLE_REGENERATE_MAN
 

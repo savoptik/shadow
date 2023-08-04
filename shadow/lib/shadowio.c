@@ -47,7 +47,7 @@ static const char *shadow_getname (const void *ent)
 
 static void *shadow_parse (const char *line)
 {
-	return (void *) sgetspent (line);
+	return sgetspent (line);
 }
 
 static int shadow_put (const void *ent, FILE * file)
@@ -164,7 +164,7 @@ int spw_open (int mode)
 
 int spw_update (const struct spwd *sp)
 {
-	return commonio_update (&shadow_db, (const void *) sp);
+	return commonio_update (&shadow_db, sp);
 }
 
 int spw_remove (const char *name)

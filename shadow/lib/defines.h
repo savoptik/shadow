@@ -6,41 +6,8 @@
 
 #include "config.h"
 
-#if HAVE_STDBOOL_H
-# include <stdbool.h>
-#else
-# if ! HAVE__BOOL
-#  ifdef __cplusplus
-typedef bool _Bool;
-#  else
-typedef unsigned char _Bool;
-#  endif
-# endif
-# define bool _Bool
-# define false (0)
-# define true  (1)
-# define __bool_true_false_are_defined 1
-#endif
-
-/* Take care of NLS matters.  */
-#ifdef S_SPLINT_S
-extern char *setlocale(int categories, const char *locale);
-# define LC_ALL		(6)
-extern char * bindtextdomain (const char * domainname, const char * dirname);
-extern char * textdomain (const char * domainname);
-# define _(Text) Text
-# define ngettext(Msgid1, Msgid2, N) \
-    ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
-#else
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#else
-# undef setlocale
-# define setlocale(category, locale)	(NULL)
-# ifndef LC_ALL
-#  define LC_ALL	6
-# endif
-#endif
+#include <stdbool.h>
+#include <locale.h>
 
 #define gettext_noop(String) (String)
 /* #define gettext_def(String) "#define String" */
@@ -57,22 +24,17 @@ extern char * textdomain (const char * domainname);
 # define ngettext(Msgid1, Msgid2, N) \
     ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
 #endif
-#endif
 
 #include <stdlib.h>
 #include <string.h>
 
-#if HAVE_ERRNO_H
-# include <errno.h>
-#endif
+#include <errno.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 /*
  * crypt(3), crypt_gensalt(3), and their
@@ -85,17 +47,15 @@ extern char * textdomain (const char * domainname);
 #include <sys/time.h>
 #include <time.h>
 
-#ifdef HAVE_MEMSET_S
-# define memzero(ptr, size) memset_s((ptr), 0, (size))
+#ifdef HAVE_MEMSET_EXPLICIT
+# define memzero(ptr, size) memset_explicit((ptr), 0, (size))
 #elif defined HAVE_EXPLICIT_BZERO	/* !HAVE_MEMSET_S */
 # define memzero(ptr, size) explicit_bzero((ptr), (size))
 #else					/* !HAVE_MEMSET_S && HAVE_EXPLICIT_BZERO */
 static inline void memzero(void *ptr, size_t size)
 {
-	volatile unsigned char * volatile p = ptr;
-	while (size--) {
-		*p++ = '\0';
-	}
+	ptr = memset(ptr, '\0', size);
+	__asm__ __volatile__ ("" : : "r"(ptr) : "memory");
 }
 #endif					/* !HAVE_MEMSET_S && !HAVE_EXPLICIT_BZERO */
 
@@ -123,7 +83,6 @@ static inline void memzero(void *ptr, size_t size)
 #endif
 #endif
 
-#ifdef USE_SYSLOG
 #include <syslog.h>
 
 #ifndef LOG_WARN
@@ -170,14 +129,6 @@ static inline void memzero(void *ptr, size_t size)
 #define SYSLOG(x) syslog x
 #endif				/* !ENABLE_NLS */
 
-#else				/* !USE_SYSLOG */
-
-#define SYSLOG(x)		/* empty */
-#define openlog(a,b,c)		/* empty */
-#define closelog()		/* empty */
-
-#endif				/* !USE_SYSLOG */
-
 /* The default syslog settings can now be changed here,
    in just one place.  */
 
@@ -192,33 +143,10 @@ static inline void memzero(void *ptr, size_t size)
 
 #define OPENLOG(progname) openlog(progname, SYSLOG_OPTIONS, SYSLOG_FACILITY)
 
-#ifndef F_OK
-# define F_OK 0
-# define X_OK 1
-# define W_OK 2
-# define R_OK 4
-#endif
-
-#ifndef SEEK_SET
-# define SEEK_SET 0
-# define SEEK_CUR 1
-# define SEEK_END 2
-#endif
-
-#if HAVE_TERMIOS_H
-# include <termios.h>
-# define STTY(fd, termio) tcsetattr(fd, TCSANOW, termio)
-# define GTTY(fd, termio) tcgetattr(fd, termio)
-# define TERMIO struct termios
-# define USE_TERMIOS
-#else				/* assumed HAVE_TERMIO_H */
-# include <sys/ioctl.h>
-# include <termio.h>
-# define STTY(fd, termio) ioctl(fd, TCSETA, termio)
-# define GTTY(fd, termio) ioctl(fd, TCGETA, termio)
-# define TEMRIO struct termio
-# define USE_TERMIO
-#endif
+#include <termios.h>
+#define STTY(fd, termio) tcsetattr(fd, TCSANOW, termio)
+#define GTTY(fd, termio) tcgetattr(fd, termio)
+#define TERMIO struct termios
 
 /*
  * Password aging constants
@@ -240,6 +168,10 @@ static inline void memzero(void *ptr, size_t size)
 #else
 #define SCALE DAY
 #endif
+
+#define WIDTHOF(x)   (sizeof(x) * CHAR_BIT)
+#define NITEMS(arr)  (sizeof((arr)) / sizeof((arr)[0]))
+#define STRLEN(s)    (NITEMS(s) - 1)
 
 /* Copy string pointed by B to array A with size checking.  It was originally
    in lmain.c but is _very_ useful elsewhere.  Some setuid root programs with
@@ -267,18 +199,6 @@ static inline void memzero(void *ptr, size_t size)
 #endif
 #endif
 
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
-#ifdef sun			/* hacks for compiling on SunOS */
-# ifndef SOLARIS
-extern int fputs ();
-extern char *strdup ();
-extern char *strerror ();
-# endif
-#endif
-
 /*
  * string to use for the pw_passwd field in /etc/passwd when using
  * shadow passwords - most systems use "x" but there are a few
@@ -303,32 +223,23 @@ extern char *strerror ();
 
 /* To be used for verified unused parameters */
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__)
-# define unused __attribute__((unused))
+# define unused    __attribute__((unused))
+# define NORETURN  __attribute__((__noreturn__))
 # define format_attr(type, index, check) __attribute__((format (type, index, check)))
 #else
 # define unused
+# define NORETURN
 # define format_attr(type, index, check)
-#endif
-
-/* Maximum length of usernames */
-#ifdef HAVE_UTMPX_H
-# include <utmpx.h>
-# define USER_NAME_MAX_LENGTH (sizeof (((struct utmpx *)NULL)->ut_user))
-#else
-# include <utmp.h>
-# ifdef HAVE_STRUCT_UTMP_UT_USER
-#  define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_user))
-# else
-#  ifdef HAVE_STRUCT_UTMP_UT_NAME
-#   define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_name))
-#  else
-#   define USER_NAME_MAX_LENGTH 32
-#  endif
-# endif
 #endif
 
 /* Maximum length of passwd entry */
 #define PASSWD_ENTRY_MAX_LENGTH 32768
+
+#if (__GNUC__ >= 11) && !defined(__clang__)
+# define ATTR_MALLOC(deallocator)  [[gnu::malloc(deallocator)]]
+#else
+# define ATTR_MALLOC(deallocator)
+#endif
 
 #ifdef HAVE_SECURE_GETENV
 #  define shadow_getenv(name) secure_getenv(name)

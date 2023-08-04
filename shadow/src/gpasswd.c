@@ -19,6 +19,8 @@
 #include <signal.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "groupio.h"
 #include "nscd.h"
@@ -721,7 +723,7 @@ static void check_perms (const struct group *gr)
 		 * --marekm
 		 */
 		if (!amroot) {
-			if (gr->gr_mem[0] == (char *) 0) {
+			if (gr->gr_mem[0] == NULL) {
 				failure ();
 			}
 
@@ -834,7 +836,7 @@ static void get_group (struct group *gr)
 
 			sg->sg_mem = dup_list (gr->gr_mem);
 
-			sg->sg_adm = (char **) xmalloc (sizeof (char *) * 2);
+			sg->sg_adm = XMALLOC(2, char *);
 #ifdef FIRST_MEMBER_IS_ADMIN
 			if (sg->sg_mem[0]) {
 				sg->sg_adm[0] = xstrdup (sg->sg_mem[0]);
@@ -887,24 +889,25 @@ static void change_passwd (struct group *gr)
 	printf (_("Changing the password for group %s\n"), group);
 
 	for (retries = 0; retries < RETRIES; retries++) {
-		cp = getpass (_("New Password: "));
+		cp = agetpass (_("New Password: "));
 		if (NULL == cp) {
 			exit (1);
 		}
 
 		STRFCPY (pass, cp);
-		strzero (cp);
-		cp = getpass (_("Re-enter new password: "));
+		erase_pass (cp);
+		cp = agetpass (_("Re-enter new password: "));
 		if (NULL == cp) {
+			memzero (pass, sizeof pass);
 			exit (1);
 		}
 
 		if (strcmp (pass, cp) == 0) {
-			strzero (cp);
+			erase_pass (cp);
 			break;
 		}
 
-		strzero (cp);
+		erase_pass (cp);
 		memzero (pass, sizeof pass);
 
 		if (retries + 1 < RETRIES) {
@@ -1145,9 +1148,7 @@ int main (int argc, char **argv)
 	(void) signal (SIGINT, catch_signals);
 	(void) signal (SIGQUIT, catch_signals);
 	(void) signal (SIGTERM, catch_signals);
-#ifdef SIGTSTP
 	(void) signal (SIGTSTP, catch_signals);
-#endif
 
 	/* Prompt for the new password */
 #ifdef SHADOWGRP

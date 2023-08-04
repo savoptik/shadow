@@ -5,11 +5,23 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir) $(ECONF_CPPFLAGS)
 
 noinst_LTLIBRARIES = libmisc.la
 
+if USE_PAM
+LIBCRYPT_PAM = $(LIBCRYPT)
+else
+LIBCRYPT_PAM =
+endif
+
+libmisc_la_CFLAGS = $(LIBBSD_CFLAGS) $(LIBCRYPT_PAM) $(LIBSYSTEMD)
 libmisc_la_SOURCES = \
 	addgrps.c \
 	age.c \
+	agetpass.c \
+	alloc.c \
+	../lib/alloc.h \
 	audit_help.c \
 	basename.c \
+	bit.c \
+	../lib/bit.h \
 	chkname.c \
 	chkname.h \
 	chowndir.c \
@@ -38,9 +50,10 @@ libmisc_la_SOURCES = \
 	idmapping.c \
 	isexpired.c \
 	limits.c \
-	list.c log.c \
+	list.c \
 	loginprompt.c \
 	mail.c \
+	mempcpy.c \
 	motd.c \
 	myname.c \
 	obscure.c \
@@ -50,6 +63,7 @@ libmisc_la_SOURCES = \
 	pwd2spwd.c \
 	pwdcheck.c \
 	pwd_init.c \
+	csrand.c \
 	remove_tree.c \
 	rlogin.c \
 	root_flag.c \
@@ -57,6 +71,10 @@ libmisc_la_SOURCES = \
 	setugid.c \
 	setupenv.c \
 	shell.c \
+	stpecpy.c \
+	../lib/stpecpy.h \
+	stpeprintf.c \
+	../lib/stpeprintf.h \
 	strtoday.c \
 	sub.c \
 	sulog.c \
@@ -64,17 +82,25 @@ libmisc_la_SOURCES = \
 	tz.c \
 	ulimit.c \
 	user_busy.c \
-	utmp.c \
 	valid.c \
 	xgetpwnam.c \
+	xprefix_getpwnam.c \
 	xgetpwuid.c \
 	xgetgrnam.c \
 	xgetgrgid.c \
 	xgetspnam.c \
-	xmalloc.c \
 	yesno.c
 
 if WITH_BTRFS
 libmisc_la_SOURCES += btrfs.c
 endif
 
+if ENABLE_LASTLOG
+libmisc_la_SOURCES += log.c
+endif
+
+if ENABLE_LOGIND
+libmisc_la_SOURCES += logind.c
+else
+libmisc_la_SOURCES += utmp.c
+endif

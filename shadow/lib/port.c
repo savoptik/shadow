@@ -79,7 +79,7 @@ static void endportent (void)
 		(void) fclose (ports);
 	}
 
-	ports = (FILE *) 0;
+	ports = NULL;
 }
 
 /*
@@ -130,11 +130,11 @@ static struct port *getportent (void)
       again:
 
 	/*
-	 * Get the next line and remove the last character, which
-	 * is a '\n'.  Lines which begin with '#' are all ignored.
+	 * Get the next line and remove optional trailing '\n'.
+	 * Lines which begin with '#' are all ignored.
 	 */
 
-	if (fgets (buf, (int) sizeof buf, ports) == 0) {
+	if (fgets (buf, sizeof buf, ports) == 0) {
 		errno = saveerr;
 		return 0;
 	}
@@ -149,7 +149,7 @@ static struct port *getportent (void)
 	 * TTY devices.
 	 */
 
-	buf[strlen (buf) - 1] = 0;
+	buf[strcspn (buf, "\n")] = 0;
 
 	port.pt_names = ttys;
 	for (cp = buf, j = 0; j < PORT_TTY; j++) {
@@ -172,13 +172,13 @@ static struct port *getportent (void)
 	}
 	*cp = '\0';
 	cp++;
-	port.pt_names[j + 1] = (char *) 0;
+	port.pt_names[j + 1] = NULL;
 
 	/*
 	 * Get the list of user names.  It is the second colon
 	 * separated field, and is a comma separated list of user
 	 * names.  The entry '*' is used to specify all usernames.
-	 * The last entry in the list is a (char *) 0 pointer.
+	 * The last entry in the list is a NULL pointer.
 	 */
 
 	if (':' != *cp) {
@@ -243,9 +243,7 @@ static struct port *getportent (void)
 		 * week or the other two values.
 		 */
 
-		for (i = 0;
-		     ('\0' != cp[i]) && ('\0' != cp[i + 1]) && isalpha (cp[i]);
-		     i += 2) {
+		for (i = 0; isalpha(cp[i]) && ('\0' != cp[i + 1]); i += 2) {
 			switch ((cp[i] << 8) | (cp[i + 1])) {
 			case ('S' << 8) | 'u':
 				port.pt_times[j].t_days |= 01;
@@ -294,7 +292,7 @@ static struct port *getportent (void)
 		 * representing the times of day.
 		 */
 
-		for (dtime = 0; ('\0' != cp[i]) && isdigit (cp[i]); i++) {
+		for (dtime = 0; isdigit (cp[i]); i++) {
 			dtime = dtime * 10 + cp[i] - '0';
 		}
 
@@ -304,9 +302,7 @@ static struct port *getportent (void)
 		port.pt_times[j].t_start = dtime;
 		cp = cp + i + 1;
 
-		for (dtime = 0, i = 0;
-		     ('\0' != cp[i]) && isdigit (cp[i]);
-		     i++) {
+		for (dtime = 0, i = 0; isdigit (cp[i]); i++) {
 			dtime = dtime * 10 + cp[i] - '0';
 		}
 

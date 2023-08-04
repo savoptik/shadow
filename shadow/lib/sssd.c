@@ -4,8 +4,11 @@
 #ifdef USE_SSSD
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+
+#include "alloc.h"
 #include "exitcodes.h"
 #include "defines.h"
 #include "prototypes.h"
@@ -19,12 +22,17 @@ int sssd_flush_cache (int dbflags)
 {
 	int status, code, rv;
 	const char *cmd = "/usr/sbin/sss_cache";
+	struct stat sb;
 	char *sss_cache_args = NULL;
 	const char *spawnedArgs[] = {"sss_cache", NULL, NULL};
 	const char *spawnedEnv[] = {NULL};
 	int i = 0;
 
-	sss_cache_args = malloc(4);
+	rv = stat(cmd, &sb);
+	if (rv == -1 && errno == ENOENT)
+		return 0;
+
+	sss_cache_args = MALLOC(4, char);
 	if (sss_cache_args == NULL) {
 	    return -1;
 	}
@@ -70,6 +78,6 @@ int sssd_flush_cache (int dbflags)
 	return 0;
 }
 #else				/* USE_SSSD */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* USE_SSSD */
 

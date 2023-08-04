@@ -11,19 +11,18 @@
 
 #include "defines.h"
 #include "prototypes.h"
+#include "getdef.h"
 
-#ifdef USE_UTMPX
-#include <utmpx.h>
-#else
 #include <utmp.h>
-#endif
-
 #include <assert.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <fcntl.h>
+
+#include "alloc.h"
 
 #ident "$Id$"
 
@@ -31,33 +30,79 @@
 /*
  * is_my_tty -- determine if "tty" is the same TTY stdin is using
  */
-static bool is_my_tty (const char *tty)
+static bool is_my_tty (const char tty[UT_LINESIZE])
 {
-	/* full_tty shall be at least sizeof utmp.ut_line + 5 */
-	char full_tty[200];
+	char         full_tty[STRLEN("/dev/") + UT_LINESIZE + 1];
 	/* tmptty shall be bigger than full_tty */
-	static char tmptty[sizeof (full_tty)+1];
+	static char  tmptty[sizeof(full_tty) + 1];
 
-	if ('/' != *tty) {
-		(void) snprintf (full_tty, sizeof full_tty, "/dev/%s", tty);
-		tty = &full_tty[0];
-	}
+	full_tty[0] = '\0';
+	if (tty[0] != '/')
+		strcpy (full_tty, "/dev/");
+	strncat (full_tty, tty, UT_LINESIZE);
 
 	if ('\0' == tmptty[0]) {
 		const char *tname = ttyname (STDIN_FILENO);
-		if (NULL != tname) {
-			(void) strncpy (tmptty, tname, sizeof tmptty);
-			tmptty[sizeof (tmptty) - 1] = '\0';
-		}
+		if (NULL != tname)
+			(void) strlcpy (tmptty, tname, sizeof(tmptty));
 	}
 
 	if ('\0' == tmptty[0]) {
 		(void) puts (_("Unable to determine your tty name."));
 		exit (EXIT_FAILURE);
-	} else if (strncmp (tty, tmptty, sizeof (tmptty)) != 0) {
-		return false;
-	} else {
-		return true;
+	}
+
+	return strcmp (full_tty, tmptty) == 0;
+}
+
+/*
+ * failtmp - update the cumulative failure log
+ *
+ *	failtmp updates the (struct utmp) formatted failure log which
+ *	maintains a record of all login failures.
+ */
+static void failtmp (const char *username, const struct utmp *failent)
+{
+	const char *ftmp;
+	int fd;
+
+	/*
+	 * Get the name of the failure file.  If no file has been defined
+	 * in login.defs, don't do this.
+	 */
+
+	ftmp = getdef_str ("FTMP_FILE");
+	if (NULL == ftmp) {
+		return;
+	}
+
+	/*
+	 * Open the file for append.  It must already exist for this
+	 * feature to be used.
+	 */
+
+	if (access (ftmp, F_OK) != 0) {
+		return;
+	}
+
+	fd = open (ftmp, O_WRONLY | O_APPEND);
+	if (-1 == fd) {
+		SYSLOG ((LOG_WARN,
+		         "Can't append failure of user %s to %s.",
+		         username, ftmp));
+		return;
+	}
+
+	/*
+	 * Append the new failure record and close the log file.
+	 */
+
+	if (   (write (fd, failent, sizeof *failent) != (ssize_t) sizeof *failent)
+	    || (close (fd) != 0)) {
+		SYSLOG ((LOG_WARN,
+		         "Can't append failure of user %s to %s.",
+		         username, ftmp));
+		(void) close (fd);
 	}
 }
 
@@ -75,7 +120,7 @@ static bool is_my_tty (const char *tty)
  *
  *	Return NULL if no entries exist in utmp for the current process.
  */
-#ifndef USE_UTMPX
+static
 /*@null@*/ /*@only@*/struct utmp *get_current_utmp (void)
 {
 	struct utmp *ut;
@@ -101,7 +146,7 @@ static bool is_my_tty (const char *tty)
 	}
 
 	if (NULL != ut) {
-		ret = (struct utmp *) xmalloc (sizeof (*ret));
+		ret = XMALLOC(1, struct utmp);
 		memcpy (ret, ut, sizeof (*ret));
 	}
 
@@ -109,36 +154,33 @@ static bool is_my_tty (const char *tty)
 
 	return ret;
 }
-#else
-/*@null@*/ /*@only*/struct utmpx *get_current_utmp(void)
+
+int get_session_host (char **out)
 {
-	struct utmpx *ut;
-	struct utmpx *ret = NULL;
+	char *hostname = NULL;
+	struct utmp *ut = NULL;
+	int ret = 0;
 
-	setutxent ();
+	ut = get_current_utmp();
 
-	/* Find the utmpx entry for this PID. */
-	while ((ut = getutxent ()) != NULL) {
-		if (   (ut->ut_pid == getpid ())
-		    && ('\0' != ut->ut_id[0])
-		    && (   (LOGIN_PROCESS == ut->ut_type)
-			|| (USER_PROCESS == ut->ut_type))
-		    && is_my_tty (ut->ut_line)) {
-			break;
-		}
+#ifdef HAVE_STRUCT_UTMP_UT_HOST
+	if ((ut != NULL) && (ut->ut_host[0] != '\0')) {
+		hostname = XMALLOC(sizeof(ut->ut_host) + 1, char);
+		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
+		hostname[sizeof (ut->ut_host)] = '\0';
+		*out = hostname;
+		free (ut);
+	} else {
+		*out = NULL;
+		ret = -2;
 	}
-
-	if (NULL != ut) {
-		ret = (struct utmpx *) xmalloc (sizeof (*ret));
-		memcpy (ret, ut, sizeof (*ret));
-	}
-
-	endutxent ();
+#else
+	*out = NULL;
+	ret = -2;
+#endif /* HAVE_STRUCT_UTMP_UT_HOST */
 
 	return ret;
 }
-#endif
-
 
 #ifndef USE_PAM
 /*
@@ -152,30 +194,15 @@ static void updwtmp (const char *filename, const struct utmp *ut)
 
 	fd = open (filename, O_APPEND | O_WRONLY, 0);
 	if (fd >= 0) {
-		write (fd, (const char *) ut, sizeof (*ut));
+		write (fd, ut, sizeof (*ut));
 		close (fd);
 	}
 }
 #endif				/* ! HAVE_UPDWTMP */
 
-#ifdef USE_UTMPX
-#ifndef HAVE_UPDWTMPX
-static void updwtmpx (const char *filename, const struct utmpx *utx)
-{
-	int fd;
-
-	fd = open (filename, O_APPEND | O_WRONLY, 0);
-	if (fd >= 0) {
-		write (fd, (const char *) utx, sizeof (*utx));
-		close (fd);
-	}
-}
-#endif				/* ! HAVE_UPDWTMPX */
-#endif				/* ! USE_UTMPX */
 #endif				/* ! USE_PAM */
 
 
-#ifndef USE_UTMPX
 /*
  * prepare_utmp - prepare an utmp entry so that it can be logged in a
  *                utmp/wtmp file.
@@ -194,6 +221,7 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
  *
  *	The returned structure shall be freed by the caller.
  */
+static
 /*@only@*/struct utmp *prepare_utmp (const char *name,
                                      const char *line,
                                      const char *host,
@@ -210,12 +238,12 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 
 	if (   (NULL != host)
 	    && ('\0' != host[0])) {
-		hostname = (char *) xmalloc (strlen (host) + 1);
+		hostname = XMALLOC(strlen(host) + 1, char);
 		strcpy (hostname, host);
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
 	} else if (   (NULL != ut)
 	           && ('\0' != ut->ut_host[0])) {
-		hostname = (char *) xmalloc (sizeof (ut->ut_host) + 1);
+		hostname = XMALLOC(sizeof(ut->ut_host) + 1, char);
 		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
 		hostname[sizeof (ut->ut_host)] = '\0';
 #endif				/* HAVE_STRUCT_UTMP_UT_HOST */
@@ -226,9 +254,7 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 	}
 
 
-	utent = (struct utmp *) xmalloc (sizeof (*utent));
-	memzero (utent, sizeof (*utent));
-
+	utent = XCALLOC (1, struct utmp);
 
 
 #ifdef HAVE_STRUCT_UTMP_UT_TYPE
@@ -315,7 +341,7 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
  *
  *	Return 1 on failure and 0 on success.
  */
-int setutmp (struct utmp *ut)
+static int setutmp (struct utmp *ut)
 {
 	int err = 0;
 
@@ -335,140 +361,64 @@ int setutmp (struct utmp *ut)
 	return err;
 }
 
-#else
-/*
- * prepare_utmpx - the UTMPX version for prepare_utmp
- */
-/*@only@*/struct utmpx *prepare_utmpx (const char *name,
-                                       const char *line,
-                                       const char *host,
-                                       /*@null@*/const struct utmpx *ut)
+int update_utmp (const char *user,
+                 const char *tty,
+                 const char *host)
 {
-	struct timeval tv;
-	char *hostname = NULL;
-	struct utmpx *utxent;
+	struct utmp *utent, *ut;
 
-	assert (NULL != name);
-	assert (NULL != line);
-
-
-
-	if (   (NULL != host)
-	    && ('\0' != host[0])) {
-		hostname = (char *) xmalloc (strlen (host) + 1);
-		strcpy (hostname, host);
-#ifdef HAVE_STRUCT_UTMP_UT_HOST
-	} else if (   (NULL != ut)
-	           && (NULL != ut->ut_host)
-	           && ('\0' != ut->ut_host[0])) {
-		hostname = (char *) xmalloc (sizeof (ut->ut_host) + 1);
-		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
-		hostname[sizeof (ut->ut_host)] = '\0';
-#endif				/* HAVE_STRUCT_UTMP_UT_TYPE */
+	utent = get_current_utmp ();
+	if (utent == NULL) {
+		return -1;
 	}
 
-	if (strncmp(line, "/dev/", 5) == 0) {
-		line += 5;
+	ut = prepare_utmp  (user, tty, host, utent);
+
+	(void) setutmp  (ut);	/* make entry in the utmp & wtmp files */
+	free (utent);
+	free (ut);
+
+	return 1;
+}
+
+void record_failure(const char *failent_user,
+                    const char *tty,
+                    const char *hostname)
+{
+	struct utmp *utent, *failent;
+
+	if (getdef_str ("FTMP_FILE") != NULL) {
+		utent = get_current_utmp ();
+		failent = prepare_utmp (failent_user, tty, hostname, utent);
+		failtmp (failent_user, failent);
+		free (utent);
+		free (failent);
 	}
+}
 
-	utxent = (struct utmpx *) xmalloc (sizeof (*utxent));
-	memzero (utxent, sizeof (*utxent));
+unsigned long active_sessions_count(const char *name, unsigned long limit)
+{
+	struct utmp *ut;
+	unsigned long count = 0;
 
-
-
-	utxent->ut_type = USER_PROCESS;
-	utxent->ut_pid = getpid ();
-	strncpy (utxent->ut_line, line,      sizeof (utxent->ut_line));
-	/* existence of ut->ut_id is enforced by configure */
-	if (NULL != ut) {
-		strncpy (utxent->ut_id, ut->ut_id, sizeof (utxent->ut_id));
-	} else {
-		/* XXX - assumes /dev/tty?? */
-		strncpy (utxent->ut_id, line + 3, sizeof (utxent->ut_id));
-	}
-#ifdef HAVE_STRUCT_UTMPX_UT_NAME
-	strncpy (utxent->ut_name, name,      sizeof (utxent->ut_name));
-#endif				/* HAVE_STRUCT_UTMPX_UT_NAME */
-	strncpy (utxent->ut_user, name,      sizeof (utxent->ut_user));
-	if (NULL != hostname) {
-		struct addrinfo *info = NULL;
-#ifdef HAVE_STRUCT_UTMPX_UT_HOST
-		strncpy (utxent->ut_host, hostname, sizeof (utxent->ut_host));
-#endif				/* HAVE_STRUCT_UTMPX_UT_HOST */
-#ifdef HAVE_STRUCT_UTMPX_UT_SYSLEN
-		utxent->ut_syslen = MIN (strlen (hostname),
-		                         sizeof (utxent->ut_host));
-#endif				/* HAVE_STRUCT_UTMPX_UT_SYSLEN */
-#if defined(HAVE_STRUCT_UTMPX_UT_ADDR) || defined(HAVE_STRUCT_UTMPX_UT_ADDR_V6)
-		if (getaddrinfo (hostname, NULL, NULL, &info) == 0) {
-			/* getaddrinfo might not be reliable.
-			 * Just try to log what may be useful.
-			 */
-			if (info->ai_family == AF_INET) {
-				struct sockaddr_in *sa =
-					(struct sockaddr_in *) info->ai_addr;
-#ifdef HAVE_STRUCT_UTMPX_UT_ADDR
-				memcpy (&utxent->ut_addr,
-				        &(sa->sin_addr),
-				        MIN (sizeof (utxent->ut_addr),
-				             sizeof (sa->sin_addr)));
-#endif				/* HAVE_STRUCT_UTMPX_UT_ADDR */
-#ifdef HAVE_STRUCT_UTMPX_UT_ADDR_V6
-				memcpy (utxent->ut_addr_v6,
-				        &(sa->sin_addr),
-				        MIN (sizeof (utxent->ut_addr_v6),
-				             sizeof (sa->sin_addr)));
-			} else if (info->ai_family == AF_INET6) {
-				struct sockaddr_in6 *sa =
-					(struct sockaddr_in6 *) info->ai_addr;
-				memcpy (utxent->ut_addr_v6,
-				        &(sa->sin6_addr),
-				        MIN (sizeof (utxent->ut_addr_v6),
-				             sizeof (sa->sin6_addr)));
-#endif				/* HAVE_STRUCT_UTMPX_UT_ADDR_V6 */
-			}
-			freeaddrinfo (info);
+	setutent ();
+	while ((ut = getutent ()))
+	{
+		if (USER_PROCESS != ut->ut_type) {
+			continue;
 		}
-#endif		/* HAVE_STRUCT_UTMPX_UT_ADDR || HAVE_STRUCT_UTMPX_UT_ADDR_V6 */
-		free (hostname);
+		if ('\0' == ut->ut_user[0]) {
+			continue;
+		}
+		if (strncmp (name, ut->ut_user, sizeof (ut->ut_user)) != 0) {
+			continue;
+		}
+		count++;
+		if (count > limit) {
+			break;
+		}
 	}
-	/* ut_exit is only for DEAD_PROCESS */
-	utxent->ut_session = getsid (0);
-	if (gettimeofday (&tv, NULL) == 0) {
-#ifdef HAVE_STRUCT_UTMPX_UT_TIME
-		utxent->ut_time = tv.tv_sec;
-#endif				/* HAVE_STRUCT_UTMPX_UT_TIME */
-#ifdef HAVE_STRUCT_UTMPX_UT_XTIME
-		utxent->ut_xtime = tv.tv_usec;
-#endif				/* HAVE_STRUCT_UTMPX_UT_XTIME */
-		utxent->ut_tv.tv_sec  = tv.tv_sec;
-		utxent->ut_tv.tv_usec = tv.tv_usec;
-	}
+	endutent ();
 
-	return utxent;
+	return count;
 }
-
-/*
- * setutmpx - the UTMPX version for setutmp
- */
-int setutmpx (struct utmpx *utx)
-{
-	int err = 0;
-
-	assert (NULL != utx);
-
-	setutxent ();
-	if (pututxline (utx) == NULL) {
-		err = 1;
-	}
-	endutxent ();
-
-#ifndef USE_PAM
-	/* This is done by pam_lastlog */
-	updwtmpx (_WTMP_FILE "x", utx);
-#endif				/* ! USE_PAM */
-
-	return err;
-}
-#endif				/* USE_UTMPX */
-

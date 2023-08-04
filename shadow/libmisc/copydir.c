@@ -17,6 +17,8 @@
 #include <sys/time.h>
 #include <fcntl.h>
 #include <stdio.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #ifdef WITH_SELINUX
@@ -226,7 +228,7 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
 		return NULL;
 	}
 
-	lp = (struct link_name *) xmalloc (sizeof *lp);
+	lp = XMALLOC(1, struct link_name);
 	src_len = strlen (src_orig);
 	dst_len = strlen (dst_orig);
 	name_len = strlen (name);
@@ -234,7 +236,7 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
 	lp->ln_ino = sb->st_ino;
 	lp->ln_count = sb->st_nlink;
 	len = name_len - src_len + dst_len + 1;
-	lp->ln_name = (char *) xmalloc (len);
+	lp->ln_name = XMALLOC(len, char);
 	(void) snprintf (lp->ln_name, len, "%s%s", dst_orig, name + src_len);
 	lp->ln_next = links;
 	links = lp;
@@ -324,8 +326,8 @@ static int copy_tree_impl (const struct path_info *src, const struct path_info *
 			src_len += strlen (src->full_path);
 			dst_len += strlen (dst->full_path);
 
-			src_name = (char *) malloc (src_len);
-			dst_name = (char *) malloc (dst_len);
+			src_name = MALLOC(src_len, char);
+			dst_name = MALLOC(dst_len, char);
 
 			if ((NULL == src_name) || (NULL == dst_name)) {
 				err = -1;
@@ -419,33 +421,23 @@ static int copy_entry (const struct path_info *src, const struct path_info *dst,
 	if (fstatat(src->dirfd, src->name, &sb, AT_SYMLINK_NOFOLLOW) == -1) {
 		/* If we cannot stat the file, do not care. */
 	} else {
-#ifdef HAVE_STRUCT_STAT_ST_ATIM
 		mt[0].tv_sec  = sb.st_atim.tv_sec;
 		mt[0].tv_nsec = sb.st_atim.tv_nsec;
-#else				/* !HAVE_STRUCT_STAT_ST_ATIM */
-		mt[0].tv_sec  = sb.st_atime;
-# ifdef HAVE_STRUCT_STAT_ST_ATIMENSEC
-		mt[0].tv_nsec = sb.st_atimensec;
-# else				/* !HAVE_STRUCT_STAT_ST_ATIMENSEC */
-		mt[0].tv_nsec = 0;
-# endif				/* !HAVE_STRUCT_STAT_ST_ATIMENSEC */
-#endif				/* !HAVE_STRUCT_STAT_ST_ATIM */
 
-#ifdef HAVE_STRUCT_STAT_ST_MTIM
 		mt[1].tv_sec  = sb.st_mtim.tv_sec;
 		mt[1].tv_nsec = sb.st_mtim.tv_nsec;
-#else				/* !HAVE_STRUCT_STAT_ST_MTIM */
-		mt[1].tv_sec  = sb.st_mtime;
-# ifdef HAVE_STRUCT_STAT_ST_MTIMENSEC
-		mt[1].tv_nsec = sb.st_mtimensec;
-# else				/* !HAVE_STRUCT_STAT_ST_MTIMENSEC */
-		mt[1].tv_nsec = 0;
-# endif				/* !HAVE_STRUCT_STAT_ST_MTIMENSEC */
-#endif				/* !HAVE_STRUCT_STAT_ST_MTIM */
 
 		if (S_ISDIR (sb.st_mode)) {
 			err = copy_dir (src, dst, reset_selinux, &sb, mt,
 			                old_uid, new_uid, old_gid, new_gid);
+		}
+
+		/*
+		 * If the destination already exists do nothing.
+		 * This is after the copy_dir above to still iterate into subdirectories.
+		 */
+		if (fstatat(dst->dirfd, dst->name, &sb, AT_SYMLINK_NOFOLLOW) != -1) {
+			return 0;
 		}
 
 		/*
@@ -507,6 +499,7 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
                      gid_t old_gid, gid_t new_gid)
 {
 	int err = 0;
+	struct stat dst_sb;
 
 	/*
 	 * Create a new target directory, make it owned by
@@ -518,6 +511,15 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
 		return -1;
 	}
 #endif				/* WITH_SELINUX */
+        /*
+         * If the destination is already a directory, don't change it
+         * but copy into it (recursively).
+        */
+        if (fstatat(dst->dirfd, dst->name, &dst_sb, AT_SYMLINK_NOFOLLOW) == 0 && S_ISDIR(dst_sb.st_mode)) {
+            return (copy_tree_impl (src, dst, false, reset_selinux,
+                           old_uid, new_uid, old_gid, new_gid) != 0);
+        }
+
 	if (   (mkdirat (dst->dirfd, dst->name, 0700) != 0)
 	    || (chownat_if_needed (dst, statp,
 	                         old_uid, new_uid, old_gid, new_gid) != 0)
@@ -559,7 +561,7 @@ static /*@null@*/char *readlink_malloc (const char *filename)
 
 	while (true) {
 		ssize_t nchars;
-		char *buffer = (char *) malloc (size);
+		char *buffer = MALLOC(size, char);
 		if (NULL == buffer) {
 			return NULL;
 		}
@@ -624,7 +626,7 @@ static int copy_symlink (const struct path_info *src, const struct path_info *ds
 	 */
 	if (strncmp (oldlink, src_orig, strlen (src_orig)) == 0) {
 		size_t len = strlen (dst_orig) + strlen (oldlink) - strlen (src_orig) + 1;
-		char *dummy = (char *) xmalloc (len);
+		char *dummy = XMALLOC(len, char);
 		(void) snprintf (dummy, len, "%s%s",
 		                 dst_orig,
 		                 oldlink + strlen (src_orig));
@@ -768,7 +770,7 @@ static ssize_t full_write(int fd, const void *buf, size_t count) {
 
 		written += res;
 		buf = (const unsigned char*)buf + res;
-		count -= (size_t)res;
+		count -= res;
 	}
 
 	return written;
@@ -850,7 +852,7 @@ static int copy_file (const struct path_info *src, const struct path_info *dst,
 			break;
 		}
 
-		if (full_write (ofd, buf, (size_t)cnt) < 0) {
+		if (full_write (ofd, buf, cnt) < 0) {
 			(void) close (ofd);
 			(void) close (ifd);
 			return -1;

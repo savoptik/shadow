@@ -34,6 +34,7 @@
 #include "sgroupio.h"
 #endif
 #include "shadowlog.h"
+#include "run_part.h"
 
 /*
  * exit status values
@@ -70,7 +71,7 @@ static bool is_shadow_grp;
 #endif
 
 /* local function prototypes */
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void new_grent (struct group *grent);
 
 #ifdef SHADOWGRP
@@ -87,7 +88,9 @@ static void check_perms (void);
 /*
  * usage - display usage message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -105,7 +108,7 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -p, --password PASSWORD       use this encrypted password for the new group\n"), usageout);
 	(void) fputs (_("  -r, --system                  create a system account\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
-	(void) fputs (_("  -P, --prefix PREFIX_DI        directory prefix\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       directory prefix\n"), usageout);
 	(void) fputs (_("  -U, --users USERS             list of user members of this group\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
@@ -262,8 +265,7 @@ static void close_files (void)
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_ADD_GROUP, Prog,
 	              "adding group to /etc/group",
-	              group_name, (unsigned int) group_id,
-	              SHADOW_AUDIT_SUCCESS);
+	              group_name, group_id, SHADOW_AUDIT_SUCCESS);
 #endif
 	SYSLOG ((LOG_INFO, "group added to %s: name=%s, GID=%u",
 	         gr_dbname (), group_name, (unsigned int) group_id));
@@ -284,8 +286,7 @@ static void close_files (void)
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ADD_GROUP, Prog,
 		              "adding group to /etc/gshadow",
-		              group_name, (unsigned int) group_id,
-		              SHADOW_AUDIT_SUCCESS);
+		              group_name, group_id, SHADOW_AUDIT_SUCCESS);
 #endif
 		SYSLOG ((LOG_INFO, "group added to %s: name=%s",
 		         sgr_dbname (), group_name));
@@ -299,9 +300,7 @@ static void close_files (void)
 	/* Report success at the system level */
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_ADD_GROUP, Prog,
-	              "",
-	              group_name, (unsigned int) group_id,
-	              SHADOW_AUDIT_SUCCESS);
+	              "", group_name, group_id, SHADOW_AUDIT_SUCCESS);
 #endif
 	SYSLOG ((LOG_INFO, "new group: name=%s, GID=%u",
 	         group_name, (unsigned int) group_id));
@@ -605,6 +604,11 @@ int main (int argc, char **argv)
 
 	check_perms ();
 
+	if (run_parts ("/etc/shadow-maint/groupadd-pre.d", group_name,
+			"groupadd")) {
+		exit(1);
+	}
+
 #ifdef SHADOWGRP
 	is_shadow_grp = sgr_file_present ();
 #endif
@@ -623,6 +627,11 @@ int main (int argc, char **argv)
 
 	grp_update ();
 	close_files ();
+	if (run_parts ("/etc/shadow-maint/groupadd-post.d", group_name,
+			"groupadd")) {
+		exit(1);
+	}
+
 
 	nscd_flush_cache ("group");
 	sssd_flush_cache (SSSD_DB_GROUP);

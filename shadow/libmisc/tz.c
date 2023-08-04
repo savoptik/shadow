@@ -34,7 +34,7 @@
 
 	fp = fopen (fname, "r");
 	if (   (NULL == fp)
-	    || (fgets (tzbuf, (int) sizeof (tzbuf), fp) == NULL)) {
+	    || (fgets (tzbuf, sizeof (tzbuf), fp) == NULL)) {
 		def_tz = getdef_str ("ENV_TZ");
 		if ((NULL == def_tz) || ('/' == def_tz[0])) {
 			def_tz = "TZ=CST6CDT";
@@ -42,7 +42,8 @@
 
 		strcpy (tzbuf, def_tz);
 	} else {
-		tzbuf[strlen (tzbuf) - 1] = '\0';
+		/* Remove optional trailing '\n'. */
+		tzbuf[strcspn (tzbuf, "\n")] = '\0';
 	}
 
 	if (NULL != fp) {
@@ -52,6 +53,6 @@
 	return tzbuf;
 }
 #else				/* !USE_PAM */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !USE_PAM */
 

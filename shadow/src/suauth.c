@@ -68,8 +68,9 @@ int check_su_auth (const char *actual_id,
 
 	while (fgets (temp, sizeof (temp), authfile_fd) != NULL) {
 		lines++;
+		endline = strlen(temp) - 1;
 
-		if (temp[endline = strlen (temp) - 1] != '\n') {
+		if (temp[0] == '\0' || temp[endline] != '\n') {
 			SYSLOG ((LOG_ERR,
 				 "%s, line %d: line too long or missing newline",
 				 SUAUTHFILE, lines));
@@ -91,9 +92,9 @@ int check_su_auth (const char *actual_id,
 			continue;
 		}
 		if (!(to_users = strtok (temp + posn, field))
-		    || !(from_users = strtok ((char *) NULL, field))
-		    || !(action = strtok ((char *) NULL, field))
-		    || strtok ((char *) NULL, field)) {
+		    || !(from_users = strtok (NULL, field))
+		    || !(action = strtok (NULL, field))
+		    || strtok (NULL, field)) {
 			SYSLOG ((LOG_ERR,
 				 "%s, line %d. Bad number of fields.\n",
 				 SUAUTHFILE, lines));

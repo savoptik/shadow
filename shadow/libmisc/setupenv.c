@@ -20,6 +20,8 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include <pwd.h>
@@ -34,7 +36,7 @@ addenv_path (const char *varname, const char *dirname, const char *filename)
 	size_t len = strlen (dirname) + strlen (filename) + 2;
 	int wlen;
 
-	buf = xmalloc (len);
+	buf = XMALLOC(len, char);
 	wlen = snprintf (buf, len, "%s/%s", dirname, filename);
 	assert (wlen == (int) len - 1);
 
@@ -61,7 +63,7 @@ static void read_env_file (const char *filename)
 
 		cp = buf;
 		/* ignore whitespace and comments */
-		while (('\0' != *cp) && isspace (*cp)) {
+		while (isspace (*cp)) {
 			cp++;
 		}
 		if (('\0' == *cp) || ('#' == *cp)) {
@@ -194,8 +196,6 @@ void setup_env (struct passwd *info)
 	 */
 
 	if (chdir (info->pw_dir) == -1) {
-		static char temp_pw_dir[] = "/";
-
 		if (!getdef_bool ("DEFAULT_HOME") || chdir ("/") == -1) {
 			fprintf (log_get_logfd(), _("Unable to cd to '%s'\n"),
 				 info->pw_dir);
@@ -207,7 +207,7 @@ void setup_env (struct passwd *info)
 		}
 		(void) puts (_("No directory, logging in with HOME=/"));
 		free (info->pw_dir);
-		info->pw_dir = xstrdup (temp_pw_dir);
+		info->pw_dir = xstrdup ("/");
 	}
 
 	/*
@@ -221,10 +221,8 @@ void setup_env (struct passwd *info)
 	 */
 
 	if ((NULL == info->pw_shell) || ('\0' == *info->pw_shell)) {
-		static char temp_pw_shell[] = SHELL;
-
 		free (info->pw_shell);
-		info->pw_shell = xstrdup (temp_pw_shell);
+		info->pw_shell = xstrdup (SHELL);
 	}
 
 	addenv ("SHELL", info->pw_shell);

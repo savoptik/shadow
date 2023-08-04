@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <getopt.h>
+
+#include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
@@ -55,7 +57,7 @@ static bool pw_locked = false;
 
 /* local function prototypes */
 static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static bool may_change_field (int);
 static void new_fields (void);
 static char *copy_field (char *, char *, char *);
@@ -86,7 +88,9 @@ static void fail_exit (int code)
 /*
  * usage - print command line syntax and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -175,19 +179,19 @@ static void new_fields (void)
 	if (may_change_field ('r')) {
 		change_field (roomno, sizeof roomno, _("Room Number"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Room Number"), fullnm);
+		printf (_("\t%s: %s\n"), _("Room Number"), roomno);
 	}
 
 	if (may_change_field ('w')) {
 		change_field (workph, sizeof workph, _("Work Phone"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Work Phone"), fullnm);
+		printf (_("\t%s: %s\n"), _("Work Phone"), workph);
 	}
 
 	if (may_change_field ('h')) {
 		change_field (homeph, sizeof homeph, _("Home Phone"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Home Phone"), fullnm);
+		printf (_("\t%s: %s\n"), _("Home Phone"), homeph);
 	}
 
 	if (amroot) {
@@ -510,28 +514,28 @@ static void get_old_fields (const char *gecos)
 	 * Now get the full name. It is the first comma separated field in
 	 * the GECOS field.
 	 */
-	cp = copy_field (old_gecos, fflg ? (char *) 0 : fullnm, slop);
+	cp = copy_field (old_gecos, fflg ? NULL : fullnm, slop);
 
 	/*
 	 * Now get the room number. It is the next comma separated field,
 	 * if there is indeed one.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, rflg ? (char *) 0 : roomno, slop);
+		cp = copy_field (cp, rflg ? NULL : roomno, slop);
 	}
 
 	/*
 	 * Now get the work phone number. It is the third field.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, wflg ? (char *) 0 : workph, slop);
+		cp = copy_field (cp, wflg ? NULL : workph, slop);
 	}
 
 	/*
 	 * Now get the home phone number. It is the fourth field.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, hflg ? (char *) 0 : homeph, slop);
+		cp = copy_field (cp, hflg ? NULL : homeph, slop);
 	}
 
 	/*
