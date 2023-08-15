@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08-11-2022
-.\"    Manual: Anv\(:andarkommandon
-.\"    Source: shadow-utils 4.13
+.\"      Date: 04-08-2023
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.14.0-rc2
 .\"  Language: Swedish
 .\"
-.TH "PASSWD" "1" "08-11-2022" "shadow\-utils 4\&.13" "Anv\(:andarkommandon"
+.TH "PASSWD" "1" "04-08-2023" "shadow\-utils 4\&.14\&.0\-rc2" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 passwd \- \(:andra anv\(:andarl\(:osenord
 .SH "SYNOPSIS"
 .HP \w'\fBpasswd\fR\ 'u
-\fBpasswd\fR [\fIflaggor\fR] [\fIINLOGGNINGSNAMN\fR]
+\fBpasswd\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "BESKRIVNING"
 .PP
 The
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 Anv\(:andaren fr\(oagas sedan tv\(oa g\(oanger efter ett ers\(:attande l\(:osenord\&. Den andra inmatningen j\(:amf\(:ors mot den f\(:orsta och b\(oada m\(oaste st\(:amma \(:overens f\(:or att l\(:osenordet ska \(:andras\&.
 .PP
-Sedan testas l\(:osenordet f\(:or sin komplexitet\&. Som en allm\(:an riktlinje b\(:or l\(:osenord inneh\(oalla 6 till 8 tecken och inkluderas ett eller flera tecken fr\(oan var och en av f\(:oljande punkter:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-gemena bokst\(:aver ur alfabetet
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-siffrorna 0 till 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-skiljetecken
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Tips f\(:or anv\(:andarl\(:osenord"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -95,6 +60,8 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 \fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
 .PP
 Problem i l\(:osenordss\(:akerheten brukar normalt komma fr\(oan slarvigt valda l\(:osenord eller hantering\&. Av denna anledning b\(:or du inte v\(:alja ett l\(:osenord som finns i en ordbok eller som m\(oaste skrivas ner\&. L\(:osenordet b\(:or heller inte vara ett korrekt namn, ditt personnummer, f\(:odelsedatum eller gatuadress\&. Dessa kan anv\(:andas som gissningar f\(:or att ta sig in i systemet\&.
+.PP
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
 .PP
 You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "FLAGGOR"
@@ -277,7 +244,10 @@ invalid argument to option
 .SH "SE OCKS\(oA"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

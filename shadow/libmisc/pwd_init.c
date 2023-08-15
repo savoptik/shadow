@@ -15,9 +15,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
-#endif
 
 #include "prototypes.h"
 
@@ -28,39 +26,22 @@
  */
 void pwd_init (void)
 {
-#ifdef HAVE_SYS_RESOURCE_H
 	struct rlimit rlim;
 
-#ifdef RLIMIT_CORE
 	rlim.rlim_cur = rlim.rlim_max = 0;
 	setrlimit (RLIMIT_CORE, &rlim);
-#endif
+
 	rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
-#ifdef RLIMIT_AS
 	setrlimit (RLIMIT_AS, &rlim);
-#endif
-#ifdef RLIMIT_CPU
+
 	setrlimit (RLIMIT_CPU, &rlim);
-#endif
-#ifdef RLIMIT_DATA
 	setrlimit (RLIMIT_DATA, &rlim);
-#endif
-#ifdef RLIMIT_FSIZE
 	setrlimit (RLIMIT_FSIZE, &rlim);
-#endif
-#ifdef RLIMIT_NOFILE
 	setrlimit (RLIMIT_NOFILE, &rlim);
-#endif
 #ifdef RLIMIT_RSS
 	setrlimit (RLIMIT_RSS, &rlim);
 #endif
-#ifdef RLIMIT_STACK
 	setrlimit (RLIMIT_STACK, &rlim);
-#endif
-#else				/* !HAVE_SYS_RESOURCE_H */
-	set_filesize_limit (30000);
-	/* don't know how to set the other limits... */
-#endif				/* !HAVE_SYS_RESOURCE_H */
 
 	signal (SIGALRM, SIG_IGN);
 	signal (SIGHUP, SIG_IGN);
@@ -68,12 +49,8 @@ void pwd_init (void)
 	signal (SIGPIPE, SIG_IGN);
 	signal (SIGQUIT, SIG_IGN);
 	signal (SIGTERM, SIG_IGN);
-#ifdef SIGTSTP
 	signal (SIGTSTP, SIG_IGN);
-#endif
-#ifdef SIGTTOU
 	signal (SIGTTOU, SIG_IGN);
-#endif
 
 	umask (077);
 }

@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "alloc.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "getdef.h"
@@ -40,15 +41,14 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 		*preferred_min = (uid_t) 1;
 
 		/* Get the minimum ID range from login.defs or default to 10 */
-		*min_id = (uid_t) getdef_ulong ("SYS_UID_MIN", 10UL);
+		*min_id = getdef_ulong ("SYS_UID_MIN", 10UL);
 
 		/*
 		 * If SYS_UID_MAX is unspecified, we should assume it to be one
 		 * less than the UID_MIN (which is reserved for non-system accounts)
 		 */
-		uid_def_max = (uid_t) getdef_ulong ("UID_MIN", 1000UL) - 1;
-		*max_id = (uid_t) getdef_ulong ("SYS_UID_MAX",
-				(unsigned long) uid_def_max);
+		uid_def_max = getdef_ulong ("UID_MIN", 1000UL) - 1;
+		*max_id = getdef_ulong ("SYS_UID_MAX", uid_def_max);
 
 		/* Check that the ranges make sense */
 		if (*max_id < *min_id) {
@@ -71,8 +71,8 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 		/* Non-system users */
 
 		/* Get the values from login.defs or use reasonable defaults */
-		*min_id = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
-		*max_id = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
+		*min_id = getdef_ulong ("UID_MIN", 1000UL);
+		*max_id = getdef_ulong ("UID_MAX", 60000UL);
 
 		/*
 		 * The preferred minimum should match the standard ID minimum
@@ -99,6 +99,7 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
  *
  * On success, return 0
  * If the ID is in use, return EEXIST
+ * If the ID might clash with -1, return EINVAL
  * If the ID is outside the range, return ERANGE
  * In other cases, return errno from getpwuid()
  */
@@ -110,6 +111,11 @@ static int check_uid(const uid_t uid,
 	/* First test that the preferred ID is in the range */
 	if (uid < uid_min || uid > uid_max) {
 		return ERANGE;
+	}
+
+	/* Check for compatibility with 16b and 32b uid_t error codes */
+	if (uid == UINT16_MAX || uid == UINT32_MAX) {
+		return EINVAL;
 	}
 
 	/*
@@ -183,10 +189,10 @@ int find_new_uid(bool sys_user,
 			 * pw_locate_uid() found the UID in an as-yet uncommitted
 			 * entry. We'll proceed below and auto-set an UID.
 			 */
-		} else if (result == EEXIST || result == ERANGE) {
+		} else if (result == EEXIST || result == ERANGE || result == EINVAL) {
 			/*
 			 * Continue on below. At this time, we won't
-			 * treat these two cases differently.
+			 * treat these three cases differently.
 			 */
 		} else {
 			/*
@@ -226,7 +232,7 @@ int find_new_uid(bool sys_user,
 	 */
 
 	/* Create an array to hold all of the discovered UIDs */
-	used_uids = malloc (sizeof (bool) * (uid_max +1));
+	used_uids = MALLOC(uid_max + 1, bool);
 	if (NULL == used_uids) {
 		fprintf (log_get_logfd(),
 			 _("%s: failed to allocate memory: %s\n"),
@@ -297,8 +303,11 @@ int find_new_uid(bool sys_user,
 				*uid = id;
 				free (used_uids);
 				return 0;
-			} else if (result == EEXIST) {
-				/* This UID is in use, we'll continue to the next */
+			} else if (result == EEXIST || result == EINVAL) {
+				/*
+				 * This GID is in use or unusable, we'll
+				 * continue to the next.
+				 */
 			} else {
 				/*
 				 * An unexpected error occurred.
@@ -340,8 +349,11 @@ int find_new_uid(bool sys_user,
 					*uid = id;
 					free (used_uids);
 					return 0;
-				} else if (result == EEXIST) {
-					/* This UID is in use, we'll continue to the next */
+				} else if (result == EEXIST || result == EINVAL) {
+					/*
+					 * This GID is in use or unusable, we'll
+					 * continue to the next.
+					 */
 				} else {
 					/*
 					 * An unexpected error occurred.
@@ -400,8 +412,11 @@ int find_new_uid(bool sys_user,
 				*uid = id;
 				free (used_uids);
 				return 0;
-			} else if (result == EEXIST) {
-				/* This UID is in use, we'll continue to the next */
+			} else if (result == EEXIST || result == EINVAL) {
+				/*
+				 * This GID is in use or unusable, we'll
+				 * continue to the next.
+				 */
 			} else {
 				/*
 				 * An unexpected error occurred.
@@ -443,8 +458,11 @@ int find_new_uid(bool sys_user,
 					*uid = id;
 					free (used_uids);
 					return 0;
-				} else if (result == EEXIST) {
-					/* This UID is in use, we'll continue to the next */
+				} else if (result == EEXIST || result == EINVAL) {
+					/*
+					 * This GID is in use or unusable, we'll
+					 * continue to the next.
+					 */
 				} else {
 					/*
 					 * An unexpected error occurred.

@@ -56,13 +56,15 @@ static long bcrypt_rounds = 13;
 static long yescrypt_cost = 5;
 #endif
 
+static const char *prefix = "";
+
 static bool is_shadow_pwd;
 static bool pw_locked = false;
 static bool spw_locked = false;
 
 /* local function prototypes */
 static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 static void check_flags (void);
 static void check_perms (void);
@@ -96,7 +98,9 @@ static void fail_exit (int code)
 /*
  * usage - display usage message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -123,6 +127,7 @@ static /*@noreturn@*/void usage (int status)
 	                "                                the MD5 algorithm\n"),
 	              usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       directory prefix\n"), usageout);
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
 	                "                                or YESCRYPT crypt algorithms\n"),
@@ -150,6 +155,7 @@ static void process_flags (int argc, char **argv)
 		{"help",         no_argument,       NULL, 'h'},
 		{"md5",          no_argument,       NULL, 'm'},
 		{"root",         required_argument, NULL, 'R'},
+		{"prefix",       required_argument, NULL, 'P'},
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		{"sha-rounds",   required_argument, NULL, 's'},
 #endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
@@ -158,9 +164,9 @@ static void process_flags (int argc, char **argv)
 
 	while ((c = getopt_long (argc, argv,
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
-	                         "c:ehmR:s:",
+	                         "c:ehmR:P:s:",
 #else
-	                         "c:ehmR:",
+	                         "c:ehmR:P:",
 #endif
 	                         long_options, NULL)) != -1) {
 		switch (c) {
@@ -177,6 +183,8 @@ static void process_flags (int argc, char **argv)
 			md5flg = true;
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
+			break;
+		case 'P': /* no-op, handled in process_prefix_flag () */
 			break;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		case 's':
@@ -545,13 +553,20 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
+#ifdef WITH_SELINUX
+	if (check_selinux_permit ("passwd") != 0) {
+		return (E_NOPERM);
+	}
+#endif				/* WITH_SELINUX */
+
 	process_flags (argc, argv);
 
 	salt = get_salt();
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
 
 #ifdef USE_PAM
-	if (md5flg || cflg) {
+	if (md5flg || cflg || prefix[0]) {
 		use_pam = false;
 	}
 #endif				/* USE_PAM */
@@ -577,7 +592,7 @@ int main (int argc, char **argv)
 	 * last change date is set in the age only if aging information is
 	 * present.
 	 */
-	while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+	while (fgets (buf, sizeof buf, stdin) != NULL) {
 		line++;
 		cp = strrchr (buf, '\n');
 		if (NULL != cp) {
@@ -586,7 +601,7 @@ int main (int argc, char **argv)
 			if (feof (stdin) == 0) {
 
 				// Drop all remaining characters on this line.
-				while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+				while (fgets (buf, sizeof buf, stdin) != NULL) {
 					cp = strchr (buf, '\n');
 					if (cp != NULL) {
 						break;
@@ -710,7 +725,7 @@ int main (int argc, char **argv)
 		if (NULL != sp) {
 			newsp = *sp;
 			newsp.sp_pwdp = cp;
-			newsp.sp_lstchg = (long) gettime () / SCALE;
+			newsp.sp_lstchg = gettime () / SCALE;
 			if (0 == newsp.sp_lstchg) {
 				/* Better disable aging than requiring a
 				 * password change */

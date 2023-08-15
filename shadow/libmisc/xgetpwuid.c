@@ -23,7 +23,7 @@
  *  Two important function classes that fall into this category are
  *  getpwnam(3) and syslog(3).
  *
- * This file provide wrapper to the getpwnam or getpwnam_r functions.
+ * This file provides wrapper to the getpwuid or getpwuid_r functions.
  */
 
 #include <config.h>
@@ -35,7 +35,7 @@
 #define ARG_TYPE	uid_t
 #define ARG_NAME	uid
 #define DUP_FUNCTION	__pw_dup
-#define HAVE_FUNCTION_R (defined HAVE_GETPWUID_R)
+#define HAVE_FUNCTION_R 1
 
 #include "xgetXXbyYY.c"
 

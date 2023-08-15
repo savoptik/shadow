@@ -11,6 +11,8 @@
 #ident "$Id$"
 
 #include <assert.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 /*
@@ -33,7 +35,7 @@
 	 * pointer if it is present.
 	 */
 
-	for (i = 0; list[i] != (char *) 0; i++) {
+	for (i = 0; list[i] != NULL; i++) {
 		if (strcmp (list[i], member) == 0) {
 			return list;
 		}
@@ -44,7 +46,7 @@
 	 * old entries, and the new entries as well.
 	 */
 
-	tmp = (char **) xmalloc ((i + 2) * sizeof member);
+	tmp = XMALLOC(i + 2, char *);
 
 	/*
 	 * Copy the original list to the new list, then append the
@@ -52,12 +54,12 @@
 	 * is returned to the invoker.
 	 */
 
-	for (i = 0; list[i] != (char *) 0; i++) {
+	for (i = 0; list[i] != NULL; i++) {
 		tmp[i] = list[i];
 	}
 
 	tmp[i] = xstrdup (member);
-	tmp[i+1] = (char *) 0;
+	tmp[i+1] = NULL;
 
 	return tmp;
 }
@@ -83,7 +85,7 @@
 	 * pointer if it is not present.
 	 */
 
-	for (i = j = 0; list[i] != (char *) 0; i++) {
+	for (i = j = 0; list[i] != NULL; i++) {
 		if (strcmp (list[i], member) != 0) {
 			j++;
 		}
@@ -98,7 +100,7 @@
 	 * old entries.
 	 */
 
-	tmp = (char **) xmalloc ((j + 1) * sizeof member);
+	tmp = XMALLOC(j + 1, char *);
 
 	/*
 	 * Copy the original list except the deleted members to the
@@ -106,14 +108,14 @@
 	 * is returned to the invoker.
 	 */
 
-	for (i = j = 0; list[i] != (char *) 0; i++) {
+	for (i = j = 0; list[i] != NULL; i++) {
 		if (strcmp (list[i], member) != 0) {
 			tmp[j] = list[i];
 			j++;
 		}
 	}
 
-	tmp[j] = (char *) 0;
+	tmp[j] = NULL;
 
 	return tmp;
 }
@@ -133,7 +135,7 @@
 
 	for (i = 0; NULL != list[i]; i++);
 
-	tmp = (char **) xmalloc ((i + 1) * sizeof (char *));
+	tmp = XMALLOC(i + 1, char *);
 
 	i = 0;
 	while (NULL != *list) {
@@ -142,7 +144,7 @@
 		list++;
 	}
 
-	tmp[i] = (char *) 0;
+	tmp[i] = NULL;
 	return tmp;
 }
 
@@ -210,14 +212,14 @@ bool is_on_list (char *const *list, const char *member)
 	 * Allocate the array we're going to store the pointers into.
 	 */
 
-	array = (char **) xmalloc (sizeof (char *) * i);
+	array = XMALLOC(i, char *);
 
 	/*
 	 * Empty list is special - 0 members, not 1 empty member.  --marekm
 	 */
 
 	if ('\0' == *members) {
-		*array = (char *) 0;
+		*array = NULL;
 		free (members);
 		return array;
 	}
@@ -235,7 +237,7 @@ bool is_on_list (char *const *list, const char *member)
 			cp2++;
 			cp = cp2;
 		} else {
-			array[i + 1] = (char *) 0;
+			array[i + 1] = NULL;
 			break;
 		}
 	}

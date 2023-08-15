@@ -13,6 +13,7 @@
 
 #include "prototypes.h"
 #include "defines.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -20,8 +21,11 @@
 #ifdef USE_ECONF
 #include <libeconf.h>
 #endif
+
+#include "alloc.h"
 #include "getdef.h"
 #include "shadowlog_internal.h"
+
 /*
  * A configuration item definition.
  */
@@ -134,7 +138,6 @@ static struct itemdef def_table[] = {
 #ifndef USE_PAM
 	PAMDEFS
 #endif
-#ifdef USE_SYSLOG
 	{"SYSLOG_SG_ENAB", NULL},
 	{"SYSLOG_SU_ENAB", NULL},
 #endif
@@ -198,7 +201,7 @@ static void def_load (void);
 	}
 
 	d = def_find (item);
-	return ((NULL == d)? (const char *) NULL : d->value);
+	return (NULL == d) ? NULL : d->value;
 }
 
 
@@ -256,7 +259,7 @@ int getdef_num (const char *item, int dflt)
 		return dflt;
 	}
 
-	return (int) val;
+	return val;
 }
 
 
@@ -291,7 +294,7 @@ unsigned int getdef_unum (const char *item, unsigned int dflt)
 		return dflt;
 	}
 
-	return (unsigned int) val;
+	return val;
 }
 
 
@@ -435,7 +438,7 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 	SYSLOG ((LOG_CRIT, "unknown configuration item `%s'", name));
 
 out:
-	return (struct itemdef *) NULL;
+	return NULL;
 }
 
 /*
@@ -451,14 +454,14 @@ void setdef_config_file (const char* file)
 	char* cp;
 
 	len = strlen(file) + strlen(sysconfdir) + 2;
-	cp = malloc(len);
+	cp = MALLOC(len, char);
 	if (cp == NULL)
 		exit (13);
 	snprintf(cp, len, "%s/%s", file, sysconfdir);
 	sysconfdir = cp;
 #ifdef VENDORDIR
 	len = strlen(file) + strlen(vendordir) + 2;
-	cp = malloc(len);
+	cp = MALLOC(len, char);
 	if (cp == NULL)
 		exit (13);
 	snprintf(cp, len, "%s/%s", file, vendordir);
@@ -475,26 +478,19 @@ void setdef_config_file (const char* file)
  * Loads the user-configured options from the default configuration file
  */
 
+#ifdef USE_ECONF
 static void def_load (void)
 {
-#ifdef USE_ECONF
 	econf_file *defs_file = NULL;
 	econf_err error;
 	char **keys;
 	size_t key_number;
-#else
-	int i;
-	FILE *fp;
-	char buf[1024], *name, *value, *s;
-#endif
 
 	/*
 	 * Set the initialized flag.
 	 * (do it early to prevent recursion in putdef_str())
 	 */
 	def_loaded = true;
-
-#ifdef USE_ECONF
 
 	error = econf_readDirs (&defs_file, vendordir, sysconfdir, "login", "defs", " \t", "#");
 	if (error) {
@@ -515,7 +511,12 @@ static void def_load (void)
 	for (size_t i = 0; i < key_number; i++) {
 		char *value;
 
-		econf_getStringValue(defs_file, NULL, keys[i], &value);
+		error = econf_getStringValue(defs_file, NULL, keys[i], &value);
+		if (error) {
+			SYSLOG ((LOG_CRIT, "failed reading key %zu from econf [%s]",
+				i, econf_errString(error)));
+			exit (EXIT_FAILURE);
+		}
 
 		/*
 		 * Store the value in def_table.
@@ -525,11 +526,26 @@ static void def_load (void)
 		 * syslog. The tools will just use their default values.
 		 */
 		(void)putdef_str (keys[i], value);
+
+		free(value);
 	}
 
 	econf_free (keys);
 	econf_free (defs_file);
-#else
+}
+#else /* USE_ECONF */
+static void def_load (void)
+{
+	int i;
+	FILE *fp;
+	char buf[1024], *name, *value, *s;
+
+	/*
+	 * Set the initialized flag.
+	 * (do it early to prevent recursion in putdef_str())
+	 */
+	def_loaded = true;
+
 	/*
 	 * Open the configuration definitions file.
 	 */
@@ -547,12 +563,12 @@ static void def_load (void)
 	/*
 	 * Go through all of the lines in the file.
 	 */
-	while (fgets (buf, (int) sizeof (buf), fp) != NULL) {
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
 
 		/*
 		 * Trim trailing whitespace.
 		 */
-		for (i = (int) strlen (buf) - 1; i >= 0; --i) {
+		for (i = (ptrdiff_t) strlen (buf) - 1; i >= 0; --i) {
 			if (!isspace (buf[i])) {
 				break;
 			}
@@ -593,8 +609,8 @@ static void def_load (void)
 	}
 
 	(void) fclose (fp);
-#endif
 }
+#endif /* USE_ECONF */
 
 
 #ifdef CKDEFS

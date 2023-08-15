@@ -42,7 +42,7 @@ static const char *passwd_getname (const void *ent)
 
 static void *passwd_parse (const char *line)
 {
-	return (void *) sgetpwent (line);
+	return sgetpwent (line);
 }
 
 static int passwd_put (const void *ent, FILE * file)
@@ -137,7 +137,7 @@ int pw_open (int mode)
 
 int pw_update (const struct passwd *pw)
 {
-	return commonio_update (&passwd_db, (const void *) pw);
+	return commonio_update (&passwd_db, pw);
 }
 
 int pw_remove (const char *name)

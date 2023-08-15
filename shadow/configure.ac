@@ -4,7 +4,7 @@ m4_define([libsubid_abi_major], 4)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.13], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.14.0-rc2], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -36,31 +36,25 @@ LT_INIT
 dnl Checks for libraries.
 
 dnl Checks for header files.
-AC_HEADER_STDBOOL
-
-AC_CHECK_HEADERS(crypt.h errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
-	utmpx.h termios.h termio.h sgtty.h sys/ioctl.h syslog.h paths.h \
-	utime.h ulimit.h sys/capability.h sys/random.h sys/resource.h \
-	gshadow.h lastlog.h locale.h rpc/key_prot.h netdb.h acl/libacl.h \
+AC_CHECK_HEADERS(crypt.h utmp.h \
+	termio.h sgtty.h sys/ioctl.h paths.h \
+	sys/capability.h sys/random.h \
+	gshadow.h lastlog.h rpc/key_prot.h acl/libacl.h \
 	attr/libattr.h attr/error_context.h)
 
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 
-AC_CHECK_FUNCS(arc4random_buf l64a fchmod fchown fsync futimes setlocale \
+AC_CHECK_FUNCS(arc4random_buf futimes setlocale \
 	getentropy getrandom getspnam getusershell \
-	getutent initgroups lckpwdf lutimes \
-	setgroups updwtmp updwtmpx innetgr getpwnam_r \
-	getpwuid_r getgrnam_r getgrgid_r getspnam_r \
-	memset_s explicit_bzero)
+	initgroups lckpwdf lutimes mempcpy \
+	setgroups updwtmp updwtmpx innetgr \
+	getspnam_r \
+	rpmatch \
+	memset_explicit explicit_bzero stpecpy stpeprintf)
 AC_SYS_LARGEFILE
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_MEMBERS([struct stat.st_atim])
-AC_CHECK_MEMBERS([struct stat.st_atimensec])
-AC_CHECK_MEMBERS([struct stat.st_mtim])
-AC_CHECK_MEMBERS([struct stat.st_mtimensec])
-AC_STRUCT_TM
 
 AC_CHECK_MEMBERS([struct utmp.ut_type,
                   struct utmp.ut_id,
@@ -74,37 +68,11 @@ AC_CHECK_MEMBERS([struct utmp.ut_type,
                   struct utmp.ut_xtime,
                   struct utmp.ut_tv],,,[[#include <utmp.h>]])
 
-AC_CHECK_MEMBERS([struct utmpx.ut_name,
-                  struct utmpx.ut_host,
-                  struct utmpx.ut_syslen,
-                  struct utmpx.ut_addr,
-                  struct utmpx.ut_addr_v6,
-                  struct utmpx.ut_time,
-                  struct utmpx.ut_xtime],,,[[#include <utmpx.h>]])
-
-if test "$ac_cv_header_lastlog_h" = "yes"; then
-	AC_CACHE_CHECK(for ll_host in struct lastlog,
-		ac_cv_struct_lastlog_ll_host,
-		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <lastlog.h>],
-					[struct lastlog ll; char *cp = ll.ll_host;]
-				)],
-			[ac_cv_struct_lastlog_ll_host=yes],
-			[ac_cv_struct_lastlog_ll_host=no]
-		)
-	)
-
-	if test "$ac_cv_struct_lastlog_ll_host" = "yes"; then
-		AC_DEFINE(HAVE_LL_HOST, 1,
-			[Define if struct lastlog has ll_host])
-	fi
-fi
-
 dnl Checks for library functions.
 AC_TYPE_GETGROUPS
 AC_FUNC_UTIME_NULL
-AC_REPLACE_FUNCS(mkdir putgrent putpwent putspent rename rmdir)
+AC_REPLACE_FUNCS(putgrent putpwent putspent)
 AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
-AC_REPLACE_FUNCS(snprintf strcasecmp strdup strerror strstr)
 
 AC_CHECK_FUNC(setpgrp)
 AC_CHECK_FUNC(secure_getenv, [AC_DEFINE(HAS_SECURE_GETENV,
@@ -116,6 +84,10 @@ if test "$ac_cv_header_shadow_h" = "yes"; then
 		ac_cv_libc_shadowgrp,
 		AC_RUN_IFELSE([AC_LANG_SOURCE([
 				#include <shadow.h>
+				#ifdef HAVE_GSHADOW_H
+				#include <gshadow.h>
+				#endif
+				int
 				main()
 				{
 					struct sgrp *sg = sgetsgent("test:x::");
@@ -185,7 +157,7 @@ AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "/usr/bin/passwd",
 	[Path to passwd program.])
 
 dnl XXX - quick hack, should disappear before anyone notices :).
-AC_DEFINE(USE_SYSLOG, 1, [Define to use syslog().])
+dnl XXX - I just read the above message :).
 if test "$ac_cv_func_ruserok" = "yes"; then
 	AC_DEFINE(RLOGIN, 1, [Define if login should support the -r flag for rlogind.])
 	AC_DEFINE(RUSEROK, 0, [Define to the ruserok() "success" return value (0 or 1).])
@@ -220,22 +192,25 @@ AC_ARG_ENABLE(account-tools-setuid,
 	[enable_acct_tools_setuid="no"]
 )
 
-AC_ARG_ENABLE(utmpx,
-	[AS_HELP_STRING([--enable-utmpx],
-	                [enable loggin in utmpx / wtmpx @<:@default=no@:>@])],
-	[case "${enableval}" in
-	 yes) enable_utmpx="yes" ;;
-	  no) enable_utmpx="no" ;;
-	   *) AC_MSG_ERROR(bad value ${enableval} for --enable-utmpx) ;;
-	 esac],
-	[enable_utmpx="no"]
-)
-
 AC_ARG_ENABLE(subordinate-ids,
 	[AS_HELP_STRING([--enable-subordinate-ids],
 		[support subordinate ids @<:@default=yes@:>@])],
 	[enable_subids="${enableval}"],
 	[enable_subids="maybe"]
+)
+
+AC_ARG_ENABLE(lastlog,
+	[AS_HELP_STRING([--enable-lastlog],
+		[enable lastlog @<:@default=no@:>@])],
+	[enable_lastlog="${enableval}"],
+	[enable_lastlog="no"]
+)
+
+AC_ARG_ENABLE(logind,
+	[AS_HELP_STRING([--enable-logind],
+		[enable logind @<:@default=yes@:>@])],
+	[enable_logind="${enableval}"],
+	[enable_logind="yes"]
 )
 
 AC_ARG_WITH(audit,
@@ -330,12 +305,12 @@ dnl Check for some functions in libc first, only if not found check for
 dnl other libraries.  This should prevent linking libnsl if not really
 dnl needed (Linux glibc, Irix), but still link it if needed (Solaris).
 
-AC_SEARCH_LIBS(inet_ntoa, inet)
-AC_SEARCH_LIBS(socket, socket)
 AC_SEARCH_LIBS(gethostbyname, nsl)
 
 AC_CHECK_LIB([econf],[econf_readDirs],[LIBECONF="-leconf"],[LIBECONF=""])
 if test -n "$LIBECONF"; then
+        AC_DEFINE_UNQUOTED([VENDORDIR], ["$enable_vendordir"],
+					[Directory for distribution provided configuration files])
 	ECONF_CPPFLAGS="-DUSE_ECONF=1"
 	AC_ARG_ENABLE([vendordir],
 		AS_HELP_STRING([--enable-vendordir=DIR], [Directory for distribution provided configuration files]),,[])
@@ -343,6 +318,9 @@ fi
 AC_SUBST(ECONF_CPPFLAGS)
 AC_SUBST(LIBECONF)
 AC_SUBST([VENDORDIR], [$enable_vendordir])
+if test "x$enable_vendordir" != x; then
+	AC_DEFINE(HAVE_VENDORDIR, 1, [Define to support vendor settings.])
+fi
 AM_CONDITIONAL([HAVE_VENDORDIR], [test "x$enable_vendordir" != x])
 
 if test "$enable_shadowgrp" = "yes"; then
@@ -387,6 +365,39 @@ if test "$enable_subids" != "no"; then
 fi
 AM_CONDITIONAL(ENABLE_SUBIDS, test "x$enable_subids" != "xno")
 
+if test "$enable_lastlog" = "yes" && test "$ac_cv_header_lastlog_h" = "yes"; then
+	AC_CACHE_CHECK(for ll_host in struct lastlog,
+		ac_cv_struct_lastlog_ll_host,
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <lastlog.h>],
+					[struct lastlog ll; char *cp = ll.ll_host;]
+				)],
+			[ac_cv_struct_lastlog_ll_host=yes],
+			[ac_cv_struct_lastlog_ll_host=no]
+		)
+	)
+
+	if test "$ac_cv_struct_lastlog_ll_host" = "yes"; then
+		AC_DEFINE(HAVE_LL_HOST, 1,
+			[Define if struct lastlog has ll_host])
+		AC_DEFINE(ENABLE_LASTLOG, 1, [Define to support lastlog.])
+		enable_lastlog="yes"
+	else
+		AC_MSG_ERROR([Cannot enable support for lastlog on systems where the data structures aren't available])
+		enable_subids="no"
+	fi
+fi
+AM_CONDITIONAL(ENABLE_LASTLOG, test "x$enable_lastlog" != "xno")
+
+AC_SUBST(LIBSYSTEMD)
+if test "$enable_logind" = "yes"; then
+	AC_CHECK_LIB(systemd, sd_session_get_remote_host,
+		[enable_logind="yes"; [LIBSYSTEMD=-lsystemd];
+		AC_DEFINE(ENABLE_LOGIND, 1,
+			[Define to manage session support with logind.])],
+		[enable_logind="no"])
+fi
+AM_CONDITIONAL(ENABLE_LOGIND, test "x$enable_logind" != "xno")
+
 AC_SUBST(LIBCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
@@ -394,6 +405,21 @@ AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
 AC_SUBST(LIYESCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIYESCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
+
+AC_SEARCH_LIBS([readpassphrase], [bsd], [], [
+	AC_MSG_ERROR([readpassphrase() is missing, either from libc or libbsd])
+])
+AS_IF([test "$ac_cv_search_readpassphrase" = "-lbsd"], [
+	PKG_CHECK_MODULES([LIBBSD], [libbsd-overlay])
+])
+dnl Make sure either the libc or libbsd provide the header.
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $LIBBSD_CFLAGS"
+AC_CHECK_HEADERS([readpassphrase.h])
+AS_IF([test "$ac_cv_header_readpassphrase_h" != "yes"], [
+	AC_MSG_ERROR([readpassphrase.h is missing])
+])
+CFLAGS="$save_CFLAGS"
 
 AC_SUBST(LIBACL)
 if test "$with_acl" != "no"; then
@@ -677,14 +703,7 @@ if test "$with_skey" = "yes"; then
 	]])],[AC_DEFINE(SKEY_BSD_STYLE, 1, [Define to support newer BSD S/Key API])],[])
 fi
 
-if test "$enable_utmpx" = "yes"; then
-	if test "$ac_cv_header_utmpx_h" != "yes"; then
-		AC_MSG_ERROR([The utmpx.h header file is required for utmpx support.])
-	fi
-	AC_DEFINE(USE_UTMPX,
-	          1,
-	          [Define if utmpx should be used])
-fi
+AC_CHECK_FUNC(fgetpwent_r, [AC_DEFINE(HAVE_FGETPWENT_R, 1, [Defined to 1 if you have the declaration of 'fgetpwent_r'])])
 
 AC_DEFINE_UNQUOTED(SHELL, ["$SHELL"], [The default shell.])
 
@@ -751,6 +770,9 @@ echo "	yescrypt passwords encryption:	$with_yescrypt"
 echo "	nscd support:			$with_nscd"
 echo "	sssd support:			$with_sssd"
 echo "	subordinate IDs support:	$enable_subids"
+echo "	enable lastlog:			$enable_lastlog"
+echo "	enable logind:			$enable_logind"
 echo "	use file caps:			$with_fcaps"
 echo "	install su:			$with_su"
+echo "	enabled vendor dir:             $enable_vendordir"
 echo

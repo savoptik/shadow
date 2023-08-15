@@ -11,7 +11,10 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "alloc.h"
 #include "prototypes.h"
+#include "stpeprintf.h"
 #include "idmapping.h"
 #if HAVE_SYS_CAPABILITY_H
 #include <sys/prctl.h>
@@ -43,7 +46,7 @@ struct map_range *get_map_ranges(int ranges, int argc, char **argv)
 		return NULL;
 	}
 
-	mappings = calloc(ranges, sizeof(*mappings));
+	mappings = CALLOC(ranges, struct map_range);
 	if (!mappings) {
 		fprintf(log_get_logfd(), _( "%s: Memory allocation failure\n"),
 			log_get_progname());
@@ -99,7 +102,7 @@ struct map_range *get_map_ranges(int ranges, int argc, char **argv)
  *  8bytes --> 21 ascii estimated -> 18446744073709551616 (20 real)
  * 16bytes --> 39 ascii estimated -> 340282366920938463463374607431768211456 (39 real)
  */
-#define ULONG_DIGITS ((((sizeof(unsigned long) * CHAR_BIT) + 9)/10)*3)
+#define ULONG_DIGITS (((WIDTHOF(unsigned long) + 9)/10)*3)
 
 #if HAVE_SYS_CAPABILITY_H
 static inline bool maps_lower_root(int cap, int ranges, const struct map_range *mappings)
@@ -141,7 +144,7 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 	int idx;
 	const struct map_range *mapping;
 	size_t bufsize;
-	char *buf, *pos;
+	char *buf, *pos, *end;
 	int fd;
 
 #if HAVE_SYS_CAPABILITY_H
@@ -188,22 +191,21 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 #endif
 
 	bufsize = ranges * ((ULONG_DIGITS + 1) * 3);
-	pos = buf = xmalloc(bufsize);
+	pos = buf = XMALLOC(bufsize, char);
+	end = buf + bufsize;
 
 	/* Build the mapping command */
 	mapping = mappings;
 	for (idx = 0; idx < ranges; idx++, mapping++) {
 		/* Append this range to the string that will be written */
-		int written = snprintf(pos, bufsize - (pos - buf),
-			"%lu %lu %lu\n",
-			mapping->upper,
-			mapping->lower,
-			mapping->count);
-		if ((written <= 0) || (written >= (bufsize - (pos - buf)))) {
-			fprintf(log_get_logfd(), _("%s: snprintf failed!\n"), log_get_progname());
-			exit(EXIT_FAILURE);
-		}
-		pos += written;
+		pos = stpeprintf(pos, end, "%lu %lu %lu\n",
+		                 mapping->upper,
+		                 mapping->lower,
+		                 mapping->count);
+	}
+	if (pos == end || pos == NULL) {
+		fprintf(log_get_logfd(), _("%s: stpeprintf failed!\n"), log_get_progname());
+		exit(EXIT_FAILURE);
 	}
 
 	/* Write the mapping to the mapping file */

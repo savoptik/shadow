@@ -16,13 +16,13 @@
 #include "shadowlog.h"
 
 /*
- * cleanup_report_add_user - Report failure to add an user to the system
+ * cleanup_report_add_user - Report failure to add a user to the system
  *
- * It should be registered when it is decided to add an user to the system.
+ * It should be registered when it is decided to add a user to the system.
  */
 void cleanup_report_add_user (void *user_name)
 {
-	const char *name = (const char *)user_name;
+	const char *name = user_name;
 
 	SYSLOG ((LOG_ERR, "failed to add user %s", name));
 #ifdef WITH_AUDIT
@@ -51,15 +51,15 @@ void cleanup_report_mod_passwd (void *cleanup_info)
 }
 
 /*
- * cleanup_report_add_user_passwd - Report failure to add an user to
+ * cleanup_report_add_user_passwd - Report failure to add a user to
  * /etc/passwd
  *
- * It should be registered when it is decided to add an user to the
+ * It should be registered when it is decided to add a user to the
  * /etc/passwd database.
  */
 void cleanup_report_add_user_passwd (void *user_name)
 {
-	const char *name = (const char *)user_name;
+	const char *name = user_name;
 
 	SYSLOG ((LOG_ERR, "failed to add user %s to %s", name, pw_dbname ()));
 #ifdef WITH_AUDIT
@@ -71,15 +71,15 @@ void cleanup_report_add_user_passwd (void *user_name)
 }
 
 /*
- * cleanup_report_add_user_shadow - Report failure to add an user to
+ * cleanup_report_add_user_shadow - Report failure to add a user to
  * /etc/shadow
  *
- * It should be registered when it is decided to add an user to the
+ * It should be registered when it is decided to add a user to the
  * /etc/shadow database.
  */
 void cleanup_report_add_user_shadow (void *user_name)
 {
-	const char *name = (const char *)user_name;
+	const char *name = user_name;
 
 	SYSLOG ((LOG_ERR, "failed to add user %s to %s", name, spw_dbname ()));
 #ifdef WITH_AUDIT

@@ -11,7 +11,10 @@ AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-DLOCALEDIR=\"$(datadir)/locale\"
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	$(ECONF_CPPFLAGS)
+
+AM_CFLAGS = $(LIBBSD_CFLAGS)
 
 # XXX why are login and su in /bin anyway (other than for
 # historical reasons)?
@@ -26,9 +29,12 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS   =
 sbin_PROGRAMS  = nologin
-ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp groupmems
+ubin_PROGRAMS  = faillog chage chfn chsh expiry gpasswd newgrp groupmems
 if ENABLE_SUBIDS
 ubin_PROGRAMS += newgidmap newuidmap
+endif
+if ENABLE_LASTLOG
+ubin_PROGRAMS += lastlog
 endif
 usbin_PROGRAMS = \
 	chgpasswd \
@@ -71,13 +77,13 @@ LIBCRYPT_NOPAM = $(LIBCRYPT)
 LIBPAM_USERPASS =
 endif
 
-chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 newuidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 newgidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) $(LIBPAM_USERPASS)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl $(LIBPAM_USERPASS)
 expiry_LDADD = $(LDADD) $(LIBECONF)
 gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
@@ -152,7 +158,7 @@ getsubids_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 get_subid_owners_LDADD = \
 	$(top_builddir)/lib/libshadow.la \
@@ -164,13 +170,13 @@ get_subid_owners_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 new_subid_range_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 new_subid_range_LDADD = \
 	$(top_builddir)/lib/libshadow.la \
@@ -182,7 +188,7 @@ free_subid_range_CPPFLAGS = \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libsubid
+	-I$(top_builddir)/libsubid
 
 free_subid_range_LDADD = \
 	$(top_builddir)/lib/libshadow.la \

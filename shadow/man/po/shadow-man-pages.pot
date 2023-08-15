@@ -1,7 +1,8 @@
+# To re-generate, run "cd man/po; make update-po"
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-11-08 10:37-0600\n"
+"POT-Creation-Date: 2023-08-04 16:25-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -451,7 +452,7 @@ msgstr ""
 #: chgpasswd.8.xml.out:217
 #: chpasswd.8.xml.out:265
 #: chsh.1.xml.out:37
-#: chsh.1.xml.out:171
+#: chsh.1.xml.out:212
 #: expiry.1.xml.out:38
 #: faillog.8.xml.out:235
 #: gpasswd.1.xml.out:39
@@ -497,7 +498,8 @@ msgstr ""
 #: newusers.8.xml.out:456
 #: nologin.8.xml.out:60
 #: passwd.1.xml.out:41
-#: passwd.1.xml.out:431
+#: passwd.1.xml.out:425
+#: passwd.1.xml.out:471
 #: passwd.5.xml.out:118
 #: passwd.5.xml.out:173
 #: passwd.5.xml.out:179
@@ -521,19 +523,19 @@ msgstr ""
 #: su.1.xml.out:421
 #: su.1.xml.out:424
 #: suauth.5.xml.out:201
-#: useradd.8.xml.out:817
-#: useradd.8.xml.out:878
-#: useradd.8.xml.out:881
-#: useradd.8.xml.out:884
+#: useradd.8.xml.out:837
+#: useradd.8.xml.out:898
+#: useradd.8.xml.out:901
+#: useradd.8.xml.out:904
 #: userdel.8.xml.out:241
 #: userdel.8.xml.out:310
 #: userdel.8.xml.out:313
 #: userdel.8.xml.out:316
 #: usermod.8.xml.out:105
 #: usermod.8.xml.out:244
-#: usermod.8.xml.out:605
-#: usermod.8.xml.out:608
-#: usermod.8.xml.out:611
+#: usermod.8.xml.out:622
+#: usermod.8.xml.out:625
+#: usermod.8.xml.out:628
 #: vipw.8.xml.out:78
 #: vipw.8.xml.out:205
 msgid "1"
@@ -637,7 +639,7 @@ msgstr ""
 #: userdel.8.xml.out:43
 #: usermod.8.xml.out:44
 #: vipw.8.xml.out:39
-msgid "4.13"
+msgid "4.14.0-rc2"
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose
@@ -762,7 +764,7 @@ msgstr ""
 #: lastlog.8.xml.out:68
 #: login.1.xml.out:186
 #: newusers.8.xml.out:250
-#: passwd.1.xml.out:150
+#: passwd.1.xml.out:144
 #: pwck.8.xml.out:153
 #: pwconv.8.xml.out:163
 #: su.1.xml.out:120
@@ -789,7 +791,7 @@ msgstr ""
 #: grpck.8.xml.out:127
 #: lastlog.8.xml.out:69
 #: newusers.8.xml.out:251
-#: passwd.1.xml.out:151
+#: passwd.1.xml.out:145
 #: pwck.8.xml.out:158
 #: su.1.xml.out:121
 #: useradd.8.xml.out:103
@@ -803,10 +805,10 @@ msgstr ""
 #: chage.1.xml.out:74
 #: gpasswd.1.xml.out:137
 #: groupmems.8.xml.out:94
-#: passwd.1.xml.out:168
+#: passwd.1.xml.out:162
 #: useradd.8.xml.out:123
 #: useradd.8.xml.out:151
-#: useradd.8.xml.out:599
+#: useradd.8.xml.out:619
 #: usermod.8.xml.out:112
 #: usermod.8.xml.out:260
 msgid "-d"
@@ -873,12 +875,12 @@ msgstr ""
 #: lastlog.8.xml.out:103
 #: lastlog.8.xml.out:127
 #: newusers.8.xml.out:305
-#: passwd.1.xml.out:196
-#: passwd.1.xml.out:245
-#: passwd.1.xml.out:267
-#: passwd.1.xml.out:277
-#: passwd.1.xml.out:321
-#: passwd.1.xml.out:334
+#: passwd.1.xml.out:190
+#: passwd.1.xml.out:239
+#: passwd.1.xml.out:261
+#: passwd.1.xml.out:271
+#: passwd.1.xml.out:315
+#: passwd.1.xml.out:328
 #: pwck.8.xml.out:196
 #: pwconv.8.xml.out:177
 #: su.1.xml.out:125
@@ -889,18 +891,18 @@ msgstr ""
 #: useradd.8.xml.out:178
 #: useradd.8.xml.out:195
 #: useradd.8.xml.out:229
-#: useradd.8.xml.out:277
-#: useradd.8.xml.out:424
-#: useradd.8.xml.out:488
-#: useradd.8.xml.out:501
-#: useradd.8.xml.out:516
-#: useradd.8.xml.out:530
-#: useradd.8.xml.out:565
-#: useradd.8.xml.out:591
-#: useradd.8.xml.out:609
-#: useradd.8.xml.out:621
-#: useradd.8.xml.out:638
-#: useradd.8.xml.out:654
+#: useradd.8.xml.out:279
+#: useradd.8.xml.out:426
+#: useradd.8.xml.out:490
+#: useradd.8.xml.out:503
+#: useradd.8.xml.out:518
+#: useradd.8.xml.out:532
+#: useradd.8.xml.out:567
+#: useradd.8.xml.out:611
+#: useradd.8.xml.out:629
+#: useradd.8.xml.out:641
+#: useradd.8.xml.out:658
+#: useradd.8.xml.out:674
 #: userdel.8.xml.out:122
 #: userdel.8.xml.out:135
 #: usermod.8.xml.out:98
@@ -929,10 +931,10 @@ msgstr ""
 #: groupmod.8.xml.out:259
 #: grpck.8.xml.out:237
 #: login.defs.5.xml.out:138
-#: passwd.1.xml.out:425
+#: passwd.1.xml.out:419
 #: pwck.8.xml.out:287
 #: su.1.xml.out:385
-#: useradd.8.xml.out:811
+#: useradd.8.xml.out:831
 #: userdel.8.xml.out:235
 msgid "0"
 msgstr ""
@@ -950,7 +952,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: chage.1.xml.out:89
 #: useradd.8.xml.out:179
-#: useradd.8.xml.out:610
+#: useradd.8.xml.out:630
 #: usermod.8.xml.out:129
 msgid "--expiredate"
 msgstr ""
@@ -960,7 +962,7 @@ msgstr ""
 #: chage.1.xml.out:89
 #: chage.1.xml.out:109
 #: useradd.8.xml.out:179
-#: useradd.8.xml.out:610
+#: useradd.8.xml.out:630
 #: usermod.8.xml.out:129
 #: usermod.8.xml.out:243
 #: usermod.8.xml.out:416
@@ -987,8 +989,8 @@ msgstr ""
 #: chage.1.xml.out:108
 #: chage.1.xml.out:139
 #: chage.1.xml.out:182
-#: passwd.1.xml.out:344
-#: useradd.8.xml.out:315
+#: passwd.1.xml.out:338
+#: useradd.8.xml.out:317
 msgid "-1"
 msgstr ""
 
@@ -1016,10 +1018,10 @@ msgstr ""
 #: login.1.xml.out:204
 #: login.1.xml.out:229
 #: newusers.8.xml.out:280
-#: passwd.1.xml.out:190
+#: passwd.1.xml.out:184
 #: pwck.8.xml.out:173
 #: pwconv.8.xml.out:171
-#: useradd.8.xml.out:271
+#: useradd.8.xml.out:273
 #: userdel.8.xml.out:99
 #: vipw.8.xml.out:96
 msgid "-h"
@@ -1042,11 +1044,11 @@ msgstr ""
 #: grpck.8.xml.out:132
 #: lastlog.8.xml.out:96
 #: newusers.8.xml.out:280
-#: passwd.1.xml.out:190
+#: passwd.1.xml.out:184
 #: pwck.8.xml.out:173
 #: pwconv.8.xml.out:171
 #: su.1.xml.out:387
-#: useradd.8.xml.out:271
+#: useradd.8.xml.out:273
 #: userdel.8.xml.out:99
 #: vipw.8.xml.out:96
 msgid "--help"
@@ -1099,15 +1101,15 @@ msgstr ""
 #: newusers.8.xml.out:280
 #: newusers.8.xml.out:286
 #: newusers.8.xml.out:320
-#: passwd.1.xml.out:156
-#: passwd.1.xml.out:167
-#: passwd.1.xml.out:179
-#: passwd.1.xml.out:190
-#: passwd.1.xml.out:209
-#: passwd.1.xml.out:221
-#: passwd.1.xml.out:257
-#: passwd.1.xml.out:290
-#: passwd.1.xml.out:308
+#: passwd.1.xml.out:150
+#: passwd.1.xml.out:161
+#: passwd.1.xml.out:173
+#: passwd.1.xml.out:184
+#: passwd.1.xml.out:203
+#: passwd.1.xml.out:215
+#: passwd.1.xml.out:251
+#: passwd.1.xml.out:284
+#: passwd.1.xml.out:302
 #: pwck.8.xml.out:173
 #: pwck.8.xml.out:179
 #: pwck.8.xml.out:188
@@ -1115,14 +1117,14 @@ msgstr ""
 #: pwconv.8.xml.out:171
 #: useradd.8.xml.out:168
 #: useradd.8.xml.out:217
-#: useradd.8.xml.out:271
-#: useradd.8.xml.out:330
-#: useradd.8.xml.out:349
-#: useradd.8.xml.out:372
-#: useradd.8.xml.out:385
-#: useradd.8.xml.out:404
-#: useradd.8.xml.out:455
-#: useradd.8.xml.out:548
+#: useradd.8.xml.out:273
+#: useradd.8.xml.out:332
+#: useradd.8.xml.out:351
+#: useradd.8.xml.out:374
+#: useradd.8.xml.out:387
+#: useradd.8.xml.out:406
+#: useradd.8.xml.out:457
+#: useradd.8.xml.out:550
 #: userdel.8.xml.out:75
 #: userdel.8.xml.out:99
 #: userdel.8.xml.out:105
@@ -1159,10 +1161,10 @@ msgstr ""
 #: grpck.8.xml.out:134
 #: lastlog.8.xml.out:99
 #: newusers.8.xml.out:282
-#: passwd.1.xml.out:192
+#: passwd.1.xml.out:186
 #: pwck.8.xml.out:175
 #: pwconv.8.xml.out:173
-#: useradd.8.xml.out:273
+#: useradd.8.xml.out:275
 #: userdel.8.xml.out:101
 #: vipw.8.xml.out:98
 msgid "Display help message and exit."
@@ -1170,7 +1172,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: chage.1.xml.out:121
-#: passwd.1.xml.out:197
+#: passwd.1.xml.out:191
 msgid "-i"
 msgstr ""
 
@@ -1191,9 +1193,9 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: chage.1.xml.out:128
-#: passwd.1.xml.out:197
+#: passwd.1.xml.out:191
 #: useradd.8.xml.out:196
-#: useradd.8.xml.out:622
+#: useradd.8.xml.out:642
 #: usermod.8.xml.out:152
 msgid "--inactive"
 msgstr ""
@@ -1204,12 +1206,12 @@ msgstr ""
 #: chage.1.xml.out:128
 #: chage.1.xml.out:134
 #: chage.1.xml.out:140
+#: passwd.1.xml.out:191
 #: passwd.1.xml.out:197
-#: passwd.1.xml.out:203
 #: useradd.8.xml.out:196
 #: useradd.8.xml.out:211
-#: useradd.8.xml.out:622
-#: useradd.8.xml.out:632
+#: useradd.8.xml.out:642
+#: useradd.8.xml.out:652
 #: usermod.8.xml.out:152
 msgid "INACTIVE"
 msgstr ""
@@ -1235,11 +1237,11 @@ msgstr ""
 #: faillog.8.xml.out:202
 #: groupmems.8.xml.out:55
 #: groupmems.8.xml.out:124
-#: passwd.1.xml.out:222
-#: passwd.1.xml.out:316
+#: passwd.1.xml.out:216
+#: passwd.1.xml.out:310
 #: su.1.xml.out:144
 #: su.1.xml.out:156
-#: useradd.8.xml.out:330
+#: useradd.8.xml.out:332
 #: usermod.8.xml.out:217
 msgid "-l"
 msgstr ""
@@ -1269,9 +1271,9 @@ msgstr ""
 #: faillog.8.xml.out:185
 #: faillog.8.xml.out:202
 #: su.1.xml.out:207
-#: useradd.8.xml.out:287
-#: useradd.8.xml.out:350
-#: useradd.8.xml.out:476
+#: useradd.8.xml.out:289
+#: useradd.8.xml.out:352
+#: useradd.8.xml.out:478
 #: usermod.8.xml.out:119
 #: usermod.8.xml.out:250
 msgid "-m"
@@ -1279,7 +1281,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: chage.1.xml.out:157
-#: passwd.1.xml.out:246
+#: passwd.1.xml.out:240
 msgid "--mindays"
 msgstr ""
 
@@ -1287,14 +1289,14 @@ msgstr ""
 #. (itstool) path: para/replaceable
 #: chage.1.xml.out:157
 #: chage.1.xml.out:162
-#: passwd.1.xml.out:246
-#: passwd.1.xml.out:251
+#: passwd.1.xml.out:240
+#: passwd.1.xml.out:245
 msgid "MIN_DAYS"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: chage.1.xml.out:160
-#: passwd.1.xml.out:249
+#: passwd.1.xml.out:243
 msgid "Set the minimum number of days between password changes to <_:replaceable-1/>. A value of zero for this field indicates that the user may change their password at any time."
 msgstr ""
 
@@ -1305,13 +1307,13 @@ msgstr ""
 #: gpasswd.1.xml.out:112
 #: gpasswd.1.xml.out:217
 #: useradd.8.xml.out:162
-#: useradd.8.xml.out:373
+#: useradd.8.xml.out:375
 msgid "-M"
 msgstr ""
 
 #. (itstool) path: term/option
 #: chage.1.xml.out:169
-#: passwd.1.xml.out:335
+#: passwd.1.xml.out:329
 msgid "--maxdays"
 msgstr ""
 
@@ -1320,9 +1322,9 @@ msgstr ""
 #: chage.1.xml.out:169
 #: chage.1.xml.out:174
 #: chage.1.xml.out:183
-#: passwd.1.xml.out:335
-#: passwd.1.xml.out:340
-#: passwd.1.xml.out:345
+#: passwd.1.xml.out:329
+#: passwd.1.xml.out:334
+#: passwd.1.xml.out:339
 msgid "MAX_DAYS"
 msgstr ""
 
@@ -1341,7 +1343,7 @@ msgstr ""
 
 #. (itstool) path: listitem/para
 #: chage.1.xml.out:181
-#: passwd.1.xml.out:343
+#: passwd.1.xml.out:337
 msgid "Passing the number <_:emphasis-1/> as <_:replaceable-2/> will remove checking a password's validity."
 msgstr ""
 
@@ -1360,10 +1362,10 @@ msgstr ""
 #: grpck.8.xml.out:149
 #: lastlog.8.xml.out:104
 #: newusers.8.xml.out:306
-#: passwd.1.xml.out:278
+#: passwd.1.xml.out:272
 #: pwck.8.xml.out:197
 #: pwconv.8.xml.out:178
-#: useradd.8.xml.out:489
+#: useradd.8.xml.out:491
 #: userdel.8.xml.out:123
 #: usermod.8.xml.out:328
 #: vipw.8.xml.out:115
@@ -1385,10 +1387,10 @@ msgstr ""
 #: grpck.8.xml.out:149
 #: lastlog.8.xml.out:104
 #: newusers.8.xml.out:306
-#: passwd.1.xml.out:278
+#: passwd.1.xml.out:272
 #: pwck.8.xml.out:197
 #: pwconv.8.xml.out:178
-#: useradd.8.xml.out:489
+#: useradd.8.xml.out:491
 #: userdel.8.xml.out:123
 #: usermod.8.xml.out:328
 #: vipw.8.xml.out:115
@@ -1439,18 +1441,18 @@ msgstr ""
 #: newusers.8.xml.out:306
 #: newusers.8.xml.out:310
 #: newusers.8.xml.out:312
+#: passwd.1.xml.out:272
+#: passwd.1.xml.out:276
 #: passwd.1.xml.out:278
-#: passwd.1.xml.out:282
-#: passwd.1.xml.out:284
 #: pwck.8.xml.out:197
 #: pwck.8.xml.out:201
 #: pwck.8.xml.out:203
 #: pwconv.8.xml.out:178
 #: pwconv.8.xml.out:182
 #: pwconv.8.xml.out:184
-#: useradd.8.xml.out:489
-#: useradd.8.xml.out:493
+#: useradd.8.xml.out:491
 #: useradd.8.xml.out:495
+#: useradd.8.xml.out:497
 #: userdel.8.xml.out:123
 #: userdel.8.xml.out:127
 #: userdel.8.xml.out:129
@@ -1478,10 +1480,10 @@ msgstr ""
 #: grpck.8.xml.out:152
 #: lastlog.8.xml.out:107
 #: newusers.8.xml.out:309
-#: passwd.1.xml.out:281
+#: passwd.1.xml.out:275
 #: pwck.8.xml.out:200
 #: pwconv.8.xml.out:181
-#: useradd.8.xml.out:492
+#: useradd.8.xml.out:494
 #: userdel.8.xml.out:126
 #: usermod.8.xml.out:331
 #: vipw.8.xml.out:118
@@ -1490,7 +1492,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: chage.1.xml.out:203
-#: passwd.1.xml.out:322
+#: passwd.1.xml.out:316
 msgid "--warndays"
 msgstr ""
 
@@ -1498,8 +1500,8 @@ msgstr ""
 #. (itstool) path: para/replaceable
 #: chage.1.xml.out:203
 #: chage.1.xml.out:208
-#: passwd.1.xml.out:322
-#: passwd.1.xml.out:327
+#: passwd.1.xml.out:316
+#: passwd.1.xml.out:321
 msgid "WARN_DAYS"
 msgstr ""
 
@@ -1578,7 +1580,7 @@ msgstr ""
 #: chfn.1.xml.out:170
 #: chgpasswd.8.xml.out:175
 #: chpasswd.8.xml.out:216
-#: chsh.1.xml.out:131
+#: chsh.1.xml.out:150
 #: gpasswd.1.xml.out:241
 #: groupadd.8.xml.out:247
 #: groupdel.8.xml.out:133
@@ -1589,14 +1591,14 @@ msgstr ""
 #: login.1.xml.out:270
 #: newgrp.1.xml.out:85
 #: newusers.8.xml.out:360
-#: passwd.1.xml.out:372
+#: passwd.1.xml.out:366
 #: pwck.8.xml.out:240
 #: pwconv.8.xml.out:204
 #: sg.1.xml.out:74
 #: su.1.xml.out:314
-#: useradd.8.xml.out:710
+#: useradd.8.xml.out:730
 #: userdel.8.xml.out:165
-#: usermod.8.xml.out:536
+#: usermod.8.xml.out:553
 #: vipw.8.xml.out:142
 msgid "CONFIGURATION"
 msgstr ""
@@ -1616,8 +1618,8 @@ msgstr ""
 #: chpasswd.8.xml.out:200
 #: chpasswd.8.xml.out:219
 #: chpasswd.8.xml.out:247
-#: chsh.1.xml.out:134
-#: chsh.1.xml.out:159
+#: chsh.1.xml.out:153
+#: chsh.1.xml.out:200
 #: gpasswd.1.xml.out:244
 #: groupadd.8.xml.out:129
 #: groupadd.8.xml.out:239
@@ -1640,8 +1642,8 @@ msgstr ""
 #: newusers.8.xml.out:340
 #: newusers.8.xml.out:363
 #: newusers.8.xml.out:423
-#: passwd.1.xml.out:375
-#: passwd.1.xml.out:405
+#: passwd.1.xml.out:369
+#: passwd.1.xml.out:399
 #: pwck.8.xml.out:243
 #: pwconv.8.xml.out:148
 #: pwconv.8.xml.out:207
@@ -1654,21 +1656,21 @@ msgstr ""
 #: su.1.xml.out:317
 #: su.1.xml.out:357
 #: useradd.8.xml.out:241
-#: useradd.8.xml.out:307
-#: useradd.8.xml.out:378
-#: useradd.8.xml.out:399
-#: useradd.8.xml.out:467
-#: useradd.8.xml.out:474
-#: useradd.8.xml.out:560
-#: useradd.8.xml.out:713
-#: useradd.8.xml.out:797
+#: useradd.8.xml.out:309
+#: useradd.8.xml.out:380
+#: useradd.8.xml.out:401
+#: useradd.8.xml.out:469
+#: useradd.8.xml.out:476
+#: useradd.8.xml.out:562
+#: useradd.8.xml.out:733
+#: useradd.8.xml.out:817
 #: userdel.8.xml.out:87
 #: userdel.8.xml.out:168
 #: userdel.8.xml.out:191
 #: userdel.8.xml.out:297
 #: usermod.8.xml.out:399
-#: usermod.8.xml.out:539
-#: usermod.8.xml.out:569
+#: usermod.8.xml.out:556
+#: usermod.8.xml.out:586
 #: vipw.8.xml.out:145
 msgid "/etc/login.defs"
 msgstr ""
@@ -1678,7 +1680,7 @@ msgstr ""
 #: chfn.1.xml.out:171
 #: chgpasswd.8.xml.out:176
 #: chpasswd.8.xml.out:217
-#: chsh.1.xml.out:132
+#: chsh.1.xml.out:151
 #: gpasswd.1.xml.out:242
 #: groupadd.8.xml.out:248
 #: groupdel.8.xml.out:134
@@ -1689,13 +1691,13 @@ msgstr ""
 #: login.1.xml.out:271
 #: newgrp.1.xml.out:86
 #: newusers.8.xml.out:361
-#: passwd.1.xml.out:373
+#: passwd.1.xml.out:367
 #: pwck.8.xml.out:241
 #: sg.1.xml.out:75
 #: su.1.xml.out:315
-#: useradd.8.xml.out:711
+#: useradd.8.xml.out:731
 #: userdel.8.xml.out:166
-#: usermod.8.xml.out:537
+#: usermod.8.xml.out:554
 #: vipw.8.xml.out:143
 msgid "The following configuration variables in <_:filename-1/> change the behavior of this tool:"
 msgstr ""
@@ -1705,7 +1707,7 @@ msgstr ""
 #: chfn.1.xml.out:184
 #: chgpasswd.8.xml.out:190
 #: chpasswd.8.xml.out:232
-#: chsh.1.xml.out:144
+#: chsh.1.xml.out:163
 #: expiry.1.xml.out:97
 #: faillog.5.xml.out:72
 #: faillog.8.xml.out:220
@@ -1724,7 +1726,7 @@ msgstr ""
 #: logoutd.8.xml.out:65
 #: newgrp.1.xml.out:97
 #: newusers.8.xml.out:396
-#: passwd.1.xml.out:390
+#: passwd.1.xml.out:384
 #: passwd.5.xml.out:139
 #: porttime.5.xml.out:106
 #: pwck.8.xml.out:258
@@ -1734,9 +1736,9 @@ msgstr ""
 #: sg.1.xml.out:86
 #: su.1.xml.out:342
 #: suauth.5.xml.out:169
-#: useradd.8.xml.out:740
+#: useradd.8.xml.out:760
 #: userdel.8.xml.out:182
-#: usermod.8.xml.out:554
+#: usermod.8.xml.out:571
 #: vipw.8.xml.out:172
 msgid "FILES"
 msgstr ""
@@ -1746,7 +1748,7 @@ msgstr ""
 #: chage.1.xml.out:265
 #: chfn.1.xml.out:193
 #: chpasswd.8.xml.out:235
-#: chsh.1.xml.out:147
+#: chsh.1.xml.out:166
 #: expiry.1.xml.out:100
 #: groupmod.8.xml.out:245
 #: grpck.8.xml.out:223
@@ -1757,7 +1759,7 @@ msgstr ""
 #: newgrp.1.xml.out:70
 #: newgrp.1.xml.out:100
 #: newusers.8.xml.out:399
-#: passwd.1.xml.out:393
+#: passwd.1.xml.out:387
 #: passwd.5.xml.out:47
 #: passwd.5.xml.out:89
 #: passwd.5.xml.out:142
@@ -1772,13 +1774,13 @@ msgstr ""
 #: su.1.xml.out:185
 #: su.1.xml.out:197
 #: su.1.xml.out:345
-#: useradd.8.xml.out:524
-#: useradd.8.xml.out:743
+#: useradd.8.xml.out:526
+#: useradd.8.xml.out:763
 #: userdel.8.xml.out:197
 #: usermod.8.xml.out:103
 #: usermod.8.xml.out:305
 #: usermod.8.xml.out:362
-#: usermod.8.xml.out:575
+#: usermod.8.xml.out:592
 #: vipw.8.xml.out:68
 #: vipw.8.xml.out:187
 msgid "/etc/passwd"
@@ -1788,20 +1790,20 @@ msgstr ""
 #: chage.1.xml.out:268
 #: chfn.1.xml.out:195
 #: chpasswd.8.xml.out:237
-#: chsh.1.xml.out:149
+#: chsh.1.xml.out:168
 #: expiry.1.xml.out:102
 #: groupmod.8.xml.out:247
 #: grpck.8.xml.out:225
 #: login.1.xml.out:331
 #: newgrp.1.xml.out:102
 #: newusers.8.xml.out:401
-#: passwd.1.xml.out:395
+#: passwd.1.xml.out:389
 #: passwd.5.xml.out:144
 #: pwck.8.xml.out:269
 #: shadow.5.xml.out:236
 #: sg.1.xml.out:91
 #: su.1.xml.out:347
-#: useradd.8.xml.out:745
+#: useradd.8.xml.out:765
 #: userdel.8.xml.out:199
 #: vipw.8.xml.out:189
 msgid "User account information."
@@ -1817,7 +1819,7 @@ msgstr ""
 #: newgrp.1.xml.out:106
 #: newusers.8.xml.out:295
 #: newusers.8.xml.out:405
-#: passwd.1.xml.out:399
+#: passwd.1.xml.out:393
 #: passwd.5.xml.out:82
 #: passwd.5.xml.out:148
 #: pwck.8.xml.out:73
@@ -1834,16 +1836,16 @@ msgstr ""
 #: shadow.5.xml.out:240
 #: sg.1.xml.out:95
 #: su.1.xml.out:351
-#: useradd.8.xml.out:439
-#: useradd.8.xml.out:464
-#: useradd.8.xml.out:749
+#: useradd.8.xml.out:441
+#: useradd.8.xml.out:466
+#: useradd.8.xml.out:769
 #: userdel.8.xml.out:203
 #: usermod.8.xml.out:144
 #: usermod.8.xml.out:145
 #: usermod.8.xml.out:166
 #: usermod.8.xml.out:167
 #: usermod.8.xml.out:306
-#: usermod.8.xml.out:581
+#: usermod.8.xml.out:598
 #: vipw.8.xml.out:71
 #: vipw.8.xml.out:193
 msgid "/etc/shadow"
@@ -1856,13 +1858,13 @@ msgstr ""
 #: login.1.xml.out:337
 #: newgrp.1.xml.out:108
 #: newusers.8.xml.out:407
-#: passwd.1.xml.out:401
+#: passwd.1.xml.out:395
 #: pwck.8.xml.out:275
 #: shadow.3.xml.out:207
 #: shadow.5.xml.out:242
 #: sg.1.xml.out:97
 #: su.1.xml.out:353
-#: useradd.8.xml.out:751
+#: useradd.8.xml.out:771
 #: userdel.8.xml.out:205
 #: vipw.8.xml.out:195
 msgid "Secure user account information."
@@ -1874,10 +1876,10 @@ msgstr ""
 #: groupdel.8.xml.out:163
 #: groupmod.8.xml.out:254
 #: grpck.8.xml.out:232
-#: passwd.1.xml.out:420
+#: passwd.1.xml.out:414
 #: pwck.8.xml.out:282
 #: su.1.xml.out:366
-#: useradd.8.xml.out:806
+#: useradd.8.xml.out:826
 #: userdel.8.xml.out:230
 msgid "EXIT VALUES"
 msgstr ""
@@ -1887,16 +1889,16 @@ msgstr ""
 #: groupadd.8.xml.out:305
 #: groupdel.8.xml.out:170
 #: grpck.8.xml.out:239
-#: passwd.1.xml.out:427
+#: passwd.1.xml.out:421
 #: pwck.8.xml.out:289
-#: useradd.8.xml.out:813
+#: useradd.8.xml.out:833
 #: userdel.8.xml.out:237
 msgid "success"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: chage.1.xml.out:296
-#: passwd.1.xml.out:433
+#: passwd.1.xml.out:427
 msgid "permission denied"
 msgstr ""
 
@@ -1914,9 +1916,9 @@ msgstr ""
 #: limits.5.xml.out:101
 #: limits.5.xml.out:188
 #: limits.5.xml.out:191
-#: passwd.1.xml.out:437
+#: passwd.1.xml.out:431
 #: pwck.8.xml.out:299
-#: useradd.8.xml.out:823
+#: useradd.8.xml.out:843
 #: userdel.8.xml.out:247
 msgid "2"
 msgstr ""
@@ -1927,7 +1929,7 @@ msgstr ""
 #: groupdel.8.xml.out:176
 #: grpck.8.xml.out:245
 #: pwck.8.xml.out:295
-#: useradd.8.xml.out:825
+#: useradd.8.xml.out:845
 #: userdel.8.xml.out:249
 msgid "invalid command syntax"
 msgstr ""
@@ -1948,9 +1950,9 @@ msgstr ""
 #: groupdel.8.xml.out:164
 #: groupmod.8.xml.out:255
 #: grpck.8.xml.out:233
-#: passwd.1.xml.out:421
+#: passwd.1.xml.out:415
 #: pwck.8.xml.out:283
-#: useradd.8.xml.out:807
+#: useradd.8.xml.out:827
 #: userdel.8.xml.out:231
 msgid "The <_:command-1/> command exits with the following values: <_:variablelist-2/>"
 msgstr ""
@@ -1960,7 +1962,7 @@ msgstr ""
 #: chfn.1.xml.out:202
 #: chgpasswd.8.xml.out:214
 #: chpasswd.8.xml.out:262
-#: chsh.1.xml.out:168
+#: chsh.1.xml.out:209
 #: expiry.1.xml.out:115
 #: faillog.5.xml.out:84
 #: faillog.8.xml.out:232
@@ -1979,7 +1981,7 @@ msgstr ""
 #: newgrp.1.xml.out:127
 #: newusers.8.xml.out:450
 #: nologin.8.xml.out:57
-#: passwd.1.xml.out:471
+#: passwd.1.xml.out:465
 #: passwd.5.xml.out:167
 #: porttime.5.xml.out:118
 #: pwck.8.xml.out:333
@@ -1989,9 +1991,9 @@ msgstr ""
 #: sg.1.xml.out:116
 #: su.1.xml.out:413
 #: suauth.5.xml.out:198
-#: useradd.8.xml.out:875
+#: useradd.8.xml.out:895
 #: userdel.8.xml.out:308
-#: usermod.8.xml.out:602
+#: usermod.8.xml.out:619
 #: vipw.8.xml.out:202
 msgid "SEE ALSO"
 msgstr ""
@@ -2008,7 +2010,7 @@ msgstr ""
 #: chage.1.xml.out:319
 #: chfn.1.xml.out:211
 #: chpasswd.8.xml.out:265
-#: chsh.1.xml.out:177
+#: chsh.1.xml.out:218
 #: expiry.1.xml.out:118
 #: groupadd.8.xml.out:351
 #: groupdel.8.xml.out:211
@@ -2031,14 +2033,14 @@ msgstr ""
 #: passwd.1.xml.out:66
 #: passwd.1.xml.out:69
 #: passwd.1.xml.out:86
-#: passwd.1.xml.out:116
-#: passwd.1.xml.out:152
-#: passwd.1.xml.out:366
-#: passwd.1.xml.out:413
-#: passwd.1.xml.out:422
+#: passwd.1.xml.out:98
+#: passwd.1.xml.out:146
+#: passwd.1.xml.out:360
+#: passwd.1.xml.out:407
+#: passwd.1.xml.out:416
+#: passwd.1.xml.out:445
 #: passwd.1.xml.out:451
-#: passwd.1.xml.out:457
-#: passwd.1.xml.out:477
+#: passwd.1.xml.out:474
 #: passwd.5.xml.out:33
 #: passwd.5.xml.out:40
 #: passwd.5.xml.out:182
@@ -2049,9 +2051,9 @@ msgstr ""
 #: pwconv.8.xml.out:99
 #: shadow.5.xml.out:268
 #: shadow.5.xml.out:271
-#: useradd.8.xml.out:884
+#: useradd.8.xml.out:904
 #: userdel.8.xml.out:316
-#: usermod.8.xml.out:611
+#: usermod.8.xml.out:628
 #: vipw.8.xml.out:217
 msgid "passwd"
 msgstr ""
@@ -2065,8 +2067,8 @@ msgstr ""
 #: chfn.1.xml.out:211
 #: chgpasswd.8.xml.out:223
 #: chpasswd.8.xml.out:272
-#: chsh.1.xml.out:174
-#: chsh.1.xml.out:177
+#: chsh.1.xml.out:215
+#: chsh.1.xml.out:218
 #: expiry.1.xml.out:118
 #: expiry.1.xml.out:121
 #: faillog.5.xml.out:34
@@ -2100,10 +2102,10 @@ msgstr ""
 #: newusers.8.xml.out:463
 #: nologin.8.xml.out:48
 #: nologin.8.xml.out:63
-#: passwd.1.xml.out:455
+#: passwd.1.xml.out:449
+#: passwd.1.xml.out:474
 #: passwd.1.xml.out:477
-#: passwd.1.xml.out:480
-#: passwd.1.xml.out:484
+#: passwd.1.xml.out:481
 #: passwd.5.xml.out:34
 #: passwd.5.xml.out:80
 #: passwd.5.xml.out:194
@@ -2122,17 +2124,17 @@ msgstr ""
 #: suauth.5.xml.out:34
 #: suauth.5.xml.out:91
 #: useradd.8.xml.out:205
-#: useradd.8.xml.out:628
-#: useradd.8.xml.out:899
-#: useradd.8.xml.out:906
-#: useradd.8.xml.out:909
+#: useradd.8.xml.out:648
+#: useradd.8.xml.out:919
+#: useradd.8.xml.out:926
+#: useradd.8.xml.out:929
 #: userdel.8.xml.out:319
 #: userdel.8.xml.out:335
 #: userdel.8.xml.out:338
 #: usermod.8.xml.out:162
-#: usermod.8.xml.out:629
-#: usermod.8.xml.out:633
-#: usermod.8.xml.out:636
+#: usermod.8.xml.out:646
+#: usermod.8.xml.out:650
+#: usermod.8.xml.out:653
 #: vipw.8.xml.out:208
 #: vipw.8.xml.out:211
 #: vipw.8.xml.out:214
@@ -2156,7 +2158,7 @@ msgstr ""
 #: grpck.8.xml.out:190
 #: grpck.8.xml.out:297
 #: login.defs.5.xml.out:542
-#: passwd.1.xml.out:480
+#: passwd.1.xml.out:477
 #: passwd.5.xml.out:79
 #: passwd.5.xml.out:194
 #: pwck.8.xml.out:229
@@ -2174,7 +2176,7 @@ msgstr ""
 #: shadow.5.xml.out:40
 #: shadow.5.xml.out:47
 #: useradd.8.xml.out:205
-#: useradd.8.xml.out:628
+#: useradd.8.xml.out:648
 #: usermod.8.xml.out:162
 #: vipw.8.xml.out:223
 msgid "shadow"
@@ -2202,16 +2204,16 @@ msgstr ""
 #: chfn.1.xml.out:89
 #: chfn.1.xml.out:159
 #: chfn.1.xml.out:164
-#: chsh.1.xml.out:171
+#: chsh.1.xml.out:212
 #: groupadd.8.xml.out:345
 #: groupdel.8.xml.out:205
 #: groupmems.8.xml.out:209
 #: groupmod.8.xml.out:326
 #: login.defs.5.xml.out:239
-#: useradd.8.xml.out:878
+#: useradd.8.xml.out:898
 #: userdel.8.xml.out:310
 #: usermod.8.xml.out:105
-#: usermod.8.xml.out:605
+#: usermod.8.xml.out:622
 msgid "chfn"
 msgstr ""
 
@@ -2235,9 +2237,9 @@ msgstr ""
 #: groupadd.8.xml.out:323
 #: groupmod.8.xml.out:93
 #: groupmod.8.xml.out:132
-#: useradd.8.xml.out:405
-#: useradd.8.xml.out:536
-#: useradd.8.xml.out:837
+#: useradd.8.xml.out:407
+#: useradd.8.xml.out:538
+#: useradd.8.xml.out:857
 #: usermod.8.xml.out:271
 #: usermod.8.xml.out:377
 msgid "-o"
@@ -2271,7 +2273,7 @@ msgstr ""
 #: login.1.xml.out:190
 #: login.1.xml.out:229
 #: useradd.8.xml.out:196
-#: useradd.8.xml.out:622
+#: useradd.8.xml.out:642
 #: userdel.8.xml.out:76
 #: userdel.8.xml.out:287
 #: userdel.8.xml.out:302
@@ -2339,12 +2341,12 @@ msgstr ""
 #: login.1.xml.out:220
 #: login.1.xml.out:229
 #: newusers.8.xml.out:287
-#: passwd.1.xml.out:268
+#: passwd.1.xml.out:262
 #: pwck.8.xml.out:155
 #: pwck.8.xml.out:188
 #: useradd.8.xml.out:224
-#: useradd.8.xml.out:456
-#: useradd.8.xml.out:542
+#: useradd.8.xml.out:458
+#: useradd.8.xml.out:544
 #: userdel.8.xml.out:106
 #: usermod.8.xml.out:317
 msgid "-r"
@@ -2374,9 +2376,9 @@ msgstr ""
 #: lastlog.8.xml.out:90
 #: lastlog.8.xml.out:122
 #: lastlog.8.xml.out:139
-#: passwd.1.xml.out:309
-#: useradd.8.xml.out:414
-#: useradd.8.xml.out:531
+#: passwd.1.xml.out:303
+#: useradd.8.xml.out:416
+#: useradd.8.xml.out:533
 #: usermod.8.xml.out:279
 #: usermod.8.xml.out:369
 #: vipw.8.xml.out:133
@@ -2385,7 +2387,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: chfn.1.xml.out:151
-#: passwd.1.xml.out:322
+#: passwd.1.xml.out:316
 #: usermod.8.xml.out:463
 msgid "-w"
 msgstr ""
@@ -2414,16 +2416,16 @@ msgstr ""
 #: chfn.1.xml.out:189
 #: chgpasswd.8.xml.out:207
 #: chpasswd.8.xml.out:249
-#: chsh.1.xml.out:161
+#: chsh.1.xml.out:202
 #: groupadd.8.xml.out:278
 #: groupmod.8.xml.out:241
 #: login.1.xml.out:367
 #: login.access.5.xml.out:102
 #: newusers.8.xml.out:425
-#: passwd.1.xml.out:407
+#: passwd.1.xml.out:401
 #: pwconv.8.xml.out:232
 #: su.1.xml.out:359
-#: useradd.8.xml.out:799
+#: useradd.8.xml.out:819
 #: userdel.8.xml.out:193
 msgid "Shadow password suite configuration."
 msgstr ""
@@ -2446,9 +2448,9 @@ msgstr ""
 #: groupmems.8.xml.out:212
 #: groupmod.8.xml.out:329
 #: login.defs.5.xml.out:270
-#: useradd.8.xml.out:881
+#: useradd.8.xml.out:901
 #: userdel.8.xml.out:313
-#: usermod.8.xml.out:608
+#: usermod.8.xml.out:625
 msgid "chsh"
 msgstr ""
 
@@ -2459,7 +2461,7 @@ msgstr ""
 #: chfn.1.xml.out:208
 #: chgpasswd.8.xml.out:223
 #: chpasswd.8.xml.out:272
-#: chsh.1.xml.out:174
+#: chsh.1.xml.out:215
 #: groupadd.8.xml.out:194
 #: groupadd.8.xml.out:363
 #: groupmod.8.xml.out:344
@@ -2468,16 +2470,16 @@ msgstr ""
 #: login.defs.5.xml.out:109
 #: newusers.8.xml.out:298
 #: newusers.8.xml.out:453
-#: passwd.1.xml.out:484
+#: passwd.1.xml.out:481
 #: pwconv.8.xml.out:92
 #: pwconv.8.xml.out:94
 #: pwconv.8.xml.out:108
 #: pwconv.8.xml.out:245
 #: su.1.xml.out:418
-#: useradd.8.xml.out:899
+#: useradd.8.xml.out:919
 #: userdel.8.xml.out:117
 #: userdel.8.xml.out:319
-#: usermod.8.xml.out:629
+#: usermod.8.xml.out:646
 #: vipw.8.xml.out:214
 msgid "login.defs"
 msgstr ""
@@ -2485,7 +2487,7 @@ msgstr ""
 #. (itstool) path: refsect1/para
 #: chfn.1.xml.out:203
 #: chgpasswd.8.xml.out:215
-#: chsh.1.xml.out:169
+#: chsh.1.xml.out:210
 #: limits.5.xml.out:183
 msgid "<_:citerefentry-1/>, <_:citerefentry-2/>, <_:citerefentry-3/>."
 msgstr ""
@@ -2568,8 +2570,8 @@ msgstr ""
 #: newusers.8.xml.out:50
 #: newusers.8.xml.out:467
 #: nologin.8.xml.out:23
-#: passwd.1.xml.out:474
-#: passwd.1.xml.out:488
+#: passwd.1.xml.out:468
+#: passwd.1.xml.out:485
 #: passwd.5.xml.out:185
 #: passwd.5.xml.out:188
 #: passwd.5.xml.out:191
@@ -2588,13 +2590,14 @@ msgstr ""
 #: shadow.5.xml.out:286
 #: suauth.5.xml.out:192
 #: useradd.8.xml.out:53
-#: useradd.8.xml.out:574
-#: useradd.8.xml.out:890
-#: useradd.8.xml.out:893
-#: useradd.8.xml.out:896
-#: useradd.8.xml.out:902
+#: useradd.8.xml.out:576
+#: useradd.8.xml.out:590
+#: useradd.8.xml.out:910
 #: useradd.8.xml.out:913
 #: useradd.8.xml.out:916
+#: useradd.8.xml.out:922
+#: useradd.8.xml.out:933
+#: useradd.8.xml.out:936
 #: userdel.8.xml.out:40
 #: userdel.8.xml.out:259
 #: userdel.8.xml.out:322
@@ -2604,12 +2607,13 @@ msgstr ""
 #: userdel.8.xml.out:342
 #: userdel.8.xml.out:345
 #: usermod.8.xml.out:41
-#: usermod.8.xml.out:617
-#: usermod.8.xml.out:620
-#: usermod.8.xml.out:623
-#: usermod.8.xml.out:626
+#: usermod.8.xml.out:522
+#: usermod.8.xml.out:634
+#: usermod.8.xml.out:637
 #: usermod.8.xml.out:640
 #: usermod.8.xml.out:643
+#: usermod.8.xml.out:657
+#: usermod.8.xml.out:660
 #: vipw.8.xml.out:36
 msgid "8"
 msgstr ""
@@ -2681,7 +2685,7 @@ msgstr ""
 #: chgpasswd.8.xml.out:70
 #: chpasswd.8.xml.out:75
 #: chpasswd.8.xml.out:132
-#: passwd.1.xml.out:129
+#: passwd.1.xml.out:112
 msgid "ENCRYPT_METHOD"
 msgstr ""
 
@@ -2693,9 +2697,9 @@ msgstr ""
 #: chpasswd.8.xml.out:84
 #: chpasswd.8.xml.out:130
 #: chpasswd.8.xml.out:139
-#: passwd.1.xml.out:180
+#: passwd.1.xml.out:174
 #: useradd.8.xml.out:179
-#: useradd.8.xml.out:610
+#: useradd.8.xml.out:630
 #: usermod.8.xml.out:129
 msgid "-e"
 msgstr ""
@@ -2795,8 +2799,8 @@ msgstr ""
 #: pwck.8.xml.out:155
 #: pwck.8.xml.out:209
 #: su.1.xml.out:163
-#: useradd.8.xml.out:517
-#: useradd.8.xml.out:655
+#: useradd.8.xml.out:519
+#: useradd.8.xml.out:675
 #: usermod.8.xml.out:357
 #: vipw.8.xml.out:70
 #: vipw.8.xml.out:127
@@ -2854,12 +2858,12 @@ msgstr ""
 #: lastlog.8.xml.out:206
 #: login.1.xml.out:236
 #: newusers.8.xml.out:348
-#: passwd.1.xml.out:354
+#: passwd.1.xml.out:348
 #: shadow.3.xml.out:194
 #: su.1.xml.out:306
-#: useradd.8.xml.out:682
+#: useradd.8.xml.out:702
 #: userdel.8.xml.out:281
-#: usermod.8.xml.out:517
+#: usermod.8.xml.out:534
 msgid "CAVEATS"
 msgstr ""
 
@@ -2911,9 +2915,9 @@ msgstr ""
 #: pwconv.8.xml.out:128
 #: sg.1.xml.out:101
 #: suauth.5.xml.out:90
-#: useradd.8.xml.out:755
+#: useradd.8.xml.out:775
 #: userdel.8.xml.out:185
-#: usermod.8.xml.out:557
+#: usermod.8.xml.out:574
 #: vipw.8.xml.out:69
 #: vipw.8.xml.out:175
 msgid "/etc/group"
@@ -2933,7 +2937,7 @@ msgstr ""
 #: newusers.8.xml.out:413
 #: pwck.8.xml.out:263
 #: sg.1.xml.out:103
-#: useradd.8.xml.out:757
+#: useradd.8.xml.out:777
 #: userdel.8.xml.out:187
 #: vipw.8.xml.out:177
 msgid "Group account information."
@@ -2972,8 +2976,8 @@ msgstr ""
 #: newusers.8.xml.out:417
 #: pwconv.8.xml.out:129
 #: sg.1.xml.out:107
-#: useradd.8.xml.out:761
-#: usermod.8.xml.out:563
+#: useradd.8.xml.out:781
+#: usermod.8.xml.out:580
 #: vipw.8.xml.out:72
 #: vipw.8.xml.out:181
 msgid "/etc/gshadow"
@@ -2990,7 +2994,7 @@ msgstr ""
 #: newgrp.1.xml.out:120
 #: newusers.8.xml.out:419
 #: sg.1.xml.out:109
-#: useradd.8.xml.out:763
+#: useradd.8.xml.out:783
 #: vipw.8.xml.out:183
 msgid "Secure group account information."
 msgstr ""
@@ -3016,7 +3020,7 @@ msgstr ""
 #: newgrp.1.xml.out:142
 #: sg.1.xml.out:131
 #: userdel.8.xml.out:322
-#: usermod.8.xml.out:617
+#: usermod.8.xml.out:634
 msgid "gpasswd"
 msgstr ""
 
@@ -3039,9 +3043,9 @@ msgstr ""
 #: groupmems.8.xml.out:218
 #: groupmod.8.xml.out:338
 #: login.defs.5.xml.out:290
-#: useradd.8.xml.out:890
+#: useradd.8.xml.out:910
 #: userdel.8.xml.out:325
-#: usermod.8.xml.out:620
+#: usermod.8.xml.out:637
 msgid "groupadd"
 msgstr ""
 
@@ -3078,7 +3082,7 @@ msgstr ""
 #: chpasswd.8.xml.out:108
 #: chpasswd.8.xml.out:255
 #: login.defs.5.xml.out:259
-#: passwd.1.xml.out:474
+#: passwd.1.xml.out:468
 msgid "chpasswd"
 msgstr ""
 
@@ -3182,7 +3186,7 @@ msgstr ""
 #. (itstool) path: listitem/para
 #: chpasswd.8.xml.out:255
 #: newusers.8.xml.out:431
-#: passwd.1.xml.out:413
+#: passwd.1.xml.out:407
 msgid "PAM configuration for <_:command-1/>."
 msgstr ""
 
@@ -3209,14 +3213,14 @@ msgstr ""
 #: newusers.8.xml.out:230
 #: newusers.8.xml.out:252
 #: newusers.8.xml.out:431
-#: useradd.8.xml.out:902
+#: useradd.8.xml.out:922
 msgid "newusers"
 msgstr ""
 
 #. (itstool) path: para/phrase
 #: chpasswd.8.xml.out:270
 #: grpck.8.xml.out:285
-#: passwd.1.xml.out:482
+#: passwd.1.xml.out:479
 msgid "<_:citerefentry-1/>,"
 msgstr ""
 
@@ -3245,15 +3249,15 @@ msgstr ""
 #: useradd.8.xml.out:187
 #: useradd.8.xml.out:209
 #: useradd.8.xml.out:239
-#: useradd.8.xml.out:284
-#: useradd.8.xml.out:341
-#: useradd.8.xml.out:472
-#: useradd.8.xml.out:584
-#: useradd.8.xml.out:586
-#: useradd.8.xml.out:690
-#: useradd.8.xml.out:808
+#: useradd.8.xml.out:286
+#: useradd.8.xml.out:343
+#: useradd.8.xml.out:474
+#: useradd.8.xml.out:604
+#: useradd.8.xml.out:606
+#: useradd.8.xml.out:710
+#: useradd.8.xml.out:828
 #: userdel.8.xml.out:342
-#: usermod.8.xml.out:640
+#: usermod.8.xml.out:657
 msgid "useradd"
 msgstr ""
 
@@ -3278,8 +3282,8 @@ msgstr ""
 #: chsh.1.xml.out:97
 #: su.1.xml.out:163
 #: su.1.xml.out:199
-#: useradd.8.xml.out:517
-#: useradd.8.xml.out:655
+#: useradd.8.xml.out:519
+#: useradd.8.xml.out:675
 #: usermod.8.xml.out:357
 msgid "--shell"
 msgstr ""
@@ -3288,10 +3292,10 @@ msgstr ""
 #. (itstool) path: para/option
 #: chsh.1.xml.out:97
 #: su.1.xml.out:163
-#: useradd.8.xml.out:517
-#: useradd.8.xml.out:522
-#: useradd.8.xml.out:655
-#: useradd.8.xml.out:662
+#: useradd.8.xml.out:519
+#: useradd.8.xml.out:524
+#: useradd.8.xml.out:675
+#: useradd.8.xml.out:682
 #: usermod.8.xml.out:357
 msgid "SHELL"
 msgstr ""
@@ -3310,13 +3314,17 @@ msgstr ""
 #. (itstool) path: term/filename
 #: chsh.1.xml.out:120
 #: chsh.1.xml.out:124
-#: chsh.1.xml.out:153
+#: chsh.1.xml.out:130
+#: chsh.1.xml.out:143
+#: chsh.1.xml.out:172
+#: chsh.1.xml.out:184
 #: su.1.xml.out:198
 msgid "/etc/shells"
 msgstr ""
 
 #. (itstool) path: para/filename
 #: chsh.1.xml.out:123
+#: chsh.1.xml.out:142
 msgid "/bin/rsh"
 msgstr ""
 
@@ -3325,9 +3333,76 @@ msgstr ""
 msgid "The only restriction placed on the login shell is that the command name must be listed in <_:filename-1/>, unless the invoker is the superuser, and then any value may be added. An account with a restricted login shell may not change her login shell. For this reason, placing <_:filename-2/> in <_:filename-3/> is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value."
 msgstr ""
 
+#. (itstool) path: para/filename
+#. (itstool) path: term/filename
+#: chsh.1.xml.out:132
+#: chsh.1.xml.out:181
+msgid "%vendordir%/shells"
+msgstr ""
+
+#. (itstool) path: para/filename
+#: chsh.1.xml.out:133
+msgid "%vendordir%/shells.d/*"
+msgstr ""
+
+#. (itstool) path: para/filename
+#: chsh.1.xml.out:134
+msgid "/etc/shells.d/*"
+msgstr ""
+
+#. (itstool) path: para/filename
+#: chsh.1.xml.out:135
+msgid "/etc/shells.d/@filename@"
+msgstr ""
+
+#. (itstool) path: para/filename
+#: chsh.1.xml.out:136
+msgid "%vendordir%/shells.d/@filename@"
+msgstr ""
+
+#. (itstool) path: refsect1/para
+#: chsh.1.xml.out:128
+msgid "The only restriction placed on the login shell is that the command name must be listed in <_:filename-1/>. If this file does not exist, the definitions are taken from the files <_:filename-2/>, <_:filename-3/> and <_:filename-4/> in that order. If <_:filename-5/> exists, then <_:filename-6/> will not be used. If the invoker is the superuser any value may be added regardless what is defined in the configuration files. An account with a restricted login shell may not change her login shell."
+msgstr ""
+
+#. (itstool) path: refsect1/para
+#: chsh.1.xml.out:141
+msgid "For this reason, placing <_:filename-1/> in <_:filename-2/> is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value."
+msgstr ""
+
 #. (itstool) path: listitem/para
-#: chsh.1.xml.out:155
+#: chsh.1.xml.out:174
 msgid "List of valid login shells."
+msgstr ""
+
+#. (itstool) path: listitem/para
+#: chsh.1.xml.out:177
+msgid "User defined list of valid login shells."
+msgstr ""
+
+#. (itstool) path: listitem/para
+#: chsh.1.xml.out:183
+msgid "Default configuration file if <_:filename-1/> does not exist."
+msgstr ""
+
+#. (itstool) path: term/filename
+#: chsh.1.xml.out:188
+msgid "%vendordir%/shells.d"
+msgstr ""
+
+#. (itstool) path: listitem/para
+#: chsh.1.xml.out:190
+msgid "Directory for additional vendor specific configuration files."
+msgstr ""
+
+#. (itstool) path: term/filename
+#: chsh.1.xml.out:194
+msgid "/etc/shells.d"
+msgstr ""
+
+#. (itstool) path: listitem/para
+#: chsh.1.xml.out:196
+msgid "Directory for additional user defined configuration files."
 msgstr ""
 
 #. (itstool) path: refmeta/refentrytitle
@@ -3489,7 +3564,7 @@ msgstr ""
 #: gpasswd.1.xml.out:124
 #: groupmems.8.xml.out:83
 #: groupmod.8.xml.out:73
-#: passwd.1.xml.out:157
+#: passwd.1.xml.out:151
 #: usermod.8.xml.out:78
 #: usermod.8.xml.out:210
 msgid "-a"
@@ -3497,7 +3572,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: faillog.8.xml.out:72
-#: passwd.1.xml.out:157
+#: passwd.1.xml.out:151
 msgid "--all"
 msgstr ""
 
@@ -3908,7 +3983,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: gpasswd.1.xml.out:137
 #: groupmems.8.xml.out:94
-#: passwd.1.xml.out:168
+#: passwd.1.xml.out:162
 msgid "--delete"
 msgstr ""
 
@@ -4000,9 +4075,9 @@ msgstr ""
 #: groupmems.8.xml.out:221
 #: groupmod.8.xml.out:341
 #: login.defs.5.xml.out:299
-#: useradd.8.xml.out:893
+#: useradd.8.xml.out:913
 #: userdel.8.xml.out:328
-#: usermod.8.xml.out:623
+#: usermod.8.xml.out:640
 msgid "groupdel"
 msgstr ""
 
@@ -4024,9 +4099,9 @@ msgstr ""
 #: grpck.8.xml.out:107
 #: grpck.8.xml.out:283
 #: login.defs.5.xml.out:311
-#: useradd.8.xml.out:896
+#: useradd.8.xml.out:916
 #: userdel.8.xml.out:331
-#: usermod.8.xml.out:626
+#: usermod.8.xml.out:643
 msgid "groupmod"
 msgstr ""
 
@@ -4128,10 +4203,10 @@ msgstr ""
 #: useradd.8.xml.out:96
 #: useradd.8.xml.out:230
 #: useradd.8.xml.out:264
-#: useradd.8.xml.out:391
-#: useradd.8.xml.out:396
-#: useradd.8.xml.out:557
-#: useradd.8.xml.out:639
+#: useradd.8.xml.out:393
+#: useradd.8.xml.out:398
+#: useradd.8.xml.out:559
+#: useradd.8.xml.out:659
 #: usermod.8.xml.out:174
 #: vipw.8.xml.out:90
 msgid "-g"
@@ -4146,7 +4221,7 @@ msgstr ""
 #: groupadd.8.xml.out:102
 #: groupmod.8.xml.out:82
 #: useradd.8.xml.out:230
-#: useradd.8.xml.out:639
+#: useradd.8.xml.out:659
 #: usermod.8.xml.out:174
 msgid "--gid"
 msgstr ""
@@ -4163,7 +4238,7 @@ msgstr ""
 #: groupmod.8.xml.out:91
 #: groupmod.8.xml.out:137
 #: newusers.8.xml.out:300
-#: useradd.8.xml.out:469
+#: useradd.8.xml.out:471
 msgid "GID"
 msgstr ""
 
@@ -4194,7 +4269,7 @@ msgstr ""
 
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:111
-#: useradd.8.xml.out:541
+#: useradd.8.xml.out:543
 msgid "See also the <_:option-1/> option and the <_:option-2/> description."
 msgstr ""
 
@@ -4205,35 +4280,35 @@ msgstr ""
 #: groupadd.8.xml.out:134
 #: groupadd.8.xml.out:135
 #: groupadd.8.xml.out:138
-#: useradd.8.xml.out:303
-#: useradd.8.xml.out:314
-#: useradd.8.xml.out:317
+#: useradd.8.xml.out:305
+#: useradd.8.xml.out:316
 #: useradd.8.xml.out:319
-#: useradd.8.xml.out:320
+#: useradd.8.xml.out:321
+#: useradd.8.xml.out:322
 msgid "-K"
 msgstr ""
 
 #. (itstool) path: term/option
 #: groupadd.8.xml.out:125
-#: useradd.8.xml.out:303
+#: useradd.8.xml.out:305
 msgid "--key"
 msgstr ""
 
 #. (itstool) path: term/replaceable
 #: groupadd.8.xml.out:125
-#: useradd.8.xml.out:303
+#: useradd.8.xml.out:305
 msgid "KEY"
 msgstr ""
 
 #. (itstool) path: term/replaceable
 #: groupadd.8.xml.out:125
-#: useradd.8.xml.out:303
+#: useradd.8.xml.out:305
 msgid "VALUE"
 msgstr ""
 
 #. (itstool) path: varlistentry/term
 #: groupadd.8.xml.out:124
-#: useradd.8.xml.out:302
+#: useradd.8.xml.out:304
 msgid "<_:option-1/>, <_:option-2/> <_:replaceable-3/>=<_:replaceable-4/>"
 msgstr ""
 
@@ -4244,14 +4319,14 @@ msgstr ""
 
 #. (itstool) path: para/replaceable
 #: groupadd.8.xml.out:134
-#: useradd.8.xml.out:320
+#: useradd.8.xml.out:322
 msgid "100"
 msgstr ""
 
 #. (itstool) path: para/replaceable
 #: groupadd.8.xml.out:135
 #: groupadd.8.xml.out:138
-#: useradd.8.xml.out:321
+#: useradd.8.xml.out:323
 msgid "499"
 msgstr ""
 
@@ -4266,7 +4341,7 @@ msgstr ""
 #: groupadd.8.xml.out:333
 #: groupdel.8.xml.out:192
 #: groupmod.8.xml.out:295
-#: useradd.8.xml.out:853
+#: useradd.8.xml.out:873
 #: userdel.8.xml.out:265
 msgid "10"
 msgstr ""
@@ -4279,7 +4354,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: groupadd.8.xml.out:145
 #: groupmod.8.xml.out:132
-#: useradd.8.xml.out:405
+#: useradd.8.xml.out:407
 #: usermod.8.xml.out:271
 msgid "--non-unique"
 msgstr ""
@@ -4302,7 +4377,7 @@ msgstr ""
 #: login.1.xml.out:95
 #: login.1.xml.out:212
 #: su.1.xml.out:207
-#: useradd.8.xml.out:425
+#: useradd.8.xml.out:427
 #: usermod.8.xml.out:237
 #: usermod.8.xml.out:290
 #: usermod.8.xml.out:411
@@ -4313,7 +4388,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: groupadd.8.xml.out:158
 #: groupmod.8.xml.out:143
-#: useradd.8.xml.out:425
+#: useradd.8.xml.out:427
 #: usermod.8.xml.out:290
 msgid "--password"
 msgstr ""
@@ -4321,7 +4396,7 @@ msgstr ""
 #. (itstool) path: term/replaceable
 #: groupadd.8.xml.out:158
 #: groupmod.8.xml.out:143
-#: useradd.8.xml.out:425
+#: useradd.8.xml.out:427
 #: usermod.8.xml.out:290
 msgid "PASSWORD"
 msgstr ""
@@ -4336,10 +4411,10 @@ msgstr ""
 #: passwd.5.xml.out:170
 #: shadow.5.xml.out:88
 #: shadow.5.xml.out:94
-#: useradd.8.xml.out:430
-#: useradd.8.xml.out:887
+#: useradd.8.xml.out:432
+#: useradd.8.xml.out:907
 #: usermod.8.xml.out:295
-#: usermod.8.xml.out:614
+#: usermod.8.xml.out:631
 msgid "crypt"
 msgstr ""
 
@@ -4355,7 +4430,7 @@ msgstr ""
 #: grpck.8.xml.out:255
 #: gshadow.5.xml.out:63
 #: gshadow.5.xml.out:69
-#: passwd.1.xml.out:443
+#: passwd.1.xml.out:437
 #: passwd.5.xml.out:104
 #: passwd.5.xml.out:110
 #: passwd.5.xml.out:170
@@ -4365,11 +4440,11 @@ msgstr ""
 #: shadow.3.xml.out:217
 #: shadow.5.xml.out:89
 #: shadow.5.xml.out:95
-#: useradd.8.xml.out:431
-#: useradd.8.xml.out:829
-#: useradd.8.xml.out:887
+#: useradd.8.xml.out:433
+#: useradd.8.xml.out:849
+#: useradd.8.xml.out:907
 #: usermod.8.xml.out:296
-#: usermod.8.xml.out:614
+#: usermod.8.xml.out:631
 msgid "3"
 msgstr ""
 
@@ -4386,7 +4461,7 @@ msgstr ""
 #. (itstool) path: para/emphasis
 #: groupadd.8.xml.out:173
 #: groupmod.8.xml.out:152
-#: useradd.8.xml.out:444
+#: useradd.8.xml.out:446
 #: userdel.8.xml.out:93
 #: usermod.8.xml.out:299
 msgid "Note:"
@@ -4401,7 +4476,7 @@ msgstr ""
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:177
 #: groupmod.8.xml.out:156
-#: useradd.8.xml.out:448
+#: useradd.8.xml.out:450
 #: usermod.8.xml.out:309
 msgid "You should make sure the password respects the system's password policy."
 msgstr ""
@@ -4409,7 +4484,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: groupadd.8.xml.out:185
 #: newusers.8.xml.out:287
-#: useradd.8.xml.out:456
+#: useradd.8.xml.out:458
 msgid "--system"
 msgstr ""
 
@@ -4439,7 +4514,7 @@ msgstr ""
 #: groupadd.8.xml.out:214
 #: groupdel.8.xml.out:102
 #: groupmod.8.xml.out:177
-#: useradd.8.xml.out:502
+#: useradd.8.xml.out:504
 #: userdel.8.xml.out:136
 #: usermod.8.xml.out:341
 msgid "-P"
@@ -4449,7 +4524,7 @@ msgstr ""
 #: groupadd.8.xml.out:214
 #: groupdel.8.xml.out:102
 #: groupmod.8.xml.out:177
-#: useradd.8.xml.out:502
+#: useradd.8.xml.out:504
 #: userdel.8.xml.out:136
 #: usermod.8.xml.out:341
 msgid "--prefix"
@@ -4465,8 +4540,8 @@ msgstr ""
 #: groupmod.8.xml.out:177
 #: groupmod.8.xml.out:181
 #: groupmod.8.xml.out:183
-#: useradd.8.xml.out:502
-#: useradd.8.xml.out:507
+#: useradd.8.xml.out:504
+#: useradd.8.xml.out:509
 #: userdel.8.xml.out:136
 #: userdel.8.xml.out:140
 #: userdel.8.xml.out:142
@@ -4477,7 +4552,7 @@ msgstr ""
 
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:217
-#: useradd.8.xml.out:505
+#: useradd.8.xml.out:507
 msgid "Apply changes to configuration files under the root filesystem found under the directory <_:replaceable-1/>. This option does not chroot and is intended for preparing a cross-compilation target. Some limitations: NIS and LDAP users/groups are not verified. PAM authentication is using the host files. No SELINUX support."
 msgstr ""
 
@@ -4488,9 +4563,9 @@ msgstr ""
 #: groupmod.8.xml.out:194
 #: groupmod.8.xml.out:202
 #: useradd.8.xml.out:96
-#: useradd.8.xml.out:397
-#: useradd.8.xml.out:549
-#: useradd.8.xml.out:558
+#: useradd.8.xml.out:399
+#: useradd.8.xml.out:551
+#: useradd.8.xml.out:560
 #: usermod.8.xml.out:238
 #: usermod.8.xml.out:405
 msgid "-U"
@@ -4513,9 +4588,9 @@ msgstr ""
 #: groupadd.8.xml.out:237
 #: groupmod.8.xml.out:202
 #: useradd.8.xml.out:96
-#: useradd.8.xml.out:386
-#: useradd.8.xml.out:397
-#: useradd.8.xml.out:558
+#: useradd.8.xml.out:388
+#: useradd.8.xml.out:399
+#: useradd.8.xml.out:560
 msgid "-N"
 msgstr ""
 
@@ -4526,8 +4601,8 @@ msgstr ""
 #: login.defs.5.xml.out:448
 #: useradd.8.xml.out:97
 #: useradd.8.xml.out:240
-#: useradd.8.xml.out:398
-#: useradd.8.xml.out:559
+#: useradd.8.xml.out:400
+#: useradd.8.xml.out:561
 #: userdel.8.xml.out:86
 #: userdel.8.xml.out:296
 msgid "USERGROUPS_ENAB"
@@ -4536,8 +4611,8 @@ msgstr ""
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:235
 #: groupmod.8.xml.out:200
-#: useradd.8.xml.out:395
-#: useradd.8.xml.out:556
+#: useradd.8.xml.out:397
+#: useradd.8.xml.out:558
 msgid "The default behavior (if the <_:option-1/>, <_:option-2/>, and <_:option-3/> options are not specified) is defined by the <_:option-4/> variable in <_:filename-5/>."
 msgstr ""
 
@@ -4553,8 +4628,8 @@ msgstr ""
 
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:317
-#: passwd.1.xml.out:463
-#: useradd.8.xml.out:831
+#: passwd.1.xml.out:457
+#: useradd.8.xml.out:851
 msgid "invalid argument to option"
 msgstr ""
 
@@ -4562,9 +4637,9 @@ msgstr ""
 #: groupadd.8.xml.out:321
 #: groupmod.8.xml.out:277
 #: grpck.8.xml.out:261
-#: passwd.1.xml.out:449
+#: passwd.1.xml.out:443
 #: pwck.8.xml.out:311
-#: useradd.8.xml.out:835
+#: useradd.8.xml.out:855
 msgid "4"
 msgstr ""
 
@@ -4576,7 +4651,7 @@ msgstr ""
 #. (itstool) path: term/replaceable
 #: groupadd.8.xml.out:327
 #: groupmod.8.xml.out:289
-#: useradd.8.xml.out:847
+#: useradd.8.xml.out:867
 msgid "9"
 msgstr ""
 
@@ -4588,7 +4663,7 @@ msgstr ""
 #. (itstool) path: listitem/para
 #: groupadd.8.xml.out:335
 #: groupdel.8.xml.out:194
-#: useradd.8.xml.out:855
+#: useradd.8.xml.out:875
 #: userdel.8.xml.out:267
 msgid "can't update group file"
 msgstr ""
@@ -4604,7 +4679,7 @@ msgstr ""
 #: groupmems.8.xml.out:227
 #: groupmod.8.xml.out:350
 #: login.defs.5.xml.out:480
-#: useradd.8.xml.out:913
+#: useradd.8.xml.out:933
 #: userdel.8.xml.out:39
 #: userdel.8.xml.out:46
 #: userdel.8.xml.out:51
@@ -4616,7 +4691,7 @@ msgstr ""
 #: userdel.8.xml.out:283
 #: userdel.8.xml.out:298
 #: userdel.8.xml.out:300
-#: usermod.8.xml.out:643
+#: usermod.8.xml.out:660
 msgid "userdel"
 msgstr ""
 
@@ -4631,10 +4706,10 @@ msgstr ""
 #: groupmems.8.xml.out:230
 #: groupmod.8.xml.out:353
 #: login.defs.5.xml.out:490
-#: passwd.1.xml.out:488
+#: passwd.1.xml.out:485
 #: pwck.8.xml.out:140
 #: pwck.8.xml.out:348
-#: useradd.8.xml.out:916
+#: useradd.8.xml.out:936
 #: userdel.8.xml.out:345
 #: usermod.8.xml.out:40
 #: usermod.8.xml.out:47
@@ -4642,7 +4717,7 @@ msgstr ""
 #: usermod.8.xml.out:64
 #: usermod.8.xml.out:72
 #: usermod.8.xml.out:263
-#: usermod.8.xml.out:522
+#: usermod.8.xml.out:539
 msgid "usermod"
 msgstr ""
 
@@ -4673,9 +4748,9 @@ msgstr ""
 #: suauth.5.xml.out:87
 #: useradd.8.xml.out:230
 #: useradd.8.xml.out:249
-#: useradd.8.xml.out:392
-#: useradd.8.xml.out:639
-#: useradd.8.xml.out:648
+#: useradd.8.xml.out:394
+#: useradd.8.xml.out:659
+#: useradd.8.xml.out:668
 #: usermod.8.xml.out:174
 msgid "GROUP"
 msgstr ""
@@ -4710,16 +4785,16 @@ msgstr ""
 #. (itstool) path: term/replaceable
 #: groupdel.8.xml.out:180
 #: groupmod.8.xml.out:283
-#: passwd.1.xml.out:461
+#: passwd.1.xml.out:455
 #: pwck.8.xml.out:323
-#: useradd.8.xml.out:841
+#: useradd.8.xml.out:861
 #: userdel.8.xml.out:253
 msgid "6"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: groupdel.8.xml.out:182
-#: useradd.8.xml.out:843
+#: useradd.8.xml.out:863
 msgid "specified group doesn't exist"
 msgstr ""
 
@@ -4882,7 +4957,7 @@ msgstr ""
 
 #. (itstool) path: refsect1/programlisting
 #: groupmems.8.xml.out:167
-msgid "$ groupadd -r groups $ chmod 2710 groupmems $ chown root.groups groupmems $ groupmems -g groups -a gk4"
+msgid "$ groupadd -r groups $ chmod 2710 groupmems $ chown root:groups groupmems $ groupmems -g groups -a gk4"
 msgstr ""
 
 #. (itstool) path: listitem/para
@@ -4944,7 +5019,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: groupmod.8.xml.out:121
-#: passwd.1.xml.out:246
+#: passwd.1.xml.out:240
 msgid "-n"
 msgstr ""
 
@@ -5022,7 +5097,7 @@ msgstr ""
 
 #. (itstool) path: term/replaceable
 #: groupmod.8.xml.out:307
-#: useradd.8.xml.out:859
+#: useradd.8.xml.out:879
 #: userdel.8.xml.out:271
 msgid "12"
 msgstr ""
@@ -5235,8 +5310,8 @@ msgstr ""
 #. (itstool) path: para/option
 #: grpck.8.xml.out:172
 #: lastlog.8.xml.out:117
-#: passwd.1.xml.out:161
-#: passwd.1.xml.out:291
+#: passwd.1.xml.out:155
+#: passwd.1.xml.out:285
 msgid "-S"
 msgstr ""
 
@@ -5480,7 +5555,7 @@ msgstr ""
 #. (itstool) path: term/option
 #: lastlog.8.xml.out:75
 #: useradd.8.xml.out:118
-#: useradd.8.xml.out:592
+#: useradd.8.xml.out:612
 #: usermod.8.xml.out:89
 msgid "-b"
 msgstr ""
@@ -5778,7 +5853,7 @@ msgstr ""
 #: su.1.xml.out:95
 #: su.1.xml.out:153
 #: su.1.xml.out:155
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 msgid "username"
 msgstr ""
 
@@ -6348,7 +6423,7 @@ msgstr ""
 #. (itstool) path: para/emphasis
 #: login.defs.5.xml.out:133
 #: useradd.8.xml.out:242
-#: useradd.8.xml.out:380
+#: useradd.8.xml.out:382
 #: userdel.8.xml.out:87
 #: userdel.8.xml.out:297
 msgid "yes"
@@ -6374,8 +6449,8 @@ msgstr ""
 #. (itstool) path: para/replaceable
 #: login.defs.5.xml.out:193
 #: pwconv.8.xml.out:146
-#: useradd.8.xml.out:309
-#: useradd.8.xml.out:314
+#: useradd.8.xml.out:311
+#: useradd.8.xml.out:316
 msgid "PASS_MAX_DAYS"
 msgstr ""
 
@@ -6969,20 +7044,20 @@ msgstr ""
 
 #. (itstool) path: listitem/para
 #: newusers.8.xml.out:290
-#: useradd.8.xml.out:459
+#: useradd.8.xml.out:461
 msgid "Create a system account."
 msgstr ""
 
 #. (itstool) path: para/option
 #: newusers.8.xml.out:297
-#: useradd.8.xml.out:466
+#: useradd.8.xml.out:468
 #: usermod.8.xml.out:398
 msgid "SYS_UID_MIN"
 msgstr ""
 
 #. (itstool) path: para/option
 #: newusers.8.xml.out:297
-#: useradd.8.xml.out:466
+#: useradd.8.xml.out:468
 #: usermod.8.xml.out:398
 msgid "SYS_UID_MAX"
 msgstr ""
@@ -6990,10 +7065,10 @@ msgstr ""
 #. (itstool) path: para/option
 #. (itstool) path: para/replaceable
 #: newusers.8.xml.out:299
-#: useradd.8.xml.out:308
-#: useradd.8.xml.out:319
-#: useradd.8.xml.out:468
-#: useradd.8.xml.out:538
+#: useradd.8.xml.out:310
+#: useradd.8.xml.out:321
+#: useradd.8.xml.out:470
+#: useradd.8.xml.out:540
 #: usermod.8.xml.out:397
 msgid "UID_MIN"
 msgstr ""
@@ -7001,17 +7076,17 @@ msgstr ""
 #. (itstool) path: para/option
 #. (itstool) path: para/replaceable
 #: newusers.8.xml.out:299
-#: useradd.8.xml.out:308
-#: useradd.8.xml.out:321
-#: useradd.8.xml.out:468
-#: useradd.8.xml.out:543
+#: useradd.8.xml.out:310
+#: useradd.8.xml.out:323
+#: useradd.8.xml.out:470
+#: useradd.8.xml.out:545
 #: usermod.8.xml.out:397
 msgid "UID_MAX"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: newusers.8.xml.out:293
-#: useradd.8.xml.out:462
+#: useradd.8.xml.out:464
 msgid "System users will be created with no aging information in <_:filename-1/>, and their numeric identifiers are chosen in the <_:option-2/>-<_:option-3/> range, defined in <_:filename-4/>, instead of <_:option-5/>-<_:option-6/> (and their <_:option-7/> counterparts for the creation of groups)."
 msgstr ""
 
@@ -7029,16 +7104,16 @@ msgstr ""
 #. (itstool) path: para/filename
 #: newusers.8.xml.out:435
 #: useradd.8.xml.out:222
-#: useradd.8.xml.out:481
-#: useradd.8.xml.out:785
+#: useradd.8.xml.out:483
+#: useradd.8.xml.out:805
 #: userdel.8.xml.out:215
-#: usermod.8.xml.out:587
+#: usermod.8.xml.out:604
 msgid "/etc/subgid"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: newusers.8.xml.out:437
-#: useradd.8.xml.out:787
+#: useradd.8.xml.out:807
 #: userdel.8.xml.out:217
 msgid "Per user subordinate group IDs."
 msgstr ""
@@ -7047,41 +7122,41 @@ msgstr ""
 #. (itstool) path: para/filename
 #: newusers.8.xml.out:441
 #: useradd.8.xml.out:222
-#: useradd.8.xml.out:480
-#: useradd.8.xml.out:791
+#: useradd.8.xml.out:482
+#: useradd.8.xml.out:811
 #: userdel.8.xml.out:221
-#: usermod.8.xml.out:593
+#: usermod.8.xml.out:610
 msgid "/etc/subuid"
 msgstr ""
 
 #. (itstool) path: listitem/para
 #: newusers.8.xml.out:443
-#: useradd.8.xml.out:793
+#: useradd.8.xml.out:813
 #: userdel.8.xml.out:223
 msgid "Per user subordinate user IDs."
 msgstr ""
 
 #. (itstool) path: citerefentry/refentrytitle
 #: newusers.8.xml.out:460
-#: useradd.8.xml.out:906
+#: useradd.8.xml.out:926
 #: userdel.8.xml.out:335
-#: usermod.8.xml.out:633
+#: usermod.8.xml.out:650
 msgid "subgid"
 msgstr ""
 
 #. (itstool) path: citerefentry/refentrytitle
 #: newusers.8.xml.out:463
-#: useradd.8.xml.out:909
+#: useradd.8.xml.out:929
 #: userdel.8.xml.out:338
-#: usermod.8.xml.out:636
+#: usermod.8.xml.out:653
 msgid "subuid"
 msgstr ""
 
 #. (itstool) path: para/phrase
 #: newusers.8.xml.out:458
-#: useradd.8.xml.out:904
+#: useradd.8.xml.out:924
 #: userdel.8.xml.out:333
-#: usermod.8.xml.out:631
+#: usermod.8.xml.out:648
 msgid "<_:citerefentry-1/>, <_:citerefentry-2/>,"
 msgstr ""
 
@@ -7152,239 +7227,234 @@ msgstr ""
 
 #. (itstool) path: refsect2/para
 #: passwd.1.xml.out:96
-msgid "Then, the password is tested for complexity. As a general guideline, passwords should consist of 6 to 8 characters including one or more characters from each of the following sets:"
-msgstr ""
-
-#. (itstool) path: listitem/para
-#: passwd.1.xml.out:104
-msgid "lower case alphabetics"
-msgstr ""
-
-#. (itstool) path: listitem/para
-#: passwd.1.xml.out:107
-msgid "digits 0 thru 9"
-msgstr ""
-
-#. (itstool) path: listitem/para
-#: passwd.1.xml.out:110
-msgid "punctuation marks"
-msgstr ""
-
-#. (itstool) path: refsect2/para
-#: passwd.1.xml.out:114
-msgid "Care must be taken not to include the system default erase or kill characters. <_:command-1/> will reject any password which is not suitably complex."
+msgid "Then, the password is tested for complexity. <_:command-1/> will reject any password which is not suitably complex. Care must be taken not to include the system default erase or kill characters."
 msgstr ""
 
 #. (itstool) path: refsect2/title
-#: passwd.1.xml.out:123
+#: passwd.1.xml.out:106
 msgid "Hints for user passwords"
 msgstr ""
 
 #. (itstool) path: para/emphasis
-#: passwd.1.xml.out:127
+#: passwd.1.xml.out:110
 msgid "UNIX"
 msgstr ""
 
 #. (itstool) path: refsect2/para
-#: passwd.1.xml.out:124
+#: passwd.1.xml.out:107
 msgid "The security of a password depends upon the strength of the encryption algorithm and the size of the key space. The legacy <_:emphasis-1/> System encryption method is based on the NBS DES algorithm. More recent methods are now recommended (see <_:option-2/>). The size of the key space depends upon the randomness of the password which is selected."
 msgstr ""
 
 #. (itstool) path: refsect2/para
-#: passwd.1.xml.out:133
+#: passwd.1.xml.out:116
 msgid "Compromises in password security normally result from careless password selection or handling. For this reason, you should not select a password which appears in a dictionary or which must be written down. The password should also not be a proper name, your license number, birth date, or street address. Any of these may be used as guesses to violate system security."
 msgstr ""
 
 #. (itstool) path: refsect2/para
-#: passwd.1.xml.out:142
+#: passwd.1.xml.out:125
+msgid "As a general guideline, passwords should be long and random. It's fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations. Being an exponential equation, it's apparent that the exponent (the length) is more important than the base (the size of the character set)."
+msgstr ""
+
+#. (itstool) path: refsect2/para
+#: passwd.1.xml.out:136
 msgid "You can find advice on how to choose a strong password on http://en.wikipedia.org/wiki/Password_strength"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:160
+#: passwd.1.xml.out:154
 msgid "This option can be used only with <_:option-1/> and causes show status for all users."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:171
+#: passwd.1.xml.out:165
 msgid "Delete a user's password (make it empty). This is a quick way to disable a password for an account. It will set the named account passwordless."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:180
+#: passwd.1.xml.out:174
 msgid "--expire"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:183
+#: passwd.1.xml.out:177
 msgid "Immediately expire an account's password. This in effect can force a user to change their password at the user's next login."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:200
+#: passwd.1.xml.out:194
 msgid "This option is used to disable an account after the password has been expired for a number of days. After a user account has had an expired password for <_:replaceable-1/> days, the user may no longer sign on to the account."
 msgstr ""
 
 #. (itstool) path: term/option
 #. (itstool) path: para/option
-#: passwd.1.xml.out:210
-#: useradd.8.xml.out:278
-#: useradd.8.xml.out:356
+#: passwd.1.xml.out:204
+#: useradd.8.xml.out:280
+#: useradd.8.xml.out:358
 msgid "-k"
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:210
+#: passwd.1.xml.out:204
 msgid "--keep-tokens"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:213
+#: passwd.1.xml.out:207
 msgid "Indicate password change should be performed only for expired authentication tokens (passwords). The user wishes to keep their non-expired tokens as before."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:222
+#: passwd.1.xml.out:216
 #: usermod.8.xml.out:231
 msgid "--lock"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:225
+#: passwd.1.xml.out:219
 msgid "Lock the password of the named account. This option disables a password by changing it to a value which matches no possible encrypted value (it adds a ´!´ at the beginning of the password)."
 msgstr ""
 
 #. (itstool) path: para/command
-#: passwd.1.xml.out:235
+#: passwd.1.xml.out:229
 msgid "usermod --expiredate 1"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:231
+#: passwd.1.xml.out:225
 msgid "Note that this does not disable the account. The user may still be able to login using another authentication token (e.g. an SSH key). To disable the account, administrators should use <_:command-1/> (this set the account's expire date to Jan 2, 1970)."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:238
+#: passwd.1.xml.out:232
 msgid "Users with a locked password are not allowed to change their password."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:258
+#: passwd.1.xml.out:252
 #: pwck.8.xml.out:179
 #: vipw.8.xml.out:108
 msgid "-q"
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:258
+#: passwd.1.xml.out:252
 #: pwck.8.xml.out:179
 #: vipw.8.xml.out:108
 msgid "--quiet"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:261
+#: passwd.1.xml.out:255
 #: vipw.8.xml.out:110
 msgid "Quiet mode."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:268
+#: passwd.1.xml.out:262
 msgid "--repository"
 msgstr ""
 
 #. (itstool) path: term/replaceable
 #. (itstool) path: para/replaceable
-#: passwd.1.xml.out:268
-#: passwd.1.xml.out:272
+#: passwd.1.xml.out:262
+#: passwd.1.xml.out:266
 msgid "REPOSITORY"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:271
+#: passwd.1.xml.out:265
 msgid "change password in <_:replaceable-1/> repository"
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:291
+#: passwd.1.xml.out:285
 msgid "--status"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:294
+#: passwd.1.xml.out:288
 msgid "Display account status information. The status information consists of 7 fields. The first field is the user's login name. The second field indicates if the user account has a locked password (L), has no password (NP), or has a usable password (P). The third field gives the date of the last password change. The next four fields are the minimum age, maximum age, warning period, and inactivity period for the password. These ages are expressed in days."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:309
+#: passwd.1.xml.out:303
 #: usermod.8.xml.out:405
 msgid "--unlock"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:312
+#: passwd.1.xml.out:306
 msgid "Unlock the password of the named account. This option re-enables a password by changing the password back to its previous value (to the value before using the <_:option-1/> option)."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:325
+#: passwd.1.xml.out:319
 msgid "Set the number of days of warning before a password change is required. The <_:replaceable-1/> option is the number of days prior to the password expiring that a user will be warned that their password is about to expire."
 msgstr ""
 
 #. (itstool) path: term/option
-#: passwd.1.xml.out:335
+#: passwd.1.xml.out:329
 msgid "-x"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:338
+#: passwd.1.xml.out:332
 msgid "Set the maximum number of days a password remains valid. After <_:replaceable-1/>, the password is required to be changed."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: passwd.1.xml.out:355
+#: passwd.1.xml.out:349
 msgid "Password complexity checking may vary from site to site. The user is urged to select a password as complex as he or she feels comfortable with."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: passwd.1.xml.out:360
+#: passwd.1.xml.out:354
 msgid "Users may not be able to change their password on a system if NIS is enabled and they are not logged into the NIS server."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: passwd.1.xml.out:365
+#: passwd.1.xml.out:359
 msgid "<_:command-1/> uses PAM to authenticate users and to change their passwords."
 msgstr ""
 
 #. (itstool) path: term/filename
-#: passwd.1.xml.out:411
+#: passwd.1.xml.out:405
 msgid "/etc/pam.d/passwd"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:439
+#: passwd.1.xml.out:433
 msgid "invalid combination of options"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:445
+#: passwd.1.xml.out:439
 msgid "unexpected failure, nothing done"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:451
+#: passwd.1.xml.out:445
 msgid "unexpected failure, <_:filename-1/> file missing"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: passwd.1.xml.out:457
+#: passwd.1.xml.out:451
 msgid "<_:filename-1/> file busy, try again"
 msgstr ""
 
+#. (itstool) path: citerefentry/refentrytitle
+#: passwd.1.xml.out:471
+msgid "makepasswd"
+msgstr ""
+
 #. (itstool) path: refsect1/para
-#: passwd.1.xml.out:472
-msgid "<_:citerefentry-1/>, <_:citerefentry-2/>, <_:citerefentry-3/>, <_:phrase-4/> <_:citerefentry-5/>."
+#: passwd.1.xml.out:466
+msgid "<_:citerefentry-1/>, <_:citerefentry-2/>, <_:citerefentry-3/>, <_:citerefentry-4/>, <_:phrase-5/> <_:citerefentry-6/>."
+msgstr ""
+
+#. (itstool) path: refsect1/para
+#: passwd.1.xml.out:489
+msgid "The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: \"https://xkcd.com/936/\""
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose
@@ -8841,8 +8911,8 @@ msgstr ""
 #: useradd.8.xml.out:76
 #: useradd.8.xml.out:86
 #: useradd.8.xml.out:169
-#: useradd.8.xml.out:583
-#: useradd.8.xml.out:585
+#: useradd.8.xml.out:603
+#: useradd.8.xml.out:605
 msgid "-D"
 msgstr ""
 
@@ -8858,7 +8928,7 @@ msgstr ""
 
 #. (itstool) path: term/option
 #: useradd.8.xml.out:118
-#: useradd.8.xml.out:592
+#: useradd.8.xml.out:612
 msgid "--base-dir"
 msgstr ""
 
@@ -8867,8 +8937,8 @@ msgstr ""
 #: useradd.8.xml.out:118
 #: useradd.8.xml.out:124
 #: useradd.8.xml.out:159
-#: useradd.8.xml.out:592
-#: useradd.8.xml.out:598
+#: useradd.8.xml.out:612
+#: useradd.8.xml.out:618
 msgid "BASE_DIR"
 msgstr ""
 
@@ -8889,7 +8959,7 @@ msgstr ""
 
 #. (itstool) path: para/option
 #: useradd.8.xml.out:131
-#: useradd.8.xml.out:603
+#: useradd.8.xml.out:623
 msgid "HOME"
 msgstr ""
 
@@ -8899,17 +8969,18 @@ msgstr ""
 #: useradd.8.xml.out:189
 #: useradd.8.xml.out:212
 #: useradd.8.xml.out:250
-#: useradd.8.xml.out:293
-#: useradd.8.xml.out:343
-#: useradd.8.xml.out:393
-#: useradd.8.xml.out:523
-#: useradd.8.xml.out:604
-#: useradd.8.xml.out:616
-#: useradd.8.xml.out:633
-#: useradd.8.xml.out:649
-#: useradd.8.xml.out:663
-#: useradd.8.xml.out:677
-#: useradd.8.xml.out:767
+#: useradd.8.xml.out:267
+#: useradd.8.xml.out:295
+#: useradd.8.xml.out:345
+#: useradd.8.xml.out:395
+#: useradd.8.xml.out:525
+#: useradd.8.xml.out:624
+#: useradd.8.xml.out:636
+#: useradd.8.xml.out:653
+#: useradd.8.xml.out:669
+#: useradd.8.xml.out:683
+#: useradd.8.xml.out:697
+#: useradd.8.xml.out:787
 #: usermod.8.xml.out:419
 msgid "/etc/default/useradd"
 msgstr ""
@@ -8974,7 +9045,7 @@ msgstr ""
 
 #. (itstool) path: para/option
 #: useradd.8.xml.out:188
-#: useradd.8.xml.out:615
+#: useradd.8.xml.out:635
 #: usermod.8.xml.out:418
 msgid "EXPIRE"
 msgstr ""
@@ -8997,7 +9068,7 @@ msgstr ""
 #. (itstool) path: term/option
 #. (itstool) path: para/option
 #: useradd.8.xml.out:218
-#: useradd.8.xml.out:482
+#: useradd.8.xml.out:484
 msgid "-F"
 msgstr ""
 
@@ -9070,411 +9141,443 @@ msgstr ""
 msgid "<_:option-1/>, <_:option-2/> <_:replaceable-3/>[<_:emphasis-4/>[<_:emphasis-5/>]]]"
 msgstr ""
 
+#. (itstool) path: para/option
+#: useradd.8.xml.out:267
+msgid "GROUPS"
+msgstr ""
+
 #. (itstool) path: listitem/para
 #: useradd.8.xml.out:260
-msgid "A list of supplementary groups which the user is also a member of. Each group is separated from the next by a comma, with no intervening whitespace. The groups are subject to the same restrictions as the group given with the <_:option-1/> option. The default is for the user to belong only to the initial group."
+msgid "A list of supplementary groups which the user is also a member of. Each group is separated from the next by a comma, with no intervening whitespace. The groups are subject to the same restrictions as the group given with the <_:option-1/> option. The default is for the user to belong only to the initial group. In addition to passing in the -G flag, you can add the option <_:option-2/> to the file <_:filename-3/> which in turn will add all users to those supplementary groups."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:278
+#: useradd.8.xml.out:280
 msgid "--skel"
 msgstr ""
 
 #. (itstool) path: term/replaceable
-#: useradd.8.xml.out:278
+#: useradd.8.xml.out:280
 msgid "SKEL_DIR"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:281
+#: useradd.8.xml.out:283
 msgid "The skeleton directory, which contains files and directories to be copied in the user's home directory, when the home directory is created by <_:command-1/>."
 msgstr ""
 
 #. (itstool) path: para/option
 #. (itstool) path: term/option
-#: useradd.8.xml.out:288
-#: useradd.8.xml.out:350
+#: useradd.8.xml.out:290
+#: useradd.8.xml.out:352
 msgid "--create-home"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:286
+#: useradd.8.xml.out:288
+#: useradd.8.xml.out:592
+#: usermod.8.xml.out:524
 msgid "This option is only valid if the <_:option-1/> (or <_:option-2/>) option is specified."
 msgstr ""
 
 #. (itstool) path: para/option
-#: useradd.8.xml.out:292
+#: useradd.8.xml.out:294
 msgid "SKEL"
 msgstr ""
 
 #. (itstool) path: para/filename
-#: useradd.8.xml.out:294
+#: useradd.8.xml.out:296
 msgid "/etc/skel"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:290
+#: useradd.8.xml.out:292
 msgid "If this option is not set, the skeleton directory is defined by the <_:option-1/> variable in <_:filename-2/> or, by default, <_:filename-3/>."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:296
+#: useradd.8.xml.out:298
 msgid "If possible, the ACLs and extended attributes are copied."
 msgstr ""
 
 #. (itstool) path: para/option
-#: useradd.8.xml.out:309
+#: useradd.8.xml.out:311
 msgid "UMASK"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:306
+#: useradd.8.xml.out:308
 msgid "Overrides <_:filename-1/> defaults (<_:option-2/>, <_:option-3/>, <_:option-4/>, <_:option-5/> and others)."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:312
+#: useradd.8.xml.out:314
 msgid "Example: <_:option-1/> <_:replaceable-2/>=<_:replaceable-3/> can be used when creating an account to turn off password aging. Multiple <_:option-4/> options can be specified, e.g.: <_:option-5/> <_:replaceable-6/> =<_:replaceable-7/> <_:option-8/> <_:replaceable-9/>=<_:replaceable-10/>"
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:330
+#: useradd.8.xml.out:332
 msgid "--no-log-init"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:332
+#: useradd.8.xml.out:334
 msgid "Do not add the user to the lastlog and faillog databases."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:335
+#: useradd.8.xml.out:337
 msgid "By default, the user's entries in the lastlog and faillog databases are reset to avoid reusing the entry from a previously deleted user."
 msgstr ""
 
 #. (itstool) path: para/option
-#: useradd.8.xml.out:342
+#: useradd.8.xml.out:344
 msgid "LOG_INIT"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:340
+#: useradd.8.xml.out:342
 msgid "If this option is not specified, <_:command-1/> will also consult the variable <_:option-2/> in the <_:filename-3/> if set to no the user will not be added to the lastlog and faillog databases."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:353
+#: useradd.8.xml.out:355
 msgid "Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the <_:option-1/> option) will be copied to the home directory."
 msgstr ""
 
 #. (itstool) path: para/option
-#: useradd.8.xml.out:361
-#: useradd.8.xml.out:379
-#: useradd.8.xml.out:475
+#: useradd.8.xml.out:363
+#: useradd.8.xml.out:381
+#: useradd.8.xml.out:477
 msgid "CREATE_HOME"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:359
+#: useradd.8.xml.out:361
 msgid "By default, if this option is not specified and <_:option-1/> is not enabled, no home directories are created."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:364
+#: useradd.8.xml.out:366
 msgid "The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory cannot be created or accessed."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:373
+#: useradd.8.xml.out:375
 msgid "--no-create-home"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:376
+#: useradd.8.xml.out:378
 msgid "Do not create the user's home directory, even if the system wide setting from <_:filename-1/> (<_:option-2/>) is set to <_:replaceable-3/>."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:386
+#: useradd.8.xml.out:388
 msgid "--no-user-group"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:389
+#: useradd.8.xml.out:391
 msgid "Do not create a group with the same name as the user, but add the user to the group specified by the <_:option-1/> option or by the <_:option-2/> variable in <_:filename-3/>."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:408
+#: useradd.8.xml.out:410
 msgid "allows the creation of an account with an already existing UID."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:412
+#: useradd.8.xml.out:414
 #: usermod.8.xml.out:277
 msgid "This option is only valid in combination with the <_:option-1/> option. As a user identity serves as key to map between users on one hand and permissions, file ownerships and other aspects that determine the system's behavior on the other hand, more than one login name will access the account of the given UID."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:428
+#: useradd.8.xml.out:430
 msgid "defines an initial password for the account. PASSWORD is expected to be encrypted, as returned by <_:citerefentry-1/>. Within a shell script, this option allows to create efficiently batches of users."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:435
+#: useradd.8.xml.out:437
 msgid "Without this option, the new account will be locked and with no password defined, i.e. a single exclamation mark in the respective field of <_:filename-1/>. This is a state where the user won't be able to access the account or to define a password himself."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:443
+#: useradd.8.xml.out:445
 msgid "<_:emphasis-1/>Avoid this option on the command line because the password (or encrypted password) will be visible by users listing the processes."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:471
+#: useradd.8.xml.out:473
 msgid "Note that <_:command-1/> will not create a home directory for such a user, regardless of the default setting in <_:filename-2/> (<_:option-3/>). You have to specify the <_:option-4/> options if you want a home directory for a system account to be created."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:479
+#: useradd.8.xml.out:481
 msgid "Note that this option will not update <_:filename-1/> and <_:filename-2/>. You have to specify the <_:option-3/> options if you want to update the files for a system account to be created."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:520
+#: useradd.8.xml.out:522
 msgid "sets the path to the user's login shell. Without this option, the system will use the <_:option-1/> variable specified in <_:filename-2/>, or, if that is as well not set, the field for the login shell in <_:filename-3/> remains empty."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:531
+#: useradd.8.xml.out:533
 #: usermod.8.xml.out:369
 msgid "--uid"
 msgstr ""
 
 #. (itstool) path: term/replaceable
-#: useradd.8.xml.out:531
+#: useradd.8.xml.out:533
 #: usermod.8.xml.out:369
 msgid "UID"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:534
+#: useradd.8.xml.out:536
 msgid "The numerical value of the user's ID. This value must be unique, unless the <_:option-1/> option is used. The value must be non-negative. The default is to use the smallest ID value greater than or equal to <_:option-2/> and greater than every other user."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:549
+#: useradd.8.xml.out:551
 msgid "--user-group"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:552
+#: useradd.8.xml.out:554
 msgid "Create a group with the same name as the user, and add the user to this group."
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:566
+#. (itstool) path: para/option
+#: useradd.8.xml.out:568
+#: useradd.8.xml.out:593
 #: userdel.8.xml.out:153
 #: usermod.8.xml.out:501
+#: usermod.8.xml.out:525
 msgid "-Z"
 msgstr ""
 
 #. (itstool) path: term/option
-#: useradd.8.xml.out:566
+#. (itstool) path: para/option
+#: useradd.8.xml.out:568
+#: useradd.8.xml.out:594
 #: userdel.8.xml.out:153
 #: usermod.8.xml.out:501
+#: usermod.8.xml.out:526
 msgid "--selinux-user"
 msgstr ""
 
 #. (itstool) path: term/replaceable
-#: useradd.8.xml.out:566
+#: useradd.8.xml.out:568
 #: usermod.8.xml.out:501
 msgid "SEUSER"
 msgstr ""
 
 #. (itstool) path: citerefentry/refentrytitle
-#: useradd.8.xml.out:573
+#: useradd.8.xml.out:575
+#: useradd.8.xml.out:589
+#: usermod.8.xml.out:521
 msgid "semanage"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:569
-msgid "defines the SELinux user for the new account. Without this option, a SELinux uses the default user. Note that the shadow system doesn't store the selinux-user, it uses <_:citerefentry-1/> for that."
+#: useradd.8.xml.out:571
+msgid "defines the SELinux user for the new account. Without this option, SELinux uses the default user. Note that the shadow system doesn't store the selinux-user, it uses <_:citerefentry-1/> for that."
+msgstr ""
+
+#. (itstool) path: term/option
+#: useradd.8.xml.out:582
+#: usermod.8.xml.out:515
+msgid "--selinux-range"
+msgstr ""
+
+#. (itstool) path: term/replaceable
+#: useradd.8.xml.out:582
+#: usermod.8.xml.out:515
+msgid "SERANGE"
+msgstr ""
+
+#. (itstool) path: listitem/para
+#: useradd.8.xml.out:585
+msgid "defines the SELinux MLS range for the new account. Without this option, SELinux uses the default range. Note that the shadow system doesn't store the selinux-range, it uses <_:citerefentry-1/> for that."
 msgstr ""
 
 #. (itstool) path: refsect2/title
-#: useradd.8.xml.out:581
+#: useradd.8.xml.out:601
 msgid "Changing the default values"
 msgstr ""
 
 #. (itstool) path: refsect2/para
-#: useradd.8.xml.out:582
+#: useradd.8.xml.out:602
 msgid "When invoked with only the <_:option-1/> option, <_:command-2/> will display the current default values. When invoked with <_:option-3/> plus other options, <_:command-4/> will update the default values for the specified options. Valid default-changing options are:"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:595
+#: useradd.8.xml.out:615
 msgid "sets the path prefix for a new user's home directory. The user's name will be affixed to the end of <_:replaceable-1/> to form the new user's home directory name, if the <_:option-2/> option is not used when creating a new account."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:602
-#: useradd.8.xml.out:614
-#: useradd.8.xml.out:631
-#: useradd.8.xml.out:647
-#: useradd.8.xml.out:661
+#: useradd.8.xml.out:622
+#: useradd.8.xml.out:634
+#: useradd.8.xml.out:651
+#: useradd.8.xml.out:667
+#: useradd.8.xml.out:681
 msgid "This option sets the <_:option-1/> variable in <_:filename-2/>."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:613
+#: useradd.8.xml.out:633
 msgid "sets the date on which newly created user accounts are disabled."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:625
+#: useradd.8.xml.out:645
 msgid "defines the number of days after the password exceeded its maximum age where the user is expected to replace this password. See <_:citerefentry-1/>for more information."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:642
+#: useradd.8.xml.out:662
 msgid "sets the default primary group for newly created users, accepting group names or a numerical group ID. The named group must exist, and the GID must have an existing entry."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:658
+#: useradd.8.xml.out:678
 msgid "defines the default login shell for new users."
 msgstr ""
 
 #. (itstool) path: refsect1/title
-#: useradd.8.xml.out:673
+#: useradd.8.xml.out:693
 msgid "NOTES"
 msgstr ""
 
 #. (itstool) path: para/filename
 #. (itstool) path: term/filename
-#: useradd.8.xml.out:675
-#: useradd.8.xml.out:779
+#: useradd.8.xml.out:695
+#: useradd.8.xml.out:799
 msgid "/etc/skel/"
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:674
+#: useradd.8.xml.out:694
 msgid "The system administrator is responsible for placing the default user files in the <_:filename-1/> directory (or any other skeleton directory specified in <_:filename-2/> or on the command line)."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:683
+#: useradd.8.xml.out:703
 msgid "You may not add a user to a NIS or LDAP group. This must be performed on the corresponding server."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:688
+#: useradd.8.xml.out:708
 msgid "Similarly, if the username already exists in an external user database such as NIS or LDAP, <_:command-1/> will deny the user account creation request."
 msgstr ""
 
 #. (itstool) path: para/command
-#: useradd.8.xml.out:702
+#: useradd.8.xml.out:722
 msgid "ls"
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:694
+#: useradd.8.xml.out:714
 msgid "Usernames may contain only lower and upper case letters, digits, underscores, or dashes. They can end with a dollar sign. Dashes are not allowed at the beginning of the username. Fully numeric usernames and usernames . or .. are also disallowed. It is not recommended to use usernames beginning with . character as their home directories will be hidden in the <_:command-1/> output."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:704
+#: useradd.8.xml.out:724
 msgid "Usernames may only be up to 32 characters long."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:769
+#: useradd.8.xml.out:789
 msgid "Default values for account creation."
 msgstr ""
 
 #. (itstool) path: term/filename
-#: useradd.8.xml.out:773
+#: useradd.8.xml.out:793
 msgid "/etc/shadow-maint/useradd-pre.d/*"
 msgstr ""
 
 #. (itstool) path: term/filename
-#: useradd.8.xml.out:773
+#: useradd.8.xml.out:793
 msgid "/etc/shadow-maint/useradd-post.d/*"
 msgstr ""
 
 #. (itstool) path: varlistentry/term
-#: useradd.8.xml.out:773
+#: useradd.8.xml.out:793
 #: userdel.8.xml.out:209
 msgid "<_:filename-1/>, <_:filename-2/>"
 msgstr ""
 
 #. (itstool) path: para/command
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 #: userdel.8.xml.out:211
 msgid "ACTION"
 msgstr ""
 
 #. (itstool) path: para/command
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 #: userdel.8.xml.out:211
 msgid "SUBJECT"
 msgstr ""
 
 #. (itstool) path: para/filename
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 msgid "useradd-pre.d"
 msgstr ""
 
 #. (itstool) path: para/filename
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 msgid "useradd-post.d"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:775
+#: useradd.8.xml.out:795
 msgid "Run-part files to execute during user addition. The environment variable <_:command-1/> will be populated with useradd and <_:command-2/> with the <_:command-3/>. <_:filename-4/> will be executed prior to any user addition. <_:filename-5/> will execute after user addition. If a script exits non-zero then execution will terminate."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:781
+#: useradd.8.xml.out:801
 msgid "Directory containing default files."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:819
+#: useradd.8.xml.out:839
 #: userdel.8.xml.out:243
 msgid "can't update password file"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:837
+#: useradd.8.xml.out:857
 msgid "UID already in use (and no <_:option-1/>)"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:849
+#: useradd.8.xml.out:869
 msgid "username or group name already in use"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:861
+#: useradd.8.xml.out:881
 msgid "can't create home directory"
 msgstr ""
 
 #. (itstool) path: term/replaceable
-#: useradd.8.xml.out:865
+#: useradd.8.xml.out:885
 msgid "14"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: useradd.8.xml.out:867
+#: useradd.8.xml.out:887
 msgid "can't update SELinux user mapping"
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: useradd.8.xml.out:876
-#: usermod.8.xml.out:603
+#: useradd.8.xml.out:896
+#: usermod.8.xml.out:620
 msgid "<_:citerefentry-1/>, <_:citerefentry-2/>, <_:citerefentry-3/>, <_:citerefentry-4/>, <_:citerefentry-5/>, <_:citerefentry-6/>, <_:citerefentry-7/>, <_:citerefentry-8/>, <_:citerefentry-9/>, <_:phrase-10/> <_:citerefentry-11/>, <_:citerefentry-12/>."
 msgstr ""
 
@@ -9949,63 +10052,68 @@ msgstr ""
 msgid "defines the SELinux user to be mapped with <_:replaceable-1/>. An empty string (\"\") will remove the respective entry (if any). Note that the shadow system doesn't store the selinux-user, it uses semanage(8) for that."
 msgstr ""
 
-#. (itstool) path: refsect1/para
+#. (itstool) path: listitem/para
 #: usermod.8.xml.out:518
+msgid "defines the SELinux MLS range for the new account. Note that the shadow system doesn't store the selinux-range, it uses <_:citerefentry-1/> for that."
+msgstr ""
+
+#. (itstool) path: refsect1/para
+#: usermod.8.xml.out:535
 msgid "You must make certain that the named user is not executing any processes when this command is being executed if the user's numerical user ID, the user's name, or the user's home directory is being changed. <_:command-1/> checks this on Linux. On other operating systems it only uses utmp to check if the user is logged in."
 msgstr ""
 
 #. (itstool) path: para/command
-#: usermod.8.xml.out:527
+#: usermod.8.xml.out:544
 msgid "crontab"
 msgstr ""
 
 #. (itstool) path: para/command
-#: usermod.8.xml.out:528
+#: usermod.8.xml.out:545
 msgid "at"
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: usermod.8.xml.out:526
+#: usermod.8.xml.out:543
 msgid "You must change the owner of any <_:command-1/> files or <_:command-2/> jobs manually."
 msgstr ""
 
 #. (itstool) path: refsect1/para
-#: usermod.8.xml.out:530
+#: usermod.8.xml.out:547
 msgid "You must make any changes involving NIS on the NIS server."
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:559
+#: usermod.8.xml.out:576
 msgid "Group account information"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:565
-msgid "Secure group account informatio."
+#: usermod.8.xml.out:582
+msgid "Secure group account information"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:571
+#: usermod.8.xml.out:588
 msgid "Shadow password suite configuration"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:577
+#: usermod.8.xml.out:594
 msgid "User account information"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:583
+#: usermod.8.xml.out:600
 msgid "Secure user account information"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:589
+#: usermod.8.xml.out:606
 msgid "Per user subordinate group IDs"
 msgstr ""
 
 #. (itstool) path: listitem/para
-#: usermod.8.xml.out:595
+#: usermod.8.xml.out:612
 msgid "Per user subordinate user IDs"
 msgstr ""
 
@@ -10042,7 +10150,7 @@ msgstr ""
 
 #. (itstool) path: refsect1/para
 #: vipw.8.xml.out:66
-msgid "The <_:command-1/> and <_:command-2/> commands edits the files <_:filename-3/> and <_:filename-4/>, respectively. With the <_:option-5/> flag, they will edit the shadow versions of those files, <_:filename-6/> and <_:filename-7/>, respectively. The programs will set the appropriate locks to prevent file corruption. When looking for an editor, the programs will first try the environment variable <_:envar-8/>, then the environment variable <_:envar-9/>, and finally the default editor, <_:citerefentry-10/>."
+msgid "The <_:command-1/> and <_:command-2/> commands edit the files <_:filename-3/> and <_:filename-4/>, respectively. With the <_:option-5/> flag, they will edit the shadow versions of those files, <_:filename-6/> and <_:filename-7/>, respectively. The programs will set the appropriate locks to prevent file corruption. When looking for an editor, the programs will first try the environment variable <_:envar-8/>, then the environment variable <_:envar-9/>, and finally the default editor, <_:citerefentry-10/>."
 msgstr ""
 
 #. (itstool) path: refsect1/para

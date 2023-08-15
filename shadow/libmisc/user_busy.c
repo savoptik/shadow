@@ -32,7 +32,7 @@ static int user_busy_utmp (const char *name);
 #endif				/* !__linux__ */
 
 /*
- * user_busy - check if an user if currently running processes
+ * user_busy - check if a user is currently running processes
  */
 int user_busy (const char *name, uid_t uid)
 {
@@ -43,7 +43,7 @@ int user_busy (const char *name, uid_t uid)
 	/* On Linux, directly parse /proc */
 	return user_busy_processes (name, uid);
 #else				/* !__linux__ */
-	/* If we cannot rely on /proc, check is there is a record in utmp
+	/* If we cannot rely on /proc, check if there is a record in utmp
 	 * indicating that the user is still logged in */
 	return user_busy_utmp (name);
 #endif				/* !__linux__ */
@@ -52,17 +52,10 @@ int user_busy (const char *name, uid_t uid)
 #ifndef __linux__
 static int user_busy_utmp (const char *name)
 {
-#ifdef USE_UTMPX
-	struct utmpx *utent;
-
-	setutxent ();
-	while ((utent = getutxent ()) != NULL)
-#else				/* !USE_UTMPX */
 	struct utmp *utent;
 
 	setutent ();
 	while ((utent = getutent ()) != NULL)
-#endif				/* !USE_UTMPX */
 	{
 		if (utent->ut_type != USER_PROCESS) {
 			continue;

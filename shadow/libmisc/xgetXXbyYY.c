@@ -23,13 +23,15 @@
  *  Two important function classes that fall into this category are
  *  getpwnam(3) and syslog(3).
  *
- * This file provide wrapper to the getpwnam or getpwnam_r functions.
+ * This file provides wrapper to the name or name_r functions.
  */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 
@@ -50,46 +52,38 @@
 	/* we have to start with something */
 	size_t length = 0x100;
 
-	result = malloc(sizeof(LOOKUP_TYPE));
+	result = MALLOC(1, LOOKUP_TYPE);
 	if (NULL == result) {
-		fprintf (log_get_logfd(), _("%s: out of memory\n"),
-		         "x" STRINGIZE(FUNCTION_NAME));
-		exit (13);
+		goto oom;
 	}
 
 	while (true) {
 		int status;
 		LOOKUP_TYPE *resbuf = NULL;
-		buffer = (char *)realloc (buffer, length);
-		if (NULL == buffer) {
-			fprintf (log_get_logfd(), _("%s: out of memory\n"),
-			         "x" STRINGIZE(FUNCTION_NAME));
-			exit (13);
-		}
+		buffer = XREALLOC(buffer, length, char);
 		status = REENTRANT_NAME(ARG_NAME, result, buffer,
 		                        length, &resbuf);
 		if ((0 == status) && (resbuf == result)) {
 			/* Build a result structure that can be freed by
 			 * the shadow *_free functions. */
 			LOOKUP_TYPE *ret_result = DUP_FUNCTION(result);
+			if (NULL == ret_result) {
+				goto oom;
+			}
 			free(buffer);
 			free(result);
 			return ret_result;
 		}
 
 		if (ERANGE != status) {
-			free (buffer);
-			free (result);
-			return NULL;
+			break;
 		}
 
-		if (length <= ((size_t)-1 / 4)) {
-			length *= 4;
-		} else if (length == (size_t) -1) {
+		if (length == SIZE_MAX) {
 			break;
-		} else {
-			length = (size_t) -1;
 		}
+
+		length = (length <= SIZE_MAX / 4) ? length * 4 : SIZE_MAX;
 	}
 
 	free(buffer);
@@ -109,13 +103,16 @@
 	if (result) {
 		result = DUP_FUNCTION(result);
 		if (NULL == result) {
-			fprintf (log_get_logfd(), _("%s: out of memory\n"),
-			         "x" STRINGIZE(FUNCTION_NAME));
-			exit (13);
+			goto oom;
 		}
 	}
 
 	return result;
 #endif
+
+oom:
+	fprintf (log_get_logfd(), _("%s: out of memory\n"),
+		 "x" STRINGIZE(FUNCTION_NAME));
+	exit (13);
 }
 

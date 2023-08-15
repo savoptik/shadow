@@ -21,6 +21,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <signal.h>
+
+#include "alloc.h"
 #include "nscd.h"
 #include "sssd.h"
 #ifdef WITH_TCB
@@ -268,25 +270,13 @@ static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 		return NULL;
 	}
 
-#ifdef HAVE_FCHOWN
 	if (fchown (fileno (fp), sb->st_uid, sb->st_gid) != 0) {
 		goto fail;
 	}
-#else				/* !HAVE_FCHOWN */
-	if (chown (name, sb->st_mode) != 0) {
-		goto fail;
-	}
-#endif				/* !HAVE_FCHOWN */
-
-#ifdef HAVE_FCHMOD
 	if (fchmod (fileno (fp), sb->st_mode & 0664) != 0) {
 		goto fail;
 	}
-#else				/* !HAVE_FCHMOD */
-	if (chmod (name, sb->st_mode & 0664) != 0) {
-		goto fail;
-	}
-#endif				/* !HAVE_FCHMOD */
+
 	return fp;
 
       fail:
@@ -391,11 +381,11 @@ int commonio_lock_nowait (struct commonio_db *db, bool log)
 	}
 	file_len = strlen(db->filename) + 11;/* %lu max size */
 	lock_file_len = strlen(db->filename) + 6; /* sizeof ".lock" */
-	file = (char*)malloc(file_len);
+	file = MALLOC(file_len, char);
 	if (file == NULL) {
 		goto cleanup_ENOMEM;
 	}
-	lock = (char*)malloc(lock_file_len);
+	lock = MALLOC(lock_file_len, char);
 	if (lock == NULL) {
 		goto cleanup_ENOMEM;
 	}
@@ -618,7 +608,7 @@ int commonio_open (struct commonio_db *db, int mode)
 
 	fd = open (db->filename,
 	             (db->readonly ? O_RDONLY : O_RDWR)
-	           | O_NOCTTY | O_NONBLOCK | O_NOFOLLOW);
+	           | O_NOCTTY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC);
 	saved_errno = errno;
 	db->fp = NULL;
 	if (fd >= 0) {
@@ -649,22 +639,19 @@ int commonio_open (struct commonio_db *db, int mode)
 		return 0;
 	}
 
-	/* Do not inherit fd in spawned processes (e.g. nscd) */
-	fcntl (fileno (db->fp), F_SETFD, FD_CLOEXEC);
-
 	buflen = BUFLEN;
-	buf = (char *) malloc (buflen);
+	buf = MALLOC(buflen, char);
 	if (NULL == buf) {
 		goto cleanup_ENOMEM;
 	}
 
-	while (db->ops->fgets (buf, (int) buflen, db->fp) == buf) {
+	while (db->ops->fgets (buf, buflen, db->fp) == buf) {
 		while (   ((cp = strrchr (buf, '\n')) == NULL)
 		       && (feof (db->fp) == 0)) {
 			size_t len;
 
 			buflen += BUFLEN;
-			cp = (char *) realloc (buf, buflen);
+			cp = REALLOC(buf, buflen, char);
 			if (NULL == cp) {
 				goto cleanup_buf;
 			}
@@ -698,7 +685,7 @@ int commonio_open (struct commonio_db *db, int mode)
 			}
 		}
 
-		p = (struct commonio_entry *) malloc (sizeof *p);
+		p = MALLOC(1, struct commonio_entry);
 		if (NULL == p) {
 			goto cleanup_entry;
 		}
@@ -775,7 +762,7 @@ commonio_sort (struct commonio_db *db, int (*cmp) (const void *, const void *))
 		return 0;
 	}
 
-	entries = malloc (n * sizeof (struct commonio_entry *));
+	entries = MALLOC(n, struct commonio_entry *);
 	if (entries == NULL) {
 		return -1;
 	}
@@ -998,13 +985,11 @@ int commonio_close (struct commonio_db *db)
 	if (fflush (db->fp) != 0) {
 		errors++;
 	}
-#ifdef HAVE_FSYNC
+
 	if (fsync (fileno (db->fp)) != 0) {
 		errors++;
 	}
-#else				/* !HAVE_FSYNC */
-	sync ();
-#endif				/* !HAVE_FSYNC */
+
 	if (fclose (db->fp) != 0) {
 		errors++;
 	}
@@ -1096,7 +1081,7 @@ int commonio_update (struct commonio_db *db, const void *eptr)
 		return 1;
 	}
 	/* not found, new entry */
-	p = (struct commonio_entry *) malloc (sizeof *p);
+	p = MALLOC(1, struct commonio_entry);
 	if (NULL == p) {
 		db->ops->free (nentry);
 		errno = ENOMEM;
@@ -1133,7 +1118,7 @@ int commonio_append (struct commonio_db *db, const void *eptr)
 		return 0;
 	}
 	/* new entry */
-	p = (struct commonio_entry *) malloc (sizeof *p);
+	p = MALLOC(1, struct commonio_entry);
 	if (NULL == p) {
 		db->ops->free (nentry);
 		errno = ENOMEM;
@@ -1199,6 +1184,8 @@ int commonio_remove (struct commonio_db *db, const char *name)
 	if (NULL != p->eptr) {
 		db->ops->free (p->eptr);
 	}
+
+	free(p);
 
 	return 1;
 }

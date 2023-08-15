@@ -9,8 +9,6 @@
 
 #include <config.h>
 
-#ifndef USE_PAM
-
 #ident "$Id$"
 
 
@@ -21,6 +19,8 @@
  */
 #include <ctype.h>
 #include <stdio.h>
+
+#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
@@ -73,57 +73,6 @@ static bool similar (/*@notnull@*/const char *old, /*@notnull@*/const char *new)
 	return true;
 }
 
-/*
- * a nice mix of characters.
- */
-
-static bool simple (unused const char *old, const char *new)
-{
-	bool digits = false;
-	bool uppers = false;
-	bool lowers = false;
-	bool others = false;
-	int size;
-	int i;
-
-	for (i = 0; '\0' != new[i]; i++) {
-		if (isdigit (new[i])) {
-			digits = true;
-		} else if (isupper (new[i])) {
-			uppers = true;
-		} else if (islower (new[i])) {
-			lowers = true;
-		} else {
-			others = true;
-		}
-	}
-
-	/*
-	 * The scam is this - a password of only one character type
-	 * must be 8 letters long.  Two types, 7, and so on.
-	 */
-
-	size = 9;
-	if (digits) {
-		size--;
-	}
-	if (uppers) {
-		size--;
-	}
-	if (lowers) {
-		size--;
-	}
-	if (others) {
-		size--;
-	}
-
-	if (size <= i) {
-		return false;
-	}
-
-	return true;
-}
-
 static char *str_lower (/*@returned@*/char *string)
 {
 	char *cp;
@@ -158,7 +107,7 @@ static /*@observer@*//*@null@*/const char *password_check (
 
 	newmono = str_lower (xstrdup (new));
 	oldmono = str_lower (xstrdup (old));
-	wrapped = xmalloc (strlen (oldmono) * 2 + 1);
+	wrapped = XMALLOC(strlen(oldmono) * 2 + 1, char);
 	strcpy (wrapped, oldmono);
 	strcat (wrapped, oldmono);
 
@@ -168,8 +117,6 @@ static /*@observer@*//*@null@*/const char *password_check (
 		msg = _("case changes only");
 	} else if (similar (oldmono, newmono)) {
 		msg = _("too similar");
-	} else if (simple (old, new)) {
-		msg = _("too simple");
 	} else if (strstr (wrapped, newmono) != NULL) {
 		msg = _("rotated");
 	} else {
@@ -257,7 +204,7 @@ static /*@observer@*//*@null@*/const char *obscure_msg (
 		}
 
 	}
-	maxlen = (size_t) getdef_num ("PASS_MAX_LEN", 8);
+	maxlen = getdef_num ("PASS_MAX_LEN", 8);
 	if (   (oldlen <= maxlen)
 	    && (newlen <= maxlen)) {
 		return NULL;
@@ -274,10 +221,8 @@ static /*@observer@*//*@null@*/const char *obscure_msg (
 
 	msg = password_check (old1, new1, pwdp);
 
-	memzero (new1, newlen);
-	memzero (old1, oldlen);
-	free (new1);
-	free (old1);
+	freezero (new1, newlen);
+	freezero (old1, oldlen);
 
 	return msg;
 }
@@ -300,7 +245,3 @@ bool obscure (const char *old, const char *new, const struct passwd *pwdp)
 	}
 	return true;
 }
-
-#else				/* !USE_PAM */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
-#endif				/* !USE_PAM */

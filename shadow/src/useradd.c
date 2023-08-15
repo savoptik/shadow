@@ -17,9 +17,12 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <grp.h>
+#ifdef ENABLE_LASTLOG
 #include <lastlog.h>
+#endif /* ENABLE_LASTLOG */
 #include <libgen.h>
 #include <pwd.h>
+#include <signal.h>
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -32,6 +35,8 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+
+#include "alloc.h"
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
@@ -62,6 +67,9 @@
 #ifndef SKEL_DIR
 #define SKEL_DIR "/etc/skel"
 #endif
+#ifndef USRSKELDIR
+#define USRSKELDIR "/usr/etc/skel"
+#endif
 #ifndef USER_DEFAULTS_FILE
 #define USER_DEFAULTS_FILE "/etc/default/useradd"
 #define NEW_USER_FILE "/etc/default/nuaddXXXXXX"
@@ -76,10 +84,12 @@
  * These defaults are used if there is no defaults file.
  */
 static gid_t def_group = 100;
+static const char *def_groups = "";
 static const char *def_gname = "users";
 static const char *def_home = "/home";
 static const char *def_shell = "/sbin/nologin";
 static const char *def_template = SKEL_DIR;
+static const char *def_usrtemplate = USRSKELDIR;
 static const char *def_create_mail_spool = "yes";
 static const char *def_log_init = "yes";
 
@@ -102,6 +112,7 @@ static const char *prefix_user_home = NULL;
 
 #ifdef WITH_SELINUX
 static /*@notnull@*/const char *user_selinux = "";
+static const char *user_selinux_range = NULL;
 #endif				/* WITH_SELINUX */
 
 static long user_expire = -1;
@@ -180,11 +191,13 @@ static bool tcb_added = false;
 #endif				/* ENABLE_SUBIDS */
 
 #define DGROUP			"GROUP="
+#define DGROUPS			"GROUPS="
 #define DHOME			"HOME="
 #define DSHELL			"SHELL="
 #define DINACT			"INACTIVE="
 #define DEXPIRE			"EXPIRE="
 #define DSKEL			"SKEL="
+#define DUSRSKEL		"USRSKEL="
 #define DCREATE_MAIL_SPOOL	"CREATE_MAIL_SPOOL="
 #define DLOG_INIT	"LOG_INIT="
 
@@ -210,7 +223,9 @@ static void open_files (void);
 static void open_group_files (void);
 static void open_shadow (void);
 static void faillog_reset (uid_t);
+#ifdef ENABLE_LASTLOG
 static void lastlog_reset (uid_t);
+#endif /* ENABLE_LASTLOG */
 static void tallylog_reset (const char *);
 static void usr_update (unsigned long subuid_count, unsigned long subgid_count);
 static void create_home (void);
@@ -222,27 +237,21 @@ static void check_uid_range(int rflg, uid_t user_id);
  */
 static void fail_exit (int code)
 {
-	if (home_added) {
-		if (rmdir (prefix_user_home) != 0) {
-			fprintf (stderr,
-			         _("%s: %s was created, but could not be removed\n"),
-			         Prog, prefix_user_home);
-			SYSLOG ((LOG_ERR, "failed to remove %s", prefix_user_home));
-		}
+	if (home_added && rmdir(prefix_user_home) != 0) {
+		fprintf(stderr,
+		        _("%s: %s was created, but could not be removed\n"),
+		        Prog, prefix_user_home);
+		SYSLOG((LOG_ERR, "failed to remove %s", prefix_user_home));
 	}
 
-	if (spw_locked) {
-		if (spw_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+	if (spw_locked && spw_unlock() == 0) {
+		fprintf(stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname());
+		SYSLOG((LOG_ERR, "failed to unlock %s", spw_dbname()));
 #ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking shadow file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
+		audit_logger(AUDIT_ADD_USER, Prog, "unlocking shadow file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
 #endif
-			/* continue */
-		}
+		/* continue */
 	}
 
 #ifdef WITH_TCB
@@ -250,84 +259,64 @@ static void fail_exit (int code)
 		remove_tcbdir(user_name, user_id);
 #endif
 
-	if (pw_locked) {
-		if (pw_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+	if (pw_locked && pw_unlock() == 0) {
+		fprintf(stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname());
+		SYSLOG((LOG_ERR, "failed to unlock %s", pw_dbname()));
 #ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking passwd file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
+		audit_logger(AUDIT_ADD_USER, Prog, "unlocking passwd file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
 #endif
-			/* continue */
-		}
+		/* continue */
 	}
-	if (gr_locked) {
-		if (gr_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, gr_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", gr_dbname ()));
+	if (gr_locked && gr_unlock() == 0) {
+		fprintf(stderr, _("%s: failed to unlock %s\n"), Prog, gr_dbname());
+		SYSLOG((LOG_ERR, "failed to unlock %s", gr_dbname()));
 #ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking group file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
+		audit_logger(AUDIT_ADD_USER, Prog, "unlocking group file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
 #endif
-			/* continue */
-		}
+		/* continue */
 	}
-#ifdef	SHADOWGRP
-	if (sgr_locked) {
-		if (sgr_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, sgr_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", sgr_dbname ()));
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking gshadow file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
-#endif
-			/* continue */
-		}
+#ifdef SHADOWGRP
+	if (sgr_locked && sgr_unlock() == 0) {
+		fprintf(stderr, _("%s: failed to unlock %s\n"), Prog, sgr_dbname());
+		SYSLOG((LOG_ERR, "failed to unlock %s", sgr_dbname()));
+# ifdef WITH_AUDIT
+		audit_logger(AUDIT_ADD_USER, Prog, "unlocking gshadow file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
+# endif
+		/* continue */
 	}
 #endif
 #ifdef ENABLE_SUBIDS
-	if (sub_uid_locked) {
-		if (sub_uid_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, sub_uid_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", sub_uid_dbname ()));
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking subordinate user file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
-#endif
-			/* continue */
-		}
+	if (sub_uid_locked && sub_uid_unlock() == 0) {
+		fprintf(stderr, _("%s: failed to unlock %s\n"), Prog, sub_uid_dbname());
+		SYSLOG((LOG_ERR, "failed to unlock %s", sub_uid_dbname()));
+# ifdef WITH_AUDIT
+		audit_logger(AUDIT_ADD_USER, Prog,
+		             "unlocking subordinate user file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
+# endif
+		/* continue */
 	}
-	if (sub_gid_locked) {
-		if (sub_gid_unlock () == 0) {
-			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, sub_gid_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", sub_gid_dbname ()));
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "unlocking subordinate group file",
-			              user_name, AUDIT_NO_ID,
-			              SHADOW_AUDIT_FAILURE);
-#endif
-			/* continue */
-		}
+	if (sub_gid_locked && sub_gid_unlock() == 0) {
+		fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, sub_gid_dbname());
+		SYSLOG ((LOG_ERR, "failed to unlock %s", sub_gid_dbname()));
+# ifdef WITH_AUDIT
+		audit_logger(AUDIT_ADD_USER, Prog,
+			     "unlocking subordinate group file",
+			     user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
+# endif
+		/* continue */
 	}
-#endif				/* ENABLE_SUBIDS */
+#endif  /* ENABLE_SUBIDS */
 
 #ifdef WITH_AUDIT
-	audit_logger (AUDIT_ADD_USER, Prog,
-	              "adding user",
-	              user_name, AUDIT_NO_ID,
-	              SHADOW_AUDIT_FAILURE);
+	audit_logger(AUDIT_ADD_USER, Prog, "adding user",
+	             user_name, AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
 #endif
-	SYSLOG ((LOG_INFO, "failed adding user '%s', exit code: %d", user_name, code));
-	exit (code);
+	SYSLOG((LOG_INFO, "failed adding user '%s', exit code: %d", user_name, code));
+	exit(code);
 }
 
 #define MATCH(x,y) (strncmp((x),(y),strlen(y)) == 0)
@@ -351,7 +340,7 @@ static void get_defaults (void)
 		int wlen;
 
 		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
-		default_file = malloc(len);
+		default_file = MALLOC(len, char);
                 if (default_file == NULL)
                        return;
 		wlen = snprintf(default_file, len, "%s/%s", prefix, USER_DEFAULTS_FILE);
@@ -371,7 +360,7 @@ static void get_defaults (void)
 	 * Read the file a line at a time. Only the lines that have relevant
 	 * values are used, everything else can be ignored.
 	 */
-	while (fgets (buf, (int) sizeof buf, fp) == buf) {
+	while (fgets (buf, sizeof buf, fp) == buf) {
 		cp = strrchr (buf, '\n');
 		if (NULL != cp) {
 			*cp = '\0';
@@ -402,6 +391,17 @@ static void get_defaults (void)
 			}
 		}
 
+		if (MATCH (buf, DGROUPS)) {
+			if (get_groups (cp) != 0) {
+				fprintf (stderr,
+				         _("%s: the '%s' configuration in %s has an invalid group, ignoring the bad group\n"),
+				         Prog, DGROUPS, default_file);
+			}
+			if (user_groups[0] != NULL) {
+				do_grp_update = true;
+				def_groups = xstrdup (cp);
+			}
+		}
 		/*
 		 * Default HOME filesystem
 		 */
@@ -453,7 +453,7 @@ static void get_defaults (void)
 				char* _def_template; /* avoid const warning */
 
 				len = strlen(prefix) + strlen(cp) + 2;
-				_def_template = xmalloc(len);
+				_def_template = XMALLOC(len, char);
 				wlen = snprintf(_def_template, len, "%s/%s", prefix, cp);
 				assert (wlen == (int) len -1);
 				def_template = _def_template;
@@ -463,6 +463,29 @@ static void get_defaults (void)
 			}
 		}
 
+		/*
+		 * Default Usr Skeleton information
+		 */
+		else if (MATCH (buf, DUSRSKEL)) {
+			if ('\0' == *cp) {
+				cp = USRSKELDIR;	/* XXX warning: const */
+			}
+
+			if(prefix[0]) {
+				size_t len;
+				int wlen;
+				char* _def_usrtemplate; /* avoid const warning */
+
+				len = strlen(prefix) + strlen(cp) + 2;
+				_def_usrtemplate = XMALLOC(len, char);
+				wlen = snprintf(_def_usrtemplate, len, "%s/%s", prefix, cp);
+				assert (wlen == (int) len -1);
+				def_usrtemplate = _def_usrtemplate;
+			}
+			else {
+				def_usrtemplate = xstrdup (cp);
+			}
+		}
 		/*
 		 * Create by default user mail spool or not ?
 		 */
@@ -497,11 +520,13 @@ static void get_defaults (void)
 static void show_defaults (void)
 {
 	printf ("GROUP=%u\n", (unsigned int) def_group);
+	printf ("GROUPS=%s\n", def_groups);
 	printf ("HOME=%s\n", def_home);
 	printf ("INACTIVE=%ld\n", def_inactive);
 	printf ("EXPIRE=%s\n", def_expire);
 	printf ("SHELL=%s\n", def_shell);
 	printf ("SKEL=%s\n", def_template);
+	printf ("USRSKEL=%s\n", def_usrtemplate);
 	printf ("CREATE_MAIL_SPOOL=%s\n", def_create_mail_spool);
 	printf ("LOG_INIT=%s\n", def_log_init);
 }
@@ -525,11 +550,13 @@ static int set_defaults (void)
 	int ofd;
 	int wlen;
 	bool out_group = false;
+	bool out_groups = false;
 	bool out_home = false;
 	bool out_inactive = false;
 	bool out_expire = false;
 	bool out_shell = false;
 	bool out_skel = false;
+	bool out_usrskel = false;
 	bool out_create_mail_spool = false;
 	bool out_log_init = false;
 	size_t len;
@@ -537,7 +564,7 @@ static int set_defaults (void)
 
 
 	len = strlen(prefix) + strlen(NEW_USER_FILE) + 2;
-	new_file = malloc(len);
+	new_file = MALLOC(len, char);
         if (new_file == NULL) {
 		fprintf (stderr,
 		         _("%s: cannot create new defaults file: %s\n"),
@@ -549,7 +576,7 @@ static int set_defaults (void)
 
 	if (prefix[0]) {
 		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
-		default_file = malloc(len);
+		default_file = MALLOC(len, char);
 		if (default_file == NULL) {
 			fprintf (stderr,
 			         _("%s: cannot create new defaults file: %s\n"),
@@ -608,7 +635,7 @@ static int set_defaults (void)
 		goto skip;
 	}
 
-	while (fgets (buf, (int) sizeof buf, ifp) == buf) {
+	while (fgets (buf, sizeof buf, ifp) == buf) {
 		cp = strrchr (buf, '\n');
 		if (NULL != cp) {
 			*cp = '\0';
@@ -628,6 +655,9 @@ static int set_defaults (void)
 		if (!out_group && MATCH (buf, DGROUP)) {
 			fprintf (ofp, DGROUP "%u\n", (unsigned int) def_group);
 			out_group = true;
+		} else if (!out_groups && MATCH (buf, DGROUPS)) {
+			fprintf (ofp, DGROUPS "%s\n", def_groups);
+			out_groups = true;
 		} else if (!out_home && MATCH (buf, DHOME)) {
 			fprintf (ofp, DHOME "%s\n", def_home);
 			out_home = true;
@@ -643,6 +673,9 @@ static int set_defaults (void)
 		} else if (!out_skel && MATCH (buf, DSKEL)) {
 			fprintf (ofp, DSKEL "%s\n", def_template);
 			out_skel = true;
+		} else if (!out_usrskel && MATCH (buf, DUSRSKEL)) {
+			fprintf (ofp, DUSRSKEL "%s\n", def_usrtemplate);
+			out_usrskel = true;
 		} else if (!out_create_mail_spool
 			   && MATCH (buf, DCREATE_MAIL_SPOOL)) {
 			fprintf (ofp,
@@ -668,6 +701,8 @@ static int set_defaults (void)
 	 */
 	if (!out_group)
 		fprintf (ofp, DGROUP "%u\n", (unsigned int) def_group);
+	if (!out_groups)
+		fprintf (ofp, DGROUPS "%s\n", def_groups);
 	if (!out_home)
 		fprintf (ofp, DHOME "%s\n", def_home);
 	if (!out_inactive)
@@ -678,6 +713,8 @@ static int set_defaults (void)
 		fprintf (ofp, DSHELL "%s\n", def_shell);
 	if (!out_skel)
 		fprintf (ofp, DSKEL "%s\n", def_template);
+	if (!out_usrskel)
+		fprintf (ofp, DUSRSKEL "%s\n", def_usrtemplate);
 
 	if (!out_create_mail_spool)
 		fprintf (ofp, DCREATE_MAIL_SPOOL "%s\n", def_create_mail_spool);
@@ -839,7 +876,7 @@ static int get_groups (char *list)
 	close_group_files ();
 	unlock_group_files ();
 
-	user_groups[ngroups] = (char *) 0;
+	user_groups[ngroups] = NULL;
 
 	/*
 	 * Any errors in finding group names are fatal
@@ -870,7 +907,7 @@ static struct group * get_local_group(char * grp_name)
 		&& ('\0' == *endptr)
 		&& (ERANGE != errno)
 		&& (gid == (gid_t)gid)) {
-		grp = gr_locate_gid ((gid_t) gid);
+		grp = gr_locate_gid (gid);
 	}
 	else {
 		grp = gr_locate(grp_name);
@@ -922,8 +959,10 @@ static void usage (int status)
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -k, --skel SKEL_DIR           use this alternative skeleton directory\n"), usageout);
 	(void) fputs (_("  -K, --key KEY=VALUE           override /etc/login.defs defaults\n"), usageout);
+#ifdef ENABLE_LASTLOG
 	(void) fputs (_("  -l, --no-log-init             do not add the user to the lastlog and\n"
 	                "                                faillog databases\n"), usageout);
+#endif /* ENABLE_LASTLOG */
 	(void) fputs (_("  -m, --create-home             create the user's home directory\n"), usageout);
 	(void) fputs (_("  -M, --no-create-home          do not create the user's home directory\n"), usageout);
 	(void) fputs (_("  -N, --no-user-group           do not create a group with the same name as\n"
@@ -939,6 +978,7 @@ static void usage (int status)
 	(void) fputs (_("  -U, --user-group              create a group with the same name as the user\n"), usageout);
 #ifdef WITH_SELINUX
 	(void) fputs (_("  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user mapping\n"), usageout);
+	(void) fputs (_("      --selinux-range SERANGE   use a specific MLS range for the SELinux user mapping\n"), usageout);
 #endif				/* WITH_SELINUX */
 	(void) fputs ("\n", usageout);
 	exit (status);
@@ -987,7 +1027,7 @@ static void new_spent (struct spwd *spent)
 	memzero (spent, sizeof *spent);
 	spent->sp_namp = (char *) user_name;
 	spent->sp_pwdp = (char *) user_pass;
-	spent->sp_lstchg = (long) gettime () / SCALE;
+	spent->sp_lstchg = gettime () / SCALE;
 	if (0 == spent->sp_lstchg) {
 		/* Better disable aging than requiring a password change */
 		spent->sp_lstchg = -1;
@@ -1221,6 +1261,7 @@ static void process_flags (int argc, char **argv)
 			{"user-group",     no_argument,       NULL, 'U'},
 #ifdef WITH_SELINUX
 			{"selinux-user",   required_argument, NULL, 'Z'},
+			{"selinux-range",  required_argument, NULL, 202},
 #endif				/* WITH_SELINUX */
 			{NULL, 0, NULL, '\0'}
 		};
@@ -1474,6 +1515,9 @@ static void process_flags (int argc, char **argv)
 					exit (E_BAD_ARG);
 				}
 				break;
+			case 202:
+				user_selinux_range = optarg;
+				break;
 #endif				/* WITH_SELINUX */
 			default:
 				usage (E_USAGE);
@@ -1521,6 +1565,14 @@ static void process_flags (int argc, char **argv)
 		         Prog, "-m", "-M");
 		usage (E_USAGE);
 	}
+#ifdef WITH_SELINUX
+	if (user_selinux_range && !Zflg) {
+		fprintf (stderr,
+		         _("%s: %s flag is only allowed with the %s flag\n"),
+		         Prog, "--selinux-range", "--selinux-user");
+		usage (E_USAGE);
+	}
+#endif				/* WITH_SELINUX */
 
 	/*
 	 * Either -D or username is required. Defaults can be set with -D
@@ -1557,7 +1609,7 @@ static void process_flags (int argc, char **argv)
 			size_t len = strlen (def_home) + strlen (user_name) + 2;
 			int wlen;
 
-			uh = xmalloc (len);
+			uh = XMALLOC(len, char);
 			wlen = snprintf (uh, len, "%s/%s", def_home, user_name);
 			assert (wlen == (int) len -1);
 
@@ -1567,7 +1619,7 @@ static void process_flags (int argc, char **argv)
 			size_t len = strlen(prefix) + strlen(user_home) + 2;
 			int wlen;
 			char* _prefix_user_home; /* to avoid const warning */
-			_prefix_user_home = xmalloc(len);
+			_prefix_user_home = XMALLOC(len, char);
 			wlen = snprintf(_prefix_user_home, len, "%s/%s", prefix, user_home);
 			assert (wlen == (int) len -1);
 			prefix_user_home = _prefix_user_home;
@@ -1718,23 +1770,25 @@ static void close_files (void)
  */
 static void close_group_files (void)
 {
-	if (do_grp_update) {
-		if (gr_close () == 0) {
-			fprintf (stderr,
-			         _("%s: failure while writing changes to %s\n"), Prog, gr_dbname ());
-			SYSLOG ((LOG_ERR, "failure while writing changes to %s", gr_dbname ()));
-			fail_exit (E_GRP_UPDATE);
-		}
-#ifdef	SHADOWGRP
-		if (is_shadow_grp && (sgr_close () == 0)) {
-			fprintf (stderr,
-			         _("%s: failure while writing changes to %s\n"),
-			         Prog, sgr_dbname ());
-			SYSLOG ((LOG_ERR, "failure while writing changes to %s", sgr_dbname ()));
-			fail_exit (E_GRP_UPDATE);
-		}
-#endif /* SHADOWGRP */
+	if (!do_grp_update)
+		return;
+
+	if (gr_close() == 0) {
+		fprintf(stderr,
+		        _("%s: failure while writing changes to %s\n"),
+		        Prog, gr_dbname());
+		SYSLOG((LOG_ERR, "failure while writing changes to %s", gr_dbname()));
+		fail_exit(E_GRP_UPDATE);
 	}
+#ifdef	SHADOWGRP
+	if (is_shadow_grp && sgr_close() == 0) {
+		fprintf(stderr,
+		        _("%s: failure while writing changes to %s\n"),
+		        Prog, sgr_dbname());
+		SYSLOG((LOG_ERR, "failure while writing changes to %s", sgr_dbname()));
+		fail_exit(E_GRP_UPDATE);
+	}
+#endif /* SHADOWGRP */
 }
 
 /*
@@ -2030,6 +2084,7 @@ static void faillog_reset (uid_t uid)
 	}
 }
 
+#ifdef ENABLE_LASTLOG
 static void lastlog_reset (uid_t uid)
 {
 	struct lastlog ll;
@@ -2042,7 +2097,7 @@ static void lastlog_reset (uid_t uid)
 		return;
 	}
 
-	max_uid = (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL);
+	max_uid = getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL);
 	if (uid > max_uid) {
 		/* do not touch lastlog for large uids */
 		return;
@@ -2075,6 +2130,7 @@ static void lastlog_reset (uid_t uid)
 		/* continue */
 	}
 }
+#endif /* ENABLE_LASTLOG */
 
 static void tallylog_reset (const char *user_name)
 {
@@ -2086,6 +2142,9 @@ static void tallylog_reset (const char *user_name)
 
 	if (access(pam_tally2, X_OK) == -1)
 		return;
+
+	/* set SIGCHLD to default for waitpid */
+	signal(SIGCHLD, SIG_DFL);
 
 	failed = 0;
 	switch (childpid = fork())
@@ -2161,7 +2220,9 @@ static void usr_update (unsigned long subuid_count, unsigned long subgid_count)
 	/* local, no need for xgetpwuid */
 	if ((!lflg) && (prefix_getpwuid (user_id) == NULL)) {
 		faillog_reset (user_id);
+#ifdef ENABLE_LASTLOG
 		lastlog_reset (user_id);
+#endif /* ENABLE_LASTLOG */
 	}
 
 	/*
@@ -2184,20 +2245,19 @@ static void usr_update (unsigned long subuid_count, unsigned long subgid_count)
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ADD_USER, Prog,
 		              "adding shadow password",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
+		              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif
 		fail_exit (E_PW_UPDATE);
 	}
 #ifdef ENABLE_SUBIDS
-	if (is_sub_uid &&
+	if (is_sub_uid && !local_sub_uid_assigned(user_name) &&
 	    (sub_uid_add(user_name, sub_uid_start, subuid_count) == 0)) {
 		fprintf (stderr,
 		         _("%s: failed to prepare the new %s entry\n"),
 		         Prog, sub_uid_dbname ());
 		fail_exit (E_SUB_UID_UPDATE);
 	}
-	if (is_sub_gid &&
+	if (is_sub_gid && !local_sub_gid_assigned(user_name) &&
 	    (sub_gid_add(user_name, sub_gid_start, subgid_count) == 0)) {
 		fprintf (stderr,
 		         _("%s: failed to prepare the new %s entry\n"),
@@ -2207,9 +2267,14 @@ static void usr_update (unsigned long subuid_count, unsigned long subgid_count)
 #endif				/* ENABLE_SUBIDS */
 
 #ifdef WITH_AUDIT
+	/*
+	 * Even though we have the ID of the user, we won't send it now
+	 * because its not written to disk yet. After close_files it is
+	 * and we can use the real ID thereafter.
+	 */
 	audit_logger (AUDIT_ADD_USER, Prog,
 	              "adding user",
-	              user_name, (unsigned int) user_id,
+	              user_name, AUDIT_NO_ID,
 	              SHADOW_AUDIT_SUCCESS);
 #endif
 	/*
@@ -2229,217 +2294,214 @@ static void usr_update (unsigned long subuid_count, unsigned long subgid_count)
  */
 static void create_home (void)
 {
-	if (access (prefix_user_home, F_OK) != 0) {
-		char path[strlen (prefix_user_home) + 2];
-		char *bhome, *cp;
+	char    path[strlen(prefix_user_home) + 2];
+	char    *bhome, *cp;
+	mode_t  mode;
 
-		path[0] = '\0';
-		bhome = strdup (prefix_user_home);
-		if (!bhome) {
-			fprintf (stderr,
-							_("%s: error while duplicating string %s\n"),
-							Prog, user_home);
-			fail_exit (E_HOMEDIR);
-		}
+	if (access (prefix_user_home, F_OK) == 0)
+		return;
 
-#ifdef WITH_SELINUX
-		if (set_selinux_file_context (prefix_user_home, S_IFDIR) != 0) {
-			fprintf (stderr,
-			         _("%s: cannot set SELinux context for home directory %s\n"),
-			         Prog, user_home);
-			fail_exit (E_HOMEDIR);
-		}
-#endif
-
-		/* Check for every part of the path, if the directory
-		   exists. If not, create it with permissions 755 and
-		   owner root:root.
-		 */
-		cp = strtok (bhome, "/");
-		while (cp) {
-                        /* Avoid turning a relative path into an absolute path.
-                         */
-                        if (bhome[0] == '/' || strlen (path) != 0) {
-			        strcat (path, "/");
-                        }
-			strcat (path, cp);
-			if (access (path, F_OK) != 0) {
-				/* Check if parent directory is BTRFS, fail if requesting
-				   subvolume but no BTRFS. The paths cound be different by the
-				   trailing slash
-				 */
-#if WITH_BTRFS
-				if (subvolflg && (strlen(prefix_user_home) - (int)strlen(path)) <= 1) {
-					char *btrfs_check = strdup(path);
-
-					if (!btrfs_check) {
-						fprintf (stderr,
-						         _("%s: error while duplicating string in BTRFS check %s\n"),
-						         Prog, path);
-						fail_exit (E_HOMEDIR);
-					}
-					btrfs_check[strlen(path) - strlen(cp) - 1] = '\0';
-					if (is_btrfs(btrfs_check) <= 0) {
-						fprintf (stderr,
-						         _("%s: home directory \"%s\" must be mounted on BTRFS\n"),
-						         Prog, path);
-						fail_exit (E_HOMEDIR);
-					}
-					// make subvolume to mount for user instead of directory
-					if (btrfs_create_subvolume(path)) {
-						fprintf (stderr,
-						         _("%s: failed to create BTRFS subvolume: %s\n"),
-						         Prog, path);
-						fail_exit (E_HOMEDIR);
-					}
-				}
-				else
-#endif
-				if (mkdir (path, 0) != 0) {
-			fprintf (stderr,
-							_("%s: cannot create directory %s\n"),
-							Prog, path);
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-										"adding home directory",
-										user_name, (unsigned int) user_id,
-										SHADOW_AUDIT_FAILURE);
-#endif
-			fail_exit (E_HOMEDIR);
-		}
-				if (chown (path, 0, 0) < 0) {
-					fprintf (stderr,
-									_("%s: warning: chown on `%s' failed: %m\n"),
-									Prog, path);
-				}
-				if (chmod (path, 0755) < 0) {
-					fprintf (stderr,
-									_("%s: warning: chmod on `%s' failed: %m\n"),
-									Prog, path);
-				}
-			}
-			cp = strtok (NULL, "/");
-		}
-		free (bhome);
-
-		if (chown (prefix_user_home, user_id, user_gid) != 0) {
-			fprintf (stderr,
-					_("%s: Cannot change owner of %s: %s\n"),
-					Prog, prefix_user_home, strerror (errno));
-			fail_exit (E_HOMEDIR);
-		}
-
-		mode_t mode = getdef_num ("HOME_MODE",
-		                          0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
-		if (chmod (prefix_user_home, mode) != 0) {
-			fprintf (stderr,
-					_("%s: Cannot change mode of %s: %s\n"),
-					Prog, prefix_user_home, strerror (errno));
-			fail_exit (E_HOMEDIR);
-		}
-
-		home_added = true;
-
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_ADD_USER, Prog,
-		              "adding home directory",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_SUCCESS);
-#endif
-#ifdef WITH_SELINUX
-		/* Reset SELinux to create files with default contexts */
-		if (reset_selinux_file_context () != 0) {
-			fprintf (stderr,
-			         _("%s: cannot reset SELinux file creation context\n"),
-			         Prog);
-			fail_exit (E_HOMEDIR);
-		}
-#endif
+	path[0] = '\0';
+	bhome = strdup(prefix_user_home);
+	if (!bhome) {
+		fprintf(stderr,
+			_("%s: error while duplicating string %s\n"),
+			Prog, user_home);
+		fail_exit(E_HOMEDIR);
 	}
+
+#ifdef WITH_SELINUX
+	if (set_selinux_file_context(prefix_user_home, S_IFDIR) != 0) {
+		fprintf(stderr,
+			_("%s: cannot set SELinux context for home directory %s\n"),
+			Prog, user_home);
+		fail_exit(E_HOMEDIR);
+	}
+#endif
+
+	/* Check for every part of the path, if the directory
+	   exists. If not, create it with permissions 755 and
+	   owner root:root.
+	 */
+	for (cp = strtok(bhome, "/"); cp != NULL; cp = strtok(NULL, "/")) {
+		/* Avoid turning a relative path into an absolute path. */
+		if (bhome[0] == '/' || strlen(path) != 0) {
+			strcat(path, "/");
+		}
+		strcat(path, cp);
+		if (access(path, F_OK) == 0) {
+			continue;
+		}
+
+		/* Check if parent directory is BTRFS, fail if requesting
+		   subvolume but no BTRFS. The paths could be different by the
+		   trailing slash
+		 */
+#if WITH_BTRFS
+		if (subvolflg && (strlen(prefix_user_home) - (int)strlen(path)) <= 1) {
+			char *btrfs_check = strdup(path);
+
+			if (!btrfs_check) {
+				fprintf(stderr,
+					_("%s: error while duplicating string in BTRFS check %s\n"),
+					Prog, path);
+				fail_exit(E_HOMEDIR);
+			}
+			btrfs_check[strlen(path) - strlen(cp) - 1] = '\0';
+			if (is_btrfs(btrfs_check) <= 0) {
+				fprintf(stderr,
+					_("%s: home directory \"%s\" must be mounted on BTRFS\n"),
+					Prog, path);
+				fail_exit(E_HOMEDIR);
+			}
+			// make subvolume to mount for user instead of directory
+			if (btrfs_create_subvolume(path)) {
+				fprintf(stderr,
+					_("%s: failed to create BTRFS subvolume: %s\n"),
+					Prog, path);
+				fail_exit(E_HOMEDIR);
+			}
+		}
+		else
+#endif
+		if (mkdir(path, 0) != 0) {
+			fprintf(stderr, _("%s: cannot create directory %s\n"),
+				Prog, path);
+#ifdef WITH_AUDIT
+			audit_logger(AUDIT_ADD_USER, Prog, "adding home directory",
+				     user_name, user_id, SHADOW_AUDIT_FAILURE);
+#endif
+			fail_exit(E_HOMEDIR);
+		}
+		if (chown(path, 0, 0) < 0) {
+			fprintf(stderr,
+				_("%s: warning: chown on `%s' failed: %m\n"),
+				Prog, path);
+		}
+		if (chmod(path, 0755) < 0) {
+			fprintf(stderr,
+				_("%s: warning: chmod on `%s' failed: %m\n"),
+				Prog, path);
+		}
+	}
+	free(bhome);
+
+	if (chown (prefix_user_home, user_id, user_gid) != 0) {
+		fprintf (stderr,
+				_("%s: Cannot change owner of %s: %s\n"),
+				Prog, prefix_user_home, strerror (errno));
+		fail_exit (E_HOMEDIR);
+	}
+	mode = getdef_num("HOME_MODE",
+			  0777 & ~getdef_num("UMASK", GETDEF_DEFAULT_UMASK));
+	if (chmod (prefix_user_home, mode) != 0) {
+		fprintf (stderr,
+				_("%s: Cannot change mode of %s: %s\n"),
+				Prog, prefix_user_home, strerror (errno));
+		fail_exit (E_HOMEDIR);
+	}
+	home_added = true;
+#ifdef WITH_AUDIT
+	audit_logger(AUDIT_ADD_USER, Prog, "adding home directory",
+		     user_name, user_id, SHADOW_AUDIT_SUCCESS);
+#endif
+#ifdef WITH_SELINUX
+	/* Reset SELinux to create files with default contexts */
+	if (reset_selinux_file_context() != 0) {
+		fprintf(stderr,
+			_("%s: cannot reset SELinux file creation context\n"),
+			Prog);
+		fail_exit(E_HOMEDIR);
+	}
+#endif
 }
 
 /*
  * create_mail - create the user's mail spool
  *
  *	create_mail() creates the user's mail spool if it does not already
- *	exist. It will be created mode 660 owned by the user and group
+ *	exist. It will be created mode 659 owned by the user and group
  *	'mail'
  */
 static void create_mail (void)
 {
+	int           fd;
+	char          *file;
+	gid_t         gid;
+	mode_t        mode;
+	size_t        size;
+	const char    *spool;
+	struct group  *gr;
 	bool private;
 
 	private = strcasecmp (create_mail_spool, "private") == 0;
 
-	if (private || strcasecmp (create_mail_spool, "yes") == 0) {
-		const char *spool;
-		char *file;
-		int fd;
-		struct group *gr = NULL;
-		gid_t gid;
-		mode_t mode;
+	if ((strcasecmp(create_mail_spool, "yes") != 0) && !private)
+		return;
 
-		spool = getdef_str ("MAIL_DIR");
+	spool = getdef_str("MAIL_DIR");
 #ifdef MAIL_SPOOL_DIR
-		if ((NULL == spool) && (getdef_str ("MAIL_FILE") == NULL)) {
-			spool = MAIL_SPOOL_DIR;
-		}
-#endif /* MAIL_SPOOL_DIR */
-		if (NULL == spool) {
-			return;
-		}
-		file = alloca (strlen (prefix) + strlen (spool) + strlen (user_name) + 3);
-		if (prefix[0])
-			sprintf (file, "%s/%s/%s", prefix, spool, user_name);
-		else
-			sprintf (file, "%s/%s", spool, user_name);
-
-#ifdef WITH_SELINUX
-		if (set_selinux_file_context (file, S_IFREG) != 0) {
-			fprintf (stderr,
-			         _("%s: cannot set SELinux context for mailbox file %s\n"),
-			         Prog, file);
-			fail_exit (E_MAILBOXFILE);
-		}
-#endif
-
-		fd = open (file, O_CREAT | O_WRONLY | O_TRUNC | O_EXCL, 0);
-		if (fd < 0) {
-			perror (_("Creating mailbox file"));
-			return;
-		}
-
-		if (!private)
-			gr = prefix_getgrnam ("mail"); /* local, no need for xgetgrnam */
-
-		if (NULL == gr) {
-			if (!private)
-				fputs (_("Group 'mail' not found. Creating the user mailbox file with 0600 mode.\n"),
-				       stderr);
-			gid = user_gid;
-			mode = 0600;
-		} else {
-			gid = gr->gr_gid;
-			mode = 0660;
-		}
-
-		if (   (fchown (fd, user_id, gid) != 0)
-		    || (fchmod (fd, mode) != 0)) {
-			perror (_("Setting mailbox file permissions"));
-		}
-
-		fsync (fd);
-		close (fd);
-#ifdef WITH_SELINUX
-		/* Reset SELinux to create files with default contexts */
-		if (reset_selinux_file_context () != 0) {
-			fprintf (stderr,
-			         _("%s: cannot reset SELinux file creation context\n"),
-			         Prog);
-			fail_exit (E_MAILBOXFILE);
-		}
-#endif
+	if ((NULL == spool) && (getdef_str("MAIL_FILE") == NULL)) {
+		spool = MAIL_SPOOL_DIR;
 	}
+#endif /* MAIL_SPOOL_DIR */
+	if (NULL == spool) {
+		return;
+	}
+	size = strlen(prefix) + strlen(spool) + strlen(user_name) + 3;
+	file = XMALLOC(size, char);
+	if (prefix[0])
+		sprintf(file, "%s/%s/%s", prefix, spool, user_name);
+	else
+		sprintf(file, "%s/%s", spool, user_name);
+
+#ifdef WITH_SELINUX
+	if (set_selinux_file_context(file, S_IFREG) != 0) {
+		fprintf(stderr,
+		        _("%s: cannot set SELinux context for mailbox file %s\n"),
+		        Prog, file);
+		fail_exit(E_MAILBOXFILE);
+	}
+#endif
+
+	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC | O_EXCL, 0);
+	free(file);
+
+	if (fd < 0) {
+		perror(_("Creating mailbox file"));
+		return;
+	}
+
+	if (!private)
+		gr = prefix_getgrnam("mail"); /* local, no need for xgetgrnam */
+	if (NULL == gr) {
+		if (!private)
+			fputs(_("Group 'mail' not found. Creating the user mailbox file with 0600 mode.\n"),
+				   stderr);
+		gid = user_gid;
+		mode = 0600;
+	} else {
+		gid = gr->gr_gid;
+		mode = 0660;
+	}
+
+	if (fchown(fd, user_id, gid) != 0
+	 || fchmod(fd, mode) != 0)
+	{
+		perror(_("Setting mailbox file permissions"));
+	}
+
+	fsync(fd);
+	close(fd);
+#ifdef WITH_SELINUX
+	/* Reset SELinux to create files with default contexts */
+	if (reset_selinux_file_context() != 0) {
+		fprintf(stderr,
+		        _("%s: cannot reset SELinux file creation context\n"),
+		        Prog);
+		fail_exit(E_MAILBOXFILE);
+	}
+#endif
 }
 
 static void check_uid_range(int rflg, uid_t user_id)
@@ -2447,13 +2509,13 @@ static void check_uid_range(int rflg, uid_t user_id)
 	uid_t uid_min ;
 	uid_t uid_max ;
 	if (rflg) {
-		uid_max = (uid_t)getdef_ulong("SYS_UID_MAX",getdef_ulong("UID_MIN",1000UL)-1);
+		uid_max = getdef_ulong("SYS_UID_MAX",getdef_ulong("UID_MIN",1000UL)-1);
 		if (user_id > uid_max) {
 			fprintf(stderr, _("%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"), Prog, user_name, user_id, uid_max);
 		}
 	}else{
-		uid_min = (uid_t)getdef_ulong("UID_MIN", 1000UL);
-		uid_max = (uid_t)getdef_ulong("UID_MAX", 6000UL);
+		uid_min = getdef_ulong("UID_MIN", 1000UL);
+		uid_max = getdef_ulong("UID_MAX", 6000UL);
 		if (uid_min <= uid_max) {
 			if (user_id < uid_min || user_id >uid_max)
 				fprintf(stderr, _("%s warning: %s's uid %d outside of the UID_MIN %d and UID_MAX %d range.\n"), Prog, user_name, user_id, uid_min, uid_max);
@@ -2498,11 +2560,11 @@ int main (int argc, char **argv)
 #endif
 
 	sys_ngroups = sysconf (_SC_NGROUPS_MAX);
-	user_groups = (char **) xmalloc ((1 + sys_ngroups) * sizeof (char *));
+	user_groups = XMALLOC(1 + sys_ngroups, char *);
 	/*
 	 * Initialize the list to be empty
 	 */
-	user_groups[0] = (char *) 0;
+	user_groups[0] = NULL;
 
 
 	is_shadow_pwd = spw_file_present ();
@@ -2515,8 +2577,8 @@ int main (int argc, char **argv)
 	process_flags (argc, argv);
 
 #ifdef ENABLE_SUBIDS
-	uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
-	uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
+	uid_min = getdef_ulong ("UID_MIN", 1000UL);
+	uid_max = getdef_ulong ("UID_MAX", 60000UL);
 	subuid_count = getdef_ulong ("SUB_UID_COUNT", 65536);
 	subgid_count = getdef_ulong ("SUB_GID_COUNT", 65536);
 	is_sub_uid = subuid_count > 0 && sub_uid_file_present () &&
@@ -2645,7 +2707,7 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 				audit_logger (AUDIT_ADD_USER, Prog,
 				              "adding user",
-				              user_name, (unsigned int) user_id,
+				              user_name, user_id,
 				              SHADOW_AUDIT_FAILURE);
 #endif
 				fail_exit (E_UID_IN_USE);
@@ -2752,14 +2814,14 @@ int main (int argc, char **argv)
 #ifdef WITH_SELINUX
 	if (Zflg && *user_selinux) {
 		if (is_selinux_enabled () > 0) {
-		    if (set_seuser (user_name, user_selinux) != 0) {
+		    if (set_seuser (user_name, user_selinux, user_selinux_range) != 0) {
 			fprintf (stderr,
 			         _("%s: warning: the user name %s to %s SELinux user mapping failed.\n"),
 			         Prog, user_name, user_selinux);
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_ADD_USER, Prog,
 			              "adding SELinux user mapping",
-			              user_name, (unsigned int) user_id, 0);
+			              user_name, user_id, 0);
 #endif				/* WITH_AUDIT */
 			rv = E_SE_UPDATE;
 		    }
@@ -2772,6 +2834,8 @@ int main (int argc, char **argv)
 		if (home_added) {
 			copy_tree ((access(def_template,R_OK|X_OK)?SKEL_DIR:def_template),
 			           prefix_user_home, false, true,
+			           (uid_t)-1, user_id, (gid_t)-1, user_gid);
+			copy_tree (def_usrtemplate, prefix_user_home, false, false,
 			           (uid_t)-1, user_id, (gid_t)-1, user_gid);
 		} else {
 			fprintf (stderr,

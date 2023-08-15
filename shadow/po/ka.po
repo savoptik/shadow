@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow-utils\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-11-08 10:37-0600\n"
+"POT-Creation-Date: 2023-08-04 16:25-0500\n"
 "PO-Revision-Date: 2022-08-22 02:33+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <(nothing)>\n"
@@ -90,8 +90,9 @@ msgstr "SELinux-ის ტრანზაქციის დაწყები�
 msgid "Could not query seuser for %s\n"
 msgstr "%s-ის გამოთხოვა seuser-დან შეუძლებელია\n"
 
-#, c-format
-msgid "Could not set serange for %s\n"
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
 msgstr "%s-სთვის serange-ის დაყენება შეუძლებელია\n"
 
 #, c-format
@@ -433,8 +434,9 @@ msgstr "%s: %d-ზე setuid-ის შეცდომა\n"
 msgid "%s: Could not set caps\n"
 msgstr "%s: caps-ების დაყენების შედომა\n"
 
-#, c-format
-msgid "%s: snprintf failed!\n"
+#, fuzzy, c-format
+#| msgid "%s: snprintf failed!\n"
+msgid "%s: stpeprintf failed!\n"
 msgstr "%s: snprintf -ის შეცდომა!\n"
 
 #, c-format
@@ -447,6 +449,14 @@ msgstr "%s: %s-ში ჩაწერის შეცდომა: %s\n"
 
 msgid "Too many logins.\n"
 msgstr "მეტისმეტად ბევრი შესვლა.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s მომხმარებლის სახელი: "
 
 msgid "You have new mail."
 msgstr "თქვენთვის წერილია."
@@ -468,9 +478,6 @@ msgstr "მხოლოდ სიმბოლოების ზომა"
 
 msgid "too similar"
 msgstr "ძალიან ჰგავს"
-
-msgid "too simple"
-msgstr "ძალიან მარტივია"
 
 msgid "rotated"
 msgstr "შემობრუნებული"
@@ -543,16 +550,13 @@ msgid "%s: cannot access chroot directory %s: %s\n"
 msgstr "%s: chroot საქაღალდის (%s) წვდომის შეცდომა: %s\n"
 
 #, c-format
-msgid "%s: cannot chdir to chroot directory %s: %s\n"
-msgstr "%s: chroot საქაღალდეზე (%s) chdir-ის შეცდომა: %s\n"
-
-#, c-format
 msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: საქაღალდეზე (%s) chroot-ი შეუძლებელია: %s\n"
 
-#, c-format
-msgid "Unable to obtain random bytes.\n"
-msgstr "შემთხვევითი ბაიტების მიღების შეცდომა.\n"
+#, fuzzy, c-format
+#| msgid "%s: cannot chdir to chroot directory %s: %s\n"
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: chroot საქაღალდეზე (%s) chdir-ის შეცდომა: %s\n"
 
 #, c-format
 msgid ""
@@ -582,6 +586,10 @@ msgstr "საქაღალდე არ არსებობს. შევ�
 #, c-format
 msgid "Cannot execute %s"
 msgstr "%s-ის შესრულების შეცდომა"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
 
 #, c-format
 msgid "Invalid root directory '%s'\n"
@@ -660,6 +668,11 @@ msgstr ""
 
 msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
 msgstr "  -R, --root CHROOT_DIR         საქაღალდე chroot-ისთვის\n"
+
+#, fuzzy
+#| msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
+msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgstr "  -P, --prefix PREFIX_DI        პრეფიქსი საქაღალდე\n"
 
 msgid ""
 "  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
@@ -913,6 +926,11 @@ msgstr ""
 "  -s, --sha-rounds              წრეების რიცხვი SHA, BCRYPT\n"
 "                                და YESCRYPT დაშიფვრის ალგორითმებისთვის\n"
 
+#, fuzzy, c-format
+#| msgid "%s: unsupported crypt method: %s\n"
+msgid "%s: no crypt method defined\n"
+msgstr "%s: დაშიფვრის მხარდაუჭერელი მეთოდი: %s\n"
+
 #, c-format
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s: ალამი %s მხოლოდ ალამ %s -სთან ერთადაა ნებადართული\n"
@@ -965,6 +983,16 @@ msgstr ""
 msgid "Login Shell"
 msgstr "შესვლს გარსი"
 
+#, fuzzy, c-format
+#| msgid "%s: Cannot get the size of %s: %s\n"
+msgid "Cannot parse shell files: %s"
+msgstr "%s: %s-ის ზომის მიღების შეცდომა: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file: %s\n"
+msgid "Cannot evaluate entries in shell files: %s"
+msgstr "%s: ნაგულისხმები მნიშვნელობების შემცველი ფაილის შექმნის შეცდომა; %s\n"
+
 #, c-format
 msgid "You may not change the shell for '%s'.\n"
 msgstr "%s-ის გარსის შეცვლა არ შეგიძლიათ.\n"
@@ -976,6 +1004,11 @@ msgstr "%s-ის გარსის შეცვლა\n"
 #, c-format
 msgid "%s: Invalid entry: %s\n"
 msgstr "%s: არასწორი ჩანაწერი: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: %s is an invalid shell\n"
+msgid "%s: Warning: %s is an invalid shell\n"
+msgstr "%s: %s არასწორი გარსია\n"
 
 #, c-format
 msgid "%s: %s is an invalid shell\n"
@@ -1221,9 +1254,6 @@ msgstr ""
 
 msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  სისტემური ანგარიშის შექმნა\n"
-
-msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
-msgstr "  -P, --prefix PREFIX_DI        პრეფიქსი საქაღალდე\n"
 
 msgid "  -U, --users USERS             list of user members of this group\n"
 msgstr "  -U, --users USERS             ამ ჯგუფის წევრების სია\n"
@@ -1515,8 +1545,12 @@ msgstr ""
 "  -b, --before DAYS             lastlog-იდან მხოლოდ მითითებულ დღეზე ძველი "
 "ჩანაწერების ჩვენება\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -C, --clear                   clear lastlog record of an user (usable "
+#| "only with -u)\n"
 msgid ""
-"  -C, --clear                   clear lastlog record of an user (usable only "
+"  -C, --clear                   clear lastlog record of a user (usable only "
 "with -u)\n"
 msgstr ""
 "  -C, --clear                   მომხმარებლის lastlog ჩანაწერის გასუფთავება "
@@ -1622,11 +1656,6 @@ msgstr ""
 msgid "%s: Cannot possibly work without effective root\n"
 msgstr "%s: root-ის უფლებებით ალბათ ვერ ვიმუშავებ\n"
 
-msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
-msgstr ""
-"\"utmp\"-ის ჩანაწერი არ არსებობს.  \"login\"-ი \"sh\"-ის უმდაბლესი დონიდან "
-"უნდა გაუშვათ"
-
 #, c-format
 msgid ""
 "\n"
@@ -1659,14 +1688,6 @@ msgstr "მომხმარებლის სახელი არასწ�
 #, c-format
 msgid "Cannot find user (%s)\n"
 msgstr "მომხმარებლის (%s) პოვნა შეუძლებელია\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s მომხმარებლის სახელი: "
 
 #, c-format
 msgid "%s: failure forking: %s"
@@ -1702,9 +1723,13 @@ msgstr "გამოყენება: logoutd\n"
 msgid "%s: gid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s: gid -ის დიაპაზონი [%lu-%lu) -> [%lu-%lu) დაუშვებელია\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> "
+#| "<count> ] ... \n"
 msgid ""
-"usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> <count> ] ... \n"
+"usage: %s [<pid|fd:<pidfd>] <gid> <lowergid> <count> [ <gid> <lowergid> "
+"<count> ] ... \n"
 msgstr ""
 "გამოყენება: %s <pid> <gid> <lowergid> <რაოდენობა> [ <gid> <lowergid> "
 "<რაოდენობა> ] ... \n"
@@ -1729,21 +1754,21 @@ msgstr "%s: setgroups-ში გადახვევის შეცდომ�
 msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr "%s: setgroups-ის შეცდომა %s პოლიტიკა: %s\n"
 
-#, c-format
-msgid "%s: Could not open proc directory for target %u\n"
-msgstr "%s: proc საქაღალდის გახსნის შეცდომა სამიზნისთვის %u\n"
-
-#, c-format
-msgid "%s: Could not stat directory for target %u\n"
+#, fuzzy, c-format
+#| msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for process\n"
 msgstr "%s: საქაღალდის აღმოჩენის შეცდომა სამიზნისთვის: %u\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
+#| "st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgid ""
-"%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, "
-"gid:%lu pw_gid:%lu st_gid:%lu\n"
+"%s: Target process is owned by a different user: uid:%lu pw_uid:%lu st_uid:"
+"%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
-"%s: სამიზნე %u სხვა მომხმარებლისაა: uid:%lu pw_uid:%lu st_uid:%lu, gid:%lu "
-"pw_gid:%lu st_gid:%lu\n"
+"%s: სამიზნე პროცესი %u სხვა მომხმარებლითაა გაშვებული: uid:%lu pw_uid:%lu "
+"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "გამოყენება: newgrp [-] [ჯგუფი]\n"
@@ -1773,20 +1798,21 @@ msgstr "მეტისმეტად ბევრი ჯგუფი\n"
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s: uid -ის დიაპაზონი [%lu-%lu) -> [%lu-%lu) დაუშვებელია\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> "
+#| "<count> ] ... \n"
 msgid ""
-"usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> <count> ] ... \n"
+"usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
+"<count> ] ... \n"
 msgstr ""
 "გამოყენება: %s <pid> <uid> <loweruid> <რაოდენობა> [ <uid> <loweruid> "
 "<რაოდენობა> ] ... \n"
 
-#, c-format
-msgid ""
-"%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
-"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
-msgstr ""
-"%s: სამიზნე პროცესი %u სხვა მომხმარებლითაა გაშვებული: uid:%lu pw_uid:%lu "
-"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
+#, fuzzy, c-format
+#| msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for target process\n"
+msgstr "%s: საქაღალდის აღმოჩენის შეცდომა სამიზნისთვის: %u\n"
 
 msgid "  -b, --badname                 allow bad names\n"
 msgstr "      -b, --badname                 სახელების სისწორე არ შემოწმდება\n"
@@ -1806,6 +1832,10 @@ msgstr "%s: მომხმარებლის არასწორი ID \"%
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr ""
 "%s: მომხმარებლის არასწორი სახელი '%s': დასაიგნორებლად გამოიყენეთ --badname\n"
+
+#, c-format
+msgid "%s: Provide '--crypt-method' before number of rounds\n"
+msgstr ""
 
 #, c-format
 msgid "%s: line %d: invalid line\n"
@@ -1829,6 +1859,11 @@ msgstr "%s: ხაზი %d: ჯგუფის შექმნა შეუძ�
 msgid "%s: line %d: user '%s' does not exist in %s\n"
 msgstr "%s: ხაზი %d: მომხმარებელი '%s' %s-ში არ არსებობს\n"
 
+#, fuzzy, c-format
+#| msgid "%s: unlink: %s: %s\n"
+msgid "%s: line %d: %s\n"
+msgstr "%s: წაშლა: %s: %s\n"
+
 #, c-format
 msgid "%s: line %d: can't update password\n"
 msgstr "%s: ხაზი %d: პაროლის განახლება შეუძლებელია\n"
@@ -1850,12 +1885,12 @@ msgid "%s: line %d: can't update entry\n"
 msgstr "%s: ხაზი %d: ჩანაწერის განახლების შეცდომა\n"
 
 #, c-format
-msgid "%s: failed to prepare new %s entry\n"
-msgstr "%s: ახალი %s ჩანაწერის მომზადების შეცდომა\n"
-
-#, c-format
 msgid "%s: can't find subordinate user range\n"
 msgstr "%s: დაქვემდებარებული მომხმარებლის დიაპაზონის პოვნა შეუძლებელია\n"
+
+#, c-format
+msgid "%s: failed to prepare new %s entry\n"
+msgstr "%s: ახალი %s ჩანაწერის მომზადების შეცდომა\n"
 
 #, c-format
 msgid "%s: can't find subordinate group range\n"
@@ -2229,6 +2264,11 @@ msgstr "%s: su-ის ავტორიზაცია ამჟამად �
 msgid "No passwd entry for user '%s'\n"
 msgstr "Passwd ფაილში მომხმარებლისთვის \"%s\" ჩანაწერი არ არსებობს\n"
 
+#, fuzzy, c-format
+#| msgid "Invalid member username %s\n"
+msgid "Overlong user name '%s'\n"
+msgstr "წევრის არასწორი მომხმარებლის სახელი %s\n"
+
 #, c-format
 msgid "%s: must be run from a terminal\n"
 msgstr "%s: ტერმინალიდან გაშვება აუცილებელია\n"
@@ -2272,6 +2312,13 @@ msgstr "%s: %s შეიქმნა, მაგრამ ვერ ვშლი\
 
 #, c-format
 msgid "%s: the %s configuration in %s will be ignored\n"
+msgstr "%s: %s-ის კონფიგურაცია %s-ში იგნორირებული იქნება\n"
+
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid ""
+"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"group\n"
 msgstr "%s: %s-ის კონფიგურაცია %s-ში იგნორირებული იქნება\n"
 
 #, c-format
@@ -2441,6 +2488,17 @@ msgstr "  -U, --user-group              შეიქმნება ჯგუფ
 msgid ""
 "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user "
 "mapping\n"
+msgstr ""
+"  -Z, --selinux-user SEUSER     SELinux -ის მომხმარებელთან ბმისთვის "
+"მითითებული SEUSER -ის გამოყენება\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux "
+#| "user mapping\n"
+msgid ""
+"      --selinux-range SERANGE   use a specific MLS range for the SELinux "
+"user mapping\n"
 msgstr ""
 "  -Z, --selinux-user SEUSER     SELinux -ის მომხმარებელთან ბმისთვის "
 "მითითებული SEUSER -ის გამოყენება\n"
@@ -2841,6 +2899,16 @@ msgstr ""
 "  -Z, --selinux-user SEUSER     ანგარიშის SELinux -ის მითითებულ "
 "მომხმარებელზე მიბმა\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     new SELinux user mapping for the user "
+#| "account\n"
+msgid ""
+"      --selinux-range SERANGE   new SELinux MLS range for the user account\n"
+msgstr ""
+"  -Z, --selinux-user SEUSER     ანგარიშის SELinux -ის მითითებულ "
+"მომხმარებელზე მიბმა\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the user's password would result in a passwordless account.\n"
@@ -3055,3 +3123,27 @@ msgstr "%s: %s-ის აღდგენის შეცდომა: %s (თქ
 #, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: %s-სთვის tcb საქაღალდის პოვნის შეცდომა\n"
+
+#~ msgid "too simple"
+#~ msgstr "ძალიან მარტივია"
+
+#, c-format
+#~ msgid "Unable to obtain random bytes.\n"
+#~ msgstr "შემთხვევითი ბაიტების მიღების შეცდომა.\n"
+
+#~ msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
+#~ msgstr ""
+#~ "\"utmp\"-ის ჩანაწერი არ არსებობს.  \"login\"-ი \"sh\"-ის უმდაბლესი "
+#~ "დონიდან უნდა გაუშვათ"
+
+#, c-format
+#~ msgid "%s: Could not open proc directory for target %u\n"
+#~ msgstr "%s: proc საქაღალდის გახსნის შეცდომა სამიზნისთვის %u\n"
+
+#, c-format
+#~ msgid ""
+#~ "%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:"
+#~ "%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
+#~ msgstr ""
+#~ "%s: სამიზნე %u სხვა მომხმარებლისაა: uid:%lu pw_uid:%lu st_uid:%lu, gid:"
+#~ "%lu pw_gid:%lu st_gid:%lu\n"

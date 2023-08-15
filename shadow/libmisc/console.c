@@ -44,8 +44,7 @@ static bool is_listed (const char *cfgin, const char *tty, bool def)
 
 	if (*cons != '/') {
 		char *pbuf;
-		strncpy (buf, cons, sizeof (buf));
-		buf[sizeof (buf) - 1] = '\0';
+		strlcpy (buf, cons, sizeof (buf));
 		pbuf = &buf[0];
 		while ((s = strtok (pbuf, ":")) != NULL) {
 			if (strcmp (s, tty) == 0) {
@@ -71,8 +70,9 @@ static bool is_listed (const char *cfgin, const char *tty, bool def)
 	 * See if this tty is listed in the console file.
 	 */
 
-	while (fgets (buf, (int) sizeof (buf), fp) != NULL) {
-		buf[strlen (buf) - 1] = '\0';
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		/* Remove optional trailing '\n'. */
+		buf[strcspn (buf, "\n")] = '\0';
 		if (strcmp (buf, tty) == 0) {
 			(void) fclose (fp);
 			return true;

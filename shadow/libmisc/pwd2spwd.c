@@ -11,8 +11,6 @@
 
 #ident "$Id$"
 
-#ifndef USE_PAM
-
 #include <sys/types.h>
 #include "prototypes.h"
 #include "defines.h"
@@ -42,7 +40,7 @@ struct spwd *pwd_to_spwd (const struct passwd *pw)
 		 */
 		sp.sp_min = 0;
 		sp.sp_max = (10000L * DAY) / SCALE;
-		sp.sp_lstchg = (long) gettime () / SCALE;
+		sp.sp_lstchg = gettime () / SCALE;
 		if (0 == sp.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */
@@ -61,7 +59,4 @@ struct spwd *pwd_to_spwd (const struct passwd *pw)
 
 	return &sp;
 }
-#else				/* USE_PAM */
-extern int errno;	/* warning: ANSI C forbids an empty source file */
-#endif				/* !USE_PAM */
 

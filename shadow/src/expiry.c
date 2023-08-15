@@ -27,7 +27,7 @@ static bool cflg = false;
 
 /* local function prototypes */
 static void catch_signals (unused int sig);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 
 /*
@@ -41,7 +41,9 @@ static void catch_signals (unused int sig)
 /*
  * usage - print syntax message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -136,9 +138,7 @@ int main (int argc, char **argv)
 	(void) signal (SIGHUP, catch_signals);
 	(void) signal (SIGINT, catch_signals);
 	(void) signal (SIGQUIT, catch_signals);
-#ifdef	SIGTSTP
 	(void) signal (SIGTSTP, catch_signals);
-#endif
 
 	/*
 	 * expiry takes one of two arguments. The default action is to give

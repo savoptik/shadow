@@ -147,7 +147,7 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *prefix_dir, con
 		         shadow_progname, link);
 		return NULL;
 	}
-	link[(size_t)ret] = '\0';
+	link[ret] = '\0';
 	rval = strdup (link);
 	if (NULL == rval) {
 		OUT_OF_MEMORY;

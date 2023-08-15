@@ -11,7 +11,9 @@
 
 #include <stdio.h>
 #include <assert.h>
+
 #include "defines.h"
+#include "alloc.h"
 #include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
@@ -83,6 +85,15 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 
 
 	if (prefix != NULL) {
+		/* Drop privileges */
+		if (   (setregid (getgid (), getgid ()) != 0)
+		    || (setreuid (getuid (), getuid ()) != 0)) {
+			fprintf (log_get_logfd(),
+			         _("%s: failed to drop privileges (%s)\n"),
+			         log_get_progname(), strerror (errno));
+			exit (EXIT_FAILURE);
+		}
+
 		if (prefix[0] == '\0')
 			return "";
 
@@ -115,24 +126,24 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		setdef_config_file(prefix);
 #else
 		len = strlen(prefix) + strlen("/etc/login.defs") + 2;
-		def_conf_file = xmalloc(len);
+		def_conf_file = XMALLOC(len, char);
 		snprintf(def_conf_file, len, "%s/%s", prefix, "/etc/login.defs");
 		setdef_config_file(def_conf_file);
 #endif
 
 		len = strlen(prefix) + strlen(PASSWD_FILE) + 2;
-		passwd_db_file = xmalloc(len);
+		passwd_db_file = XMALLOC(len, char);
 		snprintf(passwd_db_file, len, "%s/%s", prefix, PASSWD_FILE);
 		pw_setdbname(passwd_db_file);
 
 		len = strlen(prefix) + strlen(GROUP_FILE) + 2;
-		group_db_file = xmalloc(len);
+		group_db_file = XMALLOC(len, char);
 		snprintf(group_db_file, len, "%s/%s", prefix, GROUP_FILE);
 		gr_setdbname(group_db_file);
 
 #ifdef  SHADOWGRP
 		len = strlen(prefix) + strlen(SGROUP_FILE) + 2;
-		sgroup_db_file = xmalloc(len);
+		sgroup_db_file = XMALLOC(len, char);
 		snprintf(sgroup_db_file, len, "%s/%s", prefix, SGROUP_FILE);
 		sgr_setdbname(sgroup_db_file);
 #endif
@@ -145,19 +156,19 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 #endif
 		{
 			len = strlen(prefix) + strlen(SHADOW_FILE) + 2;
-			spw_db_file = xmalloc(len);
+			spw_db_file = XMALLOC(len, char);
 			snprintf(spw_db_file, len, "%s/%s", prefix, SHADOW_FILE);
 			spw_setdbname(spw_db_file);
 		}
 
 #ifdef ENABLE_SUBIDS
 		len = strlen(prefix) + strlen("/etc/subuid") + 2;
-		suid_db_file = xmalloc(len);
+		suid_db_file = XMALLOC(len, char);
 		snprintf(suid_db_file, len, "%s/%s", prefix, "/etc/subuid");
 		sub_uid_setdbname(suid_db_file);
 
 		len = strlen(prefix) + strlen("/etc/subgid") + 2;
-		sgid_db_file = xmalloc(len);
+		sgid_db_file = XMALLOC(len, char);
 		snprintf(sgid_db_file, len, "%s/%s", prefix, "/etc/subgid");
 		sub_gid_setdbname(sgid_db_file);
 #endif
@@ -252,6 +263,29 @@ extern struct passwd *prefix_getpwnam(const char* name)
 		return getpwnam(name);
 	}
 }
+#if HAVE_FGETPWENT_R
+extern int prefix_getpwnam_r(const char* name, struct passwd* pwd,
+                             char* buf, size_t buflen, struct passwd** result)
+{
+	if (passwd_db_file) {
+		FILE* fg;
+		int ret = 0;
+
+		fg = fopen(passwd_db_file, "rt");
+		if (!fg)
+			return errno;
+		while ((ret = fgetpwent_r(fg, pwd, buf, buflen, result)) == 0) {
+			if (!strcmp(name, pwd->pw_name))
+				break;
+		}
+		fclose(fg);
+		return ret;
+	}
+	else {
+		return getpwnam_r(name, pwd, buf, buflen, result);
+	}
+}
+#endif
 extern struct spwd *prefix_getspnam(const char* name)
 {
 	if (spw_db_file) {
@@ -355,7 +389,7 @@ extern struct group *prefix_getgr_nam_gid(const char *grname)
 	    	&& ('\0' == *endptr)
 	    	&& (ERANGE != errno)
 	    	&& (gid == (gid_t)gid)) {
-			return prefix_getgrgid ((gid_t) gid);
+			return prefix_getgrgid (gid);
 		}
 		g = prefix_getgrnam (grname);
 		return g ? __gr_dup(g) : NULL;

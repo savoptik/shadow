@@ -39,12 +39,11 @@
      * Author: Wietse Venema, Eindhoven University of Technology, The Netherlands.
      */
 #include <sys/types.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <syslog.h>
 #include <ctype.h>
-#ifdef HAVE_NETDB_H
 #include <netdb.h>
-#endif
 #include <grp.h>
 #ifdef PRIMARY_GROUP_MATCH
 #include <pwd.h>
@@ -98,11 +97,11 @@ int login_access (const char *user, const char *from)
 	if (NULL != fp) {
 		int lineno = 0;	/* for diagnostics */
 		while (   !match
-		       && (fgets (line, (int) sizeof (line), fp) == line)) {
-			int end;
+		       && (fgets (line, sizeof (line), fp) == line)) {
+			ptrdiff_t  end;
 			lineno++;
-			end = (int) strlen (line) - 1;
-			if (line[end] != '\n') {
+			end = strlen (line) - 1;
+			if (line[0] == '\0' || line[end] != '\n') {
 				SYSLOG ((LOG_ERR,
 					 "%s: line %d: missing newline or line too long",
 					 TABLE, lineno));
@@ -119,9 +118,9 @@ int login_access (const char *user, const char *from)
 				continue;
 			}
 			if (   ((perm = strtok (line, fs)) == NULL)
-			    || ((users = strtok ((char *) 0, fs)) == NULL)
-			    || ((froms = strtok ((char *) 0, fs)) == NULL)
-			    || (strtok ((char *) 0, fs) != NULL)) {
+			    || ((users = strtok (NULL, fs)) == NULL)
+			    || ((froms = strtok (NULL, fs)) == NULL)
+			    || (strtok (NULL, fs) != NULL)) {
 				SYSLOG ((LOG_ERR,
 					 "%s: line %d: bad field count",
 					 TABLE, lineno));
@@ -156,7 +155,7 @@ static bool list_match (char *list, const char *item, bool (*match_fn) (const ch
 	 * a match, look for an "EXCEPT" list and recurse to determine whether
 	 * the match is affected by any exceptions.
 	 */
-	for (tok = strtok (list, sep); tok != NULL; tok = strtok ((char *) 0, sep)) {
+	for (tok = strtok (list, sep); tok != NULL; tok = strtok (NULL, sep)) {
 		if (strcasecmp (tok, "EXCEPT") == 0) {	/* EXCEPT: give up */
 			break;
 		}
@@ -168,10 +167,10 @@ static bool list_match (char *list, const char *item, bool (*match_fn) (const ch
 
 	/* Process exceptions to matches. */
 	if (match) {
-		while (   ((tok = strtok ((char *) 0, sep)) != NULL)
+		while (   ((tok = strtok (NULL, sep)) != NULL)
 		       && (strcasecmp (tok, "EXCEPT") != 0))
 			/* VOID */ ;
-		if (tok == 0 || !list_match ((char *) 0, item, match_fn)) {
+		if (tok == 0 || !list_match (NULL, item, match_fn)) {
 			return (match);
 		}
 	}
@@ -195,9 +194,9 @@ static char *myhostname (void)
 static bool
 netgroup_match (const char *group, const char *machine, const char *user)
 {
-	static char *mydomain = (char *)0;
+	static char *mydomain = NULL;
 
-	if (mydomain == (char *)0) {
+	if (mydomain == NULL) {
 		static char domain[MAXHOSTNAMELEN + 1];
 
 		getdomainname (domain, MAXHOSTNAMELEN);
@@ -230,7 +229,7 @@ static bool user_match (const char *tok, const char *string)
 		        && from_match (at + 1, myhostname ()));
 #if HAVE_INNETGR
 	} else if (tok[0] == '@') {	/* netgroup */
-		return (netgroup_match (tok + 1, (char *) 0, string));
+		return (netgroup_match (tok + 1, NULL, string));
 #endif
 	} else if (string_match (tok, string)) {	/* ALL or exact match */
 		return true;
@@ -244,7 +243,7 @@ static bool user_match (const char *tok, const char *string)
 		}
 #ifdef PRIMARY_GROUP_MATCH
 		/*
-		 * If the string is an user whose initial GID matches the token,
+		 * If the string is a user whose initial GID matches the token,
 		 * accept it. May avoid excessively long lines in /etc/group.
 		 * Radu-Adrian Feurdean <raf@licj.soroscj.ro>
 		 *
@@ -265,19 +264,28 @@ static bool user_match (const char *tok, const char *string)
 
 static const char *resolve_hostname (const char *string)
 {
-	/*
-	 * Resolve hostname to numeric IP address, as suggested
-	 * by Dave Hagewood <admin@arrowweb.com>.  --marekm
-	 */
-	struct hostent *hp;
+	int              gai_err;
+	char             *addr_str;
+	struct addrinfo  *addrs;
 
-	hp = gethostbyname (string);
-	if (NULL != hp) {
-		return inet_ntoa (*((struct in_addr *) *(hp->h_addr_list)));
+	static char      host[MAXHOSTNAMELEN];
+
+	gai_err = getaddrinfo(string, NULL, NULL, &addrs);
+	if (gai_err != 0) {
+		SYSLOG ((LOG_ERR, "getaddrinfo(%s): %s", string, gai_strerror(gai_err)));
+		return string;
 	}
 
-	SYSLOG ((LOG_ERR, "%s - unknown host", string));
-	return string;
+	addr_str = host;
+	gai_err = getnameinfo(addrs[0].ai_addr, addrs[0].ai_addrlen,
+	                      host, NITEMS(host), NULL, 0, NI_NUMERICHOST);
+	if (gai_err != 0) {
+		SYSLOG ((LOG_ERR, "getnameinfo(%s): %s", string, gai_strerror(gai_err)));
+		addr_str = string;
+	}
+
+	freeaddrinfo(addrs);
+	return addr_str;
 }
 
 /* from_match - match a host or tty against a list of tokens */
@@ -296,7 +304,7 @@ static bool from_match (const char *tok, const char *string)
 	 */
 #if HAVE_INNETGR
 	if (tok[0] == '@') {	/* netgroup */
-		return (netgroup_match (tok + 1, string, (char *) 0));
+		return (netgroup_match (tok + 1, string, NULL));
 	} else
 #endif
 	if (string_match (tok, string)) {	/* ALL or exact match */
@@ -313,7 +321,7 @@ static bool from_match (const char *tok, const char *string)
 		if (strchr (string, '.') == NULL) {
 			return true;
 		}
-	} else if (   (tok[(tok_len = strlen (tok)) - 1] == '.') /* network */
+	} else if (   (tok[0] != '\0' && tok[(tok_len = strlen (tok)) - 1] == '.') /* network */
 		   && (strncmp (tok, resolve_hostname (string), tok_len) == 0)) {
 		return true;
 	}
@@ -337,5 +345,5 @@ static bool string_match (const char *tok, const char *string)
 }
 
 #else				/* !USE_PAM */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !USE_PAM */

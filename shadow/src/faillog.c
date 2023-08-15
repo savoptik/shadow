@@ -26,7 +26,7 @@
 #include "shadowlog.h"
 
 /* local function prototypes */
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void print_one (/*@null@*/const struct passwd *pw, bool force);
 static void set_locktime (long locktime);
 static bool set_locktime_one (uid_t uid, long locktime);
@@ -56,9 +56,11 @@ static bool rflg = false;	/* reset the counters of login failures */
 
 static struct stat statbuf;	/* fstat buffer for file size */
 
-#define	NOW	(time((time_t *) 0))
+#define	NOW	time(NULL)
 
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -103,7 +105,7 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &fl, sizeof (fl), 1, fail) != 1) {
+		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long int)pw->pw_uid);
@@ -163,7 +165,7 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 static void print (void)
 {
 	if (uflg && has_umin && has_umax && (umin==umax)) {
-		print_one (getpwuid ((uid_t)umin), true);
+		print_one (getpwuid (umin), true);
 	} else {
 		/* We only print records for existing users.
 		 * Loop based on the user database instead of reading the
@@ -205,7 +207,7 @@ static bool reset_one (uid_t uid)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &fl, sizeof (fl), 1, fail) != 1) {
+		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long int)uid);
@@ -231,7 +233,7 @@ static bool reset_one (uid_t uid)
 	fl.fail_cnt = 0;
 
 	if (   (fseeko (fail, offset, SEEK_SET) == 0)
-	    && (fwrite ((char *) &fl, sizeof (fl), 1, fail) == 1)) {
+	    && (fwrite (&fl, sizeof (fl), 1, fail) == 1)) {
 		(void) fflush (fail);
 		return false;
 	}
@@ -245,7 +247,7 @@ static bool reset_one (uid_t uid)
 static void reset (void)
 {
 	if (uflg && has_umin && has_umax && (umin==umax)) {
-		if (reset_one ((uid_t)umin)) {
+		if (reset_one (umin)) {
 			errors = true;
 		}
 	} else {
@@ -257,7 +259,7 @@ static void reset (void)
 			uidmax--;
 		}
 		if (has_umax && (uid_t)umax < uidmax) {
-			uidmax = (uid_t)umax;
+			uidmax = umax;
 		}
 
 		/* Reset all entries in the specified range.
@@ -270,7 +272,7 @@ static void reset (void)
 
 			/* Make sure we stay in the umin-umax range if specified */
 			if (has_umin) {
-				uid = (uid_t)umin;
+				uid = umin;
 			}
 
 			while (uid <= uidmax) {
@@ -319,7 +321,7 @@ static bool setmax_one (uid_t uid, short max)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &fl, sizeof (fl), 1, fail) != 1) {
+		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long int)uid);
@@ -346,7 +348,7 @@ static bool setmax_one (uid_t uid, short max)
 	fl.fail_max = max;
 
 	if (   (fseeko (fail, offset, SEEK_SET) == 0)
-	    && (fwrite ((char *) &fl, sizeof (fl), 1, fail) == 1)) {
+	    && (fwrite (&fl, sizeof (fl), 1, fail) == 1)) {
 		(void) fflush (fail);
 		return false;
 	}
@@ -360,7 +362,7 @@ static bool setmax_one (uid_t uid, short max)
 static void setmax (short max)
 {
 	if (uflg && has_umin && has_umax && (umin==umax)) {
-		if (setmax_one ((uid_t)umin, max)) {
+		if (setmax_one (umin, max)) {
 			errors = true;
 		}
 	} else {
@@ -384,10 +386,10 @@ static void setmax (short max)
 
 			/* Make sure we stay in the umin-umax range if specified */
 			if (has_umin) {
-				uid = (uid_t)umin;
+				uid = umin;
 			}
 			if (has_umax) {
-				uidmax = (uid_t)umax;
+				uidmax = umax;
 			}
 
 			while (uid <= uidmax) {
@@ -436,7 +438,7 @@ static bool set_locktime_one (uid_t uid, long locktime)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &fl, sizeof (fl), 1, fail) != 1) {
+		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long int)uid);
@@ -463,7 +465,7 @@ static bool set_locktime_one (uid_t uid, long locktime)
 	fl.fail_locktime = locktime;
 
 	if (   (fseeko (fail, offset, SEEK_SET) == 0)
-	    && (fwrite ((char *) &fl, sizeof (fl), 1, fail) == 1)) {
+	    && (fwrite (&fl, sizeof (fl), 1, fail) == 1)) {
 		(void) fflush (fail);
 		return false;
 	}
@@ -477,7 +479,7 @@ static bool set_locktime_one (uid_t uid, long locktime)
 static void set_locktime (long locktime)
 {
 	if (uflg && has_umin && has_umax && (umin==umax)) {
-		if (set_locktime_one ((uid_t)umin, locktime)) {
+		if (set_locktime_one (umin, locktime)) {
 			errors = true;
 		}
 	} else {
@@ -501,10 +503,10 @@ static void set_locktime (long locktime)
 
 			/* Make sure we stay in the umin-umax range if specified */
 			if (has_umin) {
-				uid = (uid_t)umin;
+				uid = umin;
 			}
 			if (has_umax) {
-				uidmax = (uid_t)umax;
+				uidmax = umax;
 			}
 
 			while (uid <= uidmax) {
@@ -590,7 +592,7 @@ int main (int argc, char **argv)
 					         Prog, optarg);
 					exit (E_BAD_ARG);
 				}
-				fail_max = (short) lmax;
+				fail_max = lmax;
 				mflg = true;
 				break;
 			}
@@ -624,7 +626,7 @@ int main (int argc, char **argv)
 				/* local, no need for xgetpwnam */
 				pwent = getpwnam (optarg);
 				if (NULL != pwent) {
-					umin = (unsigned long) pwent->pw_uid;
+					umin = pwent->pw_uid;
 					has_umin = true;
 					umax = umin;
 					has_umax = true;

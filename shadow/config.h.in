@@ -4,6 +4,12 @@
    authenticate the callers */
 #undef ACCT_TOOLS_SETUID
 
+/* Define to support lastlog. */
+#undef ENABLE_LASTLOG
+
+/* Define to manage session support with logind. */
+#undef ENABLE_LOGIND
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -73,41 +79,17 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
-
 /* Define to 1 if you have the `explicit_bzero' function. */
 #undef HAVE_EXPLICIT_BZERO
 
-/* Define to 1 if you have the `fchmod' function. */
-#undef HAVE_FCHMOD
-
-/* Define to 1 if you have the `fchown' function. */
-#undef HAVE_FCHOWN
-
-/* Define to 1 if you have the <fcntl.h> header file. */
-#undef HAVE_FCNTL_H
-
-/* Define to 1 if you have the `fsync' function. */
-#undef HAVE_FSYNC
+/* Defined to 1 if you have the declaration of 'fgetpwent_r' */
+#undef HAVE_FGETPWENT_R
 
 /* Define to 1 if you have the `futimes' function. */
 #undef HAVE_FUTIMES
 
 /* Define to 1 if you have the `getentropy' function. */
 #undef HAVE_GETENTROPY
-
-/* Define to 1 if you have the `getgrgid_r' function. */
-#undef HAVE_GETGRGID_R
-
-/* Define to 1 if you have the `getgrnam_r' function. */
-#undef HAVE_GETGRNAM_R
-
-/* Define to 1 if you have the `getpwnam_r' function. */
-#undef HAVE_GETPWNAM_R
-
-/* Define to 1 if you have the `getpwuid_r' function. */
-#undef HAVE_GETPWUID_R
 
 /* Define to 1 if you have the `getrandom' function. */
 #undef HAVE_GETRANDOM
@@ -124,9 +106,6 @@
 /* Define to 1 if you have the `getusershell' function. */
 #undef HAVE_GETUSERSHELL
 
-/* Define to 1 if you have the `getutent' function. */
-#undef HAVE_GETUTENT
-
 /* Define to 1 if you have the <gshadow.h> header file. */
 #undef HAVE_GSHADOW_H
 
@@ -141,9 +120,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the `l64a' function. */
-#undef HAVE_L64A
 
 /* Define to 1 if you have the <lastlog.h> header file. */
 #undef HAVE_LASTLOG_H
@@ -160,9 +136,6 @@
 /* Defined if it includes *Pw functions. */
 #undef HAVE_LIBCRACK_PW
 
-/* Define to 1 if you have the <limits.h> header file. */
-#undef HAVE_LIMITS_H
-
 /* Define to 1 if you have the <linux/btrfs_tree.h> header file. */
 #undef HAVE_LINUX_BTRFS_TREE_H
 
@@ -172,23 +145,17 @@
 /* Define if struct lastlog has ll_host */
 #undef HAVE_LL_HOST
 
-/* Define to 1 if you have the <locale.h> header file. */
-#undef HAVE_LOCALE_H
-
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
 
-/* Define to 1 if you have the `memset_s' function. */
-#undef HAVE_MEMSET_S
+/* Define to 1 if you have the `mempcpy' function. */
+#undef HAVE_MEMPCPY
+
+/* Define to 1 if you have the `memset_explicit' function. */
+#undef HAVE_MEMSET_EXPLICIT
 
 /* Define to 1 if you have the <minix/config.h> header file. */
 #undef HAVE_MINIX_CONFIG_H
-
-/* Define to 1 if you have the `mkdir' function. */
-#undef HAVE_MKDIR
-
-/* Define to 1 if you have the <netdb.h> header file. */
-#undef HAVE_NETDB_H
 
 /* Define to 1 if you have the <paths.h> header file. */
 #undef HAVE_PATHS_H
@@ -202,14 +169,14 @@
 /* Define to 1 if you have the `putspent' function. */
 #undef HAVE_PUTSPENT
 
-/* Define to 1 if you have the `rename' function. */
-#undef HAVE_RENAME
-
-/* Define to 1 if you have the `rmdir' function. */
-#undef HAVE_RMDIR
+/* Define to 1 if you have the <readpassphrase.h> header file. */
+#undef HAVE_READPASSPHRASE_H
 
 /* Define to 1 if you have the <rpc/key_prot.h> header file. */
 #undef HAVE_RPC_KEY_PROT_H
+
+/* Define to 1 if you have the `rpmatch' function. */
+#undef HAVE_RPMATCH
 
 /* Define to 1 if you have the <security/openpam.h> header file. */
 #undef HAVE_SECURITY_OPENPAM_H
@@ -241,12 +208,6 @@
 /* Have working shadow group support in libc */
 #undef HAVE_SHADOWGRP
 
-/* Define to 1 if you have the `snprintf' function. */
-#undef HAVE_SNPRINTF
-
-/* Define to 1 if stdbool.h conforms to C99. */
-#undef HAVE_STDBOOL_H
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -256,56 +217,17 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
-/* Define to 1 if you have the `strcasecmp' function. */
-#undef HAVE_STRCASECMP
+/* Define to 1 if you have the `stpecpy' function. */
+#undef HAVE_STPECPY
 
-/* Define to 1 if you have the `strdup' function. */
-#undef HAVE_STRDUP
-
-/* Define to 1 if you have the `strerror' function. */
-#undef HAVE_STRERROR
+/* Define to 1 if you have the `stpeprintf' function. */
+#undef HAVE_STPEPRINTF
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
-
-/* Define to 1 if you have the `strstr' function. */
-#undef HAVE_STRSTR
-
-/* Define to 1 if `st_atim' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_ATIM
-
-/* Define to 1 if `st_atimensec' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_ATIMENSEC
-
-/* Define to 1 if `st_mtim' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_MTIM
-
-/* Define to 1 if `st_mtimensec' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_MTIMENSEC
-
-/* Define to 1 if `ut_addr' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_ADDR
-
-/* Define to 1 if `ut_addr_v6' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_ADDR_V6
-
-/* Define to 1 if `ut_host' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_HOST
-
-/* Define to 1 if `ut_name' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_NAME
-
-/* Define to 1 if `ut_syslen' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_SYSLEN
-
-/* Define to 1 if `ut_time' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_TIME
-
-/* Define to 1 if `ut_xtime' is a member of `struct utmpx'. */
-#undef HAVE_STRUCT_UTMPX_UT_XTIME
 
 /* Define to 1 if `ut_addr' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_ADDR
@@ -340,9 +262,6 @@
 /* Define to 1 if `ut_xtime' is a member of `struct utmp'. */
 #undef HAVE_STRUCT_UTMP_UT_XTIME
 
-/* Define to 1 if you have the <syslog.h> header file. */
-#undef HAVE_SYSLOG_H
-
 /* Define to 1 if you have the <sys/capability.h> header file. */
 #undef HAVE_SYS_CAPABILITY_H
 
@@ -352,17 +271,11 @@
 /* Define to 1 if you have the <sys/random.h> header file. */
 #undef HAVE_SYS_RANDOM_H
 
-/* Define to 1 if you have the <sys/resource.h> header file. */
-#undef HAVE_SYS_RESOURCE_H
-
 /* Define to 1 if you have the <sys/statfs.h> header file. */
 #undef HAVE_SYS_STATFS_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
-
-/* Define to 1 if you have the <sys/time.h> header file. */
-#undef HAVE_SYS_TIME_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
@@ -370,14 +283,8 @@
 /* Define to 1 if you have the <tcb.h> header file. */
 #undef HAVE_TCB_H
 
-/* Define to 1 if you have the <termios.h> header file. */
-#undef HAVE_TERMIOS_H
-
 /* Define to 1 if you have the <termio.h> header file. */
 #undef HAVE_TERMIO_H
-
-/* Define to 1 if you have the <ulimit.h> header file. */
-#undef HAVE_ULIMIT_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -394,17 +301,14 @@
 /* Define to 1 if `utime(file, NULL)' sets file's timestamp to the present. */
 #undef HAVE_UTIME_NULL
 
-/* Define to 1 if you have the <utmpx.h> header file. */
-#undef HAVE_UTMPX_H
-
 /* Define to 1 if you have the <utmp.h> header file. */
 #undef HAVE_UTMP_H
 
+/* Define to support vendor settings. */
+#undef HAVE_VENDORDIR
+
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H
-
-/* Define to 1 if the system has the type `_Bool'. */
-#undef HAVE__BOOL
 
 /* Path for lastlog file. */
 #undef LASTLOG_FILE
@@ -477,9 +381,6 @@
 /* Define to support /etc/suauth su access control. */
 #undef SU_ACCESS
 
-/* Define to 1 if your <sys/time.h> declares `struct tm'. */
-#undef TM_IN_SYS_TIME
-
 /* Define to allow the bcrypt password encryption algorithm */
 #undef USE_BCRYPT
 
@@ -494,9 +395,6 @@
 
 /* Define to support flushing of sssd caches */
 #undef USE_SSSD
-
-/* Define to use syslog(). */
-#undef USE_SYSLOG
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
@@ -586,11 +484,11 @@
 #endif
 
 
-/* Define if utmpx should be used */
-#undef USE_UTMPX
-
 /* Define to allow the yescrypt password encryption algorithm */
 #undef USE_YESCRYPT
+
+/* Directory for distribution provided configuration files */
+#undef VENDORDIR
 
 /* Version number of package */
 #undef VERSION

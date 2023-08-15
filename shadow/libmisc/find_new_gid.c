@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "alloc.h"
 #include "prototypes.h"
 #include "groupio.h"
 #include "getdef.h"
@@ -40,15 +41,14 @@ static int get_ranges (bool sys_group, gid_t *min_id, gid_t *max_id,
 		*preferred_min = (gid_t) 1;
 
 		/* Get the minimum ID range from login.defs or default to 10 */
-		*min_id = (gid_t) getdef_ulong ("SYS_GID_MIN", 10UL);
+		*min_id = getdef_ulong ("SYS_GID_MIN", 10UL);
 
 		/*
 		 * If SYS_GID_MAX is unspecified, we should assume it to be one
 		 * less than the GID_MIN (which is reserved for non-system accounts)
 		 */
-		gid_def_max = (gid_t) getdef_ulong ("GID_MIN", 1000UL) - 1;
-		*max_id = (gid_t) getdef_ulong ("SYS_GID_MAX",
-				(unsigned long) gid_def_max);
+		gid_def_max = getdef_ulong ("GID_MIN", 1000UL) - 1;
+		*max_id = getdef_ulong ("SYS_GID_MAX", gid_def_max);
 
 		/* Check that the ranges make sense */
 		if (*max_id < *min_id) {
@@ -71,8 +71,8 @@ static int get_ranges (bool sys_group, gid_t *min_id, gid_t *max_id,
 		/* Non-system groups */
 
 		/* Get the values from login.defs or use reasonable defaults */
-		*min_id = (gid_t) getdef_ulong ("GID_MIN", 1000UL);
-		*max_id = (gid_t) getdef_ulong ("GID_MAX", 60000UL);
+		*min_id = getdef_ulong ("GID_MIN", 1000UL);
+		*max_id = getdef_ulong ("GID_MAX", 60000UL);
 
 		/*
 		 * The preferred minimum should match the standard ID minimum
@@ -99,6 +99,7 @@ static int get_ranges (bool sys_group, gid_t *min_id, gid_t *max_id,
  *
  * On success, return 0
  * If the ID is in use, return EEXIST
+ * If the ID might clash with -1, return EINVAL
  * If the ID is outside the range, return ERANGE
  * In other cases, return errno from getgrgid()
  */
@@ -110,6 +111,11 @@ static int check_gid (const gid_t gid,
 	/* First test that the preferred ID is in the range */
 	if (gid < gid_min || gid > gid_max) {
 		return ERANGE;
+	}
+
+	/* Check for compatibility with 16b and 32b gid_t error codes */
+	if (gid == UINT16_MAX || gid == UINT32_MAX) {
+		return EINVAL;
 	}
 
 	/*
@@ -183,10 +189,10 @@ int find_new_gid (bool sys_group,
 			 * gr_locate_gid() found the GID in an as-yet uncommitted
 			 * entry. We'll proceed below and auto-set a GID.
 			 */
-		} else if (result == EEXIST || result == ERANGE) {
+		} else if (result == EEXIST || result == ERANGE || result == EINVAL) {
 			/*
 			 * Continue on below. At this time, we won't
-			 * treat these two cases differently.
+			 * treat these three cases differently.
 			 */
 		} else {
 			/*
@@ -226,14 +232,13 @@ int find_new_gid (bool sys_group,
 	 */
 
 	/* Create an array to hold all of the discovered GIDs */
-	used_gids = malloc (sizeof (bool) * (gid_max +1));
+	used_gids = CALLOC (gid_max + 1, bool);
 	if (NULL == used_gids) {
 		fprintf (log_get_logfd(),
 			 _("%s: failed to allocate memory: %s\n"),
 			 log_get_progname(), strerror (errno));
 		return -1;
 	}
-	memset (used_gids, false, sizeof (bool) * (gid_max + 1));
 
 	/* First look for the lowest and highest value in the local database */
 	(void) gr_rewind ();
@@ -297,8 +302,11 @@ int find_new_gid (bool sys_group,
 				*gid = id;
 				free (used_gids);
 				return 0;
-			} else if (result == EEXIST) {
-				/* This GID is in use, we'll continue to the next */
+			} else if (result == EEXIST || result == EINVAL) {
+				/*
+				 * This GID is in use or unusable, we'll
+				 * continue to the next.
+				 */
 			} else {
 				/*
 				 * An unexpected error occurred.
@@ -340,8 +348,11 @@ int find_new_gid (bool sys_group,
 					*gid = id;
 					free (used_gids);
 					return 0;
-				} else if (result == EEXIST) {
-					/* This GID is in use, we'll continue to the next */
+				} else if (result == EEXIST || result == EINVAL) {
+					/*
+					 * This GID is in use or unusable, we'll
+					 * continue to the next.
+					 */
 				} else {
 					/*
 					 * An unexpected error occurred.
@@ -400,8 +411,11 @@ int find_new_gid (bool sys_group,
 				*gid = id;
 				free (used_gids);
 				return 0;
-			} else if (result == EEXIST) {
-				/* This GID is in use, we'll continue to the next */
+			} else if (result == EEXIST || result == EINVAL) {
+				/*
+				 * This GID is in use or unusable, we'll
+				 * continue to the next.
+				 */
 			} else {
 				/*
 				 * An unexpected error occurred.
@@ -443,8 +457,11 @@ int find_new_gid (bool sys_group,
 					*gid = id;
 					free (used_gids);
 					return 0;
-				} else if (result == EEXIST) {
-					/* This GID is in use, we'll continue to the next */
+				} else if (result == EEXIST || result == EINVAL) {
+					/*
+					 * This GID is in use or unusable, we'll
+					 * continue to the next.
+					 */
 				} else {
 					/*
 					 * An unexpected error occurred.

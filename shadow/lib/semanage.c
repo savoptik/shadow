@@ -25,10 +25,6 @@
 
 #include "shadowlog_internal.h"
 
-#ifndef DEFAULT_SERANGE
-#define DEFAULT_SERANGE "s0"
-#endif
-
 
 format_attr(printf, 3, 4)
 static void semanage_error_callback (unused void *varg,
@@ -120,6 +116,8 @@ static semanage_handle_t *semanage_init (void)
 	return handle;
 
 fail:
+	if (handle)
+		semanage_disconnect (handle);
 	semanage_handle_destroy (handle);
 	return NULL;
 }
@@ -128,7 +126,8 @@ fail:
 static int semanage_user_mod (semanage_handle_t *handle,
                               semanage_seuser_key_t *key,
                               const char *login_name,
-                              const char *seuser_name)
+                              const char *seuser_name,
+                              const char *serange)
 {
 	int ret;
 	semanage_seuser_t *seuser = NULL;
@@ -141,11 +140,12 @@ static int semanage_user_mod (semanage_handle_t *handle,
 		goto done;
 	}
 
-	if (semanage_mls_enabled(handle)) {
-		ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
+	if (serange && semanage_mls_enabled(handle)) {
+		ret = semanage_seuser_set_mlsrange (handle, seuser, serange);
 		if (ret != 0) {
 			fprintf (shadow_logfd,
-			         _("Could not set serange for %s\n"), login_name);
+			         _("Could not set serange for %s to %s\n"),
+			         login_name, serange);
 			ret = 1;
 			goto done;
 		}
@@ -177,9 +177,10 @@ done:
 
 
 static int semanage_user_add (semanage_handle_t *handle,
-                             semanage_seuser_key_t *key,
+                             const semanage_seuser_key_t *key,
                              const char *login_name,
-                             const char *seuser_name)
+                             const char *seuser_name,
+                             const char *serange)
 {
 	int ret;
 	semanage_seuser_t *seuser = NULL;
@@ -200,11 +201,12 @@ static int semanage_user_add (semanage_handle_t *handle,
 		goto done;
 	}
 
-	if (semanage_mls_enabled(handle)) {
-		ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
+	if (serange && semanage_mls_enabled(handle)) {
+		ret = semanage_seuser_set_mlsrange (handle, seuser, serange);
 		if (ret != 0) {
 			fprintf (shadow_logfd,
-			         _("Could not set serange for %s\n"), login_name);
+			         _("Could not set serange for %s to %s\n"),
+			         login_name, serange);
 			ret = 1;
 			goto done;
 		}
@@ -235,7 +237,7 @@ done:
 }
 
 
-int set_seuser (const char *login_name, const char *seuser_name)
+int set_seuser (const char *login_name, const char *seuser_name, const char *serange)
 {
 	semanage_handle_t *handle = NULL;
 	semanage_seuser_key_t *key = NULL;
@@ -268,7 +270,7 @@ int set_seuser (const char *login_name, const char *seuser_name)
 	}
 
 	if (0 != seuser_exists) {
-		ret = semanage_user_mod (handle, key, login_name, seuser_name);
+		ret = semanage_user_mod (handle, key, login_name, seuser_name, serange);
 		if (ret != 0) {
 			fprintf (shadow_logfd,
 			         _("Cannot modify SELinux user mapping\n"));
@@ -276,7 +278,7 @@ int set_seuser (const char *login_name, const char *seuser_name)
 			goto done;
 		}
 	} else {
-		ret = semanage_user_add (handle, key, login_name, seuser_name);
+		ret = semanage_user_add (handle, key, login_name, seuser_name, serange);
 		if (ret != 0) {
 			fprintf (shadow_logfd,
 			         _("Cannot add SELinux user mapping\n"));
@@ -297,6 +299,8 @@ int set_seuser (const char *login_name, const char *seuser_name)
 
 done:
 	semanage_seuser_key_free (key);
+	if (handle)
+		semanage_disconnect (handle);
 	semanage_handle_destroy (handle);
 	return ret;
 }
@@ -371,9 +375,12 @@ int del_seuser (const char *login_name)
 	ret = 0;
 
 done:
+	semanage_seuser_key_free (key);
+	if (handle)
+		semanage_disconnect (handle);
 	semanage_handle_destroy (handle);
 	return ret;
 }
 #else				/* !WITH_SELINUX */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* !WITH_SELINUX */

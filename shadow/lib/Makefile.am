@@ -11,6 +11,7 @@ libshadow_la_CPPFLAGS += -DVENDORDIR=\"$(VENDORDIR)\"
 endif
 
 libshadow_la_CPPFLAGS += -I$(top_srcdir)
+libshadow_la_CFLAGS = $(LIBBSD_CFLAGS)
 
 libshadow_la_SOURCES = \
 	commonio.c \
@@ -65,8 +66,7 @@ libshadow_la_SOURCES = \
 	shadowio.c \
 	shadowio.h \
 	shadowmem.c \
-	spawn.c \
-	utent.c
+	spawn.c
 
 if WITH_TCB
 libshadow_la_SOURCES += tcbfuncs.c tcbfuncs.h

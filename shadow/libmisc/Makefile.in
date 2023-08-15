@@ -89,6 +89,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @WITH_BTRFS_TRUE@am__append_1 = btrfs.c
+@ENABLE_LASTLOG_TRUE@am__append_2 = log.c
+@ENABLE_LOGIND_TRUE@am__append_3 = logind.c
+@ENABLE_LOGIND_FALSE@am__append_4 = utmp.c
 subdir = libmisc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -109,40 +112,69 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmisc_la_LIBADD =
-am__libmisc_la_SOURCES_DIST = addgrps.c age.c audit_help.c basename.c \
+am__libmisc_la_SOURCES_DIST = addgrps.c age.c agetpass.c alloc.c \
+	../lib/alloc.h audit_help.c basename.c bit.c ../lib/bit.h \
 	chkname.c chkname.h chowndir.c chowntty.c cleanup.c \
 	cleanup_group.c cleanup_user.c console.c copydir.c \
 	date_to_str.c entry.c env.c failure.c failure.h find_new_gid.c \
 	find_new_uid.c find_new_sub_gids.c find_new_sub_uids.c \
 	getdate.h getdate.y getgr_nam_gid.c getrange.c gettime.c \
 	hushed.c idmapping.h idmapping.c isexpired.c limits.c list.c \
-	log.c loginprompt.c mail.c motd.c myname.c obscure.c \
+	loginprompt.c mail.c mempcpy.c motd.c myname.c obscure.c \
 	pam_pass.c pam_pass_non_interactive.c prefix_flag.c pwd2spwd.c \
-	pwdcheck.c pwd_init.c remove_tree.c rlogin.c root_flag.c \
-	salt.c setugid.c setupenv.c shell.c strtoday.c sub.c sulog.c \
-	ttytype.c tz.c ulimit.c user_busy.c utmp.c valid.c xgetpwnam.c \
-	xgetpwuid.c xgetgrnam.c xgetgrgid.c xgetspnam.c xmalloc.c \
-	yesno.c btrfs.c
-@WITH_BTRFS_TRUE@am__objects_1 = btrfs.lo
-am_libmisc_la_OBJECTS = addgrps.lo age.lo audit_help.lo basename.lo \
-	chkname.lo chowndir.lo chowntty.lo cleanup.lo cleanup_group.lo \
-	cleanup_user.lo console.lo copydir.lo date_to_str.lo entry.lo \
-	env.lo failure.lo find_new_gid.lo find_new_uid.lo \
-	find_new_sub_gids.lo find_new_sub_uids.lo getdate.lo \
-	getgr_nam_gid.lo getrange.lo gettime.lo hushed.lo idmapping.lo \
-	isexpired.lo limits.lo list.lo log.lo loginprompt.lo mail.lo \
-	motd.lo myname.lo obscure.lo pam_pass.lo \
-	pam_pass_non_interactive.lo prefix_flag.lo pwd2spwd.lo \
-	pwdcheck.lo pwd_init.lo remove_tree.lo rlogin.lo root_flag.lo \
-	salt.lo setugid.lo setupenv.lo shell.lo strtoday.lo sub.lo \
-	sulog.lo ttytype.lo tz.lo ulimit.lo user_busy.lo utmp.lo \
-	valid.lo xgetpwnam.lo xgetpwuid.lo xgetgrnam.lo xgetgrgid.lo \
-	xgetspnam.lo xmalloc.lo yesno.lo $(am__objects_1)
+	pwdcheck.c pwd_init.c csrand.c remove_tree.c rlogin.c \
+	root_flag.c salt.c setugid.c setupenv.c shell.c stpecpy.c \
+	../lib/stpecpy.h stpeprintf.c ../lib/stpeprintf.h strtoday.c \
+	sub.c sulog.c ttytype.c tz.c ulimit.c user_busy.c valid.c \
+	xgetpwnam.c xprefix_getpwnam.c xgetpwuid.c xgetgrnam.c \
+	xgetgrgid.c xgetspnam.c yesno.c btrfs.c log.c logind.c utmp.c
+@WITH_BTRFS_TRUE@am__objects_1 = libmisc_la-btrfs.lo
+@ENABLE_LASTLOG_TRUE@am__objects_2 = libmisc_la-log.lo
+@ENABLE_LOGIND_TRUE@am__objects_3 = libmisc_la-logind.lo
+@ENABLE_LOGIND_FALSE@am__objects_4 = libmisc_la-utmp.lo
+am_libmisc_la_OBJECTS = libmisc_la-addgrps.lo libmisc_la-age.lo \
+	libmisc_la-agetpass.lo libmisc_la-alloc.lo \
+	libmisc_la-audit_help.lo libmisc_la-basename.lo \
+	libmisc_la-bit.lo libmisc_la-chkname.lo libmisc_la-chowndir.lo \
+	libmisc_la-chowntty.lo libmisc_la-cleanup.lo \
+	libmisc_la-cleanup_group.lo libmisc_la-cleanup_user.lo \
+	libmisc_la-console.lo libmisc_la-copydir.lo \
+	libmisc_la-date_to_str.lo libmisc_la-entry.lo \
+	libmisc_la-env.lo libmisc_la-failure.lo \
+	libmisc_la-find_new_gid.lo libmisc_la-find_new_uid.lo \
+	libmisc_la-find_new_sub_gids.lo \
+	libmisc_la-find_new_sub_uids.lo libmisc_la-getdate.lo \
+	libmisc_la-getgr_nam_gid.lo libmisc_la-getrange.lo \
+	libmisc_la-gettime.lo libmisc_la-hushed.lo \
+	libmisc_la-idmapping.lo libmisc_la-isexpired.lo \
+	libmisc_la-limits.lo libmisc_la-list.lo \
+	libmisc_la-loginprompt.lo libmisc_la-mail.lo \
+	libmisc_la-mempcpy.lo libmisc_la-motd.lo libmisc_la-myname.lo \
+	libmisc_la-obscure.lo libmisc_la-pam_pass.lo \
+	libmisc_la-pam_pass_non_interactive.lo \
+	libmisc_la-prefix_flag.lo libmisc_la-pwd2spwd.lo \
+	libmisc_la-pwdcheck.lo libmisc_la-pwd_init.lo \
+	libmisc_la-csrand.lo libmisc_la-remove_tree.lo \
+	libmisc_la-rlogin.lo libmisc_la-root_flag.lo \
+	libmisc_la-salt.lo libmisc_la-setugid.lo \
+	libmisc_la-setupenv.lo libmisc_la-shell.lo \
+	libmisc_la-stpecpy.lo libmisc_la-stpeprintf.lo \
+	libmisc_la-strtoday.lo libmisc_la-sub.lo libmisc_la-sulog.lo \
+	libmisc_la-ttytype.lo libmisc_la-tz.lo libmisc_la-ulimit.lo \
+	libmisc_la-user_busy.lo libmisc_la-valid.lo \
+	libmisc_la-xgetpwnam.lo libmisc_la-xprefix_getpwnam.lo \
+	libmisc_la-xgetpwuid.lo libmisc_la-xgetgrnam.lo \
+	libmisc_la-xgetgrgid.lo libmisc_la-xgetspnam.lo \
+	libmisc_la-yesno.lo $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4)
 libmisc_la_OBJECTS = $(am_libmisc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libmisc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmisc_la_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -158,40 +190,78 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/addgrps.Plo ./$(DEPDIR)/age.Plo \
-	./$(DEPDIR)/audit_help.Plo ./$(DEPDIR)/basename.Plo \
-	./$(DEPDIR)/btrfs.Plo ./$(DEPDIR)/chkname.Plo \
-	./$(DEPDIR)/chowndir.Plo ./$(DEPDIR)/chowntty.Plo \
-	./$(DEPDIR)/cleanup.Plo ./$(DEPDIR)/cleanup_group.Plo \
-	./$(DEPDIR)/cleanup_user.Plo ./$(DEPDIR)/console.Plo \
-	./$(DEPDIR)/copydir.Plo ./$(DEPDIR)/date_to_str.Plo \
-	./$(DEPDIR)/entry.Plo ./$(DEPDIR)/env.Plo \
-	./$(DEPDIR)/failure.Plo ./$(DEPDIR)/find_new_gid.Plo \
-	./$(DEPDIR)/find_new_sub_gids.Plo \
-	./$(DEPDIR)/find_new_sub_uids.Plo ./$(DEPDIR)/find_new_uid.Plo \
-	./$(DEPDIR)/getdate.Plo ./$(DEPDIR)/getgr_nam_gid.Plo \
-	./$(DEPDIR)/getrange.Plo ./$(DEPDIR)/gettime.Plo \
-	./$(DEPDIR)/hushed.Plo ./$(DEPDIR)/idmapping.Plo \
-	./$(DEPDIR)/isexpired.Plo ./$(DEPDIR)/limits.Plo \
-	./$(DEPDIR)/list.Plo ./$(DEPDIR)/log.Plo \
-	./$(DEPDIR)/loginprompt.Plo ./$(DEPDIR)/mail.Plo \
-	./$(DEPDIR)/motd.Plo ./$(DEPDIR)/myname.Plo \
-	./$(DEPDIR)/obscure.Plo ./$(DEPDIR)/pam_pass.Plo \
-	./$(DEPDIR)/pam_pass_non_interactive.Plo \
-	./$(DEPDIR)/prefix_flag.Plo ./$(DEPDIR)/pwd2spwd.Plo \
-	./$(DEPDIR)/pwd_init.Plo ./$(DEPDIR)/pwdcheck.Plo \
-	./$(DEPDIR)/remove_tree.Plo ./$(DEPDIR)/rlogin.Plo \
-	./$(DEPDIR)/root_flag.Plo ./$(DEPDIR)/salt.Plo \
-	./$(DEPDIR)/setugid.Plo ./$(DEPDIR)/setupenv.Plo \
-	./$(DEPDIR)/shell.Plo ./$(DEPDIR)/strtoday.Plo \
-	./$(DEPDIR)/sub.Plo ./$(DEPDIR)/sulog.Plo \
-	./$(DEPDIR)/ttytype.Plo ./$(DEPDIR)/tz.Plo \
-	./$(DEPDIR)/ulimit.Plo ./$(DEPDIR)/user_busy.Plo \
-	./$(DEPDIR)/utmp.Plo ./$(DEPDIR)/valid.Plo \
-	./$(DEPDIR)/xgetgrgid.Plo ./$(DEPDIR)/xgetgrnam.Plo \
-	./$(DEPDIR)/xgetpwnam.Plo ./$(DEPDIR)/xgetpwuid.Plo \
-	./$(DEPDIR)/xgetspnam.Plo ./$(DEPDIR)/xmalloc.Plo \
-	./$(DEPDIR)/yesno.Plo
+am__depfiles_remade = ./$(DEPDIR)/libmisc_la-addgrps.Plo \
+	./$(DEPDIR)/libmisc_la-age.Plo \
+	./$(DEPDIR)/libmisc_la-agetpass.Plo \
+	./$(DEPDIR)/libmisc_la-alloc.Plo \
+	./$(DEPDIR)/libmisc_la-audit_help.Plo \
+	./$(DEPDIR)/libmisc_la-basename.Plo \
+	./$(DEPDIR)/libmisc_la-bit.Plo \
+	./$(DEPDIR)/libmisc_la-btrfs.Plo \
+	./$(DEPDIR)/libmisc_la-chkname.Plo \
+	./$(DEPDIR)/libmisc_la-chowndir.Plo \
+	./$(DEPDIR)/libmisc_la-chowntty.Plo \
+	./$(DEPDIR)/libmisc_la-cleanup.Plo \
+	./$(DEPDIR)/libmisc_la-cleanup_group.Plo \
+	./$(DEPDIR)/libmisc_la-cleanup_user.Plo \
+	./$(DEPDIR)/libmisc_la-console.Plo \
+	./$(DEPDIR)/libmisc_la-copydir.Plo \
+	./$(DEPDIR)/libmisc_la-csrand.Plo \
+	./$(DEPDIR)/libmisc_la-date_to_str.Plo \
+	./$(DEPDIR)/libmisc_la-entry.Plo \
+	./$(DEPDIR)/libmisc_la-env.Plo \
+	./$(DEPDIR)/libmisc_la-failure.Plo \
+	./$(DEPDIR)/libmisc_la-find_new_gid.Plo \
+	./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo \
+	./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo \
+	./$(DEPDIR)/libmisc_la-find_new_uid.Plo \
+	./$(DEPDIR)/libmisc_la-getdate.Plo \
+	./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo \
+	./$(DEPDIR)/libmisc_la-getrange.Plo \
+	./$(DEPDIR)/libmisc_la-gettime.Plo \
+	./$(DEPDIR)/libmisc_la-hushed.Plo \
+	./$(DEPDIR)/libmisc_la-idmapping.Plo \
+	./$(DEPDIR)/libmisc_la-isexpired.Plo \
+	./$(DEPDIR)/libmisc_la-limits.Plo \
+	./$(DEPDIR)/libmisc_la-list.Plo ./$(DEPDIR)/libmisc_la-log.Plo \
+	./$(DEPDIR)/libmisc_la-logind.Plo \
+	./$(DEPDIR)/libmisc_la-loginprompt.Plo \
+	./$(DEPDIR)/libmisc_la-mail.Plo \
+	./$(DEPDIR)/libmisc_la-mempcpy.Plo \
+	./$(DEPDIR)/libmisc_la-motd.Plo \
+	./$(DEPDIR)/libmisc_la-myname.Plo \
+	./$(DEPDIR)/libmisc_la-obscure.Plo \
+	./$(DEPDIR)/libmisc_la-pam_pass.Plo \
+	./$(DEPDIR)/libmisc_la-pam_pass_non_interactive.Plo \
+	./$(DEPDIR)/libmisc_la-prefix_flag.Plo \
+	./$(DEPDIR)/libmisc_la-pwd2spwd.Plo \
+	./$(DEPDIR)/libmisc_la-pwd_init.Plo \
+	./$(DEPDIR)/libmisc_la-pwdcheck.Plo \
+	./$(DEPDIR)/libmisc_la-remove_tree.Plo \
+	./$(DEPDIR)/libmisc_la-rlogin.Plo \
+	./$(DEPDIR)/libmisc_la-root_flag.Plo \
+	./$(DEPDIR)/libmisc_la-salt.Plo \
+	./$(DEPDIR)/libmisc_la-setugid.Plo \
+	./$(DEPDIR)/libmisc_la-setupenv.Plo \
+	./$(DEPDIR)/libmisc_la-shell.Plo \
+	./$(DEPDIR)/libmisc_la-stpecpy.Plo \
+	./$(DEPDIR)/libmisc_la-stpeprintf.Plo \
+	./$(DEPDIR)/libmisc_la-strtoday.Plo \
+	./$(DEPDIR)/libmisc_la-sub.Plo \
+	./$(DEPDIR)/libmisc_la-sulog.Plo \
+	./$(DEPDIR)/libmisc_la-ttytype.Plo \
+	./$(DEPDIR)/libmisc_la-tz.Plo \
+	./$(DEPDIR)/libmisc_la-ulimit.Plo \
+	./$(DEPDIR)/libmisc_la-user_busy.Plo \
+	./$(DEPDIR)/libmisc_la-utmp.Plo \
+	./$(DEPDIR)/libmisc_la-valid.Plo \
+	./$(DEPDIR)/libmisc_la-xgetgrgid.Plo \
+	./$(DEPDIR)/libmisc_la-xgetgrnam.Plo \
+	./$(DEPDIR)/libmisc_la-xgetpwnam.Plo \
+	./$(DEPDIR)/libmisc_la-xgetpwuid.Plo \
+	./$(DEPDIR)/libmisc_la-xgetspnam.Plo \
+	./$(DEPDIR)/libmisc_la-xprefix_getpwnam.Plo \
+	./$(DEPDIR)/libmisc_la-yesno.Plo
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -295,6 +365,8 @@ LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
@@ -311,6 +383,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -341,6 +414,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -415,20 +491,26 @@ top_srcdir = @top_srcdir@
 EXTRA_DIST = .indent.pro xgetXXbyYY.c
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir) $(ECONF_CPPFLAGS)
 noinst_LTLIBRARIES = libmisc.la
-libmisc_la_SOURCES = addgrps.c age.c audit_help.c basename.c chkname.c \
-	chkname.h chowndir.c chowntty.c cleanup.c cleanup_group.c \
-	cleanup_user.c console.c copydir.c date_to_str.c entry.c env.c \
-	failure.c failure.h find_new_gid.c find_new_uid.c \
-	find_new_sub_gids.c find_new_sub_uids.c getdate.h getdate.y \
-	getgr_nam_gid.c getrange.c gettime.c hushed.c idmapping.h \
-	idmapping.c isexpired.c limits.c list.c log.c loginprompt.c \
-	mail.c motd.c myname.c obscure.c pam_pass.c \
+@USE_PAM_FALSE@LIBCRYPT_PAM = 
+@USE_PAM_TRUE@LIBCRYPT_PAM = $(LIBCRYPT)
+libmisc_la_CFLAGS = $(LIBBSD_CFLAGS) $(LIBCRYPT_PAM) $(LIBSYSTEMD)
+libmisc_la_SOURCES = addgrps.c age.c agetpass.c alloc.c ../lib/alloc.h \
+	audit_help.c basename.c bit.c ../lib/bit.h chkname.c chkname.h \
+	chowndir.c chowntty.c cleanup.c cleanup_group.c cleanup_user.c \
+	console.c copydir.c date_to_str.c entry.c env.c failure.c \
+	failure.h find_new_gid.c find_new_uid.c find_new_sub_gids.c \
+	find_new_sub_uids.c getdate.h getdate.y getgr_nam_gid.c \
+	getrange.c gettime.c hushed.c idmapping.h idmapping.c \
+	isexpired.c limits.c list.c loginprompt.c mail.c mempcpy.c \
+	motd.c myname.c obscure.c pam_pass.c \
 	pam_pass_non_interactive.c prefix_flag.c pwd2spwd.c pwdcheck.c \
-	pwd_init.c remove_tree.c rlogin.c root_flag.c salt.c setugid.c \
-	setupenv.c shell.c strtoday.c sub.c sulog.c ttytype.c tz.c \
-	ulimit.c user_busy.c utmp.c valid.c xgetpwnam.c xgetpwuid.c \
-	xgetgrnam.c xgetgrgid.c xgetspnam.c xmalloc.c yesno.c \
-	$(am__append_1)
+	pwd_init.c csrand.c remove_tree.c rlogin.c root_flag.c salt.c \
+	setugid.c setupenv.c shell.c stpecpy.c ../lib/stpecpy.h \
+	stpeprintf.c ../lib/stpeprintf.h strtoday.c sub.c sulog.c \
+	ttytype.c tz.c ulimit.c user_busy.c valid.c xgetpwnam.c \
+	xprefix_getpwnam.c xgetpwuid.c xgetgrnam.c xgetgrgid.c \
+	xgetspnam.c yesno.c $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4)
 all: all-am
 
 .SUFFIXES:
@@ -475,7 +557,7 @@ clean-noinstLTLIBRARIES:
 	}
 
 libmisc.la: $(libmisc_la_OBJECTS) $(libmisc_la_DEPENDENCIES) $(EXTRA_libmisc_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK)  $(libmisc_la_OBJECTS) $(libmisc_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmisc_la_LINK)  $(libmisc_la_OBJECTS) $(libmisc_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -483,71 +565,79 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addgrps.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/age.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audit_help.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basename.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/btrfs.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chkname.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chowndir.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chowntty.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cleanup.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cleanup_group.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cleanup_user.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/console.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/copydir.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/date_to_str.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entry.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/failure.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_new_gid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_new_sub_gids.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_new_sub_uids.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_new_uid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getdate.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getgr_nam_gid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getrange.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettime.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hushed.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/idmapping.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isexpired.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/limits.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loginprompt.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mail.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motd.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myname.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/obscure.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pam_pass.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pam_pass_non_interactive.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefix_flag.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwd2spwd.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwd_init.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwdcheck.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remove_tree.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rlogin.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/root_flag.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/salt.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/setugid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/setupenv.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shell.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strtoday.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sub.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sulog.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ttytype.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tz.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ulimit.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/user_busy.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utmp.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/valid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetgrgid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetgrnam.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetpwnam.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetpwuid.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetspnam.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmalloc.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/yesno.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-addgrps.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-age.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-agetpass.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-alloc.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-audit_help.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-basename.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-bit.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-btrfs.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-chkname.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-chowndir.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-chowntty.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-cleanup.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-cleanup_group.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-cleanup_user.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-console.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-copydir.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-csrand.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-date_to_str.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-entry.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-env.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-failure.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_gid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_uid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getdate.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getrange.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-gettime.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-hushed.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-idmapping.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-isexpired.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-limits.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-list.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-log.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-logind.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-loginprompt.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-mail.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-mempcpy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-motd.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-myname.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-obscure.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pam_pass.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pam_pass_non_interactive.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-prefix_flag.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwd2spwd.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwd_init.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwdcheck.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-remove_tree.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-rlogin.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-root_flag.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-salt.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-setugid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-setupenv.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-shell.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-stpecpy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-stpeprintf.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-strtoday.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-sub.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-sulog.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-ttytype.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-tz.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-ulimit.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-user_busy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-utmp.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-valid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xgetgrgid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xgetgrnam.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xgetpwnam.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xgetpwuid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xgetspnam.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-xprefix_getpwnam.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-yesno.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -575,6 +665,517 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmisc_la-addgrps.lo: addgrps.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-addgrps.lo -MD -MP -MF $(DEPDIR)/libmisc_la-addgrps.Tpo -c -o libmisc_la-addgrps.lo `test -f 'addgrps.c' || echo '$(srcdir)/'`addgrps.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-addgrps.Tpo $(DEPDIR)/libmisc_la-addgrps.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='addgrps.c' object='libmisc_la-addgrps.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-addgrps.lo `test -f 'addgrps.c' || echo '$(srcdir)/'`addgrps.c
+
+libmisc_la-age.lo: age.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-age.lo -MD -MP -MF $(DEPDIR)/libmisc_la-age.Tpo -c -o libmisc_la-age.lo `test -f 'age.c' || echo '$(srcdir)/'`age.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-age.Tpo $(DEPDIR)/libmisc_la-age.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='age.c' object='libmisc_la-age.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-age.lo `test -f 'age.c' || echo '$(srcdir)/'`age.c
+
+libmisc_la-agetpass.lo: agetpass.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-agetpass.lo -MD -MP -MF $(DEPDIR)/libmisc_la-agetpass.Tpo -c -o libmisc_la-agetpass.lo `test -f 'agetpass.c' || echo '$(srcdir)/'`agetpass.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-agetpass.Tpo $(DEPDIR)/libmisc_la-agetpass.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='agetpass.c' object='libmisc_la-agetpass.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-agetpass.lo `test -f 'agetpass.c' || echo '$(srcdir)/'`agetpass.c
+
+libmisc_la-alloc.lo: alloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-alloc.lo -MD -MP -MF $(DEPDIR)/libmisc_la-alloc.Tpo -c -o libmisc_la-alloc.lo `test -f 'alloc.c' || echo '$(srcdir)/'`alloc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-alloc.Tpo $(DEPDIR)/libmisc_la-alloc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='alloc.c' object='libmisc_la-alloc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-alloc.lo `test -f 'alloc.c' || echo '$(srcdir)/'`alloc.c
+
+libmisc_la-audit_help.lo: audit_help.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-audit_help.lo -MD -MP -MF $(DEPDIR)/libmisc_la-audit_help.Tpo -c -o libmisc_la-audit_help.lo `test -f 'audit_help.c' || echo '$(srcdir)/'`audit_help.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-audit_help.Tpo $(DEPDIR)/libmisc_la-audit_help.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='audit_help.c' object='libmisc_la-audit_help.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-audit_help.lo `test -f 'audit_help.c' || echo '$(srcdir)/'`audit_help.c
+
+libmisc_la-basename.lo: basename.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-basename.lo -MD -MP -MF $(DEPDIR)/libmisc_la-basename.Tpo -c -o libmisc_la-basename.lo `test -f 'basename.c' || echo '$(srcdir)/'`basename.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-basename.Tpo $(DEPDIR)/libmisc_la-basename.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='basename.c' object='libmisc_la-basename.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-basename.lo `test -f 'basename.c' || echo '$(srcdir)/'`basename.c
+
+libmisc_la-bit.lo: bit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-bit.lo -MD -MP -MF $(DEPDIR)/libmisc_la-bit.Tpo -c -o libmisc_la-bit.lo `test -f 'bit.c' || echo '$(srcdir)/'`bit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-bit.Tpo $(DEPDIR)/libmisc_la-bit.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='bit.c' object='libmisc_la-bit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-bit.lo `test -f 'bit.c' || echo '$(srcdir)/'`bit.c
+
+libmisc_la-chkname.lo: chkname.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-chkname.lo -MD -MP -MF $(DEPDIR)/libmisc_la-chkname.Tpo -c -o libmisc_la-chkname.lo `test -f 'chkname.c' || echo '$(srcdir)/'`chkname.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-chkname.Tpo $(DEPDIR)/libmisc_la-chkname.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='chkname.c' object='libmisc_la-chkname.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-chkname.lo `test -f 'chkname.c' || echo '$(srcdir)/'`chkname.c
+
+libmisc_la-chowndir.lo: chowndir.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-chowndir.lo -MD -MP -MF $(DEPDIR)/libmisc_la-chowndir.Tpo -c -o libmisc_la-chowndir.lo `test -f 'chowndir.c' || echo '$(srcdir)/'`chowndir.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-chowndir.Tpo $(DEPDIR)/libmisc_la-chowndir.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='chowndir.c' object='libmisc_la-chowndir.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-chowndir.lo `test -f 'chowndir.c' || echo '$(srcdir)/'`chowndir.c
+
+libmisc_la-chowntty.lo: chowntty.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-chowntty.lo -MD -MP -MF $(DEPDIR)/libmisc_la-chowntty.Tpo -c -o libmisc_la-chowntty.lo `test -f 'chowntty.c' || echo '$(srcdir)/'`chowntty.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-chowntty.Tpo $(DEPDIR)/libmisc_la-chowntty.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='chowntty.c' object='libmisc_la-chowntty.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-chowntty.lo `test -f 'chowntty.c' || echo '$(srcdir)/'`chowntty.c
+
+libmisc_la-cleanup.lo: cleanup.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-cleanup.lo -MD -MP -MF $(DEPDIR)/libmisc_la-cleanup.Tpo -c -o libmisc_la-cleanup.lo `test -f 'cleanup.c' || echo '$(srcdir)/'`cleanup.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-cleanup.Tpo $(DEPDIR)/libmisc_la-cleanup.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cleanup.c' object='libmisc_la-cleanup.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-cleanup.lo `test -f 'cleanup.c' || echo '$(srcdir)/'`cleanup.c
+
+libmisc_la-cleanup_group.lo: cleanup_group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-cleanup_group.lo -MD -MP -MF $(DEPDIR)/libmisc_la-cleanup_group.Tpo -c -o libmisc_la-cleanup_group.lo `test -f 'cleanup_group.c' || echo '$(srcdir)/'`cleanup_group.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-cleanup_group.Tpo $(DEPDIR)/libmisc_la-cleanup_group.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cleanup_group.c' object='libmisc_la-cleanup_group.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-cleanup_group.lo `test -f 'cleanup_group.c' || echo '$(srcdir)/'`cleanup_group.c
+
+libmisc_la-cleanup_user.lo: cleanup_user.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-cleanup_user.lo -MD -MP -MF $(DEPDIR)/libmisc_la-cleanup_user.Tpo -c -o libmisc_la-cleanup_user.lo `test -f 'cleanup_user.c' || echo '$(srcdir)/'`cleanup_user.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-cleanup_user.Tpo $(DEPDIR)/libmisc_la-cleanup_user.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='cleanup_user.c' object='libmisc_la-cleanup_user.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-cleanup_user.lo `test -f 'cleanup_user.c' || echo '$(srcdir)/'`cleanup_user.c
+
+libmisc_la-console.lo: console.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-console.lo -MD -MP -MF $(DEPDIR)/libmisc_la-console.Tpo -c -o libmisc_la-console.lo `test -f 'console.c' || echo '$(srcdir)/'`console.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-console.Tpo $(DEPDIR)/libmisc_la-console.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='console.c' object='libmisc_la-console.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-console.lo `test -f 'console.c' || echo '$(srcdir)/'`console.c
+
+libmisc_la-copydir.lo: copydir.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-copydir.lo -MD -MP -MF $(DEPDIR)/libmisc_la-copydir.Tpo -c -o libmisc_la-copydir.lo `test -f 'copydir.c' || echo '$(srcdir)/'`copydir.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-copydir.Tpo $(DEPDIR)/libmisc_la-copydir.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='copydir.c' object='libmisc_la-copydir.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-copydir.lo `test -f 'copydir.c' || echo '$(srcdir)/'`copydir.c
+
+libmisc_la-date_to_str.lo: date_to_str.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-date_to_str.lo -MD -MP -MF $(DEPDIR)/libmisc_la-date_to_str.Tpo -c -o libmisc_la-date_to_str.lo `test -f 'date_to_str.c' || echo '$(srcdir)/'`date_to_str.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-date_to_str.Tpo $(DEPDIR)/libmisc_la-date_to_str.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='date_to_str.c' object='libmisc_la-date_to_str.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-date_to_str.lo `test -f 'date_to_str.c' || echo '$(srcdir)/'`date_to_str.c
+
+libmisc_la-entry.lo: entry.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-entry.lo -MD -MP -MF $(DEPDIR)/libmisc_la-entry.Tpo -c -o libmisc_la-entry.lo `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-entry.Tpo $(DEPDIR)/libmisc_la-entry.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry.c' object='libmisc_la-entry.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-entry.lo `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
+
+libmisc_la-env.lo: env.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-env.lo -MD -MP -MF $(DEPDIR)/libmisc_la-env.Tpo -c -o libmisc_la-env.lo `test -f 'env.c' || echo '$(srcdir)/'`env.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-env.Tpo $(DEPDIR)/libmisc_la-env.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='env.c' object='libmisc_la-env.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-env.lo `test -f 'env.c' || echo '$(srcdir)/'`env.c
+
+libmisc_la-failure.lo: failure.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-failure.lo -MD -MP -MF $(DEPDIR)/libmisc_la-failure.Tpo -c -o libmisc_la-failure.lo `test -f 'failure.c' || echo '$(srcdir)/'`failure.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-failure.Tpo $(DEPDIR)/libmisc_la-failure.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='failure.c' object='libmisc_la-failure.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-failure.lo `test -f 'failure.c' || echo '$(srcdir)/'`failure.c
+
+libmisc_la-find_new_gid.lo: find_new_gid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-find_new_gid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-find_new_gid.Tpo -c -o libmisc_la-find_new_gid.lo `test -f 'find_new_gid.c' || echo '$(srcdir)/'`find_new_gid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-find_new_gid.Tpo $(DEPDIR)/libmisc_la-find_new_gid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='find_new_gid.c' object='libmisc_la-find_new_gid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-find_new_gid.lo `test -f 'find_new_gid.c' || echo '$(srcdir)/'`find_new_gid.c
+
+libmisc_la-find_new_uid.lo: find_new_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-find_new_uid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-find_new_uid.Tpo -c -o libmisc_la-find_new_uid.lo `test -f 'find_new_uid.c' || echo '$(srcdir)/'`find_new_uid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-find_new_uid.Tpo $(DEPDIR)/libmisc_la-find_new_uid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='find_new_uid.c' object='libmisc_la-find_new_uid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-find_new_uid.lo `test -f 'find_new_uid.c' || echo '$(srcdir)/'`find_new_uid.c
+
+libmisc_la-find_new_sub_gids.lo: find_new_sub_gids.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-find_new_sub_gids.lo -MD -MP -MF $(DEPDIR)/libmisc_la-find_new_sub_gids.Tpo -c -o libmisc_la-find_new_sub_gids.lo `test -f 'find_new_sub_gids.c' || echo '$(srcdir)/'`find_new_sub_gids.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-find_new_sub_gids.Tpo $(DEPDIR)/libmisc_la-find_new_sub_gids.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='find_new_sub_gids.c' object='libmisc_la-find_new_sub_gids.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-find_new_sub_gids.lo `test -f 'find_new_sub_gids.c' || echo '$(srcdir)/'`find_new_sub_gids.c
+
+libmisc_la-find_new_sub_uids.lo: find_new_sub_uids.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-find_new_sub_uids.lo -MD -MP -MF $(DEPDIR)/libmisc_la-find_new_sub_uids.Tpo -c -o libmisc_la-find_new_sub_uids.lo `test -f 'find_new_sub_uids.c' || echo '$(srcdir)/'`find_new_sub_uids.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-find_new_sub_uids.Tpo $(DEPDIR)/libmisc_la-find_new_sub_uids.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='find_new_sub_uids.c' object='libmisc_la-find_new_sub_uids.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-find_new_sub_uids.lo `test -f 'find_new_sub_uids.c' || echo '$(srcdir)/'`find_new_sub_uids.c
+
+libmisc_la-getdate.lo: getdate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-getdate.lo -MD -MP -MF $(DEPDIR)/libmisc_la-getdate.Tpo -c -o libmisc_la-getdate.lo `test -f 'getdate.c' || echo '$(srcdir)/'`getdate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-getdate.Tpo $(DEPDIR)/libmisc_la-getdate.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getdate.c' object='libmisc_la-getdate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-getdate.lo `test -f 'getdate.c' || echo '$(srcdir)/'`getdate.c
+
+libmisc_la-getgr_nam_gid.lo: getgr_nam_gid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-getgr_nam_gid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-getgr_nam_gid.Tpo -c -o libmisc_la-getgr_nam_gid.lo `test -f 'getgr_nam_gid.c' || echo '$(srcdir)/'`getgr_nam_gid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-getgr_nam_gid.Tpo $(DEPDIR)/libmisc_la-getgr_nam_gid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getgr_nam_gid.c' object='libmisc_la-getgr_nam_gid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-getgr_nam_gid.lo `test -f 'getgr_nam_gid.c' || echo '$(srcdir)/'`getgr_nam_gid.c
+
+libmisc_la-getrange.lo: getrange.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-getrange.lo -MD -MP -MF $(DEPDIR)/libmisc_la-getrange.Tpo -c -o libmisc_la-getrange.lo `test -f 'getrange.c' || echo '$(srcdir)/'`getrange.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-getrange.Tpo $(DEPDIR)/libmisc_la-getrange.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getrange.c' object='libmisc_la-getrange.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-getrange.lo `test -f 'getrange.c' || echo '$(srcdir)/'`getrange.c
+
+libmisc_la-gettime.lo: gettime.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-gettime.lo -MD -MP -MF $(DEPDIR)/libmisc_la-gettime.Tpo -c -o libmisc_la-gettime.lo `test -f 'gettime.c' || echo '$(srcdir)/'`gettime.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-gettime.Tpo $(DEPDIR)/libmisc_la-gettime.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gettime.c' object='libmisc_la-gettime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-gettime.lo `test -f 'gettime.c' || echo '$(srcdir)/'`gettime.c
+
+libmisc_la-hushed.lo: hushed.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-hushed.lo -MD -MP -MF $(DEPDIR)/libmisc_la-hushed.Tpo -c -o libmisc_la-hushed.lo `test -f 'hushed.c' || echo '$(srcdir)/'`hushed.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-hushed.Tpo $(DEPDIR)/libmisc_la-hushed.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='hushed.c' object='libmisc_la-hushed.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-hushed.lo `test -f 'hushed.c' || echo '$(srcdir)/'`hushed.c
+
+libmisc_la-idmapping.lo: idmapping.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-idmapping.lo -MD -MP -MF $(DEPDIR)/libmisc_la-idmapping.Tpo -c -o libmisc_la-idmapping.lo `test -f 'idmapping.c' || echo '$(srcdir)/'`idmapping.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-idmapping.Tpo $(DEPDIR)/libmisc_la-idmapping.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='idmapping.c' object='libmisc_la-idmapping.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-idmapping.lo `test -f 'idmapping.c' || echo '$(srcdir)/'`idmapping.c
+
+libmisc_la-isexpired.lo: isexpired.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-isexpired.lo -MD -MP -MF $(DEPDIR)/libmisc_la-isexpired.Tpo -c -o libmisc_la-isexpired.lo `test -f 'isexpired.c' || echo '$(srcdir)/'`isexpired.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-isexpired.Tpo $(DEPDIR)/libmisc_la-isexpired.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='isexpired.c' object='libmisc_la-isexpired.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-isexpired.lo `test -f 'isexpired.c' || echo '$(srcdir)/'`isexpired.c
+
+libmisc_la-limits.lo: limits.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-limits.lo -MD -MP -MF $(DEPDIR)/libmisc_la-limits.Tpo -c -o libmisc_la-limits.lo `test -f 'limits.c' || echo '$(srcdir)/'`limits.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-limits.Tpo $(DEPDIR)/libmisc_la-limits.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='limits.c' object='libmisc_la-limits.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-limits.lo `test -f 'limits.c' || echo '$(srcdir)/'`limits.c
+
+libmisc_la-list.lo: list.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-list.lo -MD -MP -MF $(DEPDIR)/libmisc_la-list.Tpo -c -o libmisc_la-list.lo `test -f 'list.c' || echo '$(srcdir)/'`list.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-list.Tpo $(DEPDIR)/libmisc_la-list.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='list.c' object='libmisc_la-list.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-list.lo `test -f 'list.c' || echo '$(srcdir)/'`list.c
+
+libmisc_la-loginprompt.lo: loginprompt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-loginprompt.lo -MD -MP -MF $(DEPDIR)/libmisc_la-loginprompt.Tpo -c -o libmisc_la-loginprompt.lo `test -f 'loginprompt.c' || echo '$(srcdir)/'`loginprompt.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-loginprompt.Tpo $(DEPDIR)/libmisc_la-loginprompt.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='loginprompt.c' object='libmisc_la-loginprompt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-loginprompt.lo `test -f 'loginprompt.c' || echo '$(srcdir)/'`loginprompt.c
+
+libmisc_la-mail.lo: mail.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-mail.lo -MD -MP -MF $(DEPDIR)/libmisc_la-mail.Tpo -c -o libmisc_la-mail.lo `test -f 'mail.c' || echo '$(srcdir)/'`mail.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-mail.Tpo $(DEPDIR)/libmisc_la-mail.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mail.c' object='libmisc_la-mail.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-mail.lo `test -f 'mail.c' || echo '$(srcdir)/'`mail.c
+
+libmisc_la-mempcpy.lo: mempcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-mempcpy.lo -MD -MP -MF $(DEPDIR)/libmisc_la-mempcpy.Tpo -c -o libmisc_la-mempcpy.lo `test -f 'mempcpy.c' || echo '$(srcdir)/'`mempcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-mempcpy.Tpo $(DEPDIR)/libmisc_la-mempcpy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mempcpy.c' object='libmisc_la-mempcpy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-mempcpy.lo `test -f 'mempcpy.c' || echo '$(srcdir)/'`mempcpy.c
+
+libmisc_la-motd.lo: motd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-motd.lo -MD -MP -MF $(DEPDIR)/libmisc_la-motd.Tpo -c -o libmisc_la-motd.lo `test -f 'motd.c' || echo '$(srcdir)/'`motd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-motd.Tpo $(DEPDIR)/libmisc_la-motd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='motd.c' object='libmisc_la-motd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-motd.lo `test -f 'motd.c' || echo '$(srcdir)/'`motd.c
+
+libmisc_la-myname.lo: myname.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-myname.lo -MD -MP -MF $(DEPDIR)/libmisc_la-myname.Tpo -c -o libmisc_la-myname.lo `test -f 'myname.c' || echo '$(srcdir)/'`myname.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-myname.Tpo $(DEPDIR)/libmisc_la-myname.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='myname.c' object='libmisc_la-myname.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-myname.lo `test -f 'myname.c' || echo '$(srcdir)/'`myname.c
+
+libmisc_la-obscure.lo: obscure.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-obscure.lo -MD -MP -MF $(DEPDIR)/libmisc_la-obscure.Tpo -c -o libmisc_la-obscure.lo `test -f 'obscure.c' || echo '$(srcdir)/'`obscure.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-obscure.Tpo $(DEPDIR)/libmisc_la-obscure.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='obscure.c' object='libmisc_la-obscure.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-obscure.lo `test -f 'obscure.c' || echo '$(srcdir)/'`obscure.c
+
+libmisc_la-pam_pass.lo: pam_pass.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-pam_pass.lo -MD -MP -MF $(DEPDIR)/libmisc_la-pam_pass.Tpo -c -o libmisc_la-pam_pass.lo `test -f 'pam_pass.c' || echo '$(srcdir)/'`pam_pass.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-pam_pass.Tpo $(DEPDIR)/libmisc_la-pam_pass.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pam_pass.c' object='libmisc_la-pam_pass.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-pam_pass.lo `test -f 'pam_pass.c' || echo '$(srcdir)/'`pam_pass.c
+
+libmisc_la-pam_pass_non_interactive.lo: pam_pass_non_interactive.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-pam_pass_non_interactive.lo -MD -MP -MF $(DEPDIR)/libmisc_la-pam_pass_non_interactive.Tpo -c -o libmisc_la-pam_pass_non_interactive.lo `test -f 'pam_pass_non_interactive.c' || echo '$(srcdir)/'`pam_pass_non_interactive.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-pam_pass_non_interactive.Tpo $(DEPDIR)/libmisc_la-pam_pass_non_interactive.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pam_pass_non_interactive.c' object='libmisc_la-pam_pass_non_interactive.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-pam_pass_non_interactive.lo `test -f 'pam_pass_non_interactive.c' || echo '$(srcdir)/'`pam_pass_non_interactive.c
+
+libmisc_la-prefix_flag.lo: prefix_flag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-prefix_flag.lo -MD -MP -MF $(DEPDIR)/libmisc_la-prefix_flag.Tpo -c -o libmisc_la-prefix_flag.lo `test -f 'prefix_flag.c' || echo '$(srcdir)/'`prefix_flag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-prefix_flag.Tpo $(DEPDIR)/libmisc_la-prefix_flag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='prefix_flag.c' object='libmisc_la-prefix_flag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-prefix_flag.lo `test -f 'prefix_flag.c' || echo '$(srcdir)/'`prefix_flag.c
+
+libmisc_la-pwd2spwd.lo: pwd2spwd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-pwd2spwd.lo -MD -MP -MF $(DEPDIR)/libmisc_la-pwd2spwd.Tpo -c -o libmisc_la-pwd2spwd.lo `test -f 'pwd2spwd.c' || echo '$(srcdir)/'`pwd2spwd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-pwd2spwd.Tpo $(DEPDIR)/libmisc_la-pwd2spwd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pwd2spwd.c' object='libmisc_la-pwd2spwd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-pwd2spwd.lo `test -f 'pwd2spwd.c' || echo '$(srcdir)/'`pwd2spwd.c
+
+libmisc_la-pwdcheck.lo: pwdcheck.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-pwdcheck.lo -MD -MP -MF $(DEPDIR)/libmisc_la-pwdcheck.Tpo -c -o libmisc_la-pwdcheck.lo `test -f 'pwdcheck.c' || echo '$(srcdir)/'`pwdcheck.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-pwdcheck.Tpo $(DEPDIR)/libmisc_la-pwdcheck.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pwdcheck.c' object='libmisc_la-pwdcheck.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-pwdcheck.lo `test -f 'pwdcheck.c' || echo '$(srcdir)/'`pwdcheck.c
+
+libmisc_la-pwd_init.lo: pwd_init.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-pwd_init.lo -MD -MP -MF $(DEPDIR)/libmisc_la-pwd_init.Tpo -c -o libmisc_la-pwd_init.lo `test -f 'pwd_init.c' || echo '$(srcdir)/'`pwd_init.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-pwd_init.Tpo $(DEPDIR)/libmisc_la-pwd_init.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pwd_init.c' object='libmisc_la-pwd_init.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-pwd_init.lo `test -f 'pwd_init.c' || echo '$(srcdir)/'`pwd_init.c
+
+libmisc_la-csrand.lo: csrand.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-csrand.lo -MD -MP -MF $(DEPDIR)/libmisc_la-csrand.Tpo -c -o libmisc_la-csrand.lo `test -f 'csrand.c' || echo '$(srcdir)/'`csrand.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-csrand.Tpo $(DEPDIR)/libmisc_la-csrand.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csrand.c' object='libmisc_la-csrand.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-csrand.lo `test -f 'csrand.c' || echo '$(srcdir)/'`csrand.c
+
+libmisc_la-remove_tree.lo: remove_tree.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-remove_tree.lo -MD -MP -MF $(DEPDIR)/libmisc_la-remove_tree.Tpo -c -o libmisc_la-remove_tree.lo `test -f 'remove_tree.c' || echo '$(srcdir)/'`remove_tree.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-remove_tree.Tpo $(DEPDIR)/libmisc_la-remove_tree.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='remove_tree.c' object='libmisc_la-remove_tree.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-remove_tree.lo `test -f 'remove_tree.c' || echo '$(srcdir)/'`remove_tree.c
+
+libmisc_la-rlogin.lo: rlogin.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-rlogin.lo -MD -MP -MF $(DEPDIR)/libmisc_la-rlogin.Tpo -c -o libmisc_la-rlogin.lo `test -f 'rlogin.c' || echo '$(srcdir)/'`rlogin.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-rlogin.Tpo $(DEPDIR)/libmisc_la-rlogin.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rlogin.c' object='libmisc_la-rlogin.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-rlogin.lo `test -f 'rlogin.c' || echo '$(srcdir)/'`rlogin.c
+
+libmisc_la-root_flag.lo: root_flag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-root_flag.lo -MD -MP -MF $(DEPDIR)/libmisc_la-root_flag.Tpo -c -o libmisc_la-root_flag.lo `test -f 'root_flag.c' || echo '$(srcdir)/'`root_flag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-root_flag.Tpo $(DEPDIR)/libmisc_la-root_flag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='root_flag.c' object='libmisc_la-root_flag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-root_flag.lo `test -f 'root_flag.c' || echo '$(srcdir)/'`root_flag.c
+
+libmisc_la-salt.lo: salt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-salt.lo -MD -MP -MF $(DEPDIR)/libmisc_la-salt.Tpo -c -o libmisc_la-salt.lo `test -f 'salt.c' || echo '$(srcdir)/'`salt.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-salt.Tpo $(DEPDIR)/libmisc_la-salt.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='salt.c' object='libmisc_la-salt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-salt.lo `test -f 'salt.c' || echo '$(srcdir)/'`salt.c
+
+libmisc_la-setugid.lo: setugid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-setugid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-setugid.Tpo -c -o libmisc_la-setugid.lo `test -f 'setugid.c' || echo '$(srcdir)/'`setugid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-setugid.Tpo $(DEPDIR)/libmisc_la-setugid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='setugid.c' object='libmisc_la-setugid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-setugid.lo `test -f 'setugid.c' || echo '$(srcdir)/'`setugid.c
+
+libmisc_la-setupenv.lo: setupenv.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-setupenv.lo -MD -MP -MF $(DEPDIR)/libmisc_la-setupenv.Tpo -c -o libmisc_la-setupenv.lo `test -f 'setupenv.c' || echo '$(srcdir)/'`setupenv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-setupenv.Tpo $(DEPDIR)/libmisc_la-setupenv.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='setupenv.c' object='libmisc_la-setupenv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-setupenv.lo `test -f 'setupenv.c' || echo '$(srcdir)/'`setupenv.c
+
+libmisc_la-shell.lo: shell.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-shell.lo -MD -MP -MF $(DEPDIR)/libmisc_la-shell.Tpo -c -o libmisc_la-shell.lo `test -f 'shell.c' || echo '$(srcdir)/'`shell.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-shell.Tpo $(DEPDIR)/libmisc_la-shell.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='shell.c' object='libmisc_la-shell.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-shell.lo `test -f 'shell.c' || echo '$(srcdir)/'`shell.c
+
+libmisc_la-stpecpy.lo: stpecpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-stpecpy.lo -MD -MP -MF $(DEPDIR)/libmisc_la-stpecpy.Tpo -c -o libmisc_la-stpecpy.lo `test -f 'stpecpy.c' || echo '$(srcdir)/'`stpecpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-stpecpy.Tpo $(DEPDIR)/libmisc_la-stpecpy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stpecpy.c' object='libmisc_la-stpecpy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-stpecpy.lo `test -f 'stpecpy.c' || echo '$(srcdir)/'`stpecpy.c
+
+libmisc_la-stpeprintf.lo: stpeprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-stpeprintf.lo -MD -MP -MF $(DEPDIR)/libmisc_la-stpeprintf.Tpo -c -o libmisc_la-stpeprintf.lo `test -f 'stpeprintf.c' || echo '$(srcdir)/'`stpeprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-stpeprintf.Tpo $(DEPDIR)/libmisc_la-stpeprintf.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stpeprintf.c' object='libmisc_la-stpeprintf.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-stpeprintf.lo `test -f 'stpeprintf.c' || echo '$(srcdir)/'`stpeprintf.c
+
+libmisc_la-strtoday.lo: strtoday.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-strtoday.lo -MD -MP -MF $(DEPDIR)/libmisc_la-strtoday.Tpo -c -o libmisc_la-strtoday.lo `test -f 'strtoday.c' || echo '$(srcdir)/'`strtoday.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-strtoday.Tpo $(DEPDIR)/libmisc_la-strtoday.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='strtoday.c' object='libmisc_la-strtoday.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-strtoday.lo `test -f 'strtoday.c' || echo '$(srcdir)/'`strtoday.c
+
+libmisc_la-sub.lo: sub.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-sub.lo -MD -MP -MF $(DEPDIR)/libmisc_la-sub.Tpo -c -o libmisc_la-sub.lo `test -f 'sub.c' || echo '$(srcdir)/'`sub.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-sub.Tpo $(DEPDIR)/libmisc_la-sub.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sub.c' object='libmisc_la-sub.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-sub.lo `test -f 'sub.c' || echo '$(srcdir)/'`sub.c
+
+libmisc_la-sulog.lo: sulog.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-sulog.lo -MD -MP -MF $(DEPDIR)/libmisc_la-sulog.Tpo -c -o libmisc_la-sulog.lo `test -f 'sulog.c' || echo '$(srcdir)/'`sulog.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-sulog.Tpo $(DEPDIR)/libmisc_la-sulog.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sulog.c' object='libmisc_la-sulog.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-sulog.lo `test -f 'sulog.c' || echo '$(srcdir)/'`sulog.c
+
+libmisc_la-ttytype.lo: ttytype.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-ttytype.lo -MD -MP -MF $(DEPDIR)/libmisc_la-ttytype.Tpo -c -o libmisc_la-ttytype.lo `test -f 'ttytype.c' || echo '$(srcdir)/'`ttytype.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-ttytype.Tpo $(DEPDIR)/libmisc_la-ttytype.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ttytype.c' object='libmisc_la-ttytype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-ttytype.lo `test -f 'ttytype.c' || echo '$(srcdir)/'`ttytype.c
+
+libmisc_la-tz.lo: tz.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-tz.lo -MD -MP -MF $(DEPDIR)/libmisc_la-tz.Tpo -c -o libmisc_la-tz.lo `test -f 'tz.c' || echo '$(srcdir)/'`tz.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-tz.Tpo $(DEPDIR)/libmisc_la-tz.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tz.c' object='libmisc_la-tz.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-tz.lo `test -f 'tz.c' || echo '$(srcdir)/'`tz.c
+
+libmisc_la-ulimit.lo: ulimit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-ulimit.lo -MD -MP -MF $(DEPDIR)/libmisc_la-ulimit.Tpo -c -o libmisc_la-ulimit.lo `test -f 'ulimit.c' || echo '$(srcdir)/'`ulimit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-ulimit.Tpo $(DEPDIR)/libmisc_la-ulimit.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ulimit.c' object='libmisc_la-ulimit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-ulimit.lo `test -f 'ulimit.c' || echo '$(srcdir)/'`ulimit.c
+
+libmisc_la-user_busy.lo: user_busy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-user_busy.lo -MD -MP -MF $(DEPDIR)/libmisc_la-user_busy.Tpo -c -o libmisc_la-user_busy.lo `test -f 'user_busy.c' || echo '$(srcdir)/'`user_busy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-user_busy.Tpo $(DEPDIR)/libmisc_la-user_busy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='user_busy.c' object='libmisc_la-user_busy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-user_busy.lo `test -f 'user_busy.c' || echo '$(srcdir)/'`user_busy.c
+
+libmisc_la-valid.lo: valid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-valid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-valid.Tpo -c -o libmisc_la-valid.lo `test -f 'valid.c' || echo '$(srcdir)/'`valid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-valid.Tpo $(DEPDIR)/libmisc_la-valid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='valid.c' object='libmisc_la-valid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-valid.lo `test -f 'valid.c' || echo '$(srcdir)/'`valid.c
+
+libmisc_la-xgetpwnam.lo: xgetpwnam.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xgetpwnam.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xgetpwnam.Tpo -c -o libmisc_la-xgetpwnam.lo `test -f 'xgetpwnam.c' || echo '$(srcdir)/'`xgetpwnam.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xgetpwnam.Tpo $(DEPDIR)/libmisc_la-xgetpwnam.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xgetpwnam.c' object='libmisc_la-xgetpwnam.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xgetpwnam.lo `test -f 'xgetpwnam.c' || echo '$(srcdir)/'`xgetpwnam.c
+
+libmisc_la-xprefix_getpwnam.lo: xprefix_getpwnam.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xprefix_getpwnam.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xprefix_getpwnam.Tpo -c -o libmisc_la-xprefix_getpwnam.lo `test -f 'xprefix_getpwnam.c' || echo '$(srcdir)/'`xprefix_getpwnam.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xprefix_getpwnam.Tpo $(DEPDIR)/libmisc_la-xprefix_getpwnam.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xprefix_getpwnam.c' object='libmisc_la-xprefix_getpwnam.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xprefix_getpwnam.lo `test -f 'xprefix_getpwnam.c' || echo '$(srcdir)/'`xprefix_getpwnam.c
+
+libmisc_la-xgetpwuid.lo: xgetpwuid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xgetpwuid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xgetpwuid.Tpo -c -o libmisc_la-xgetpwuid.lo `test -f 'xgetpwuid.c' || echo '$(srcdir)/'`xgetpwuid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xgetpwuid.Tpo $(DEPDIR)/libmisc_la-xgetpwuid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xgetpwuid.c' object='libmisc_la-xgetpwuid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xgetpwuid.lo `test -f 'xgetpwuid.c' || echo '$(srcdir)/'`xgetpwuid.c
+
+libmisc_la-xgetgrnam.lo: xgetgrnam.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xgetgrnam.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xgetgrnam.Tpo -c -o libmisc_la-xgetgrnam.lo `test -f 'xgetgrnam.c' || echo '$(srcdir)/'`xgetgrnam.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xgetgrnam.Tpo $(DEPDIR)/libmisc_la-xgetgrnam.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xgetgrnam.c' object='libmisc_la-xgetgrnam.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xgetgrnam.lo `test -f 'xgetgrnam.c' || echo '$(srcdir)/'`xgetgrnam.c
+
+libmisc_la-xgetgrgid.lo: xgetgrgid.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xgetgrgid.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xgetgrgid.Tpo -c -o libmisc_la-xgetgrgid.lo `test -f 'xgetgrgid.c' || echo '$(srcdir)/'`xgetgrgid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xgetgrgid.Tpo $(DEPDIR)/libmisc_la-xgetgrgid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xgetgrgid.c' object='libmisc_la-xgetgrgid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xgetgrgid.lo `test -f 'xgetgrgid.c' || echo '$(srcdir)/'`xgetgrgid.c
+
+libmisc_la-xgetspnam.lo: xgetspnam.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-xgetspnam.lo -MD -MP -MF $(DEPDIR)/libmisc_la-xgetspnam.Tpo -c -o libmisc_la-xgetspnam.lo `test -f 'xgetspnam.c' || echo '$(srcdir)/'`xgetspnam.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-xgetspnam.Tpo $(DEPDIR)/libmisc_la-xgetspnam.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xgetspnam.c' object='libmisc_la-xgetspnam.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-xgetspnam.lo `test -f 'xgetspnam.c' || echo '$(srcdir)/'`xgetspnam.c
+
+libmisc_la-yesno.lo: yesno.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-yesno.lo -MD -MP -MF $(DEPDIR)/libmisc_la-yesno.Tpo -c -o libmisc_la-yesno.lo `test -f 'yesno.c' || echo '$(srcdir)/'`yesno.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-yesno.Tpo $(DEPDIR)/libmisc_la-yesno.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='yesno.c' object='libmisc_la-yesno.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-yesno.lo `test -f 'yesno.c' || echo '$(srcdir)/'`yesno.c
+
+libmisc_la-btrfs.lo: btrfs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-btrfs.lo -MD -MP -MF $(DEPDIR)/libmisc_la-btrfs.Tpo -c -o libmisc_la-btrfs.lo `test -f 'btrfs.c' || echo '$(srcdir)/'`btrfs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-btrfs.Tpo $(DEPDIR)/libmisc_la-btrfs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='btrfs.c' object='libmisc_la-btrfs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-btrfs.lo `test -f 'btrfs.c' || echo '$(srcdir)/'`btrfs.c
+
+libmisc_la-log.lo: log.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-log.lo -MD -MP -MF $(DEPDIR)/libmisc_la-log.Tpo -c -o libmisc_la-log.lo `test -f 'log.c' || echo '$(srcdir)/'`log.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-log.Tpo $(DEPDIR)/libmisc_la-log.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='log.c' object='libmisc_la-log.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-log.lo `test -f 'log.c' || echo '$(srcdir)/'`log.c
+
+libmisc_la-logind.lo: logind.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-logind.lo -MD -MP -MF $(DEPDIR)/libmisc_la-logind.Tpo -c -o libmisc_la-logind.lo `test -f 'logind.c' || echo '$(srcdir)/'`logind.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-logind.Tpo $(DEPDIR)/libmisc_la-logind.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='logind.c' object='libmisc_la-logind.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-logind.lo `test -f 'logind.c' || echo '$(srcdir)/'`logind.c
+
+libmisc_la-utmp.lo: utmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-utmp.lo -MD -MP -MF $(DEPDIR)/libmisc_la-utmp.Tpo -c -o libmisc_la-utmp.lo `test -f 'utmp.c' || echo '$(srcdir)/'`utmp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-utmp.Tpo $(DEPDIR)/libmisc_la-utmp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='utmp.c' object='libmisc_la-utmp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-utmp.lo `test -f 'utmp.c' || echo '$(srcdir)/'`utmp.c
 
 .y.c:
 	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h `echo $@ | $(am__yacc_c2h)` y.output $*.output -- $(YACCCOMPILE)
@@ -710,71 +1311,79 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/addgrps.Plo
-	-rm -f ./$(DEPDIR)/age.Plo
-	-rm -f ./$(DEPDIR)/audit_help.Plo
-	-rm -f ./$(DEPDIR)/basename.Plo
-	-rm -f ./$(DEPDIR)/btrfs.Plo
-	-rm -f ./$(DEPDIR)/chkname.Plo
-	-rm -f ./$(DEPDIR)/chowndir.Plo
-	-rm -f ./$(DEPDIR)/chowntty.Plo
-	-rm -f ./$(DEPDIR)/cleanup.Plo
-	-rm -f ./$(DEPDIR)/cleanup_group.Plo
-	-rm -f ./$(DEPDIR)/cleanup_user.Plo
-	-rm -f ./$(DEPDIR)/console.Plo
-	-rm -f ./$(DEPDIR)/copydir.Plo
-	-rm -f ./$(DEPDIR)/date_to_str.Plo
-	-rm -f ./$(DEPDIR)/entry.Plo
-	-rm -f ./$(DEPDIR)/env.Plo
-	-rm -f ./$(DEPDIR)/failure.Plo
-	-rm -f ./$(DEPDIR)/find_new_gid.Plo
-	-rm -f ./$(DEPDIR)/find_new_sub_gids.Plo
-	-rm -f ./$(DEPDIR)/find_new_sub_uids.Plo
-	-rm -f ./$(DEPDIR)/find_new_uid.Plo
-	-rm -f ./$(DEPDIR)/getdate.Plo
-	-rm -f ./$(DEPDIR)/getgr_nam_gid.Plo
-	-rm -f ./$(DEPDIR)/getrange.Plo
-	-rm -f ./$(DEPDIR)/gettime.Plo
-	-rm -f ./$(DEPDIR)/hushed.Plo
-	-rm -f ./$(DEPDIR)/idmapping.Plo
-	-rm -f ./$(DEPDIR)/isexpired.Plo
-	-rm -f ./$(DEPDIR)/limits.Plo
-	-rm -f ./$(DEPDIR)/list.Plo
-	-rm -f ./$(DEPDIR)/log.Plo
-	-rm -f ./$(DEPDIR)/loginprompt.Plo
-	-rm -f ./$(DEPDIR)/mail.Plo
-	-rm -f ./$(DEPDIR)/motd.Plo
-	-rm -f ./$(DEPDIR)/myname.Plo
-	-rm -f ./$(DEPDIR)/obscure.Plo
-	-rm -f ./$(DEPDIR)/pam_pass.Plo
-	-rm -f ./$(DEPDIR)/pam_pass_non_interactive.Plo
-	-rm -f ./$(DEPDIR)/prefix_flag.Plo
-	-rm -f ./$(DEPDIR)/pwd2spwd.Plo
-	-rm -f ./$(DEPDIR)/pwd_init.Plo
-	-rm -f ./$(DEPDIR)/pwdcheck.Plo
-	-rm -f ./$(DEPDIR)/remove_tree.Plo
-	-rm -f ./$(DEPDIR)/rlogin.Plo
-	-rm -f ./$(DEPDIR)/root_flag.Plo
-	-rm -f ./$(DEPDIR)/salt.Plo
-	-rm -f ./$(DEPDIR)/setugid.Plo
-	-rm -f ./$(DEPDIR)/setupenv.Plo
-	-rm -f ./$(DEPDIR)/shell.Plo
-	-rm -f ./$(DEPDIR)/strtoday.Plo
-	-rm -f ./$(DEPDIR)/sub.Plo
-	-rm -f ./$(DEPDIR)/sulog.Plo
-	-rm -f ./$(DEPDIR)/ttytype.Plo
-	-rm -f ./$(DEPDIR)/tz.Plo
-	-rm -f ./$(DEPDIR)/ulimit.Plo
-	-rm -f ./$(DEPDIR)/user_busy.Plo
-	-rm -f ./$(DEPDIR)/utmp.Plo
-	-rm -f ./$(DEPDIR)/valid.Plo
-	-rm -f ./$(DEPDIR)/xgetgrgid.Plo
-	-rm -f ./$(DEPDIR)/xgetgrnam.Plo
-	-rm -f ./$(DEPDIR)/xgetpwnam.Plo
-	-rm -f ./$(DEPDIR)/xgetpwuid.Plo
-	-rm -f ./$(DEPDIR)/xgetspnam.Plo
-	-rm -f ./$(DEPDIR)/xmalloc.Plo
-	-rm -f ./$(DEPDIR)/yesno.Plo
+		-rm -f ./$(DEPDIR)/libmisc_la-addgrps.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-age.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-agetpass.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-alloc.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-audit_help.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-basename.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-bit.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-btrfs.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chkname.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chowndir.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chowntty.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup_group.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup_user.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-console.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-copydir.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-csrand.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-date_to_str.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-entry.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-env.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-failure.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_gid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_uid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getdate.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getrange.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-gettime.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-hushed.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-idmapping.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-isexpired.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-limits.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-list.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-log.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-logind.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-loginprompt.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-mail.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-mempcpy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-motd.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-myname.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-obscure.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pam_pass.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pam_pass_non_interactive.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-prefix_flag.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwd2spwd.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwd_init.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwdcheck.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-remove_tree.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-rlogin.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-root_flag.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-salt.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-setugid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-setupenv.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-shell.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-stpecpy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-stpeprintf.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-strtoday.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-sub.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-sulog.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-ttytype.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-tz.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-ulimit.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-user_busy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-utmp.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-valid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetgrgid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetgrnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetpwnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetpwuid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetspnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xprefix_getpwnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-yesno.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -820,71 +1429,79 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/addgrps.Plo
-	-rm -f ./$(DEPDIR)/age.Plo
-	-rm -f ./$(DEPDIR)/audit_help.Plo
-	-rm -f ./$(DEPDIR)/basename.Plo
-	-rm -f ./$(DEPDIR)/btrfs.Plo
-	-rm -f ./$(DEPDIR)/chkname.Plo
-	-rm -f ./$(DEPDIR)/chowndir.Plo
-	-rm -f ./$(DEPDIR)/chowntty.Plo
-	-rm -f ./$(DEPDIR)/cleanup.Plo
-	-rm -f ./$(DEPDIR)/cleanup_group.Plo
-	-rm -f ./$(DEPDIR)/cleanup_user.Plo
-	-rm -f ./$(DEPDIR)/console.Plo
-	-rm -f ./$(DEPDIR)/copydir.Plo
-	-rm -f ./$(DEPDIR)/date_to_str.Plo
-	-rm -f ./$(DEPDIR)/entry.Plo
-	-rm -f ./$(DEPDIR)/env.Plo
-	-rm -f ./$(DEPDIR)/failure.Plo
-	-rm -f ./$(DEPDIR)/find_new_gid.Plo
-	-rm -f ./$(DEPDIR)/find_new_sub_gids.Plo
-	-rm -f ./$(DEPDIR)/find_new_sub_uids.Plo
-	-rm -f ./$(DEPDIR)/find_new_uid.Plo
-	-rm -f ./$(DEPDIR)/getdate.Plo
-	-rm -f ./$(DEPDIR)/getgr_nam_gid.Plo
-	-rm -f ./$(DEPDIR)/getrange.Plo
-	-rm -f ./$(DEPDIR)/gettime.Plo
-	-rm -f ./$(DEPDIR)/hushed.Plo
-	-rm -f ./$(DEPDIR)/idmapping.Plo
-	-rm -f ./$(DEPDIR)/isexpired.Plo
-	-rm -f ./$(DEPDIR)/limits.Plo
-	-rm -f ./$(DEPDIR)/list.Plo
-	-rm -f ./$(DEPDIR)/log.Plo
-	-rm -f ./$(DEPDIR)/loginprompt.Plo
-	-rm -f ./$(DEPDIR)/mail.Plo
-	-rm -f ./$(DEPDIR)/motd.Plo
-	-rm -f ./$(DEPDIR)/myname.Plo
-	-rm -f ./$(DEPDIR)/obscure.Plo
-	-rm -f ./$(DEPDIR)/pam_pass.Plo
-	-rm -f ./$(DEPDIR)/pam_pass_non_interactive.Plo
-	-rm -f ./$(DEPDIR)/prefix_flag.Plo
-	-rm -f ./$(DEPDIR)/pwd2spwd.Plo
-	-rm -f ./$(DEPDIR)/pwd_init.Plo
-	-rm -f ./$(DEPDIR)/pwdcheck.Plo
-	-rm -f ./$(DEPDIR)/remove_tree.Plo
-	-rm -f ./$(DEPDIR)/rlogin.Plo
-	-rm -f ./$(DEPDIR)/root_flag.Plo
-	-rm -f ./$(DEPDIR)/salt.Plo
-	-rm -f ./$(DEPDIR)/setugid.Plo
-	-rm -f ./$(DEPDIR)/setupenv.Plo
-	-rm -f ./$(DEPDIR)/shell.Plo
-	-rm -f ./$(DEPDIR)/strtoday.Plo
-	-rm -f ./$(DEPDIR)/sub.Plo
-	-rm -f ./$(DEPDIR)/sulog.Plo
-	-rm -f ./$(DEPDIR)/ttytype.Plo
-	-rm -f ./$(DEPDIR)/tz.Plo
-	-rm -f ./$(DEPDIR)/ulimit.Plo
-	-rm -f ./$(DEPDIR)/user_busy.Plo
-	-rm -f ./$(DEPDIR)/utmp.Plo
-	-rm -f ./$(DEPDIR)/valid.Plo
-	-rm -f ./$(DEPDIR)/xgetgrgid.Plo
-	-rm -f ./$(DEPDIR)/xgetgrnam.Plo
-	-rm -f ./$(DEPDIR)/xgetpwnam.Plo
-	-rm -f ./$(DEPDIR)/xgetpwuid.Plo
-	-rm -f ./$(DEPDIR)/xgetspnam.Plo
-	-rm -f ./$(DEPDIR)/xmalloc.Plo
-	-rm -f ./$(DEPDIR)/yesno.Plo
+		-rm -f ./$(DEPDIR)/libmisc_la-addgrps.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-age.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-agetpass.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-alloc.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-audit_help.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-basename.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-bit.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-btrfs.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chkname.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chowndir.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-chowntty.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup_group.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-cleanup_user.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-console.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-copydir.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-csrand.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-date_to_str.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-entry.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-env.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-failure.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_gid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-find_new_uid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getdate.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-getrange.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-gettime.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-hushed.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-idmapping.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-isexpired.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-limits.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-list.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-log.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-logind.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-loginprompt.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-mail.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-mempcpy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-motd.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-myname.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-obscure.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pam_pass.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pam_pass_non_interactive.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-prefix_flag.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwd2spwd.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwd_init.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-pwdcheck.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-remove_tree.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-rlogin.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-root_flag.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-salt.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-setugid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-setupenv.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-shell.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-stpecpy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-stpeprintf.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-strtoday.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-sub.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-sulog.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-ttytype.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-tz.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-ulimit.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-user_busy.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-utmp.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-valid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetgrgid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetgrnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetpwnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetpwuid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xgetspnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-xprefix_getpwnam.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-yesno.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

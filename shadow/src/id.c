@@ -23,7 +23,10 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#include "alloc.h"
 #include "defines.h"
+
 /* local function prototypes */
 static void usage (void);
 
@@ -63,7 +66,7 @@ static void usage (void)
 	 * work if the system library is recompiled.
 	 */
 	sys_ngroups = sysconf (_SC_NGROUPS_MAX);
-	groups = (GETGROUPS_T *) malloc (sizeof (GETGROUPS_T) * sys_ngroups);
+	groups = MALLOC(sys_ngroups, GETGROUPS_T);
 
 	/*
 	 * See if the -a flag has been given to print out the concurrent

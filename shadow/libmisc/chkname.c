@@ -129,13 +129,14 @@ static size_t min (size_t a, size_t b)
 
 bool is_valid_user_name (const char *name)
 {
-	size_t max_len;
+	size_t max_len, sc_max_name;
 	/*
-	 * User names are limited by whatever utmp can
-	 * handle and the settings in login.defs.
+	 * User names length are limited by the kernel
+	 * and the settings in login.defs.
 	 */
-	max_len = min (getdef_unum ("USERNAME_MAX", USER_NAME_MAX_LENGTH),
-					USER_NAME_MAX_LENGTH);
+	sc_max_name = sysconf(_SC_LOGIN_NAME_MAX);
+	max_len = min (getdef_unum ("USERNAME_MAX", sc_max_name),
+					sc_max_name);
 	if (strlen (name) > max_len) {
 		return false;
 	}

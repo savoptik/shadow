@@ -10,8 +10,6 @@
  *
  * Written by Marek Michalkiewicz <marekm@i17linuxb.ists.pwr.wroc.pl>,
  * it is in the public domain.
- *
- * l64a was Written by J.T. Conklin <jtc@netbsd.org>. Public domain.
  */
 
 #include <config.h>
@@ -22,9 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if HAVE_SYS_RANDOM_H
-#include <sys/random.h>
-#endif
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -113,13 +108,9 @@ crypt_make_salt(/*@null@*/const char *meth, /*@null@*/void *arg)
 
 #if 0
 /* local function prototypes */
-static long read_random_bytes (void);
 #if !USE_XCRYPT_GENSALT
 static /*@observer@*/const char *gensalt (size_t salt_size);
 #endif /* !USE_XCRYPT_GENSALT */
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
-static long shadow_random (long min, long max);
-#endif /* USE_SHA_CRYPT || USE_BCRYPT */
 #ifdef USE_SHA_CRYPT
 static /*@observer@*/unsigned long SHA_get_salt_rounds (/*@null@*/const int *prefered_rounds);
 static /*@observer@*/void SHA_salt_rounds_to_buf (char *buf, unsigned long rounds);
@@ -133,113 +124,6 @@ static /*@observer@*/unsigned long YESCRYPT_get_salt_cost (/*@null@*/const int *
 static /*@observer@*/void YESCRYPT_salt_cost_to_buf (char *buf, unsigned long cost);
 #endif /* USE_YESCRYPT */
 
-#if !USE_XCRYPT_GENSALT && !defined(HAVE_L64A)
-static /*@observer@*/char *l64a (long value)
-{
-	static char buf[8];
-	char *s = buf;
-	int digit;
-	int i;
-
-	if (value < 0) {
-		errno = EINVAL;
-		return(NULL);
-	}
-
-	for (i = 0; value != 0 && i < 6; i++) {
-		digit = value & 0x3f;
-
-		if (digit < 2) {
-			*s = digit + '.';
-		} else if (digit < 12) {
-			*s = digit + '0' - 2;
-		} else if (digit < 38) {
-			*s = digit + 'A' - 12;
-		} else {
-			*s = digit + 'a' - 38;
-		}
-
-		value >>= 6;
-		s++;
-	}
-
-	*s = '\0';
-
-	return buf;
-}
-#endif /* !USE_XCRYPT_GENSALT && !defined(HAVE_L64A) */
-
-/* Read sizeof (long) random bytes from /dev/urandom. */
-static long read_random_bytes (void)
-{
-	long randval = 0;
-
-#ifdef HAVE_ARC4RANDOM_BUF
-	/* arc4random_buf, if it exists, can never fail.  */
-	arc4random_buf (&randval, sizeof (randval));
-	goto end;
-#endif
-
-#ifdef HAVE_GETENTROPY
-	/* getentropy may exist but lack kernel support.  */
-	if (getentropy (&randval, sizeof (randval)) == 0) {
-		goto end;
-	}
-#endif
-
-#ifdef HAVE_GETRANDOM
-	/* Likewise getrandom.  */
-	if ((size_t) getrandom (&randval, sizeof (randval), 0) == sizeof (randval)) {
-		goto end;
-	}
-#endif
-
-	/* Use /dev/urandom as a last resort.  */
-	FILE *f = fopen ("/dev/urandom", "r");
-	if (NULL == f) {
-		goto fail;
-	}
-
-	if (fread (&randval, sizeof (randval), 1, f) != 1) {
-		fclose(f);
-		goto fail;
-	}
-
-	fclose(f);
-	goto end;
-
-fail:
-	fprintf (log_get_logfd(),
-		 _("Unable to obtain random bytes.\n"));
-	exit (1);
-
-end:
-	return randval;
-}
-
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
-/*
- * Return a random number between min and max (both included).
- *
- * It favors slightly the higher numbers.
- */
-static long shadow_random (long min, long max)
-{
-	double drand;
-	long ret;
-
-	drand = (double) (read_random_bytes () & RAND_MAX) / (double) RAND_MAX;
-	drand *= (double) (max - min + 1);
-	/* On systems were this is not random() range is lower, we favor
-	 * higher numbers of salt. */
-	ret = (long) (max + 1 - drand);
-	/* And we catch limits, and use the highest number */
-	if ((ret < min) || (ret > max)) {
-		ret = max;
-	}
-	return ret;
-}
-#endif /* USE_SHA_CRYPT || USE_BCRYPT */
 
 #ifdef USE_SHA_CRYPT
 /* Return the the rounds number for the SHA crypt methods. */
@@ -267,7 +151,7 @@ static /*@observer@*/unsigned long SHA_get_salt_rounds (/*@null@*/const int *pre
 				max_rounds = min_rounds;
 			}
 
-			rounds = (unsigned long) shadow_random (min_rounds, max_rounds);
+			rounds = csrand_interval (min_rounds, max_rounds);
 		}
 	} else if (0 == *prefered_rounds) {
 		rounds = SHA_ROUNDS_DEFAULT;
@@ -340,7 +224,7 @@ static /*@observer@*/unsigned long BCRYPT_get_salt_rounds (/*@null@*/const int *
 				max_rounds = min_rounds;
 			}
 
-			rounds = (unsigned long) shadow_random (min_rounds, max_rounds);
+			rounds = csrand_interval (min_rounds, max_rounds);
 		}
 	} else if (0 == *prefered_rounds) {
 		rounds = B_ROUNDS_DEFAULT;
@@ -461,9 +345,9 @@ static /*@observer@*/const char *gensalt (size_t salt_size)
 
 	assert (salt_size >= MIN_SALT_SIZE &&
 	        salt_size <= MAX_SALT_SIZE);
-	strcat (salt, l64a (read_random_bytes ()));
+	strcat (salt, l64a (csrand ()));
 	do {
-		strcat (salt, l64a (read_random_bytes ()));
+		strcat (salt, l64a (csrand ()));
 	} while (strlen (salt) < salt_size);
 
 	salt[salt_size] = '\0';
@@ -515,26 +399,26 @@ static /*@observer@*/const char *gensalt (size_t salt_size)
 	} else if (0 == strcmp (method, "BCRYPT")) {
 		BCRYPTMAGNUM(result);
 		salt_len = BCRYPT_SALT_SIZE;
-		rounds = BCRYPT_get_salt_rounds ((int *) arg);
+		rounds = BCRYPT_get_salt_rounds (arg);
 		BCRYPT_salt_rounds_to_buf (result, rounds);
 #endif /* USE_BCRYPT */
 #ifdef USE_YESCRYPT
 	} else if (0 == strcmp (method, "YESCRYPT")) {
 		MAGNUM(result, 'y');
 		salt_len = YESCRYPT_SALT_SIZE;
-		rounds = YESCRYPT_get_salt_cost ((int *) arg);
+		rounds = YESCRYPT_get_salt_cost (arg);
 		YESCRYPT_salt_cost_to_buf (result, rounds);
 #endif /* USE_YESCRYPT */
 #ifdef USE_SHA_CRYPT
 	} else if (0 == strcmp (method, "SHA256")) {
 		MAGNUM(result, '5');
 		salt_len = SHA_CRYPT_SALT_SIZE;
-		rounds = SHA_get_salt_rounds ((int *) arg);
+		rounds = SHA_get_salt_rounds (arg);
 		SHA_salt_rounds_to_buf (result, rounds);
 	} else if (0 == strcmp (method, "SHA512")) {
 		MAGNUM(result, '6');
 		salt_len = SHA_CRYPT_SALT_SIZE;
-		rounds = SHA_get_salt_rounds ((int *) arg);
+		rounds = SHA_get_salt_rounds (arg);
 		SHA_salt_rounds_to_buf (result, rounds);
 #endif /* USE_SHA_CRYPT */
 	} else if (0 != strcmp (method, "DES")) {

@@ -2,12 +2,12 @@
 .\"     Title: groups
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 04/08/2023
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.14.0-rc2
 .\"  Language: Ukrainian
 .\"
-.TH "groups" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "groups" "1" "04/08/2023" "shadow\-utils 4\&.14\&.0\-rc2" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,24 +31,25 @@
 groups \- показ поточних назв груп
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBgroups\fR\ 'u
-\fBgroups\fR [\fIкористувач\fR]
+\fBgroups\fR [\fIuser\fR]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBgroups\fR
-виводить назви або значення ідентифікаторів поточних груп\&. Якщо у значення немає відповідного запису у
-/etc/group, значення буде виведено як числове значення групи\&. Використання необов\*(Aqязкового параметра
-\fIкористувач\fR
-призведе до показу груп іменованого користувача\&.
+command displays the current group names or ID values\&. If the value does not have a corresponding entry in
+/etc/group, the value will be displayed as the numerical group value\&. The optional
+\fIuser\fR
+parameter will display the groups for the named user\&.
 .SH "ЗАУВАЖЕННЯ"
 .PP
-Для систем, у яких не передбачено підтримку додаткових груп (див\&.
-\fBinitgroups\fR(3)) буде показано відомості з
-/etc/group\&. Користувач має скористатися
+Systems which do not support supplementary groups (see
+\fBinitgroups\fR(3)) will have the information from
+/etc/group
+reported\&. The user must use
 \fBnewgrp\fR
-або
+or
 \fBsg\fR
-для зміни його поточного справжнього і ефективного ідентифікатора групи\&.
+to change his current real and effective group ID\&.
 .SH "ФАЙЛИ"
 .PP
 /etc/group
