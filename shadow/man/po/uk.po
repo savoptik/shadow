@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-04 16:25-0500\n"
+"POT-Creation-Date: 2023-08-15 21:40-0500\n"
 "PO-Revision-Date: 2022-05-21 20:43+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -268,7 +268,7 @@ msgstr "shadow-utils"
 #: shadow.3.xml.out:37 shadow.5.xml.out:37 sg.1.xml.out:38 su.1.xml.out:54
 #: suauth.5.xml.out:37 useradd.8.xml.out:56 userdel.8.xml.out:43
 #: usermod.8.xml.out:44 vipw.8.xml.out:39
-msgid "4.14.0-rc2"
+msgid "4.14.0"
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose

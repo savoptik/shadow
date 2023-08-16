@@ -505,6 +505,9 @@
 /* Build shadow with BtrFS support */
 #undef WITH_BTRFS
 
+/* Build shadow without libbsd support */
+#undef WITH_LIBBSD
+
 /* Build shadow with SELinux support */
 #undef WITH_SELINUX
 

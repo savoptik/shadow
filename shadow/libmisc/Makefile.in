@@ -92,6 +92,12 @@ host_triplet = @host@
 @ENABLE_LASTLOG_TRUE@am__append_2 = log.c
 @ENABLE_LOGIND_TRUE@am__append_3 = logind.c
 @ENABLE_LOGIND_FALSE@am__append_4 = utmp.c
+@WITH_LIBBSD_FALSE@am__append_5 = \
+@WITH_LIBBSD_FALSE@	freezero.h \
+@WITH_LIBBSD_FALSE@	freezero.c \
+@WITH_LIBBSD_FALSE@	readpassphrase.h \
+@WITH_LIBBSD_FALSE@	readpassphrase.c
+
 subdir = libmisc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -127,11 +133,14 @@ am__libmisc_la_SOURCES_DIST = addgrps.c age.c agetpass.c alloc.c \
 	../lib/stpecpy.h stpeprintf.c ../lib/stpeprintf.h strtoday.c \
 	sub.c sulog.c ttytype.c tz.c ulimit.c user_busy.c valid.c \
 	xgetpwnam.c xprefix_getpwnam.c xgetpwuid.c xgetgrnam.c \
-	xgetgrgid.c xgetspnam.c yesno.c btrfs.c log.c logind.c utmp.c
+	xgetgrgid.c xgetspnam.c yesno.c btrfs.c log.c logind.c utmp.c \
+	freezero.h freezero.c readpassphrase.h readpassphrase.c
 @WITH_BTRFS_TRUE@am__objects_1 = libmisc_la-btrfs.lo
 @ENABLE_LASTLOG_TRUE@am__objects_2 = libmisc_la-log.lo
 @ENABLE_LOGIND_TRUE@am__objects_3 = libmisc_la-logind.lo
 @ENABLE_LOGIND_FALSE@am__objects_4 = libmisc_la-utmp.lo
+@WITH_LIBBSD_FALSE@am__objects_5 = libmisc_la-freezero.lo \
+@WITH_LIBBSD_FALSE@	libmisc_la-readpassphrase.lo
 am_libmisc_la_OBJECTS = libmisc_la-addgrps.lo libmisc_la-age.lo \
 	libmisc_la-agetpass.lo libmisc_la-alloc.lo \
 	libmisc_la-audit_help.lo libmisc_la-basename.lo \
@@ -166,7 +175,7 @@ am_libmisc_la_OBJECTS = libmisc_la-addgrps.lo libmisc_la-age.lo \
 	libmisc_la-xgetpwuid.lo libmisc_la-xgetgrnam.lo \
 	libmisc_la-xgetgrgid.lo libmisc_la-xgetspnam.lo \
 	libmisc_la-yesno.lo $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libmisc_la_OBJECTS = $(am_libmisc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -215,6 +224,7 @@ am__depfiles_remade = ./$(DEPDIR)/libmisc_la-addgrps.Plo \
 	./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo \
 	./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo \
 	./$(DEPDIR)/libmisc_la-find_new_uid.Plo \
+	./$(DEPDIR)/libmisc_la-freezero.Plo \
 	./$(DEPDIR)/libmisc_la-getdate.Plo \
 	./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo \
 	./$(DEPDIR)/libmisc_la-getrange.Plo \
@@ -237,6 +247,7 @@ am__depfiles_remade = ./$(DEPDIR)/libmisc_la-addgrps.Plo \
 	./$(DEPDIR)/libmisc_la-pwd2spwd.Plo \
 	./$(DEPDIR)/libmisc_la-pwd_init.Plo \
 	./$(DEPDIR)/libmisc_la-pwdcheck.Plo \
+	./$(DEPDIR)/libmisc_la-readpassphrase.Plo \
 	./$(DEPDIR)/libmisc_la-remove_tree.Plo \
 	./$(DEPDIR)/libmisc_la-rlogin.Plo \
 	./$(DEPDIR)/libmisc_la-root_flag.Plo \
@@ -365,6 +376,7 @@ LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
+LIBBSD = @LIBBSD@
 LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
 LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRACK = @LIBCRACK@
@@ -510,7 +522,7 @@ libmisc_la_SOURCES = addgrps.c age.c agetpass.c alloc.c ../lib/alloc.h \
 	ttytype.c tz.c ulimit.c user_busy.c valid.c xgetpwnam.c \
 	xprefix_getpwnam.c xgetpwuid.c xgetgrnam.c xgetgrgid.c \
 	xgetspnam.c yesno.c $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4)
+	$(am__append_3) $(am__append_4) $(am__append_5)
 all: all-am
 
 .SUFFIXES:
@@ -590,6 +602,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-find_new_uid.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-freezero.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getdate.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-getrange.Plo@am__quote@ # am--include-marker
@@ -613,6 +626,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwd2spwd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwd_init.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-pwdcheck.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-readpassphrase.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-remove_tree.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-rlogin.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmisc_la-root_flag.Plo@am__quote@ # am--include-marker
@@ -1177,6 +1191,20 @@ libmisc_la-utmp.lo: utmp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-utmp.lo `test -f 'utmp.c' || echo '$(srcdir)/'`utmp.c
 
+libmisc_la-freezero.lo: freezero.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-freezero.lo -MD -MP -MF $(DEPDIR)/libmisc_la-freezero.Tpo -c -o libmisc_la-freezero.lo `test -f 'freezero.c' || echo '$(srcdir)/'`freezero.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-freezero.Tpo $(DEPDIR)/libmisc_la-freezero.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='freezero.c' object='libmisc_la-freezero.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-freezero.lo `test -f 'freezero.c' || echo '$(srcdir)/'`freezero.c
+
+libmisc_la-readpassphrase.lo: readpassphrase.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -MT libmisc_la-readpassphrase.lo -MD -MP -MF $(DEPDIR)/libmisc_la-readpassphrase.Tpo -c -o libmisc_la-readpassphrase.lo `test -f 'readpassphrase.c' || echo '$(srcdir)/'`readpassphrase.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmisc_la-readpassphrase.Tpo $(DEPDIR)/libmisc_la-readpassphrase.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='readpassphrase.c' object='libmisc_la-readpassphrase.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmisc_la_CFLAGS) $(CFLAGS) -c -o libmisc_la-readpassphrase.lo `test -f 'readpassphrase.c' || echo '$(srcdir)/'`readpassphrase.c
+
 .y.c:
 	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h `echo $@ | $(am__yacc_c2h)` y.output $*.output -- $(YACCCOMPILE)
 
@@ -1336,6 +1364,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_uid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-freezero.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getdate.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getrange.Plo
@@ -1359,6 +1388,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libmisc_la-pwd2spwd.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-pwd_init.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-pwdcheck.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-readpassphrase.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-remove_tree.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-rlogin.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-root_flag.Plo
@@ -1454,6 +1484,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_gids.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_sub_uids.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-find_new_uid.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-freezero.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getdate.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getgr_nam_gid.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-getrange.Plo
@@ -1477,6 +1508,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libmisc_la-pwd2spwd.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-pwd_init.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-pwdcheck.Plo
+	-rm -f ./$(DEPDIR)/libmisc_la-readpassphrase.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-remove_tree.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-rlogin.Plo
 	-rm -f ./$(DEPDIR)/libmisc_la-root_flag.Plo
