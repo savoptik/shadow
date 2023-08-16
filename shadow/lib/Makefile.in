@@ -119,7 +119,8 @@ am__libshadow_la_SOURCES_DIST = commonio.c commonio.h defines.h \
 	pwio.c pwio.h pwmem.c run_part.h run_part.c subordinateio.h \
 	subordinateio.c selinux.c semanage.c sgetgrent.c sgetpwent.c \
 	sgetspent.c sgroupio.c sgroupio.h shadow.c shadowio.c \
-	shadowio.h shadowmem.c spawn.c tcbfuncs.c tcbfuncs.h
+	shadowio.h shadowmem.c spawn.c write_full.c tcbfuncs.c \
+	tcbfuncs.h
 @WITH_TCB_TRUE@am__objects_1 = libshadow_la-tcbfuncs.lo
 am_libshadow_la_OBJECTS = libshadow_la-commonio.lo \
 	libshadow_la-encrypt.lo libshadow_la-fields.lo \
@@ -138,7 +139,8 @@ am_libshadow_la_OBJECTS = libshadow_la-commonio.lo \
 	libshadow_la-sgetpwent.lo libshadow_la-sgetspent.lo \
 	libshadow_la-sgroupio.lo libshadow_la-shadow.lo \
 	libshadow_la-shadowio.lo libshadow_la-shadowmem.lo \
-	libshadow_la-spawn.lo $(am__objects_1)
+	libshadow_la-spawn.lo libshadow_la-write_full.lo \
+	$(am__objects_1)
 libshadow_la_OBJECTS = $(am_libshadow_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -196,7 +198,8 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-commonio.Plo \
 	./$(DEPDIR)/libshadow_la-spawn.Plo \
 	./$(DEPDIR)/libshadow_la-sssd.Plo \
 	./$(DEPDIR)/libshadow_la-subordinateio.Plo \
-	./$(DEPDIR)/libshadow_la-tcbfuncs.Plo
+	./$(DEPDIR)/libshadow_la-tcbfuncs.Plo \
+	./$(DEPDIR)/libshadow_la-write_full.Plo
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -288,6 +291,7 @@ LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
+LIBBSD = @LIBBSD@
 LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
 LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRACK = @LIBCRACK@
@@ -425,7 +429,7 @@ libshadow_la_SOURCES = commonio.c commonio.h defines.h encrypt.c \
 	pwio.h pwmem.c run_part.h run_part.c subordinateio.h \
 	subordinateio.c selinux.c semanage.c sgetgrent.c sgetpwent.c \
 	sgetspent.c sgroupio.c sgroupio.h shadow.c shadowio.c \
-	shadowio.h shadowmem.c spawn.c $(am__append_2)
+	shadowio.h shadowmem.c spawn.c write_full.c $(am__append_2)
 
 # These files are unneeded for some reason, listed in
 # order of appearance:
@@ -524,6 +528,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-sssd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-subordinateio.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-tcbfuncs.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-write_full.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -790,6 +795,13 @@ libshadow_la-spawn.lo: spawn.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-spawn.lo `test -f 'spawn.c' || echo '$(srcdir)/'`spawn.c
 
+libshadow_la-write_full.lo: write_full.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-write_full.lo -MD -MP -MF $(DEPDIR)/libshadow_la-write_full.Tpo -c -o libshadow_la-write_full.lo `test -f 'write_full.c' || echo '$(srcdir)/'`write_full.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-write_full.Tpo $(DEPDIR)/libshadow_la-write_full.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='write_full.c' object='libshadow_la-write_full.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-write_full.lo `test -f 'write_full.c' || echo '$(srcdir)/'`write_full.c
+
 libshadow_la-tcbfuncs.lo: tcbfuncs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-tcbfuncs.lo -MD -MP -MF $(DEPDIR)/libshadow_la-tcbfuncs.Tpo -c -o libshadow_la-tcbfuncs.lo `test -f 'tcbfuncs.c' || echo '$(srcdir)/'`tcbfuncs.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-tcbfuncs.Tpo $(DEPDIR)/libshadow_la-tcbfuncs.Plo
@@ -962,6 +974,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-sssd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-subordinateio.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-tcbfuncs.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-write_full.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1042,6 +1055,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-sssd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-subordinateio.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-tcbfuncs.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-write_full.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
