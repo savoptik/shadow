@@ -124,8 +124,12 @@ restart:
 	(void)sigaction(SIGTTIN, &sa, &savettin);
 	(void)sigaction(SIGTTOU, &sa, &savettou);
 
+/* We don't care if write() returns an error here */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 	if (!(flags & RPP_STDIN))
 		(void)write(output, prompt, strlen(prompt));
+#pragma GCC diagnostic pop
 	end = buf + bufsiz - 1;
 	p = buf;
 	while ((nr = read(input, &ch, 1)) == 1 && ch != '\n' && ch != '\r') {
@@ -143,8 +147,12 @@ restart:
 	}
 	*p = '\0';
 	save_errno = errno;
+/* We don't care if write() returns an error here */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 	if (!(term.c_lflag & ECHO))
 		(void)write(output, "\n", 1);
+#pragma GCC diagnostic pop
 
 	/* Restore old terminal settings and signals. */
 	if (memcmp(&term, &oterm, sizeof(term)) != 0) {
