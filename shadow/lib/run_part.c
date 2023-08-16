@@ -49,10 +49,16 @@ int run_parts (const char *directory, const char *name, const char *action)
 	int scanlist;
 	int n;
 	int execute_result = 0;
+	struct stat sb;
 
 	/* If run-parts utility exists then use it */
-	if (access (RUN_PARTS, X_OK) == 0)
+	if (access (RUN_PARTS, X_OK) == 0) {
+		if ((stat (directory, &sb) < 0) || !S_ISDIR (sb.st_mode)) {
+			fprintf (stderr, "Warning: directory %s does not exist.\n", directory);
+			return 0;
+		}
 		return run_part (RUN_PARTS, directory, name, action);
+	}
 
 	scanlist = scandir (directory, &namelist, 0, alphasort);
 	if (scanlist<=0) {
@@ -61,7 +67,6 @@ int run_parts (const char *directory, const char *name, const char *action)
 
 	for (n=0; n<scanlist; n++) {
 		int path_length;
-		struct stat sb;
 
 		path_length=strlen(directory) + strlen(namelist[n]->d_name) + 2;
 		char *s = MALLOC(path_length, char);
