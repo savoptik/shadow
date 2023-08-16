@@ -425,7 +425,7 @@ int main (int argc, char **argv)
 	 */
 	is_newgrp = (strcmp (Prog, "newgrp") == 0);
 	if (!is_newgrp && (strcmp (Prog, "sg") != 0)) {
-		fputs (stderr, _("Bad programm name name.\n"));
+		fputs ("Bad programm name.\n", stderr);
 		exit (EXIT_FAILURE);
 	}
 
