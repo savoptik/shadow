@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2012-01-26 23:57+0100\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -29,227 +29,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Flere punkter med navnet »%s« i %s. Ret venligst dette med pwck eller "
-"grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "cryptmetode er ikke understøttet af libcrypt? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "konfigurationsfejl - kan ikke fortolke %s-værdi: »%s«"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Kunne ikke frigøre plads til opsætningsoplysninger.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "opsætningsfejl - ukendt punkt »%s« (informer administrator)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd afsluttedes ikke normalt (signal %d)\n"
-
-#, fuzzy, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd afsluttede med status %d"
-
-msgid "Password: "
-msgstr "Adgangskode: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "%s's adgangskode: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Kan ikke åbne overvågningsbrugerflade (audit) - afbryder.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Kan ikke oprette SELinux-håndteringshåndtag\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "SELinux-politik ikke håndteret\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Kan ikke læse SELinux-politiklageret\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Kan ikke etablere SELinux-håndteringsforbindelse\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Kan ikke begynde SELinux-transaktion\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Kunne ikke forespørge seuser for %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Kunne ikke angive serange for %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Kunne ikke angive sename for %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Kunne ikke ændre logingkortlægningen for %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Kan ikke oprette SELinux-logindkortlægning for %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Kunne ikke angive navn for %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Kunne ikke angive SELinux-bruger for %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Kunne ikke tilføje logindkortlægning for %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Kan ikke initialisere SELinux-håntering\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Kan ikke oprette SELinux-brugernøgle\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Kan ikke verificere SELinux-brugeren\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Kan ikke ændre SELinux-brugerkortlægning\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Kan ikke tilføje SELinux-brugerkortlægning\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Kan ikke indsende SELinux-transaktion\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Logindkortlægning for %s er ikke defineret, o.k. hvis standardkortlægning "
-"blev brugt\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "Logindkortlægning for %s er defineret i politik, kan ikke slettes\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Kunne ikke slette logindkortlægning for %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: Hukommelse opbrugt\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: Kan ikke stat %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s er hverken en mappe eller en symbolsk henvisning.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: Kan ikke omdøbe symbolsk henvisning %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Mistænkelig lang symbolsk henvisning: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: Kan ikke oprette mappen %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Kan ikke ændre ejer af %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Kan ikke ændre tilstand for %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: Fjern henvisning: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Kan ikke fjerne mappen %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Kan ikke omdøbe %s til %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Kan ikke fjerne %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Kan ikke oprette symbolsk henvisning %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Kan ibkke ændre ejere af %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Kan ikke lstat %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Advarsel, bruger %s har ingen tcb-skyggefil.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Nødsituation: %s's tcb-skygge er ikke en regulær fil med st_nlink=1.\n"
-"Kontoen forbliver låst.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: Kan ikke åbne %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -298,11 +77,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: Kunne ikke åbne %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Flere punkter med navnet »%s« i %s. Ret venligst dette med pwck eller "
+"grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "cryptmetode er ikke understøttet af libcrypt? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Miljøoverløb\n"
@@ -420,6 +210,17 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: Kan ikke indhente unik UID (ikke flere tilgængelige UID'er)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "konfigurationsfejl - kan ikke fortolke %s-værdi: »%s«"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Kunne ikke frigøre plads til opsætningsoplysninger.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "opsætningsfejl - ukendt punkt »%s« (informer administrator)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -486,6 +287,14 @@ msgstr "Ingen post."
 msgid "You have mail."
 msgstr "Du har post."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd afsluttedes ikke normalt (signal %d)\n"
+
+#, fuzzy, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd afsluttede med status %d"
+
 msgid "no change"
 msgstr "ingen ændring"
 
@@ -543,6 +352,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() mislykkedes, fejl %d\n"
 
+msgid "Password: "
+msgstr "Adgangskode: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "%s's adgangskode: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Ugyldig adgangskode for %s.\n"
@@ -591,6 +407,110 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Kan ikke åbne overvågningsbrugerflade (audit) - afbryder.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Kan ikke oprette SELinux-håndteringshåndtag\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "SELinux-politik ikke håndteret\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Kan ikke læse SELinux-politiklageret\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Kan ikke etablere SELinux-håndteringsforbindelse\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Kan ikke begynde SELinux-transaktion\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Kunne ikke forespørge seuser for %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Kunne ikke angive serange for %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Kunne ikke angive sename for %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Kunne ikke ændre logingkortlægningen for %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Kan ikke oprette SELinux-logindkortlægning for %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Kunne ikke angive navn for %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Kunne ikke angive SELinux-bruger for %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Kunne ikke tilføje logindkortlægning for %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Kan ikke initialisere SELinux-håntering\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Kan ikke oprette SELinux-brugernøgle\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Kan ikke verificere SELinux-brugeren\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Kan ikke ændre SELinux-brugerkortlægning\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Kan ikke tilføje SELinux-brugerkortlægning\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Kan ikke indsende SELinux-transaktion\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Logindkortlægning for %s er ikke defineret, o.k. hvis standardkortlægning "
+"blev brugt\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "Logindkortlægning for %s er defineret i politik, kan ikke slettes\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Kunne ikke slette logindkortlægning for %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Kunne ikke skifte mappe til »%s«\n"
@@ -613,6 +533,86 @@ msgstr "Ugyldig rodmappe »%s«\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Kan ikke ændre rodmappen til »%s«\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: Hukommelse opbrugt\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: Kan ikke stat %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s er hverken en mappe eller en symbolsk henvisning.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: Kan ikke omdøbe symbolsk henvisning %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: Mistænkelig lang symbolsk henvisning: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: Kan ikke oprette mappen %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Kan ikke ændre ejer af %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Kan ikke ændre tilstand for %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: Fjern henvisning: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Kan ikke fjerne mappen %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Kan ikke omdøbe %s til %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Kan ikke fjerne %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Kan ikke oprette symbolsk henvisning %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Kan ibkke ændre ejere af %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Kan ikke lstat %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Advarsel, bruger %s har ingen tcb-skyggefil.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Nødsituation: %s's tcb-skygge er ikke en regulær fil med st_nlink=1.\n"
+"Kontoen forbliver låst.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: Kan ikke åbne %s: %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: user '%s' does not exist in %s\n"

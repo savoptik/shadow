@@ -163,7 +163,7 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
-DIST_SUBDIRS = libmisc lib libsubid src po contrib doc etc man
+DIST_SUBDIRS = lib libsubid src po contrib doc etc man
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/shadow.spec.in $(top_srcdir)/man/po/Makefile.in \
 	ABOUT-NLS AUTHORS.md COPYING ChangeLog NEWS README TODO \
@@ -242,6 +242,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -384,8 +385,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = NEWS README TODO shadow.spec.in
-SUBDIRS = libmisc lib $(am__append_1) src po contrib doc etc \
-	$(am__append_2)
+SUBDIRS = lib $(am__append_1) src po contrib doc etc $(am__append_2)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

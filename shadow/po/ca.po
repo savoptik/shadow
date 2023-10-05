@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2012-01-22 18:25+0100\n"
 "Last-Translator: Innocent De Marchi <tangram.peces@gmail.com>\n"
 "Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
@@ -17,231 +17,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 "X-Poedit-Language: Catalan\n"
 "X-Poedit-Country: SPAIN\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Diverses entrades de nom «%s» a %s. Corregiu això amb «pwck» o «grpck».\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "el mètode «crypt» no és compatible amb «libcrypt»? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "error en la configuració - no és possible analitzar el valor %s: «%s»"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "No s'ha pogut reservar espai per a la informació de configuració.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-"error de configuració - element «%s» desconegut (notifiqueu-ho a "
-"l'administrador)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd no ha acabat correctament (senyal %d)\n"
-
-#, fuzzy, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: «nscd» ha sortit amb l'estat %d"
-
-msgid "Password: "
-msgstr "Contrasenya: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Contrasenya de l'usuari %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "No es pot obrir la interfície d'auditoria - cancel·lant.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "No es pot generar l'identificador de gestió SELinux\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "No és possible gestionar la directiva SELinux\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "No es pot llegir el magatzem de directives de SELinux\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "No es pot establir la connexió de gestió SELinux\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "No es pot iniciar la transacció SELinux\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "No es pot consultar el «seuser» per a %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "No s'ha pogut definir el «serange» per a %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "No es pot establir «sename» per a %s.\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "No es pot modificar el mapatge d'inici de sessió per a %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "No es pot generar el mapatge d'inici de sessió SELinux per a %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "No s'ha pogut establir el nom per a %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "No s'ha pogut establir l'usuari SELinux per a %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "No s'ha pogut afegir l'assignació de connexió per a  %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "No es pot iniciar el gestor SELinux\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "No es pot generar la clau SELinux de l'usuari.\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "No es pot verificar l'usuari de SELinux\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "No es pot modificar l'assignació d'usuaris de SELinux\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "No es pot afegir l'assignació de l'usuari de SELinux\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "No es pot validar la transacció SELinux\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"L'assignació d'inici de sessió per a %s no està definida, seleccionau «OK» "
-"si s'utilitzava l'assignació per defecte\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr ""
-"L'assignació d'inici de sessió per a %s està definida a la directiva de "
-"seguretat, no és possible eliminar-la\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "No es pot eliminar el mapatge d'inici de sessió per a %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: s'ha exhaurit la memòria\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: no es pot generar el fitxer %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s:  %s no és ni un directori ni un enllaç simbòlic.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: no es pot llegir l'enllaç simbòlic %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: enllaç simbòlic sospitosament llarg:  %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: no es pot crear el directori %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: no es pot canviar el propietari de %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: no es pot canviar el mode de %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: desvincular: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: no es pot eliminar el directori %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: no es pot reanomenar  %s a %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: no es pot eliminar %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: no es pot generar l'enllaç simbòlic %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: no es pot canviar els propietaris de %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: no es pot «lstat» %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: advertència, els usuaris %s no tenen el fitxer «tcb shadow».\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: emergència: el fitxer «tcb sahdow» %s no és un fitxer regular amb "
-"st_nlink=1.\n"
-"El compte queda bloquejat.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: reanomena: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: no es pot obrir el fitxer %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -291,11 +66,21 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: ha fallat el desbloqueig de %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Diverses entrades de nom «%s» a %s. Corregiu això amb «pwck» o «grpck».\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "el mètode «crypt» no és compatible amb «libcrypt»? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Desbordament d'entorn\n"
@@ -416,6 +201,19 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: no es pot obtenir un GID únic (no hi ha més GID disponibles)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "error en la configuració - no és possible analitzar el valor %s: «%s»"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "No s'ha pogut reservar espai per a la informació de configuració.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"error de configuració - element «%s» desconegut (notifiqueu-ho a "
+"l'administrador)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -484,6 +282,14 @@ msgstr "No hi ha correu."
 msgid "You have mail."
 msgstr "Teniu correu."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd no ha acabat correctament (senyal %d)\n"
+
+#, fuzzy, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: «nscd» ha sortit amb l'estat %d"
+
 msgid "no change"
 msgstr "no hi ha canvis"
 
@@ -541,6 +347,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() ha fallat, error %d\n"
 
+msgid "Password: "
+msgstr "Contrasenya: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Contrasenya de l'usuari %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "La contrasenya és incorrecta per a «%s».\n"
@@ -589,6 +402,112 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "No es pot obrir la interfície d'auditoria - cancel·lant.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "No es pot generar l'identificador de gestió SELinux\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "No és possible gestionar la directiva SELinux\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "No es pot llegir el magatzem de directives de SELinux\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "No es pot establir la connexió de gestió SELinux\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "No es pot iniciar la transacció SELinux\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "No es pot consultar el «seuser» per a %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "No s'ha pogut definir el «serange» per a %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "No es pot establir «sename» per a %s.\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "No es pot modificar el mapatge d'inici de sessió per a %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "No es pot generar el mapatge d'inici de sessió SELinux per a %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "No s'ha pogut establir el nom per a %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "No s'ha pogut establir l'usuari SELinux per a %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "No s'ha pogut afegir l'assignació de connexió per a  %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "No es pot iniciar el gestor SELinux\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "No es pot generar la clau SELinux de l'usuari.\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "No es pot verificar l'usuari de SELinux\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "No es pot modificar l'assignació d'usuaris de SELinux\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "No es pot afegir l'assignació de l'usuari de SELinux\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "No es pot validar la transacció SELinux\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"L'assignació d'inici de sessió per a %s no està definida, seleccionau «OK» "
+"si s'utilitzava l'assignació per defecte\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr ""
+"L'assignació d'inici de sessió per a %s està definida a la directiva de "
+"seguretat, no és possible eliminar-la\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "No es pot eliminar el mapatge d'inici de sessió per a %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "No es pot canviar al directori «%s»\n"
@@ -611,6 +530,87 @@ msgstr "El directori arrel «%s» no és vàlid\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "No es pot canviar el directori arrel a «%s»\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: s'ha exhaurit la memòria\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: no es pot generar el fitxer %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s:  %s no és ni un directori ni un enllaç simbòlic.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: no es pot llegir l'enllaç simbòlic %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: enllaç simbòlic sospitosament llarg:  %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: no es pot crear el directori %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: no es pot canviar el propietari de %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: no es pot canviar el mode de %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: desvincular: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: no es pot eliminar el directori %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: no es pot reanomenar  %s a %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: no es pot eliminar %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: no es pot generar l'enllaç simbòlic %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: no es pot canviar els propietaris de %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: no es pot «lstat» %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: advertència, els usuaris %s no tenen el fitxer «tcb shadow».\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: emergència: el fitxer «tcb sahdow» %s no és un fitxer regular amb "
+"st_nlink=1.\n"
+"El compte queda bloquejat.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: reanomena: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: no es pot obrir el fitxer %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

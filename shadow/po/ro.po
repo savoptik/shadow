@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2007-11-26 18:18+0100\n"
 "Last-Translator: Sorin Batariuc <sorin@bonbon.net>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
@@ -19,13 +19,165 @@ msgstr ""
 "X-Generator: KBabel 1.10.2\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Avertisment: grup necunoscut %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Avertisment: prea multe grupuri\n"
+
+msgid "Your password has expired."
+msgstr "Parola dvs a expirat."
+
+msgid "Your password is inactive."
+msgstr "Parola dvs este inactivă."
+
+msgid "Your login has expired."
+msgstr "Autentificarea dvs a expirat."
+
+msgid "  Contact the system administrator."
+msgstr "  Contactaţi administratorul de sistem."
+
+msgid "  Choose a new password."
+msgstr "  Alegeţi o parolă nouă."
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "Parola dvs va expira în %ld zile.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "Parola dvs va expira mâine."
+
+msgid "Your password will expire today."
+msgstr "Parola dvs va expira azi."
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Nu pot schimba tty %s"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: câmpuri prea lungi\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "Inundaţie de mediu\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Nu puteţi schimba $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d eşuare de la ultima autentificare.\n"
+"Ultima oară a fost %s în %s.\n"
+msgstr[1] ""
+"%d eşuări de la ultima autentificare.\n"
+"Ultima oară a fost %s în %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "eşuare în schimbarea proprietarului căsuţei poştale"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: nu pot prelua UID\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: nu pot prelua GID unic\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: nu pot prelua GID unic\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: nu pot crea %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: nu pot crea %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: nu pot prelua UID\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: nu pot prelua UID\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: nu pot prelua UID\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -40,6 +192,68 @@ msgstr ""
 "eroare de configurare - element necunoscut '%s' (anunţaţi administratorul)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: autentificare PAM eşuată\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: fişier nevalid '%s'\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Nu pot aloca spaţiu pentru informaţiile despre configurare.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Nu pot aloca spaţiu pentru informaţiile despre configurare.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: nu pot deschide fişierul\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: linia %d: eşuare chown\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: linia %d: eşuare chown\n"
+
+msgid "Too many logins.\n"
+msgstr "Prea multe autentificări.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s autentificare: "
+
+msgid "You have new mail."
+msgstr "Aveţi mesaje noi."
+
+msgid "No mail."
+msgstr "N-aveţi mesaje."
+
+msgid "You have mail."
+msgstr "Aveţi mesaje."
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -47,12 +261,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "nici o schimbare"
+
+msgid "a palindrome"
+msgstr "palindrome"
+
+msgid "case changes only"
+msgstr "doar schimbări de caz"
+
+msgid "too similar"
+msgstr "prea asemănător"
+
+msgid "rotated"
+msgstr "rotit"
+
+msgid "too short"
+msgstr "prea scurt"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Parolă incorectă: %s.  "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() a eşuat, eroare %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Parolă schimbată."
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd: parolă actualizată cu succes\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: depozitul %s nu este suportat\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: eroare %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() a eşuat, eroare %d\n"
+
 msgid "Password: "
 msgstr "Parola: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "Parola pentru %s: "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Parolă incorectă pentru %s.\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s : eşuare în abandonarea privilegiilor (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: număr telefon acasă nevalid: '%s'\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: nu pot crea directorul %s\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: nu pot crea directorul %s\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: nu pot crea directorul %s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -156,6 +473,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "Nu pot schimba directorul către'%s'\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Fără director personal, autentificare cu HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Nu pot executa %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Director rădăcină invalid '%s'\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Nu pot schimba directorul rădăcină la '%s'\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: nu mai este memorie\n"
 
@@ -232,346 +572,6 @@ msgstr "%s: redenumire: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: nu pot deschide fişierul %s\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Avertisment: grup necunoscut %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Avertisment: prea multe grupuri\n"
-
-msgid "Your password has expired."
-msgstr "Parola dvs a expirat."
-
-msgid "Your password is inactive."
-msgstr "Parola dvs este inactivă."
-
-msgid "Your login has expired."
-msgstr "Autentificarea dvs a expirat."
-
-msgid "  Contact the system administrator."
-msgstr "  Contactaţi administratorul de sistem."
-
-msgid "  Choose a new password."
-msgstr "  Alegeţi o parolă nouă."
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "Parola dvs va expira în %ld zile.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "Parola dvs va expira mâine."
-
-msgid "Your password will expire today."
-msgstr "Parola dvs va expira azi."
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Nu pot schimba tty %s"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: câmpuri prea lungi\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Inundaţie de mediu\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Nu puteţi schimba $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d eşuare de la ultima autentificare.\n"
-"Ultima oară a fost %s în %s.\n"
-msgstr[1] ""
-"%d eşuări de la ultima autentificare.\n"
-"Ultima oară a fost %s în %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "eşuare în schimbarea proprietarului căsuţei poştale"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: nu pot prelua UID\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: nu pot prelua GID unic\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: nu pot prelua GID unic\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: nu pot crea %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: nu pot crea %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: nu pot prelua UID\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: nu pot prelua UID\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: nu pot prelua UID\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: autentificare PAM eşuată\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: fişier nevalid '%s'\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Nu pot aloca spaţiu pentru informaţiile despre configurare.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Nu pot aloca spaţiu pentru informaţiile despre configurare.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: nu pot deschide fişierul\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: linia %d: eşuare chown\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: linia %d: eşuare chown\n"
-
-msgid "Too many logins.\n"
-msgstr "Prea multe autentificări.\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s autentificare: "
-
-msgid "You have new mail."
-msgstr "Aveţi mesaje noi."
-
-msgid "No mail."
-msgstr "N-aveţi mesaje."
-
-msgid "You have mail."
-msgstr "Aveţi mesaje."
-
-msgid "no change"
-msgstr "nici o schimbare"
-
-msgid "a palindrome"
-msgstr "palindrome"
-
-msgid "case changes only"
-msgstr "doar schimbări de caz"
-
-msgid "too similar"
-msgstr "prea asemănător"
-
-msgid "rotated"
-msgstr "rotit"
-
-msgid "too short"
-msgstr "prea scurt"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Parolă incorectă: %s.  "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() a eşuat, eroare %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Parolă schimbată."
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd: parolă actualizată cu succes\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: depozitul %s nu este suportat\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: eroare %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() a eşuat, eroare %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Parolă incorectă pentru %s.\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s : eşuare în abandonarea privilegiilor (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: număr telefon acasă nevalid: '%s'\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: nu pot crea directorul %s\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: nu pot crea directorul %s\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: nu pot crea directorul %s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "Nu pot schimba directorul către'%s'\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Fără director personal, autentificare cu HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "Nu pot executa %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Director rădăcină invalid '%s'\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Nu pot schimba directorul rădăcină la '%s'\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

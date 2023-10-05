@@ -145,7 +145,7 @@ am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 libsubid_la_DEPENDENCIES = $(top_builddir)/lib/libshadow.la \
-	$(top_builddir)/libmisc/libmisc.la $(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2)
 am_libsubid_la_OBJECTS = api.lo
 libsubid_la_OBJECTS = $(am_libsubid_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -247,6 +247,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -409,12 +410,10 @@ MISCLIBS = \
 
 libsubid_la_LIBADD = \
 	$(top_builddir)/lib/libshadow.la \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(MISCLIBS) -ldl
 
 AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
-	-I${top_srcdir}/libmisc \
 	-DLOCALEDIR=\"$(datadir)/locale\"
 
 all: all-am

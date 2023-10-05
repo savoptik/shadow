@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -18,229 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Gtranslator 2.91.7\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Có nhiều mục tin mang tên “%s” trong %s. Hãy sửa chữa trường hợp này, dùng "
-"pwck hoặc grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "Phương pháp mã hóa không được thư viện libcrypt hỗ trợ? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "lỗi cấu hình — không thể phân tích cú pháp của giá trị %s: “%s”"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Không thể cấp phát sức chứa cho thông tin cấu hình.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "lỗi cấu hình - không hiểu mục tin “%s” (báo cho người quản trị).\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd đã kết thúc bất thường (tín hiệu %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd đã thoát với mã là %d\n"
-
-msgid "Password: "
-msgstr "Mật khẩu: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Mật khẩu của %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Không thể mở giao diện thử, kiểm nghiệm nên hủy bỏ.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Không thể tạo bộ tiếp hợp quản lý SELinux\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "Chính sách cho SELinux chưa được quản lý\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Không thể đọc kho lưu chính sách SELinux\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Không thể thiết lập kết nối quản lý SELinux\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Không thể bắt đầu phiên giao dịch SELinux\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Không thể truy vấn seuser cho %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Không thể đặt serange cho %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Không thể đặt sename cho %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Không thể sửa đổi ánh xạ đăng nhập cho %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Không thể tạo ánh xạ đăng nhập SELinux cho %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Không thể đặt tên %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Không thể đặt người dùng SELinux cho %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Không thể thêm ánh xạ đăng nhập cho %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Không thể khởi tạo bộ quản lý SELinux\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Không thể tạo khóa người dùng SELinux\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Không thể thẩm định người dùng SELinux\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Không thể sửa đổi ánh xạ người dùng SELinux\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Không thể thêm ánh xạ người dùng SELinux\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Không thể chuyển giao giao dịch SELinux\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Ánh xạ đăng nhập cho %s chưa được định nghĩa, OK nếu ánh xạ mặc định được "
-"dùng\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr ""
-"Ánh xạ đăng nhập cho %s được định nghĩa trong chính sách, không thể xóa đi\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Không thể xóa ánh xạ đăng nhập cho %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: hết bộ nhớ\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: Không thể lấy thống kê về %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s không phải là thư mục mà cũng không phải là liên kết mềm.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: Không thể đọc liên kết mềm %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Liên kết mềm dài một cách điên rồ: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: Không thể tạo thư mục %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Không thể thay đổi người sở hữu của %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Không thể thay đổi chế độ của %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: unlink: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Không thể gỡ bỏ thư mục %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Không thể đổi tên %s thành %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Không thể gỡ bỏ %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Không thể tạo liên kết mềm %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Không thể thay đổi chủ sở hữu của %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Không thể lstat %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Cảnh báo, người dùng  %s không có tập tin shadow tcb.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Khẩn cấp: shadow tcb của %s không phải là tập tin thường với "
-"st_nlink=1.\n"
-"Tài khoản vẫn bị khóa.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: Không thể mở %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -290,11 +67,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: gặp lỗi khi mở khóa %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Có nhiều mục tin mang tên “%s” trong %s. Hãy sửa chữa trường hợp này, dùng "
+"pwck hoặc grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "Phương pháp mã hóa không được thư viện libcrypt hỗ trợ? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Tràn môi trường\n"
@@ -415,6 +203,17 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: Không thể lấy UID duy nhất (không còn có sẵn UID thêm nữa)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "lỗi cấu hình — không thể phân tích cú pháp của giá trị %s: “%s”"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Không thể cấp phát sức chứa cho thông tin cấu hình.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "lỗi cấu hình - không hiểu mục tin “%s” (báo cho người quản trị).\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -481,6 +280,14 @@ msgstr "Không có thư."
 msgid "You have mail."
 msgstr "Bạn có thư."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd đã kết thúc bất thường (tín hiệu %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd đã thoát với mã là %d\n"
+
 msgid "no change"
 msgstr "chưa thay đổi gì"
 
@@ -538,6 +345,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() (mật khẩu: bắt đầu pam) đã thất bại với lỗi %d\n"
 
+msgid "Password: "
+msgstr "Mật khẩu: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Mật khẩu của %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Mật khẩu không đúng cho %s .\n"
@@ -587,6 +401,111 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Không thể mở giao diện thử, kiểm nghiệm nên hủy bỏ.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Không thể tạo bộ tiếp hợp quản lý SELinux\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "Chính sách cho SELinux chưa được quản lý\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Không thể đọc kho lưu chính sách SELinux\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Không thể thiết lập kết nối quản lý SELinux\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Không thể bắt đầu phiên giao dịch SELinux\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Không thể truy vấn seuser cho %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Không thể đặt serange cho %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Không thể đặt sename cho %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Không thể sửa đổi ánh xạ đăng nhập cho %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Không thể tạo ánh xạ đăng nhập SELinux cho %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Không thể đặt tên %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Không thể đặt người dùng SELinux cho %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Không thể thêm ánh xạ đăng nhập cho %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Không thể khởi tạo bộ quản lý SELinux\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Không thể tạo khóa người dùng SELinux\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Không thể thẩm định người dùng SELinux\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Không thể sửa đổi ánh xạ người dùng SELinux\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Không thể thêm ánh xạ người dùng SELinux\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Không thể chuyển giao giao dịch SELinux\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Ánh xạ đăng nhập cho %s chưa được định nghĩa, OK nếu ánh xạ mặc định được "
+"dùng\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr ""
+"Ánh xạ đăng nhập cho %s được định nghĩa trong chính sách, không thể xóa đi\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Không thể xóa ánh xạ đăng nhập cho %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Không thể cd (chuyển đổi thư mục) sang “%s”.\n"
@@ -609,6 +528,87 @@ msgstr "Thư mục gốc không hợp lệ “%s”\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Không thể thay đổi thư mục gốc thành “%s”\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: hết bộ nhớ\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: Không thể lấy thống kê về %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s không phải là thư mục mà cũng không phải là liên kết mềm.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: Không thể đọc liên kết mềm %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: Liên kết mềm dài một cách điên rồ: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: Không thể tạo thư mục %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Không thể thay đổi người sở hữu của %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Không thể thay đổi chế độ của %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: unlink: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Không thể gỡ bỏ thư mục %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Không thể đổi tên %s thành %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Không thể gỡ bỏ %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Không thể tạo liên kết mềm %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Không thể thay đổi chủ sở hữu của %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Không thể lstat %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Cảnh báo, người dùng  %s không có tập tin shadow tcb.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Khẩn cấp: shadow tcb của %s không phải là tập tin thường với "
+"st_nlink=1.\n"
+"Tài khoản vẫn bị khóa.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: Không thể mở %s: %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: user '%s' does not exist in %s\n"

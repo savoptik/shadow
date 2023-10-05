@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.15\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2022-07-27 23:04+0800\n"
 "Last-Translator: Celeste Liu <coelacanthus@outlook.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -23,13 +23,164 @@ msgstr ""
 "X-Generator: Poedit 2.0.8\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "警告：未知组 %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "警告：用户组过多\n"
+
+msgid "Your password has expired."
+msgstr "您的密码已过期。"
+
+msgid "Your password is inactive."
+msgstr "您的密码已失效。"
+
+msgid "Your login has expired."
+msgstr "您的帐户已过期。"
+
+msgid "  Contact the system administrator."
+msgstr "  请与系统管理员联系。"
+
+msgid "  Choose a new password."
+msgstr "  请选择一个新密码。"
+
+msgid "You must change your password."
+msgstr "您必须更改自己的密码。"
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "您的密码将在 %ld 天内过期。\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "您的密码将在明天过期。"
+
+msgid "Your password will expire today."
+msgstr "您的密码今天过期。"
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr "无法打开审计接口 - 退出。\n"
+
+#, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "不能改变 tty 标准输入的属主或模式：%s"
+
+#, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s：解锁 %s 失败\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
 msgstr "多个名为“%s”的条目同时存在于 %s 中，请使用 pwck 或 grpck 来修复。\n"
 
 #, c-format
+msgid "%s: "
+msgstr "%s："
+
+msgid ": "
+msgstr "："
+
+#, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr "libcrypt 不支持此加密方法？(%s)\n"
+
+msgid "Environment overflow\n"
+msgstr "环境溢出\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "您不应该改变 $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"自上一次登录以来已有 %d 次登录失败。\n"
+"最后一次是 %s 在 %s 上。\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr "%s：无效的配置：SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr "%s：无效的配置：GID_MIN (%lu), GID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "%s：申请内存失败：%s\n"
+
+#, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s：无法获取唯一的系统 GID (%s)。抑制额外的消息。\n"
+
+#, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s：无法获取唯一的 GID (%s)。抑制额外的消息。\n"
+
+#, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s：无法获取唯一的 GID (没有更多可用的 GID 了)\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+"%s：无效的配置：SYS_GID_MIN (%lu), iSUB_GID_MAX (%lu), SUB_GID_COUNT (%lu)\n"
+
+#, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s：不能获得唯一的从属GID范围\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+"%s：无效的配置：SYS_UID_MIN (%lu), SUB_UID_MAX (%lu), SUB_UID_COUNT (%lu)\n"
+
+#, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s：不能获得唯一的从属GID范围\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr "%s：无效的配置：SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr "%s：无效的配置：UID_MIN (%lu), UID_MAX (%lu)\n"
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s：无法获取唯一的系统 UID (%s)。抑制额外的消息。\n"
+
+#, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s：无法获取唯一的UID (%s)。抑制额外的消息。\n"
+
+#, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s：无法获取唯一的 UID (没有更多可用的 UID 了)\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -43,6 +194,67 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "配置错误 - 未知项目“%s”(请通知管理员)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr "%s：没有足够的参数来形成%u映射\n"
+
+#, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s：内存分配失败\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr "%s：检测到subuid溢出。\n"
+
+#, c-format
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s：指定的映射文件“%s无效”\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr "%s：无法执行prctl(PR_SET_KEEPCAPS)\n"
+
+#, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "%s：不能seteuid为%d\n"
+
+#, c-format
+msgid "%s: Could not set caps\n"
+msgstr "%s：无法设置上限\n"
+
+#, fuzzy, c-format
+#| msgid "%s: snprintf failed!\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s：snprintf 失败\n"
+
+#, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s：打开%s失败：%s\n"
+
+#, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s：写入%s失败：%s\n"
+
+msgid "Too many logins.\n"
+msgstr "当前登录数量过多。\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s 用户名："
+
+msgid "You have new mail."
+msgstr "您有新信件。"
+
+msgid "No mail."
+msgstr "无信件。"
+
+msgid "You have mail."
+msgstr "您有信件。"
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr "%s：nscd 异常结束 (信号 %d)\n"
 
@@ -50,12 +262,116 @@ msgstr "%s：nscd 异常结束 (信号 %d)\n"
 msgid "%s: nscd exited with status %d\n"
 msgstr "%s：nscd 以状态 %d 退出\n"
 
+msgid "no change"
+msgstr "没有改变"
+
+msgid "a palindrome"
+msgstr "一个回文词"
+
+msgid "case changes only"
+msgstr "仅有大小写改动"
+
+msgid "too similar"
+msgstr "太相似"
+
+msgid "rotated"
+msgstr "已轮转"
+
+msgid "too short"
+msgstr "太短"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "错误的密码：%s。 "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd：pam_start() 失败，错误 %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd：%s\n"
+
+msgid "passwd: password unchanged\n"
+msgstr "passwd：密码未更改\n"
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd：已成功更新密码\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s：不支持会话类型%d。\n"
+
+#, c-format
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s：(user %s) pam_start 失败 %d\n"
+
+#, c-format
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr ""
+"%s：(user %s) pam_chauthtok() 失败, 错误:\n"
+"%s\n"
+
 msgid "Password: "
 msgstr "密码："
 
 #, c-format
 msgid "%s's Password: "
 msgstr "%s 的密码："
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "%s 的密码不正确。\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr "%s：有多个 --root 选项\n"
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr "%s：选项“%s”需要一个选项\n"
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s：放弃特权时失败 (%s)\n"
+
+#, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s：无效的 chroot 路径“%s”，仅支持绝对路径。\n"
+
+#, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s：无法访问 chroot 目录 %s：%s\n"
+
+#, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s：无法 chroot 到目录 %s：%s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot chdir to chroot directory %s: %s\n"
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s：无法进入 chroot 目录 %s：%s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+"无效的 ENCRYPT_METHOD 值：“%s”。\n"
+"默认为 DES。\n"
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 msgid "Cannot open audit interface.\n"
 msgstr "无法打开审计接口。\n"
@@ -158,6 +474,29 @@ msgid "Could not delete login mapping for %s"
 msgstr "无法删除 %s 的登录映射"
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "无法 cd 进入“%s”\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "没有目录，将以 HOME=/ 登录"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "无法执行 %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "无效的根目录“%s”\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "无法将根目录改变为“%s”\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s：内存溢出\n"
 
@@ -236,345 +575,6 @@ msgstr "%s：创建目录：%s：%s\n"
 #, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s：无法打开 %s：%s\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "警告：未知组 %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "警告：用户组过多\n"
-
-msgid "Your password has expired."
-msgstr "您的密码已过期。"
-
-msgid "Your password is inactive."
-msgstr "您的密码已失效。"
-
-msgid "Your login has expired."
-msgstr "您的帐户已过期。"
-
-msgid "  Contact the system administrator."
-msgstr "  请与系统管理员联系。"
-
-msgid "  Choose a new password."
-msgstr "  请选择一个新密码。"
-
-msgid "You must change your password."
-msgstr "您必须更改自己的密码。"
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "您的密码将在 %ld 天内过期。\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "您的密码将在明天过期。"
-
-msgid "Your password will expire today."
-msgstr "您的密码今天过期。"
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr "无法打开审计接口 - 退出。\n"
-
-#, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "不能改变 tty 标准输入的属主或模式：%s"
-
-#, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s：解锁 %s 失败\n"
-
-#, c-format
-msgid "%s: "
-msgstr "%s："
-
-msgid ": "
-msgstr "："
-
-msgid "Environment overflow\n"
-msgstr "环境溢出\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "您不应该改变 $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"自上一次登录以来已有 %d 次登录失败。\n"
-"最后一次是 %s 在 %s 上。\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr "%s：无效的配置：SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%lu)\n"
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr "%s：无效的配置：GID_MIN (%lu), GID_MAX (%lu)\n"
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "%s：申请内存失败：%s\n"
-
-#, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s：无法获取唯一的系统 GID (%s)。抑制额外的消息。\n"
-
-#, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s：无法获取唯一的 GID (%s)。抑制额外的消息。\n"
-
-#, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s：无法获取唯一的 GID (没有更多可用的 GID 了)\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-"%s：无效的配置：SYS_GID_MIN (%lu), iSUB_GID_MAX (%lu), SUB_GID_COUNT (%lu)\n"
-
-#, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s：不能获得唯一的从属GID范围\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-"%s：无效的配置：SYS_UID_MIN (%lu), SUB_UID_MAX (%lu), SUB_UID_COUNT (%lu)\n"
-
-#, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s：不能获得唯一的从属GID范围\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr "%s：无效的配置：SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%lu)\n"
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr "%s：无效的配置：UID_MIN (%lu), UID_MAX (%lu)\n"
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s：无法获取唯一的系统 UID (%s)。抑制额外的消息。\n"
-
-#, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s：无法获取唯一的UID (%s)。抑制额外的消息。\n"
-
-#, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s：无法获取唯一的 UID (没有更多可用的 UID 了)\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr "%s：没有足够的参数来形成%u映射\n"
-
-#, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s：内存分配失败\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr "%s：检测到subuid溢出。\n"
-
-#, c-format
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s：指定的映射文件“%s无效”\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr "%s：无法执行prctl(PR_SET_KEEPCAPS)\n"
-
-#, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "%s：不能seteuid为%d\n"
-
-#, c-format
-msgid "%s: Could not set caps\n"
-msgstr "%s：无法设置上限\n"
-
-#, fuzzy, c-format
-#| msgid "%s: snprintf failed!\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s：snprintf 失败\n"
-
-#, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s：打开%s失败：%s\n"
-
-#, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s：写入%s失败：%s\n"
-
-msgid "Too many logins.\n"
-msgstr "当前登录数量过多。\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s 用户名："
-
-msgid "You have new mail."
-msgstr "您有新信件。"
-
-msgid "No mail."
-msgstr "无信件。"
-
-msgid "You have mail."
-msgstr "您有信件。"
-
-msgid "no change"
-msgstr "没有改变"
-
-msgid "a palindrome"
-msgstr "一个回文词"
-
-msgid "case changes only"
-msgstr "仅有大小写改动"
-
-msgid "too similar"
-msgstr "太相似"
-
-msgid "rotated"
-msgstr "已轮转"
-
-msgid "too short"
-msgstr "太短"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "错误的密码：%s。 "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd：pam_start() 失败，错误 %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd：%s\n"
-
-msgid "passwd: password unchanged\n"
-msgstr "passwd：密码未更改\n"
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd：已成功更新密码\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s：不支持会话类型%d。\n"
-
-#, c-format
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s：(user %s) pam_start 失败 %d\n"
-
-#, c-format
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr ""
-"%s：(user %s) pam_chauthtok() 失败, 错误:\n"
-"%s\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "%s 的密码不正确。\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr "%s：有多个 --root 选项\n"
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr "%s：选项“%s”需要一个选项\n"
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s：放弃特权时失败 (%s)\n"
-
-#, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s：无效的 chroot 路径“%s”，仅支持绝对路径。\n"
-
-#, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s：无法访问 chroot 目录 %s：%s\n"
-
-#, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s：无法 chroot 到目录 %s：%s\n"
-
-#, fuzzy, c-format
-#| msgid "%s: cannot chdir to chroot directory %s: %s\n"
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s：无法进入 chroot 目录 %s：%s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-"无效的 ENCRYPT_METHOD 值：“%s”。\n"
-"默认为 DES。\n"
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "无法 cd 进入“%s”\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "没有目录，将以 HOME=/ 登录"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "无法执行 %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "无效的根目录“%s”\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "无法将根目录改变为“%s”\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

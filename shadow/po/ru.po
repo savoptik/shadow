@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.5.1-1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2017-03-05 11:14+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -21,231 +21,6 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Существует сразу несколько записей с именем «%s» в %s. Исправьте это с "
-"помощью pwck или grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "алгоритм шифрования не поддерживается libcrypt? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "ошибка настройки: не удалось разобрать значение %s: «%s»"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Не удалось выделить память для загрузки настроек.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "ошибка настройки: неизвестный элемент «%s» (сообщите администратору)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd завершился с ошибкой (по сигналу %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd завершился с кодом выхода %d\n"
-
-msgid "Password: "
-msgstr "Пароль: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Пароль пользователя %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr ""
-"Не удалось открыть интерфейс протоколирования (audit) — прекращение работы.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Невозможно создать управляющий описатель SELinux\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "Политика SELinux не управляема\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Невозможно прочитать хранилище политики SELinux\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Невозможно установить управляющее подключение SELinux\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Невозможно начать транзакцию SELinux\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Не удалось запросить seuser для %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Не удалось назначить serange для %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Не удалось назначить sename для %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Не удалось изменить сопоставление входа для %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Невозможно создать сопоставление входа SELinux для %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Невозможно задать имя для %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Невозможно задать пользователя SELinux для %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Невозможно добавить сопоставление входа для %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Невозможно инициализировать управление SELinux\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Невозможно создать ключ пользователя SELinux\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Невозможно проверить пользователя SELinux\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Невозможно изменить пользовательское сопоставление SELinux\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Невозможно добавить пользовательское сопоставление SELinux\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Невозможно зафиксировать транзакцию SELinux\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Сопоставление входа для %s не определено; нормально, если использовалось "
-"сопоставление по умолчанию\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr ""
-"Сопоставление входа для %s определено в политике и не может быть удалено\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Невозможно удалить сопоставление входа для %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: нехватка памяти\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: не удалось выполнить функцию stat для %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s не является каталогом или символьной ссылкой\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: не удалось прочитать символьную ссылку %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: вероятно, слишком длинная символьная ссылка: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: не удалось создать каталог %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: не удалось изменить владельца %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: не удалось изменить права доступа %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: unlink: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: не удалось удалить каталог %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: не удалось переименовать каталог %s в %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: не удалось удалить %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: не удалось создать символьную ссылку %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: не удалось изменить владельцев %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: не удалось выполнить функцию lstat для %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr ""
-"%s: предупреждение: у пользователя %s отсутствует файл shadow в структуре "
-"tcb.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: чрезвычайная ситуация: файл shadow у %s в структуре tcb не является\n"
-"обычным файлом с st_nlink=1. Учётная запись остаётся заблокированной.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: не удалось открыть %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -295,11 +70,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: не удалось разблокировать %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Существует сразу несколько записей с именем «%s» в %s. Исправьте это с "
+"помощью pwck или grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "алгоритм шифрования не поддерживается libcrypt? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Слишком большое количество переменных окружения\n"
@@ -424,6 +210,17 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: не удалось получить уникальный UID (кончились свободные UID-ы)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "ошибка настройки: не удалось разобрать значение %s: «%s»"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Не удалось выделить память для загрузки настроек.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "ошибка настройки: неизвестный элемент «%s» (сообщите администратору)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -490,6 +287,14 @@ msgstr "Для вас нет почтовых сообщений."
 msgid "You have mail."
 msgstr "Для вас есть почтовые сообщения."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd завершился с ошибкой (по сигналу %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd завершился с кодом выхода %d\n"
+
 msgid "no change"
 msgstr "изменений не внесено"
 
@@ -548,6 +353,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: не удалось выполнить pam_start(), ошибка %d\n"
 
+msgid "Password: "
+msgstr "Пароль: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Пароль пользователя %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Неверный пароль для %s.\n"
@@ -597,6 +409,112 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr ""
+"Не удалось открыть интерфейс протоколирования (audit) — прекращение работы.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Невозможно создать управляющий описатель SELinux\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "Политика SELinux не управляема\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Невозможно прочитать хранилище политики SELinux\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Невозможно установить управляющее подключение SELinux\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Невозможно начать транзакцию SELinux\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Не удалось запросить seuser для %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Не удалось назначить serange для %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Не удалось назначить sename для %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Не удалось изменить сопоставление входа для %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Невозможно создать сопоставление входа SELinux для %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Невозможно задать имя для %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Невозможно задать пользователя SELinux для %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Невозможно добавить сопоставление входа для %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Невозможно инициализировать управление SELinux\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Невозможно создать ключ пользователя SELinux\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Невозможно проверить пользователя SELinux\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Невозможно изменить пользовательское сопоставление SELinux\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Невозможно добавить пользовательское сопоставление SELinux\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Невозможно зафиксировать транзакцию SELinux\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Сопоставление входа для %s не определено; нормально, если использовалось "
+"сопоставление по умолчанию\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr ""
+"Сопоставление входа для %s определено в политике и не может быть удалено\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Невозможно удалить сопоставление входа для %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Невозможно перейти в каталог «%s»\n"
@@ -620,6 +538,88 @@ msgstr "Неверный корневой каталог «%s»\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Не удалось изменить корневой каталог на «%s»\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: нехватка памяти\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: не удалось выполнить функцию stat для %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s не является каталогом или символьной ссылкой\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: не удалось прочитать символьную ссылку %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: вероятно, слишком длинная символьная ссылка: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: не удалось создать каталог %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: не удалось изменить владельца %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: не удалось изменить права доступа %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: unlink: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: не удалось удалить каталог %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: не удалось переименовать каталог %s в %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: не удалось удалить %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: не удалось создать символьную ссылку %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: не удалось изменить владельцев %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: не удалось выполнить функцию lstat для %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr ""
+"%s: предупреждение: у пользователя %s отсутствует файл shadow в структуре "
+"tcb.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: чрезвычайная ситуация: файл shadow у %s в структуре tcb не является\n"
+"обычным файлом с st_nlink=1. Учётная запись остаётся заблокированной.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: не удалось открыть %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

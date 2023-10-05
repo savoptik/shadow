@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2004-06-03 21:41+0200\n"
 "Last-Translator: Håvard Korsvoll <korsvoll@skulelinux.no>\n"
 "Language-Team: Norwegian (Nynorsk) <i18n-nn@lister.ping.uio.no>\n"
@@ -18,13 +18,161 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Åtvaring: ukjent gruppe %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Åtvaring: for mange grupper\n"
+
+msgid "Your password has expired."
+msgstr "Passordet ditt er utgått."
+
+msgid "Your password is inactive."
+msgstr "Passordet ditt er inaktivt."
+
+msgid "Your login has expired."
+msgstr "Innlogginga di er utgått."
+
+msgid "  Contact the system administrator."
+msgstr "  Ta kontakt med systemadministrator."
+
+msgid "  Choose a new password."
+msgstr "  Lag eit nytt passord."
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "Passordet ditt vil utgå om %ld dagar.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "Passordet ditt vil utgå i morgon."
+
+msgid "Your password will expire today."
+msgstr "Passordet ditt vil utgå i dag."
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Klarer ikkje skifta tty %s"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: felta er for lange\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "passwd: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "Miljø overflyt\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Du klarer ikkje endra $%s\n"
+
+#, fuzzy, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] "%d %s sidan førre innlogging. Førre var %s på %s.\n"
+msgstr[1] "%d %s sidan førre innlogging. Førre var %s på %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "klarte ikke å endra eigar av mailbox"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: kan ikkje oppretta %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: kan ikkje oppretta %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: klarer ikkje få unikt gid\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -38,6 +186,67 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "oppsettsfeil - ukjent element «%s» (gje melding til administrator)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: PAM-autentisering feila\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: ugyldig felt «%s»\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Klarte ikkje finna plass for oppsettsinformasjon.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Klarte ikkje finna plass for oppsettsinformasjon.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: klarer ikkje opna fil\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: linje %d: chown feila\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: linje %d: chown feila\n"
+
+msgid "Too many logins.\n"
+msgstr "For mange innloggingar.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s brukarnamn: "
+
+msgid "You have new mail."
+msgstr "Du har ny e-post."
+
+msgid "No mail."
+msgstr "Ingen e-post."
+
+msgid "You have mail."
+msgstr "Du har e-post."
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -45,12 +254,116 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+#, fuzzy
+msgid "no change"
+msgstr "%s: ingen endringar\n"
+
+msgid "a palindrome"
+msgstr ""
+
+msgid "case changes only"
+msgstr ""
+
+msgid "too similar"
+msgstr ""
+
+msgid "rotated"
+msgstr ""
+
+msgid "too short"
+msgstr ""
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Feil passord: %s.  "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() feila, feil %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Passord er endra."
+
+msgid "passwd: password updated successfully\n"
+msgstr ""
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: arkiv %s er ikkje støtta\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: feil %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() feila, feil %d\n"
+
 msgid "Password: "
 msgstr "Passord: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "%s sitt passord: "
+
+#, fuzzy, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Feil passord for «%s»\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: ugyldig telefonnummer, heime: «%s»\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: kan ikkje oppretta mappa %s\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: kan ikkje oppretta mappa %s\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: kan ikkje oppretta mappa %s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -153,6 +466,29 @@ msgstr ""
 msgid "Could not delete login mapping for %s"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "Klarer ikkje cd til «%s»\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Inga mappe, loggar inn med HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Klarer ikkje køyra %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Ugyldig rotmappe «%s»\n"
+
+#, fuzzy, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Klarer ikkje endra rotmappe til «%s»\n"
+
 #, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: tomt for minne\n"
@@ -230,342 +566,6 @@ msgstr "%s: gje nytt namn: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: klarer ikkje opna fila %s\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Åtvaring: ukjent gruppe %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Åtvaring: for mange grupper\n"
-
-msgid "Your password has expired."
-msgstr "Passordet ditt er utgått."
-
-msgid "Your password is inactive."
-msgstr "Passordet ditt er inaktivt."
-
-msgid "Your login has expired."
-msgstr "Innlogginga di er utgått."
-
-msgid "  Contact the system administrator."
-msgstr "  Ta kontakt med systemadministrator."
-
-msgid "  Choose a new password."
-msgstr "  Lag eit nytt passord."
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "Passordet ditt vil utgå om %ld dagar.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "Passordet ditt vil utgå i morgon."
-
-msgid "Your password will expire today."
-msgstr "Passordet ditt vil utgå i dag."
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Klarer ikkje skifta tty %s"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: felta er for lange\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "passwd: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Miljø overflyt\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Du klarer ikkje endra $%s\n"
-
-#, fuzzy, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] "%d %s sidan førre innlogging. Førre var %s på %s.\n"
-msgstr[1] "%d %s sidan førre innlogging. Førre var %s på %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "klarte ikke å endra eigar av mailbox"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: kan ikkje oppretta %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: kan ikkje oppretta %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: klarer ikkje få unikt gid\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: PAM-autentisering feila\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: ugyldig felt «%s»\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Klarte ikkje finna plass for oppsettsinformasjon.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Klarte ikkje finna plass for oppsettsinformasjon.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: klarer ikkje opna fil\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: linje %d: chown feila\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: linje %d: chown feila\n"
-
-msgid "Too many logins.\n"
-msgstr "For mange innloggingar.\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s brukarnamn: "
-
-msgid "You have new mail."
-msgstr "Du har ny e-post."
-
-msgid "No mail."
-msgstr "Ingen e-post."
-
-msgid "You have mail."
-msgstr "Du har e-post."
-
-#, fuzzy
-msgid "no change"
-msgstr "%s: ingen endringar\n"
-
-msgid "a palindrome"
-msgstr ""
-
-msgid "case changes only"
-msgstr ""
-
-msgid "too similar"
-msgstr ""
-
-msgid "rotated"
-msgstr ""
-
-msgid "too short"
-msgstr ""
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Feil passord: %s.  "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() feila, feil %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Passord er endra."
-
-msgid "passwd: password updated successfully\n"
-msgstr ""
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: arkiv %s er ikkje støtta\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: feil %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() feila, feil %d\n"
-
-#, fuzzy, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Feil passord for «%s»\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: ugyldig telefonnummer, heime: «%s»\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: kan ikkje oppretta mappa %s\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: kan ikkje oppretta mappa %s\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: kan ikkje oppretta mappa %s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "Klarer ikkje cd til «%s»\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Inga mappe, loggar inn med HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "Klarer ikkje køyra %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Ugyldig rotmappe «%s»\n"
-
-#, fuzzy, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Klarer ikkje endra rotmappe til «%s»\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.15\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2007-11-25 20:58+0100\n"
 "Last-Translator: Parlin Imanuel Toh <parlin_i@yahoo.com>\n"
 "Language-Team: Debian Indonesia <debid@yahoogroups.com>\n"
@@ -16,13 +16,162 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Peringatan: grup tidak dikenal %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Peringatan: terlalu banyak grup\n"
+
+msgid "Your password has expired."
+msgstr "Kata sandi anda telah kadaluarsa."
+
+msgid "Your password is inactive."
+msgstr "Kata sandi anda tidak aktif."
+
+msgid "Your login has expired."
+msgstr "Login anda telah kadaluarsa."
+
+msgid "  Contact the system administrator."
+msgstr "  Hubungi administrator sistem."
+
+msgid "  Choose a new password."
+msgstr "  Pilih sebuah kata sandi baru."
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "Kata sandi anda akan kadaluarsa dalam %ld hari.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "Kata sandi anda akan kadaluarsa besok."
+
+msgid "Your password will expire today."
+msgstr "Kata sandi anda akan kadaluarsa hari ini."
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Tidak dapat mengubah tts %s"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: ruas terlalu panjang\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "Lingkungan overflow\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Anda tidak boleh mengubah $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d sejak login terakhir.\n"
+"Terakhir %s pada %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "gagal mengganti pemilik kotak-surat"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: tak mampu mendapatkan GID yang unik\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: tak mampu mendapatkan GID yang unik\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: tak dapat membuat %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: tak dapat membuat %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -37,6 +186,67 @@ msgstr ""
 "Kesalahan konfigurasi - item tidak dikenal '%s' (beritahu administrator)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: Otentikasi PAM gagal\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: ruas `%s' tak sah\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Tidak dapat mengalokasikan ruang untuk informasi konfigurasi.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Tidak dapat mengalokasikan ruang untuk informasi konfigurasi.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: tidak dapat membuka berkas\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: baris %d: chown gagal\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: baris %d: chown gagal\n"
+
+msgid "Too many logins.\n"
+msgstr "Terlalu banyak login.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s login: "
+
+msgid "You have new mail."
+msgstr "Anda memiliki surat baru."
+
+msgid "No mail."
+msgstr "Tidak ada surat."
+
+msgid "You have mail."
+msgstr "Anda memiliki surat."
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -44,12 +254,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "tak ada perubahan"
+
+msgid "a palindrome"
+msgstr "sebuah palindrom"
+
+msgid "case changes only"
+msgstr "hanya perubahan huruf besar/kecil"
+
+msgid "too similar"
+msgstr "terlalu mirip"
+
+msgid "rotated"
+msgstr "pernah dipakai"
+
+msgid "too short"
+msgstr "terlalu pendek"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Kata sandi buruk: %s."
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() gagal, kesalahan nomor %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Password telah diubah."
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd: kata sandi diperbaharui dengan sukses\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: repositori %s tidak didukung\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: kesalahan %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() gagal, kesalahan nomor %d\n"
+
 msgid "Password: "
 msgstr "Kata sandi:"
 
 #, c-format
 msgid "%s's Password: "
 msgstr "Kata sandi dari %s:"
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Kata sandi tidak tepat untuk %s\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s: gagal membuang hak (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: telepon rumah tidak sah: \"%s\"\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: tak dapat membuat direktori %s\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: tak dapat membuat direktori %s\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: tak dapat membuat direktori %s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -152,6 +465,29 @@ msgstr ""
 msgid "Could not delete login mapping for %s"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "Tidak dapat cd ke \"%s\"\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Tidak terdapat direktori, masuk dengan HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Tidak dapat menjalankan %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Direktori root tidak sah \"%s\"\n"
+
+#, fuzzy, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Tidak dapat mengubah direktori root ke \"%s\"\n"
+
 #, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: kehabisan memori\n"
@@ -229,342 +565,6 @@ msgstr "%s: ubah nama: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: tidak dapat membuka berkas %s\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Peringatan: grup tidak dikenal %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Peringatan: terlalu banyak grup\n"
-
-msgid "Your password has expired."
-msgstr "Kata sandi anda telah kadaluarsa."
-
-msgid "Your password is inactive."
-msgstr "Kata sandi anda tidak aktif."
-
-msgid "Your login has expired."
-msgstr "Login anda telah kadaluarsa."
-
-msgid "  Contact the system administrator."
-msgstr "  Hubungi administrator sistem."
-
-msgid "  Choose a new password."
-msgstr "  Pilih sebuah kata sandi baru."
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "Kata sandi anda akan kadaluarsa dalam %ld hari.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "Kata sandi anda akan kadaluarsa besok."
-
-msgid "Your password will expire today."
-msgstr "Kata sandi anda akan kadaluarsa hari ini."
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Tidak dapat mengubah tts %s"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: ruas terlalu panjang\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Lingkungan overflow\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Anda tidak boleh mengubah $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d sejak login terakhir.\n"
-"Terakhir %s pada %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "gagal mengganti pemilik kotak-surat"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: tak mampu mendapatkan GID yang unik\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: tak mampu mendapatkan GID yang unik\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: tak dapat membuat %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: tak dapat membuat %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: tidak bisa mendapatkan UID yang unik\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: Otentikasi PAM gagal\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: ruas `%s' tak sah\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Tidak dapat mengalokasikan ruang untuk informasi konfigurasi.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Tidak dapat mengalokasikan ruang untuk informasi konfigurasi.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: tidak dapat membuka berkas\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: baris %d: chown gagal\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: baris %d: chown gagal\n"
-
-msgid "Too many logins.\n"
-msgstr "Terlalu banyak login.\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s login: "
-
-msgid "You have new mail."
-msgstr "Anda memiliki surat baru."
-
-msgid "No mail."
-msgstr "Tidak ada surat."
-
-msgid "You have mail."
-msgstr "Anda memiliki surat."
-
-msgid "no change"
-msgstr "tak ada perubahan"
-
-msgid "a palindrome"
-msgstr "sebuah palindrom"
-
-msgid "case changes only"
-msgstr "hanya perubahan huruf besar/kecil"
-
-msgid "too similar"
-msgstr "terlalu mirip"
-
-msgid "rotated"
-msgstr "pernah dipakai"
-
-msgid "too short"
-msgstr "terlalu pendek"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Kata sandi buruk: %s."
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() gagal, kesalahan nomor %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Password telah diubah."
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd: kata sandi diperbaharui dengan sukses\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: repositori %s tidak didukung\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: kesalahan %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() gagal, kesalahan nomor %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Kata sandi tidak tepat untuk %s\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s: gagal membuang hak (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: telepon rumah tidak sah: \"%s\"\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: tak dapat membuat direktori %s\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: tak dapat membuat direktori %s\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: tak dapat membuat direktori %s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "Tidak dapat cd ke \"%s\"\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Tidak terdapat direktori, masuk dengan HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "Tidak dapat menjalankan %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Direktori root tidak sah \"%s\"\n"
-
-#, fuzzy, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Tidak dapat mengubah direktori root ke \"%s\"\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow-utils\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2022-08-22 02:33+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <(nothing)>\n"
@@ -17,226 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.1.1\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr "%s ბევრჯერაა ნახსენები %s-ში. ჩაასწორეთ pwck-ით ან grpck-ით.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "crypt-ის მეთოდი არაა მხარდაჭერილი libcrypt-ის მიერ? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr ""
-"კონფიგურაციის შეცდომა - %s-ის მნიშვნელობის დამუშავება შეუძლებელია: '%s'"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "კონფიგურაციის ინფორმაციისთვის სივრცის გამოყოფა შეუძლებელია.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-"კონფიგურაციის შეცდომა - უცნობი ჩანაწერი '%s' (შეატყობინეთ ადმინისტრატორს)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd ნორმალურად არ დასრულებულა (სიგნალი %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd გამოვიდა სტატუსით %d\n"
-
-msgid "Password: "
-msgstr "პაროლი: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "%s-ის პაროლი: "
-
-msgid "Cannot open audit interface.\n"
-msgstr "აუდიტის ინტერფეისის გახსნის შეცდომა.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr "%s: SELinux-ის პროცესის წინა კონტექსტის მიღების შეცდომა: %s\n"
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "SELinux-ის მართვის დამმუშავებლის შექმნა შეუძლებელია\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "SELinux-ის პოლიტიკა მართული არაა\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "SELinux-ის პოლიტიკის საცავის წაკითხვა შეუძლებელია\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "SELinux-ის მართვის შეერთების შექმნა შეუძლებელია\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "SELinux-ის ტრანზაქციის დაწყების შეცდომა\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "%s-ის გამოთხოვა seuser-დან შეუძლებელია\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "%s-სთვის serange-ის დაყენება შეუძლებელია\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "%s-სთვის sename-ის დაყენება შეუძლებელია\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "მომხმარებლის სახელის ბმების ჩასწორება %s-სთვის შეუძლებელია\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "%s-ზე SELinux-ის მომხმარებლის სახელის ბმის შექმნა შეუძლებელია\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "%s-სთვის სახელის დაყენების შეცდომა\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "%s-სთვის SELinux-ის მომხმარებლის დაყენების შეცდომა\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "%s-სთვის მომხმარებლის სახელის ბმის შექმნის შეცდომა\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "SELinux-ის მართვის ინიციალიზაციის შეცდომა\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "SELinux-ის მომხმარებლის გასაღების შექმნის შეცდომა\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "SELinux-ის მომხმარებლის შემოწმების შეცდომა\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "SELinux-ის მოხმარებლების ბმების შეცვლს შეცდომა\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "SELinux-ის მომხმარებლის ბმის დამატების შეცდომა\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "SELinux-ის ტრანზაქციის გადაცემის შეცდომა\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"მომხმარებლის სახელის ბმა %s-თვის განსაზღვრული არაა. OK, თუ ნაგულისხმები ბმა "
-"იქნა გამოყენებული\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "მომხმარებლის სახელი %s პოლიტიკაშია გაწერილი. მისი წაშლა შეუძლებელია\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "მომხმარებლის სახელის ბმის წაშლა %s-სთვის შეუძლებელია"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: არასაკმარისი მეხსიერება\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: %s-ის აღმოჩენის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s არც საქაღალდეა, არც სიმბმული.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: სიმბმულის წაკითხვის შეცდომა %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: საეჭვოდ გრძელი სიმბმული %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s საქაღალდის (%s) შექმნის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: %s-ის მფლობელის შეცვლის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: %s-ის რეჟიმის შეცვლის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: წაშლა: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: საქაღალდის (%s) წაშლის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: %s-ის სახელის %s-მდე გადარქმევა შეუძლებელია: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: %s-ის წაშლა შეუძლებელია: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: სიმბმულის (%s) შექმნის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: %s-ის მფლობელების შეცვლის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: %s-ის lstat-ის შეცდომა: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: გაფრთხილება: მომხმარებელს (%s) tcb shadow ფაილი არ გააჩნია.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: გადაუდებელი შემთხვევა: %s tcb ჩრდილი არ არის რეგულარული ფაილი st_nlink=1-"
-"ით.\n"
-"ანგარიში ჩაკეტილია.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: %s-ის გახსნის შეცდომა: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -285,11 +65,20 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: %s-ის განბლოკვის შეცდომა\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr "%s ბევრჯერაა ნახსენები %s-ში. ჩაასწორეთ pwck-ით ან grpck-ით.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "crypt-ის მეთოდი არაა მხარდაჭერილი libcrypt-ის მიერ? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "გარემო გადავსებულია\n"
@@ -407,6 +196,19 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: უნიკალური UID-ის მიღების შეცდომა (ხელმისაწვდომი UID-ების გარეშე)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr ""
+"კონფიგურაციის შეცდომა - %s-ის მნიშვნელობის დამუშავება შეუძლებელია: '%s'"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "კონფიგურაციის ინფორმაციისთვის სივრცის გამოყოფა შეუძლებელია.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"კონფიგურაციის შეცდომა - უცნობი ჩანაწერი '%s' (შეატყობინეთ ადმინისტრატორს)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr "%s: არასაკმარისი არგუმენტები %u ბმის ჩამოსაყალიბებლად\n"
 
@@ -467,6 +269,14 @@ msgstr "ახალი ელფოსტის გარეშე."
 msgid "You have mail."
 msgstr "თქვენ გაქვთ ფოსტა."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd ნორმალურად არ დასრულებულა (სიგნალი %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd გამოვიდა სტატუსით %d\n"
+
 msgid "no change"
 msgstr "ცვლილებების გარეშე"
 
@@ -524,6 +334,13 @@ msgstr ""
 "%s: (მომხმარებელი %s) pam_chauthtok() -ის შეცდომა:\n"
 "%s\n"
 
+msgid "Password: "
+msgstr "პაროლი: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "%s-ის პაროლი: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "არასწორი პაროლი %s-სთვის.\n"
@@ -576,6 +393,108 @@ msgstr ""
 "პარამეტრები ENCRYPT_METHOD-ში და შესაბამის კონფიგურაციაში თქვენს მიერ "
 "არჩეული ჰეშის მეთოდისთვის.\n"
 
+msgid "Cannot open audit interface.\n"
+msgstr "აუდიტის ინტერფეისის გახსნის შეცდომა.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr "%s: SELinux-ის პროცესის წინა კონტექსტის მიღების შეცდომა: %s\n"
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "SELinux-ის მართვის დამმუშავებლის შექმნა შეუძლებელია\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "SELinux-ის პოლიტიკა მართული არაა\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "SELinux-ის პოლიტიკის საცავის წაკითხვა შეუძლებელია\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "SELinux-ის მართვის შეერთების შექმნა შეუძლებელია\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "SELinux-ის ტრანზაქციის დაწყების შეცდომა\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "%s-ის გამოთხოვა seuser-დან შეუძლებელია\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "%s-სთვის serange-ის დაყენება შეუძლებელია\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "%s-სთვის sename-ის დაყენება შეუძლებელია\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "მომხმარებლის სახელის ბმების ჩასწორება %s-სთვის შეუძლებელია\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "%s-ზე SELinux-ის მომხმარებლის სახელის ბმის შექმნა შეუძლებელია\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "%s-სთვის სახელის დაყენების შეცდომა\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "%s-სთვის SELinux-ის მომხმარებლის დაყენების შეცდომა\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "%s-სთვის მომხმარებლის სახელის ბმის შექმნის შეცდომა\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "SELinux-ის მართვის ინიციალიზაციის შეცდომა\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "SELinux-ის მომხმარებლის გასაღების შექმნის შეცდომა\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "SELinux-ის მომხმარებლის შემოწმების შეცდომა\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "SELinux-ის მოხმარებლების ბმების შეცვლს შეცდომა\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "SELinux-ის მომხმარებლის ბმის დამატების შეცდომა\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "SELinux-ის ტრანზაქციის გადაცემის შეცდომა\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"მომხმარებლის სახელის ბმა %s-თვის განსაზღვრული არაა. OK, თუ ნაგულისხმები ბმა "
+"იქნა გამოყენებული\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "მომხმარებლის სახელი %s პოლიტიკაშია გაწერილი. მისი წაშლა შეუძლებელია\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "მომხმარებლის სახელის ბმის წაშლა %s-სთვის შეუძლებელია"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "საქაღალდის %s-ზე შეცვლა შეუძლებელია\n"
@@ -598,6 +517,87 @@ msgstr "%s არასწორი root საქაღალდეა\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Root საქაღალდის %s-ზე შეცვლა შეუძლებელია\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: არასაკმარისი მეხსიერება\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: %s-ის აღმოჩენის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s არც საქაღალდეა, არც სიმბმული.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: სიმბმულის წაკითხვის შეცდომა %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: საეჭვოდ გრძელი სიმბმული %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s საქაღალდის (%s) შექმნის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: %s-ის მფლობელის შეცვლის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: %s-ის რეჟიმის შეცვლის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: წაშლა: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: საქაღალდის (%s) წაშლის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: %s-ის სახელის %s-მდე გადარქმევა შეუძლებელია: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: %s-ის წაშლა შეუძლებელია: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: სიმბმულის (%s) შექმნის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: %s-ის მფლობელების შეცვლის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: %s-ის lstat-ის შეცდომა: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: გაფრთხილება: მომხმარებელს (%s) tcb shadow ფაილი არ გააჩნია.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: გადაუდებელი შემთხვევა: %s tcb ჩრდილი არ არის რეგულარული ფაილი st_nlink=1-"
+"ით.\n"
+"ანგარიში ჩაკეტილია.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: %s-ის გახსნის შეცდომა: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"
