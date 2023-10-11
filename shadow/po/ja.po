@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.5\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2012-05-21 02:52+0900\n"
 "Last-Translator: NAKANO Takeo <nakano@webmasters.gr.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -16,226 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"'%s' というエントリが %s に複数あります。pwck か grpck で修正してください。\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "暗号化手法が libcrypt によってサポートされていない？ (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "設定エラー - %s の値 '%s' を正しく解釈できません"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "設定情報用の空き容量が確保できませんでした。\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "設定エラー: 不明な項目 '%s' (管理者に連絡してください)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd は正常に終了しませんでした (シグナル %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd はステータス %d で終了しました\n"
-
-msgid "Password: "
-msgstr "パスワード: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "%s のパスワード: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "audit インターフェースを開けません - 終了します。\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "SELinux の管理ハンドルを作成できません\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "SELinux ポリシーが管理されていません\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "SELinux のポリシー保存領域を読めません\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "SELinux の管理接続が確立できません\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "SELinux のトランザクションを開始できません\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "%s の seuser の問い合わせができません\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "%s の serange を設定できません\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "%s の sename を設定できません\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "%s のログインマッピングを修正できません\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "%s の SELinux ログインマッピングを生成できません\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "%s の名前を設定できません\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "%s の SELinux ユーザを設定できません\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "%s のログインマッピングを追加できません\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "SELinux の管理を初期化できません\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "SELinux のユーザキーを生成できません\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "この SELinux ユーザを検証できません\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "SELinux のユーザマッピングを修正できません\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "SELinux のユーザマッピングを追加できません\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "SELinux のトランザクションをコミットできません\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"%s のログインマッピングが定義されていません。デフォルトのマッピングを\n"
-"用いたならば OK です。\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "%s のログインマッピングはポリシーで定義されており、削除できません\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "%s のログインマピングを削除できません"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: メモリが足りません\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: %s の状態を取得できません: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s はディレクトリでもシンボリックリンクでもありません\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: シンボリックリンク %s を読めません: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: シンボリックリンクが長すぎるようです: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: ディレクトリ %s を作成できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: %s の所有者を変更できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: : %s のモードを変更できません: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: アンリンク: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: ディレクトリ %s を削除できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: %s の名前を %s に変更できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: %s を削除できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: シンボリックリンク %s を作成できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: %s の所有者を変更できません: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: %s を lstat できません: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: 警告: ユーザ %s には tcb shadow ファイルがありません\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: 緊急事態: %s の tcb shadow が st_nlink=1 の通常ファイルではありません。\n"
-"アカウントはロックされたままになります。\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: %s を開けません: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -284,11 +64,21 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: %s がアンロックできませんでした\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"'%s' というエントリが %s に複数あります。pwck か grpck で修正してください。\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "暗号化手法が libcrypt によってサポートされていない？ (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "環境変数領域のオーバーフロー\n"
@@ -407,6 +197,17 @@ msgstr ""
 "%s: 他と重ならないユーザ ID を取得できません (利用できる UID がありません)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "設定エラー - %s の値 '%s' を正しく解釈できません"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "設定情報用の空き容量が確保できませんでした。\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "設定エラー: 不明な項目 '%s' (管理者に連絡してください)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -473,6 +274,14 @@ msgstr "メールはありません。"
 msgid "You have mail."
 msgstr "メールがあります。"
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd は正常に終了しませんでした (シグナル %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd はステータス %d で終了しました\n"
+
 msgid "no change"
 msgstr "変更されていません"
 
@@ -530,6 +339,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() にエラー %d で失敗しました\n"
 
+msgid "Password: "
+msgstr "パスワード: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "%s のパスワード: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "%s のパスワードが正しくありません。\n"
@@ -578,6 +394,110 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "audit インターフェースを開けません - 終了します。\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "SELinux の管理ハンドルを作成できません\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "SELinux ポリシーが管理されていません\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "SELinux のポリシー保存領域を読めません\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "SELinux の管理接続が確立できません\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "SELinux のトランザクションを開始できません\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "%s の seuser の問い合わせができません\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "%s の serange を設定できません\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "%s の sename を設定できません\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "%s のログインマッピングを修正できません\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "%s の SELinux ログインマッピングを生成できません\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "%s の名前を設定できません\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "%s の SELinux ユーザを設定できません\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "%s のログインマッピングを追加できません\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "SELinux の管理を初期化できません\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "SELinux のユーザキーを生成できません\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "この SELinux ユーザを検証できません\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "SELinux のユーザマッピングを修正できません\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "SELinux のユーザマッピングを追加できません\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "SELinux のトランザクションをコミットできません\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"%s のログインマッピングが定義されていません。デフォルトのマッピングを\n"
+"用いたならば OK です。\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "%s のログインマッピングはポリシーで定義されており、削除できません\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "%s のログインマピングを削除できません"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "'%s' へディレクトリを変更できません\n"
@@ -600,6 +520,86 @@ msgstr "ルートディレクトリ '%s' は不正です\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "ルートディレクトリを '%s' へ変更できません\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: メモリが足りません\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: %s の状態を取得できません: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s はディレクトリでもシンボリックリンクでもありません\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: シンボリックリンク %s を読めません: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: シンボリックリンクが長すぎるようです: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: ディレクトリ %s を作成できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: %s の所有者を変更できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: : %s のモードを変更できません: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: アンリンク: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: ディレクトリ %s を削除できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: %s の名前を %s に変更できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: %s を削除できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: シンボリックリンク %s を作成できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: %s の所有者を変更できません: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: %s を lstat できません: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: 警告: ユーザ %s には tcb shadow ファイルがありません\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: 緊急事態: %s の tcb shadow が st_nlink=1 の通常ファイルではありません。\n"
+"アカウントはロックされたままになります。\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: %s を開けません: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

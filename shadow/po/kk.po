@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadowutils\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2017-02-07 17:09+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -17,227 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.8.11\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"'%s' атындағы %s ішінде бірнеше жазба бар. Оны pwck не grpck көмегімен "
-"дұрыстаңыз.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "шифрлеу тәсіліне libcrypt-тан қолдау жоқ па? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "баптаулар қатесі - %s мәнін талдау мүмкін емес: '%s'"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Баптауларды жүктеу үшін орын жоқ.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "баптау қатесі - белгісіз элемент '%s' (администраторға хабарласыңыз)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd өз жұмысын дұрыс аяқтаған жоқ (%d сигналымен)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd %d қалып-күймен өз жұмысын аяқтады\n"
-
-msgid "Password: "
-msgstr "Пароль: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "%s пайдаланушының паролі: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Аудит интерфейсін ашу мүмкін емес - шығу.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "SELinux басқарушы ұстағышын жасау мүмкін емес\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "SELinux саясаты басқарылып жатқан жоқ\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "SELinux саясаттарын сақтау қорын оқу сәтсіз\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "SELinux басқарушы байланысын орнату мүмкін емес\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "SELinux әрекетін бастау мүмкін емес\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "seuser %s үшін сұрау сәтсіз\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "%s үшін serange орнату мүмкін емес\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "%s үшін sename орнату мүмкін емес\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "%s үшін тіркелгі сәйкестігін түзету мүмкін емес\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "%s үшін SELinux тіркелгі сәйкестігін жасау мүмкін емес\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "%s үшін атын орнату мүмкін емес\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "%s үшін SELinux пайдаланушысын орнату мүмкін емес\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "%s үшін тіркелгі сәйкестігін қосу мүмкін емес\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "SELinux басқаруын іске қосу мүмкін емес\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "SELinux пайд.-шы кілтін жасау мүмкін емес\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "SELinux пайдаланушысын тексеру мүмкін емес\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "SELinux пайд. сәйкестігін түзету мүмкін емес\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "SELinux пайд. сәйкестігін қосу мүмкін емес\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "SELinux әрекетін іске асыру мүмкін емес\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"%s үшін тіркелгі сәйкестігі анықталмаған, бастапқы сәйкестк қолданылған "
-"болса ОК\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "%s үшін тіркелгі сәйкестігі саясатта анықталған, өшіруге мүмкін емес\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "%s үшін тіркелгі сәйкестігін өшіру мүмкін емес"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: жады жеткіліксіз\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: %s табылмады: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s бума да, сілтеме де емес.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: %s символдық сілтемесін оқу мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Күдіктілі ұзын символдық сілтеме: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: %s бумасын жасау мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: %s үшін иені ауыстыру мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: %s үшін режимді ауыстыру мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: unlink: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: %s бумасын өшіру мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: %s атын %s етіп орнату мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: %s өшіру мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: %s символдық сілтемесін жасау мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: %s үшін иелерді өзгерту мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: lstat %s мүмкін емес: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Ескерту, %s пайдаланушысында tcb shadow файлы жоқ.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Төтенше жағдай: %s үшін tcb shadow қалыпты, st_nlink=1, файл емес.\n"
-"Тіркелгі блокталған күйінде қалдырылады.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: %s ашу мүмкін емес: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -286,11 +65,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: %s босату сәтсіз\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"'%s' атындағы %s ішінде бірнеше жазба бар. Оны pwck не grpck көмегімен "
+"дұрыстаңыз.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "шифрлеу тәсіліне libcrypt-тан қолдау жоқ па? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Орындалу орта айнымалыларының шектен көп саны\n"
@@ -405,6 +195,17 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s:  Ерекше жүйелік UID алу мүмкін емес (бос UID-тар қалмады)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "баптаулар қатесі - %s мәнін талдау мүмкін емес: '%s'"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Баптауларды жүктеу үшін орын жоқ.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "баптау қатесі - белгісіз элемент '%s' (администраторға хабарласыңыз)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -471,6 +272,14 @@ msgstr "Пошта жоқ."
 msgid "You have mail."
 msgstr "Сізде пошта бар."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd өз жұмысын дұрыс аяқтаған жоқ (%d сигналымен)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd %d қалып-күймен өз жұмысын аяқтады\n"
+
 msgid "no change"
 msgstr "өзгерістер жоқ"
 
@@ -528,6 +337,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() ішіндегі %d қатесі\n"
 
+msgid "Password: "
+msgstr "Пароль: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "%s пайдаланушының паролі: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "%s үшін қате пароль.\n"
@@ -577,6 +393,110 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Аудит интерфейсін ашу мүмкін емес - шығу.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "SELinux басқарушы ұстағышын жасау мүмкін емес\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "SELinux саясаты басқарылып жатқан жоқ\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "SELinux саясаттарын сақтау қорын оқу сәтсіз\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "SELinux басқарушы байланысын орнату мүмкін емес\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "SELinux әрекетін бастау мүмкін емес\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "seuser %s үшін сұрау сәтсіз\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "%s үшін serange орнату мүмкін емес\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "%s үшін sename орнату мүмкін емес\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "%s үшін тіркелгі сәйкестігін түзету мүмкін емес\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "%s үшін SELinux тіркелгі сәйкестігін жасау мүмкін емес\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "%s үшін атын орнату мүмкін емес\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "%s үшін SELinux пайдаланушысын орнату мүмкін емес\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "%s үшін тіркелгі сәйкестігін қосу мүмкін емес\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "SELinux басқаруын іске қосу мүмкін емес\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "SELinux пайд.-шы кілтін жасау мүмкін емес\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "SELinux пайдаланушысын тексеру мүмкін емес\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "SELinux пайд. сәйкестігін түзету мүмкін емес\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "SELinux пайд. сәйкестігін қосу мүмкін емес\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "SELinux әрекетін іске асыру мүмкін емес\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"%s үшін тіркелгі сәйкестігі анықталмаған, бастапқы сәйкестк қолданылған "
+"болса ОК\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "%s үшін тіркелгі сәйкестігі саясатта анықталған, өшіруге мүмкін емес\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "%s үшін тіркелгі сәйкестігін өшіру мүмкін емес"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "'%s' бумасына ауысу мүмкін емес\n"
@@ -599,6 +519,86 @@ msgstr "'%s' түбірлік бумасы қате\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Түбірлік бумасын '%s' мәніне ауыстыру мүмкін емес\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: жады жеткіліксіз\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: %s табылмады: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s бума да, сілтеме де емес.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: %s символдық сілтемесін оқу мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: Күдіктілі ұзын символдық сілтеме: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: %s бумасын жасау мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: %s үшін иені ауыстыру мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: %s үшін режимді ауыстыру мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: unlink: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: %s бумасын өшіру мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: %s атын %s етіп орнату мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: %s өшіру мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: %s символдық сілтемесін жасау мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: %s үшін иелерді өзгерту мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: lstat %s мүмкін емес: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Ескерту, %s пайдаланушысында tcb shadow файлы жоқ.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Төтенше жағдай: %s үшін tcb shadow қалыпты, st_nlink=1, файл емес.\n"
+"Тіркелгі блокталған күйінде қалдырылады.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: %s ашу мүмкін емес: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

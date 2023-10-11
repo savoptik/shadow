@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2008-03-27 14:40+0100\n"
 "Last-Translator: Danilo Piazzalunga <danilopiazza@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -36,15 +36,167 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Attenzione: gruppo «%s» sconosciuto\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Attenzione: troppi gruppi\n"
+
+msgid "Your password has expired."
+msgstr "La password in uso è scaduta."
+
+msgid "Your password is inactive."
+msgstr "La password in uso è inattiva."
+
+msgid "Your login has expired."
+msgstr "Il login in uso è scaduto."
+
+msgid "  Contact the system administrator."
+msgstr "  Contattare l'amministratore del sistema."
+
+msgid "  Choose a new password."
+msgstr "  Scegliere una nuova password."
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "La password in uso scadrà tra %ld giorni.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "La password in uso scadrà domani."
+
+msgid "Your password will expire today."
+msgstr "La password in uso scade oggi."
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Impossibile cambiare i permessi al device %s"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: lunghezza dei campi eccessiva\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
 msgstr ""
 "Più di una voce chiamata «%s» in %s. Correggere il problema con pwck o "
 "grpck.\n"
 
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
+msgstr ""
+
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr "metodo di cifratura non supportato da libcrypt? (%s)\n"
+
+msgid "Environment overflow\n"
+msgstr "Dimensione dell'ambiente eccessiva\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Non si può modificare $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d tentativo fallito dall'ultimo accesso.\n"
+"L'ultimo è stato %s su %s.\n"
+msgstr[1] ""
+"%d tentativi falliti dall'ultimo accesso.\n"
+"L'ultimo è stato %s su %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "impossibile cambiare il proprietario della casella di posta"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "Impossibile ottenere un GID univoco (nessun GID disponibile)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "Impossibile ottenere un GID univoco (nessun GID disponibile)\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: impossibile creare l'utente\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: impossibile creare l'utente\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -60,6 +212,69 @@ msgstr ""
 "l'amministratore)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: autenticazione PAM non riuscita\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: campo «%s» non valido\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Impossibile allocare spazio per le informazioni di configurazione.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Impossibile allocare spazio per le informazioni di configurazione.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: impossibile aprire il file\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: riga %d: la chiamata chown ha restituito un errore\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: riga %d: la chiamata chown ha restituito un errore\n"
+
+# NdT: Riferito al numero massimo di accessi concorrenti per un utente.
+msgid "Too many logins.\n"
+msgstr "Troppi accessi.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s login: "
+
+msgid "You have new mail."
+msgstr "C'è nuova posta."
+
+msgid "No mail."
+msgstr "Nessun messaggio di posta."
+
+msgid "You have mail."
+msgstr "C'è la solita posta."
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -67,12 +282,117 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "nessuna modifica"
+
+msgid "a palindrome"
+msgstr "palindromo"
+
+msgid "case changes only"
+msgstr "cambiano solo maiuscole/minuscole"
+
+msgid "too similar"
+msgstr "simile alla precedente"
+
+msgid "rotated"
+msgstr "rotazione"
+
+msgid "too short"
+msgstr "troppo corta"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Password non valida: %s.  "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() ha restituito l'errore %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Password cambiata."
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd: password aggiornata correttamente\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: repository %s non supportato\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: errore %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() ha restituito l'errore %d\n"
+
 msgid "Password: "
 msgstr "Password: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "Password di %s: "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Password sbagliata per %s\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: telefono di casa «%s» non valido\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: impossibile creare la directory %s\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: impossibile creare la directory %s\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: impossibile creare la directory %s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+"Valore di ENCRYPT_METHOD «%s» non valido.\n"
+"Viene usato il valore predefinito, DES.\n"
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -176,6 +496,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "Impossibile spostarsi nella directory «%s»\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Directory non presente, accesso con HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Impossibile eseguire %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Directory root «%s» non valida\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Impossibile cambiare la directory root in «%s»\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: memoria esaurita\n"
 
@@ -252,349 +595,6 @@ msgstr "%s: rename: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: impossibile aprire il file %s\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Attenzione: gruppo «%s» sconosciuto\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Attenzione: troppi gruppi\n"
-
-msgid "Your password has expired."
-msgstr "La password in uso è scaduta."
-
-msgid "Your password is inactive."
-msgstr "La password in uso è inattiva."
-
-msgid "Your login has expired."
-msgstr "Il login in uso è scaduto."
-
-msgid "  Contact the system administrator."
-msgstr "  Contattare l'amministratore del sistema."
-
-msgid "  Choose a new password."
-msgstr "  Scegliere una nuova password."
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "La password in uso scadrà tra %ld giorni.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "La password in uso scadrà domani."
-
-msgid "Your password will expire today."
-msgstr "La password in uso scade oggi."
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Impossibile cambiare i permessi al device %s"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: lunghezza dei campi eccessiva\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Dimensione dell'ambiente eccessiva\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Non si può modificare $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d tentativo fallito dall'ultimo accesso.\n"
-"L'ultimo è stato %s su %s.\n"
-msgstr[1] ""
-"%d tentativi falliti dall'ultimo accesso.\n"
-"L'ultimo è stato %s su %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "impossibile cambiare il proprietario della casella di posta"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "Impossibile ottenere un GID univoco (nessun GID disponibile)\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "Impossibile ottenere un GID univoco (nessun GID disponibile)\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: impossibile creare l'utente\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: impossibile creare l'utente\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "Impossibile ottenere un UID univoco (nessun UID disponibile)\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: autenticazione PAM non riuscita\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: campo «%s» non valido\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Impossibile allocare spazio per le informazioni di configurazione.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Impossibile allocare spazio per le informazioni di configurazione.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: impossibile aprire il file\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: riga %d: la chiamata chown ha restituito un errore\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: riga %d: la chiamata chown ha restituito un errore\n"
-
-# NdT: Riferito al numero massimo di accessi concorrenti per un utente.
-msgid "Too many logins.\n"
-msgstr "Troppi accessi.\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s login: "
-
-msgid "You have new mail."
-msgstr "C'è nuova posta."
-
-msgid "No mail."
-msgstr "Nessun messaggio di posta."
-
-msgid "You have mail."
-msgstr "C'è la solita posta."
-
-msgid "no change"
-msgstr "nessuna modifica"
-
-msgid "a palindrome"
-msgstr "palindromo"
-
-msgid "case changes only"
-msgstr "cambiano solo maiuscole/minuscole"
-
-msgid "too similar"
-msgstr "simile alla precedente"
-
-msgid "rotated"
-msgstr "rotazione"
-
-msgid "too short"
-msgstr "troppo corta"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Password non valida: %s.  "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() ha restituito l'errore %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Password cambiata."
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd: password aggiornata correttamente\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: repository %s non supportato\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: errore %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() ha restituito l'errore %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Password sbagliata per %s\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: telefono di casa «%s» non valido\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: impossibile creare la directory %s\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: impossibile creare la directory %s\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: impossibile creare la directory %s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-"Valore di ENCRYPT_METHOD «%s» non valido.\n"
-"Viene usato il valore predefinito, DES.\n"
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "Impossibile spostarsi nella directory «%s»\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Directory non presente, accesso con HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "Impossibile eseguire %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Directory root «%s» non valida\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Impossibile cambiare la directory root in «%s»\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

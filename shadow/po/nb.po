@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2018-03-05 12:33+0100\n"
 "Last-Translator: Åka Sikrom <a4@hush.com>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -23,232 +23,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.7.5\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Det ligger flere oppføringer med navnet «%s» i %s. Korriger dette med pwck "
-"eller grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "har du et libcrypt som ikke støtter crypt-metoden? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "oppsettsfeil –  klarte ikke å tolke %s-verdi: «%s»"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Klarte ikke å tildele plass til oppsettsinformasjon.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr "oppsettsfeil - element «%s» er ukjent (kontakt administrator)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd avsluttet ikke normallt (signal %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd avsluttet med status %d\n"
-
-msgid "Password: "
-msgstr "Passord: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "%s's Passord: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Klarte ikke å åpne kontrollgrensesnitt – avbryter.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Klarte ikke å lage SELinux-styringshåndtak\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "SELinux-regler blir ikke håndtert\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Klarte ikke å lese SELinux-regler\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Klarte ikke å sette opp SELinux-styringstilkobling\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Klarte ikke å begynne SELinux-transaksjon\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Klarte ikke spørre seuser om %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Klarte ikke endre serange for %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Klarte ikke endre sename for %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Klarte ikke å endre brukerkobling for %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Klarte ikke å lage SELinux-brukerkobling for %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Klarte ikke å endre navn på %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Klarte ikke å endre SELinux-brukernavn for %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Klarte ikke legge til brukerkobling for %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Klarte ikke å starte opp SELinux-styringsverktøy\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Klarte ikke å lage SELinux-brukernøkkel\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Klarte ikke å bekrefte SELinux-bruker\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Klarte ikke å endre SELinux-brukerkobling\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Klarte ikke å legge til SELinux brukeravbildning\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Klarte ikke å utføre SELinux-transaksjon\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Brukerkobling for %s er ikke definert, OK hvis forvalgt kobling ble brukt\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "Brukerkobling for %s er definert i regelsett, og kan ikke slettes\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Klarte ikke å slette brukerkobling for %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: minnet er fullt\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: Klarte ikke å utføre stat på %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s er hverken en mappe eller symbolsk lenke.\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: Klarte ikke å lese symbolsk lenke %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Mistenkelig lang symlenke: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: Klarte ikke å opprette mappa %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Klarte ikke å gi %s ny eier: %s\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Klarte ikke å endre modus for %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: avlenk: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Klarte ikke å slette mappa %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Klarte ikke å endre navn på %s til %s: %s\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Klarte ikke å fjerne %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Klarte ikke å lage symbolsk lenke %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Klarte ikke å gi %s ny eier: %s\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Klarte ikke å kjøre lstat for %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Advarsel: bruker %s har ingen tcb-skyggefil.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Kritisk: %s' tcb-skygge er ikke en vanlig fil med st_nlink=1.\n"
-"Kontoen forblir låst.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-# , c-format
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: Klarte ikke å åpne %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -299,11 +73,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: klarte ikke å låse opp %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Det ligger flere oppføringer med navnet «%s» i %s. Korriger dette med pwck "
+"eller grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "har du et libcrypt som ikke støtter crypt-metoden? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Miljøet er fullt\n"
@@ -431,6 +216,17 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: Fant ikke entydig UID (ingen flere UID-er tilgjengelig)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "oppsettsfeil –  klarte ikke å tolke %s-verdi: «%s»"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Klarte ikke å tildele plass til oppsettsinformasjon.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr "oppsettsfeil - element «%s» er ukjent (kontakt administrator)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -498,6 +294,14 @@ msgstr "Ingen e-post."
 msgid "You have mail."
 msgstr "Du har ulest e-post."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd avsluttet ikke normallt (signal %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd avsluttet med status %d\n"
+
 msgid "no change"
 msgstr "ingen endring"
 
@@ -555,6 +359,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() mislyktes, feil %d\n"
 
+msgid "Password: "
+msgstr "Passord: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "%s's Passord: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Feil passord for «%s».\n"
@@ -604,6 +415,109 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Klarte ikke å åpne kontrollgrensesnitt – avbryter.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Klarte ikke å lage SELinux-styringshåndtak\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "SELinux-regler blir ikke håndtert\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Klarte ikke å lese SELinux-regler\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Klarte ikke å sette opp SELinux-styringstilkobling\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Klarte ikke å begynne SELinux-transaksjon\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Klarte ikke spørre seuser om %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Klarte ikke endre serange for %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Klarte ikke endre sename for %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Klarte ikke å endre brukerkobling for %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Klarte ikke å lage SELinux-brukerkobling for %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Klarte ikke å endre navn på %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Klarte ikke å endre SELinux-brukernavn for %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Klarte ikke legge til brukerkobling for %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Klarte ikke å starte opp SELinux-styringsverktøy\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Klarte ikke å lage SELinux-brukernøkkel\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Klarte ikke å bekrefte SELinux-bruker\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Klarte ikke å endre SELinux-brukerkobling\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Klarte ikke å legge til SELinux brukeravbildning\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Klarte ikke å utføre SELinux-transaksjon\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Brukerkobling for %s er ikke definert, OK hvis forvalgt kobling ble brukt\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "Brukerkobling for %s er definert i regelsett, og kan ikke slettes\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Klarte ikke å slette brukerkobling for %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Klarte ikke å bytte mappe til «%s»\n"
@@ -626,6 +540,92 @@ msgstr "Rotmappe «%s» er ugyldig\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Klarte ikke å endre rotmappe til «%s»\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: minnet er fullt\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: Klarte ikke å utføre stat på %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s er hverken en mappe eller symbolsk lenke.\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: Klarte ikke å lese symbolsk lenke %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: Mistenkelig lang symlenke: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: Klarte ikke å opprette mappa %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Klarte ikke å gi %s ny eier: %s\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Klarte ikke å endre modus for %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: avlenk: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Klarte ikke å slette mappa %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Klarte ikke å endre navn på %s til %s: %s\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Klarte ikke å fjerne %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Klarte ikke å lage symbolsk lenke %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Klarte ikke å gi %s ny eier: %s\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Klarte ikke å kjøre lstat for %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Advarsel: bruker %s har ingen tcb-skyggefil.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Kritisk: %s' tcb-skygge er ikke en vanlig fil med st_nlink=1.\n"
+"Kontoen forblir låst.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+# , c-format
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: Klarte ikke å åpne %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

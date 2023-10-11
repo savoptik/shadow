@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.2\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2014-08-24 15:07+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -16,229 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Zjištěno několik záznamů pojmenovaných „%s“ v souboru %s. Napravte to prosím "
-"pomocí pwck nebo grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "typ šifry není knihovnou libcrypt podporován? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "konfigurační chyba - nelze zpracovat hodnotu %s: „%s“"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Nelze alokovat dostatek místa pro konfigurační údaje.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-"konfigurační chyba - neznámá položka „%s“ (informujte správce systému)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd nebyl ukončen normálně (signál %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd skončil se stavem %d\n"
-
-msgid "Password: "
-msgstr "Heslo: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Heslo uživatele %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Nelze otevřít auditní rozhraní - končím.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Nelze vytvořit spojení k SELinuxovému semanage\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "Politika SELinuxu není řízená\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Nelze číst úložiště SELinux politik\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Nelze navázat spojení k SELinuxovému semanage\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Nelze zahájit SELinux transakci\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Dotaz na „seuser“ uživatele %s selhal\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Nelze nastavit „serange“ uživatele %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Nelze nastavit „sename“ uživatele %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Nelze změnit mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Nelze vytvořit mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Nelze nastavit jméno uživatele %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Nelze nastavit SELinux uživatele pro %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Nelze přidat mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Nelze inicializovat správu SELinuxu\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Nelze vytvořit uživatelský klíč k SELinuxu\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Nelze ověřit SELinux uživatele\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Nelze změnit mapování na SELinuxového uživatele\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Nelze přidat mapování na SELinuxového uživatele\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Nelze dokončit SELinuxovou transakci\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Mapování uživatele %s není definováno, OK, pokud bylo použito výchozí "
-"mapování\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "Mapování uživatele %s je definováno v politice, nemůže být smazáno\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Nelze smazat mapování pro uživatele %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: došla paměť\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: nelze zavolat stat %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s není ani adresář, ani symbolický odkaz.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: Nelze číst symbolický odkaz %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Podezřele dlouhý symbolický odkaz: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: Nelze vytvořit adresář %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Nelze změnit vlastníka %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Nelze změnit oprávnění k %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: smazání: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Nelze odstranit adresář %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Nelze přejmenovat %s na %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Nelze odstranit %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Nelze vytvořit symbolický odkaz %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Nelze změnit vlastníky %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Nelze zavolat lstat %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Varování, uživatel %s nemá v tcb svůj soubor shadow.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Krizový stav: shadow v tcb uživatele %s není běžným souborem "
-"(st_nlink=1).\n"
-"Účet je ponechán zamknutý.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: vytvoření adresáře: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: Nelze otevřít %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -287,11 +64,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: nepodařilo se odemknout %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Zjištěno několik záznamů pojmenovaných „%s“ v souboru %s. Napravte to prosím "
+"pomocí pwck nebo grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "typ šifry není knihovnou libcrypt podporován? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Přetečení prostředí\n"
@@ -406,6 +194,18 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: Nelze získat jedinečné UID (volná UID neexistují)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "konfigurační chyba - nelze zpracovat hodnotu %s: „%s“"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Nelze alokovat dostatek místa pro konfigurační údaje.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"konfigurační chyba - neznámá položka „%s“ (informujte správce systému)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr "%s: Nedostatek argumentů pro vytvoření %u mapování\n"
 
@@ -469,6 +269,14 @@ msgstr "Nemáte žádnou poštu."
 msgid "You have mail."
 msgstr "Máte poštu."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd nebyl ukončen normálně (signál %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd skončil se stavem %d\n"
+
 msgid "no change"
 msgstr "beze změny"
 
@@ -526,6 +334,13 @@ msgstr ""
 "%s: (uživatel %s) volání pam_chauthtok() selhalo, chyba:\n"
 "%s\n"
 
+msgid "Password: "
+msgstr "Heslo: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Heslo uživatele %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Chybné heslo pro %s.\n"
@@ -575,6 +390,110 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Nelze otevřít auditní rozhraní - končím.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Nelze vytvořit spojení k SELinuxovému semanage\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "Politika SELinuxu není řízená\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Nelze číst úložiště SELinux politik\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Nelze navázat spojení k SELinuxovému semanage\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Nelze zahájit SELinux transakci\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Dotaz na „seuser“ uživatele %s selhal\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Nelze nastavit „serange“ uživatele %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Nelze nastavit „sename“ uživatele %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Nelze změnit mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Nelze vytvořit mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Nelze nastavit jméno uživatele %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Nelze nastavit SELinux uživatele pro %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Nelze přidat mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Nelze inicializovat správu SELinuxu\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Nelze vytvořit uživatelský klíč k SELinuxu\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Nelze ověřit SELinux uživatele\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Nelze změnit mapování na SELinuxového uživatele\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Nelze přidat mapování na SELinuxového uživatele\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Nelze dokončit SELinuxovou transakci\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Mapování uživatele %s není definováno, OK, pokud bylo použito výchozí "
+"mapování\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "Mapování uživatele %s je definováno v politice, nemůže být smazáno\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Nelze smazat mapování pro uživatele %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Nelze přejít do „%s“\n"
@@ -597,6 +516,87 @@ msgstr "Chybný kořenový adresář „%s“\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Nelze změnit kořenový adresář na „%s“\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: došla paměť\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: nelze zavolat stat %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s není ani adresář, ani symbolický odkaz.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: Nelze číst symbolický odkaz %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: Podezřele dlouhý symbolický odkaz: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: Nelze vytvořit adresář %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Nelze změnit vlastníka %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Nelze změnit oprávnění k %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: smazání: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Nelze odstranit adresář %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Nelze přejmenovat %s na %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Nelze odstranit %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Nelze vytvořit symbolický odkaz %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Nelze změnit vlastníky %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Nelze zavolat lstat %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Varování, uživatel %s nemá v tcb svůj soubor shadow.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Krizový stav: shadow v tcb uživatele %s není běžným souborem "
+"(st_nlink=1).\n"
+"Účet je ponechán zamknutý.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: vytvoření adresáře: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: Nelze otevřít %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

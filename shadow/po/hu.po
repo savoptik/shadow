@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2007-11-25 20:56+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -17,13 +17,162 @@ msgstr ""
 "X-Generator: KBabel 1.11.2\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Figyelem: ismeretlen %s csoport\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Figyelem: túl sok csoport\n"
+
+msgid "Your password has expired."
+msgstr "A jelszó lejárt"
+
+msgid "Your password is inactive."
+msgstr "A jelszó inaktív"
+
+msgid "Your login has expired."
+msgstr "A bejelentkezés lejárt"
+
+msgid "  Contact the system administrator."
+msgstr "  Fordulj a rendszergazdához."
+
+msgid "  Choose a new password."
+msgstr "  Adj új jelszót"
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "A jelszó %ld nap múlva lejár.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "Jelszavad már csak holnapig érvényes"
+
+msgid "Your password will expire today."
+msgstr "Jelszavad érvényessége ma lejár"
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Nem lehet a következő terminálra váltani: %s"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: túl hosszú mezők\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "Környezeti túlcsordulás\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Nem módosítható a következő: $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d hiba az utolsó bejelentkezés óta\n"
+"A legutóbbi: %s itt: %s\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "a postafiók tulajdonosának váltása sikertelen"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: nem szerezhető be egyedi csoportazonosító\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: nem szerezhető be egyedi csoportazonosító\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: %s létrehozása sikertelen\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: %s létrehozása sikertelen\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -37,6 +186,68 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "beállítási hiba - ismeretlen '%s' elem (értesítsd a rendszergazdát)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: PAM hitelesítési hiba\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: érvénytelen mező: \"%s\"\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Sikertelen helyfoglalás a beállítási infónak.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Sikertelen helyfoglalás a beállítási infónak.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: nem tudom megnyitni a fájlt\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: %d. sor: chown sikertelen\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: %d. sor: chown sikertelen\n"
+
+msgid "Too many logins.\n"
+msgstr "Túl sok bejelentkezés\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s bejelentkezés: "
+
+msgid "You have new mail."
+msgstr "Új leveled érkezett"
+
+msgid "No mail."
+msgstr "Nincs leveled"
+
+msgid "You have mail."
+msgstr "Levelek kiolvasva"
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -44,12 +255,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "nem változott"
+
+msgid "a palindrome"
+msgstr "egy palindróma"
+
+msgid "case changes only"
+msgstr "csak változások esetén"
+
+msgid "too similar"
+msgstr "túl hasonló"
+
+msgid "rotated"
+msgstr "fordított"
+
+msgid "too short"
+msgstr "túl rövid"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Rossz jelszó: %s."
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() sikertelen, hibakód: %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Jelszó módosítva."
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd: a jelszó sikeresen frissült\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: %s tár nem támogatott\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: hiba: %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() sikertelen, hibakód: %d\n"
+
 msgid "Password: "
 msgstr "Jelszó: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "%s jelszava: "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Hibás jelszó ehhez: %s.\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s: a jogosultságok eldobása meghiúsult (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: érvénytelen otthoni telefonszám: \"%s\"\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -153,6 +467,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "nem lehet könyvtárat váltani ide: \"%s\"\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Ismeretlen könyvtár, bejelentkezés így: HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "%s nem futtatható"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Érvénytelen gyökérkönyvtár: \"%s\"\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Nem lehet a gyökérkönyvtárba váltani: \"%s\"\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: a memória elfogyott\n"
 
@@ -229,343 +566,6 @@ msgstr "%s: átnevezés: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: %s fájl nem nyitható meg\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Figyelem: ismeretlen %s csoport\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Figyelem: túl sok csoport\n"
-
-msgid "Your password has expired."
-msgstr "A jelszó lejárt"
-
-msgid "Your password is inactive."
-msgstr "A jelszó inaktív"
-
-msgid "Your login has expired."
-msgstr "A bejelentkezés lejárt"
-
-msgid "  Contact the system administrator."
-msgstr "  Fordulj a rendszergazdához."
-
-msgid "  Choose a new password."
-msgstr "  Adj új jelszót"
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "A jelszó %ld nap múlva lejár.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "Jelszavad már csak holnapig érvényes"
-
-msgid "Your password will expire today."
-msgstr "Jelszavad érvényessége ma lejár"
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Nem lehet a következő terminálra váltani: %s"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: túl hosszú mezők\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Környezeti túlcsordulás\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Nem módosítható a következő: $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d hiba az utolsó bejelentkezés óta\n"
-"A legutóbbi: %s itt: %s\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "a postafiók tulajdonosának váltása sikertelen"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: nem szerezhető be egyedi csoportazonosító\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: nem szerezhető be egyedi csoportazonosító\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: %s létrehozása sikertelen\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: %s létrehozása sikertelen\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: nem kérhető le egyedi felhasználói azonosító\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: PAM hitelesítési hiba\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: érvénytelen mező: \"%s\"\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Sikertelen helyfoglalás a beállítási infónak.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Sikertelen helyfoglalás a beállítási infónak.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: nem tudom megnyitni a fájlt\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: %d. sor: chown sikertelen\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: %d. sor: chown sikertelen\n"
-
-msgid "Too many logins.\n"
-msgstr "Túl sok bejelentkezés\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s bejelentkezés: "
-
-msgid "You have new mail."
-msgstr "Új leveled érkezett"
-
-msgid "No mail."
-msgstr "Nincs leveled"
-
-msgid "You have mail."
-msgstr "Levelek kiolvasva"
-
-msgid "no change"
-msgstr "nem változott"
-
-msgid "a palindrome"
-msgstr "egy palindróma"
-
-msgid "case changes only"
-msgstr "csak változások esetén"
-
-msgid "too similar"
-msgstr "túl hasonló"
-
-msgid "rotated"
-msgstr "fordított"
-
-msgid "too short"
-msgstr "túl rövid"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Rossz jelszó: %s."
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() sikertelen, hibakód: %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Jelszó módosítva."
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd: a jelszó sikeresen frissült\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: %s tár nem támogatott\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: hiba: %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() sikertelen, hibakód: %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Hibás jelszó ehhez: %s.\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s: a jogosultságok eldobása meghiúsult (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: érvénytelen otthoni telefonszám: \"%s\"\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: %s könyvtár nem hozható létre\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: %s könyvtár nem hozható létre\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: %s könyvtár nem hozható létre\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "nem lehet könyvtárat váltani ide: \"%s\"\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Ismeretlen könyvtár, bejelentkezés így: HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "%s nem futtatható"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Érvénytelen gyökérkönyvtár: \"%s\"\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Nem lehet a gyökérkönyvtárba váltani: \"%s\"\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

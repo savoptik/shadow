@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2006-06-16 14:30+0545\n"
 "Last-Translator: Shiva Pokharel <pokharelshiva@hotmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -20,13 +20,165 @@ msgstr ""
 "X-Generator: KBabel 1.10.2\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "चेतावनी: अज्ञात समूह %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "चेतावनी: अति धेरै समूहहरू\n"
+
+msgid "Your password has expired."
+msgstr "तपाईँको पासवर्डको म्याद समाप्त भएको छ।"
+
+msgid "Your password is inactive."
+msgstr "तपाईँको पासवर्ड निष्क्रिय छ।"
+
+msgid "Your login has expired."
+msgstr "तपाईँको लगइनको म्याद समाप्त भएको छ।"
+
+msgid "  Contact the system administrator."
+msgstr "  प्रणाली प्रशासक संग सम्पर्क गर्नुहोस् ।"
+
+msgid "  Choose a new password."
+msgstr "  नयाँ पासवर्ड रोज्नुहोस् ।"
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "तपाईँको पासवर्डको म्याद %ld दिनमा समाप्त हुन्छ ।\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "तपाईँको पासवर्डको म्याद भोली समाप्त हुनेछ ।"
+
+msgid "Your password will expire today."
+msgstr "तपाईँको पासवर्डको म्याद आज समाप्त हुनेछ ।"
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "tty %s लाई परिवर्तन गर्न असक्षम भयो"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: अति लामो फाँट\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "परिवेशको अतिप्रवाह\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "तपाईँले $%s परिवर्तन गर्न सक्नुहुन्न\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d अन्तिम लगइन देखिअसफल भयो ।\n"
+"अन्तिम %s मा %s थियो ।\n"
+msgstr[1] ""
+"%d अन्तिम लगइन देखिअसफल भयो ।\n"
+"अन्तिम %s मा %s थियो ।\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "मेलबक्स प्रापक परिवर्तन गर्न असफल भयो"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: अद्वितिय GID प्राप्त गर्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: अद्वितिय GID प्राप्त गर्न सकिएन\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -40,6 +192,68 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "कन्फिगरेसन त्रुटि - अज्ञात वस्तु '%s' (प्रशासकलाई सूचना गर्नुहोस)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: PAM आधिकरण असफल भयो\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: अवैध फाँट '%s'\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "कनफिगरेसन सूचनाको लागि खाली ठाऊँ बाँड्न सकिदैन ।\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "कनफिगरेसन सूचनाको लागि खाली ठाऊँ बाँड्न सकिदैन ।\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: फाइल खोल्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: रेखा %d: chown असफल भयो\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: रेखा %d: chown असफल भयो\n"
+
+msgid "Too many logins.\n"
+msgstr "अति धेरै लगइनहरू ।\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s लगइन: "
+
+msgid "You have new mail."
+msgstr "तपाईँसँग नयाँ मेल छ।"
+
+msgid "No mail."
+msgstr "मेल छैन।"
+
+msgid "You have mail."
+msgstr "तपाईँको मेल छ।"
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -47,12 +261,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "परिवर्तन छैन"
+
+msgid "a palindrome"
+msgstr "एउटा श्लोक"
+
+msgid "case changes only"
+msgstr "केस परिवर्तनहरू मात्र"
+
+msgid "too similar"
+msgstr "अति मिल्दो"
+
+msgid "rotated"
+msgstr "घुमिरहेको"
+
+msgid "too short"
+msgstr "अति छोटो"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "खराब पासवर्ड: %s. "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "पासवर्ड: pam_start() असफल भयो, त्रुटि %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "पासवर्ड: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "पासवर्ड परिवर्तन भयो ।"
+
+msgid "passwd: password updated successfully\n"
+msgstr "पासवर्ड: पासवर्ड सफलतापूर्वक अद्यावधिक भयो\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: रेपोजिटरी %s समर्थित छैन\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: त्रुटि %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "पासवर्ड: pam_start() असफल भयो, त्रुटि %d\n"
+
 msgid "Password: "
 msgstr "पासवर्ड: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "'%s' को पासवर्ड: "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr " %s को लागि गलत पासवर्ड ।\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s: विशेषधिकारहरू छोड्न असफल भयो (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: अवैध गृह फोन: '%s'\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -156,6 +473,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "'%s' मा सि डि गर्न असफल\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "डाइरेक्ट्री होइन, HOME=/ संगै लगइन भइरहेको"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "%s कार्यान्वयन गर्न सकिएन"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "अवैध मूल डाइरेकट्री '%s'\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "'%s' मा मूल डाइरेकट्री परिवर्तन गर्न सकिदैन\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: स्मृति भन्दा बाहिर\n"
 
@@ -232,346 +572,6 @@ msgstr "%s: पुन:नामकरण गर्नुहोस्: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: फाइल %s खोल्न सकिएन\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "चेतावनी: अज्ञात समूह %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "चेतावनी: अति धेरै समूहहरू\n"
-
-msgid "Your password has expired."
-msgstr "तपाईँको पासवर्डको म्याद समाप्त भएको छ।"
-
-msgid "Your password is inactive."
-msgstr "तपाईँको पासवर्ड निष्क्रिय छ।"
-
-msgid "Your login has expired."
-msgstr "तपाईँको लगइनको म्याद समाप्त भएको छ।"
-
-msgid "  Contact the system administrator."
-msgstr "  प्रणाली प्रशासक संग सम्पर्क गर्नुहोस् ।"
-
-msgid "  Choose a new password."
-msgstr "  नयाँ पासवर्ड रोज्नुहोस् ।"
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "तपाईँको पासवर्डको म्याद %ld दिनमा समाप्त हुन्छ ।\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "तपाईँको पासवर्डको म्याद भोली समाप्त हुनेछ ।"
-
-msgid "Your password will expire today."
-msgstr "तपाईँको पासवर्डको म्याद आज समाप्त हुनेछ ।"
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "tty %s लाई परिवर्तन गर्न असक्षम भयो"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: अति लामो फाँट\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "परिवेशको अतिप्रवाह\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "तपाईँले $%s परिवर्तन गर्न सक्नुहुन्न\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d अन्तिम लगइन देखिअसफल भयो ।\n"
-"अन्तिम %s मा %s थियो ।\n"
-msgstr[1] ""
-"%d अन्तिम लगइन देखिअसफल भयो ।\n"
-"अन्तिम %s मा %s थियो ।\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "मेलबक्स प्रापक परिवर्तन गर्न असफल भयो"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: अद्वितिय GID प्राप्त गर्न सकिएन\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: अद्वितिय GID प्राप्त गर्न सकिएन\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: अद्वितिय UID प्राप्त गर्न सकिएन\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: PAM आधिकरण असफल भयो\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: अवैध फाँट '%s'\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "कनफिगरेसन सूचनाको लागि खाली ठाऊँ बाँड्न सकिदैन ।\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "कनफिगरेसन सूचनाको लागि खाली ठाऊँ बाँड्न सकिदैन ।\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: फाइल खोल्न सकिएन\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: रेखा %d: chown असफल भयो\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: रेखा %d: chown असफल भयो\n"
-
-msgid "Too many logins.\n"
-msgstr "अति धेरै लगइनहरू ।\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s लगइन: "
-
-msgid "You have new mail."
-msgstr "तपाईँसँग नयाँ मेल छ।"
-
-msgid "No mail."
-msgstr "मेल छैन।"
-
-msgid "You have mail."
-msgstr "तपाईँको मेल छ।"
-
-msgid "no change"
-msgstr "परिवर्तन छैन"
-
-msgid "a palindrome"
-msgstr "एउटा श्लोक"
-
-msgid "case changes only"
-msgstr "केस परिवर्तनहरू मात्र"
-
-msgid "too similar"
-msgstr "अति मिल्दो"
-
-msgid "rotated"
-msgstr "घुमिरहेको"
-
-msgid "too short"
-msgstr "अति छोटो"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "खराब पासवर्ड: %s. "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "पासवर्ड: pam_start() असफल भयो, त्रुटि %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "पासवर्ड: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "पासवर्ड परिवर्तन भयो ।"
-
-msgid "passwd: password updated successfully\n"
-msgstr "पासवर्ड: पासवर्ड सफलतापूर्वक अद्यावधिक भयो\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: रेपोजिटरी %s समर्थित छैन\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: त्रुटि %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "पासवर्ड: pam_start() असफल भयो, त्रुटि %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr " %s को लागि गलत पासवर्ड ।\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s: विशेषधिकारहरू छोड्न असफल भयो (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: अवैध गृह फोन: '%s'\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "'%s' मा सि डि गर्न असफल\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "डाइरेक्ट्री होइन, HOME=/ संगै लगइन भइरहेको"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "%s कार्यान्वयन गर्न सकिएन"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "अवैध मूल डाइरेकट्री '%s'\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "'%s' मा मूल डाइरेकट्री परिवर्तन गर्न सकिदैन\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

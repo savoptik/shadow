@@ -150,7 +150,6 @@ chage_SOURCES = chage.c
 chage_OBJECTS = chage.$(OBJEXT)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 @ACCT_TOOLS_SETUID_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
 chage_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
@@ -175,7 +174,6 @@ check_subid_range_OBJECTS =  \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1)
 @ENABLE_SUBIDS_TRUE@check_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
 chfn_SOURCES = chfn.c
 chfn_OBJECTS = chfn.$(OBJEXT)
@@ -206,14 +204,12 @@ faillog_SOURCES = faillog.c
 faillog_OBJECTS = faillog.$(OBJEXT)
 faillog_LDADD = $(LDADD)
 faillog_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 free_subid_range_SOURCES = free_subid_range.c
 free_subid_range_OBJECTS =  \
 	free_subid_range-free_subid_range.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@free_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
 get_subid_owners_SOURCES = get_subid_owners.c
@@ -221,14 +217,12 @@ get_subid_owners_OBJECTS =  \
 	get_subid_owners-get_subid_owners.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@get_subid_owners_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
 getsubids_SOURCES = getsubids.c
 getsubids_OBJECTS = getsubids-getsubids.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@getsubids_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
 gpasswd_SOURCES = gpasswd.c
@@ -260,7 +254,6 @@ groups_SOURCES = groups.c
 groups_OBJECTS = groups.$(OBJEXT)
 groups_LDADD = $(LDADD)
 groups_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 grpck_SOURCES = grpck.c
 grpck_OBJECTS = grpck.$(OBJEXT)
@@ -278,7 +271,6 @@ id_SOURCES = id.c
 id_OBJECTS = id.$(OBJEXT)
 id_LDADD = $(LDADD)
 id_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 lastlog_SOURCES = lastlog.c
 lastlog_OBJECTS = lastlog.$(OBJEXT)
@@ -294,13 +286,11 @@ logoutd_SOURCES = logoutd.c
 logoutd_OBJECTS = logoutd.$(OBJEXT)
 logoutd_LDADD = $(LDADD)
 logoutd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 new_subid_range_SOURCES = new_subid_range.c
 new_subid_range_OBJECTS = new_subid_range-new_subid_range.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@new_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
 newgidmap_SOURCES = newgidmap.c
@@ -498,6 +488,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -648,7 +639,6 @@ suidperms = 4755
 sgidperms = 2755
 AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
-	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
 	$(ECONF_CPPFLAGS)
@@ -660,7 +650,6 @@ suidubins = chage chfn chsh expiry gpasswd newgrp $(am__append_5) \
 	$(am__append_7)
 @WITH_TCB_TRUE@shadowsgidubins = passwd
 LDADD = $(INTLLIBS) \
-		 $(top_builddir)/libmisc/libmisc.la \
 		 $(top_builddir)/lib/libshadow.la \
 		 $(LIBTCB)
 
@@ -720,60 +709,50 @@ vipw_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 
 @ENABLE_SUBIDS_TRUE@getsubids_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@getsubids_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
 @ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@get_subid_owners_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@get_subid_owners_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
 @ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
 @ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@free_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
 @ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@free_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@check_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc
+@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)
 
 @ENABLE_SUBIDS_TRUE@check_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 all: all-am

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.18.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2007-11-24 22:54+0100\n"
 "Last-Translator: Tommi Vainikainen <thv+debian@iki.fi>\n"
 "Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
@@ -17,13 +17,165 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "Varoitus: tuntematon ryhmä %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "Varoitus: liian monta ryhmää\n"
+
+msgid "Your password has expired."
+msgstr "Salasanasi on vanhentunut."
+
+msgid "Your password is inactive."
+msgstr "Salasanasi ei ole käytössä."
+
+msgid "Your login has expired."
+msgstr "Käyttäjätunnuksesi on vanhentunut."
+
+msgid "  Contact the system administrator."
+msgstr "  Ota yhteys järjestelmän ylläpitoon."
+
+msgid "  Choose a new password."
+msgstr "  Valitse uusi salasana."
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "Salasanasi vanhenee %ld päivässä.\n"
+
+msgid "Your password will expire tomorrow."
+msgstr "Salasanasi vanhenee huomenna."
+
+msgid "Your password will expire today."
+msgstr "Salasanasi vanhenee tänään."
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "Päätettä %s ei voi vaihtaa"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s: kentät liian pitkiä\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s: %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "Ympäristön ylivuoto\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "Et voi muuttaa muuttujaa $%s\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"Edellisen kirjautumisen jälkeen %d epäonnistunut yritys.\n"
+"Viimeisin oli %s päätteellä %s.\n"
+msgstr[1] ""
+"Edellisen kirjautumisen jälkeen %d epäonnistunutta yritystä.\n"
+"Viimeisin oli %s päätteellä %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "postilaatikon omistajan vaihtaminen epäonnistui"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s: ei saa ainutkertaista UID:tä\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s: ei saa ainutkertaista GID:iä\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s: ei saa ainutkertaista GID:iä\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s: tiedostoa %s ei voi luoda\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s: tiedostoa %s ei voi luoda\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s: ei saa ainutkertaista UID:tä\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s: ei saa ainutkertaista UID:tä\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s: ei saa ainutkertaista UID:tä\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -37,6 +189,68 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "asetusvirhe - tuntematon kohta \"%s\" (kerro ylläpidolle)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s: PAM-todennus epäonnistui\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s: virheellinen kenttä \"%s\"\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "Asetustiedoille ei voi varata tilaa.\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "Asetustiedoille ei voi varata tilaa.\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s: tiedosta ei voi avata\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s: rivi %d: chown epäonnistui\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s: rivi %d: chown epäonnistui\n"
+
+msgid "Too many logins.\n"
+msgstr "Liian monta sisäänkirjautumista.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s-tunnus: "
+
+msgid "You have new mail."
+msgstr "Sinulle on uutta postia."
+
+msgid "No mail."
+msgstr "Ei postia."
+
+msgid "You have mail."
+msgstr "Sinulle on postia."
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -44,12 +258,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "ei muutoksia"
+
+msgid "a palindrome"
+msgstr "palidromi"
+
+msgid "case changes only"
+msgstr "vain kirjainkoon muutoksia"
+
+msgid "too similar"
+msgstr "liian samankaltainen"
+
+msgid "rotated"
+msgstr "pyöräytetty"
+
+msgid "too short"
+msgstr "liian lyhyt"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "Huono salasana: %s.  "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "passwd: pam_start() epäonnistui, virhe %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "passwd: %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "Salasana vaihdettu."
+
+msgid "passwd: password updated successfully\n"
+msgstr "passwd: salasanan päivitys onnistui\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s: tietolähdettä %s ei tueta\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s: pam_start: virhe %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "passwd: pam_start() epäonnistui, virhe %d\n"
+
 msgid "Password: "
 msgstr "Salasana: "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "Käyttäjän %s salasana: "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "Väärä salasana käyttäjälle \"%s\".\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s: Oikeuksien pudottaminen epäonnistui (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s: virheellinen kotipuhelin: \"%s\"\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s: hakemistoa %s ei voi luoda\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s: hakemistoa %s ei voi luoda\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: hakemistoa %s ei voi luoda\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -153,6 +470,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "Ei voi vaihtaa hakemistoon \"%s\"\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "Ei hakemistoa, sisäänkirjaudutaan siten, että HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "Ei voi suorittaa %s"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "Virheellinen juurihakemisto \"%s\"\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "Ei voi vaihtaa juurihakemistoksi \"%s\"\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s: muisti loppui\n"
 
@@ -231,346 +571,6 @@ msgstr "%s: rename: %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: tiedostoa %s ei voi lukita\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "Varoitus: tuntematon ryhmä %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Varoitus: liian monta ryhmää\n"
-
-msgid "Your password has expired."
-msgstr "Salasanasi on vanhentunut."
-
-msgid "Your password is inactive."
-msgstr "Salasanasi ei ole käytössä."
-
-msgid "Your login has expired."
-msgstr "Käyttäjätunnuksesi on vanhentunut."
-
-msgid "  Contact the system administrator."
-msgstr "  Ota yhteys järjestelmän ylläpitoon."
-
-msgid "  Choose a new password."
-msgstr "  Valitse uusi salasana."
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "Salasanasi vanhenee %ld päivässä.\n"
-
-msgid "Your password will expire tomorrow."
-msgstr "Salasanasi vanhenee huomenna."
-
-msgid "Your password will expire today."
-msgstr "Salasanasi vanhenee tänään."
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "Päätettä %s ei voi vaihtaa"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s: kentät liian pitkiä\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s: %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "Ympäristön ylivuoto\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "Et voi muuttaa muuttujaa $%s\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"Edellisen kirjautumisen jälkeen %d epäonnistunut yritys.\n"
-"Viimeisin oli %s päätteellä %s.\n"
-msgstr[1] ""
-"Edellisen kirjautumisen jälkeen %d epäonnistunutta yritystä.\n"
-"Viimeisin oli %s päätteellä %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "postilaatikon omistajan vaihtaminen epäonnistui"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s: ei saa ainutkertaista UID:tä\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s: ei saa ainutkertaista GID:iä\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s: ei saa ainutkertaista GID:iä\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s: tiedostoa %s ei voi luoda\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s: tiedostoa %s ei voi luoda\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s: ei saa ainutkertaista UID:tä\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s: ei saa ainutkertaista UID:tä\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s: ei saa ainutkertaista UID:tä\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s: PAM-todennus epäonnistui\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s: virheellinen kenttä \"%s\"\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "Asetustiedoille ei voi varata tilaa.\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "Asetustiedoille ei voi varata tilaa.\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s: tiedosta ei voi avata\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s: rivi %d: chown epäonnistui\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s: rivi %d: chown epäonnistui\n"
-
-msgid "Too many logins.\n"
-msgstr "Liian monta sisäänkirjautumista.\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s-tunnus: "
-
-msgid "You have new mail."
-msgstr "Sinulle on uutta postia."
-
-msgid "No mail."
-msgstr "Ei postia."
-
-msgid "You have mail."
-msgstr "Sinulle on postia."
-
-msgid "no change"
-msgstr "ei muutoksia"
-
-msgid "a palindrome"
-msgstr "palidromi"
-
-msgid "case changes only"
-msgstr "vain kirjainkoon muutoksia"
-
-msgid "too similar"
-msgstr "liian samankaltainen"
-
-msgid "rotated"
-msgstr "pyöräytetty"
-
-msgid "too short"
-msgstr "liian lyhyt"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "Huono salasana: %s.  "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "passwd: pam_start() epäonnistui, virhe %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "passwd: %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "Salasana vaihdettu."
-
-msgid "passwd: password updated successfully\n"
-msgstr "passwd: salasanan päivitys onnistui\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s: tietolähdettä %s ei tueta\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s: pam_start: virhe %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "passwd: pam_start() epäonnistui, virhe %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "Väärä salasana käyttäjälle \"%s\".\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s: Oikeuksien pudottaminen epäonnistui (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s: virheellinen kotipuhelin: \"%s\"\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s: hakemistoa %s ei voi luoda\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s: hakemistoa %s ei voi luoda\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s: hakemistoa %s ei voi luoda\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "Ei voi vaihtaa hakemistoon \"%s\"\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "Ei hakemistoa, sisäänkirjaudutaan siten, että HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "Ei voi suorittaa %s"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "Virheellinen juurihakemisto \"%s\"\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "Ei voi vaihtaa juurihakemistoksi \"%s\"\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

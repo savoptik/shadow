@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2012-01-14 12:41+0000\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -16,231 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.2\n"
-
-#, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Existem várias entradas chamadas '%s' em %s. Por favor corrija isto com pwck "
-"ou grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "método de encriptação não suportado por libcrypt? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr ""
-"erro de configuração - não foi possível interpretar o valor de %s: '%s'"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Não foi possível alocar o espaço para a informação de configuração.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-"erro de configuração - item '%s' desconhecido (notifique o administrador)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscp não terminou normalmente (sinal %d)\n"
-
-#, fuzzy, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd saiu com o estado %d"
-
-msgid "Password: "
-msgstr "Palavra-passe: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Palavra-passe de %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Não é possível abrir o interface de auditoria - a abortar.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Não foi possível criar handle de gestão SELinux\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "Política SELinux não gerida\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Não foi possível ler armazenamento de políticas SELinux\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Não foi possível establecer ligação de gestão SELinux\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Não foi possível iniciar transacção SELinux\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Não foi possível consultar seuser para %s\n"
-
-#, fuzzy, c-format
-#| msgid "Could not set serange for %s\n"
-msgid "Could not set serange for %s to %s\n"
-msgstr "Não pode definir serange para %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Não foi possível definir sename para %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Não foi possível modificar o mapeamento do login para %s\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Não foi possível criar mapeamento de login SELinux para %s\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Não foi possível definir nome para %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Não foi possível definir utilizador SELinux para %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Não foi possível acrescentar mapeamento de login para %s\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Não foi possível inicia a gestão do SELinux\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Não pode criar a chave de utilizador SELinux\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Não foi possível verificar o utilizador SELinux\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Não foi possível alterar o mapeamento de utilizador SELinux\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Não foi possível acrescentar o mapeamento de utilizador SELinux\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Não foi possível o 'commit' à transacção SELinux\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Não está definido o mapeamento de login para %s, OK se foi utilizado o "
-"mapeamento predefinido\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr ""
-"O mapeamento de login para %s é definido na política, não pode ser apagado\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Não foi possível apagar o mapeamento do login para %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: memória esgotada\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: não é possível fazer stat a %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s não é nem um directório, nem um symlink.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: não é possível ler o link simbólico %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: link simbólico longo suspeito: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: não é possível criar o directório %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Não pode alterar o dono de %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Não é possível alterar o modo de %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: unlink: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Não é possível remover o directório %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Não é possível renomear %s para %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Não é possível remover %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Não é possível criar link simbólico %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Não conseguiu alterar os donos de %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Não é possível lstat %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Aviso, o utilizador '%s' não tem ficheiro shadow tcb.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Emergência: o ficheiro shadow tcb de %s não é um ficheiro normal com "
-"st_nlink=1.\n"
-"A conta é mantida bloqueada.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: mkdir: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: não é possível abrir %s: %s\n"
 
 #, c-format
 msgid "Warning: unknown group %s\n"
@@ -289,11 +64,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: falha ao desbloquear %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Existem várias entradas chamadas '%s' em %s. Por favor corrija isto com pwck "
+"ou grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
+
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "método de encriptação não suportado por libcrypt? (%s)\n"
 
 msgid "Environment overflow\n"
 msgstr "Overflow do ambiente\n"
@@ -421,6 +207,19 @@ msgstr ""
 "%s: Não foi possível obter um UID único (não existem mais UIDs disponíveis)\n"
 
 #, c-format
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr ""
+"erro de configuração - não foi possível interpretar o valor de %s: '%s'"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Não foi possível alocar o espaço para a informação de configuração.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"erro de configuração - item '%s' desconhecido (notifique o administrador)\n"
+
+#, c-format
 msgid "%s: Not enough arguments to form %u mappings\n"
 msgstr ""
 
@@ -487,6 +286,14 @@ msgstr "Não tem correio."
 msgid "You have mail."
 msgstr "Tem correio."
 
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscp não terminou normalmente (sinal %d)\n"
+
+#, fuzzy, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd saiu com o estado %d"
+
 msgid "no change"
 msgstr "sem alterações"
 
@@ -544,6 +351,13 @@ msgid ""
 "%s\n"
 msgstr "passwd: pam_start() falhou, erro %d\n"
 
+msgid "Password: "
+msgstr "Palavra-passe: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Palavra-passe de %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Palavra-passe incorrecta para %s.\n"
@@ -592,6 +406,111 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Não é possível abrir o interface de auditoria - a abortar.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Não foi possível criar handle de gestão SELinux\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "Política SELinux não gerida\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Não foi possível ler armazenamento de políticas SELinux\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Não foi possível establecer ligação de gestão SELinux\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Não foi possível iniciar transacção SELinux\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Não foi possível consultar seuser para %s\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Não pode definir serange para %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Não foi possível definir sename para %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Não foi possível modificar o mapeamento do login para %s\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Não foi possível criar mapeamento de login SELinux para %s\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Não foi possível definir nome para %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Não foi possível definir utilizador SELinux para %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Não foi possível acrescentar mapeamento de login para %s\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Não foi possível inicia a gestão do SELinux\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Não pode criar a chave de utilizador SELinux\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Não foi possível verificar o utilizador SELinux\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Não foi possível alterar o mapeamento de utilizador SELinux\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Não foi possível acrescentar o mapeamento de utilizador SELinux\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Não foi possível o 'commit' à transacção SELinux\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Não está definido o mapeamento de login para %s, OK se foi utilizado o "
+"mapeamento predefinido\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr ""
+"O mapeamento de login para %s é definido na política, não pode ser apagado\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Não foi possível apagar o mapeamento do login para %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Não foi possível mudar para o directório '%s'\n"
@@ -614,6 +533,87 @@ msgstr "Directório raiz inválido '%s'\n"
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Não é possível mudar o directório raiz para '%s'\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: memória esgotada\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: não é possível fazer stat a %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s não é nem um directório, nem um symlink.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: não é possível ler o link simbólico %s: %s\n"
+
+#, c-format
+msgid "%s: Suspiciously long symlink: %s\n"
+msgstr "%s: link simbólico longo suspeito: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: não é possível criar o directório %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Não pode alterar o dono de %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Não é possível alterar o modo de %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: unlink: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Não é possível remover o directório %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Não é possível renomear %s para %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Não é possível remover %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Não é possível criar link simbólico %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Não conseguiu alterar os donos de %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Não é possível lstat %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Aviso, o utilizador '%s' não tem ficheiro shadow tcb.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Emergência: o ficheiro shadow tcb de %s não é um ficheiro normal com "
+"st_nlink=1.\n"
+"A conta é mantida bloqueada.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: mkdir: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: não é possível abrir %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"

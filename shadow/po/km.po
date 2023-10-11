@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow_po_km\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2023-08-15 21:39-0500\n"
+"POT-Creation-Date: 2023-10-05 19:27+0200\n"
 "PO-Revision-Date: 2006-06-28 10:08+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -23,13 +23,169 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #, c-format
+msgid "Warning: unknown group %s\n"
+msgstr "ការ​ព្រមាន ៖ មិន​ស្គាល់​ក្រុម %s\n"
+
+msgid "Warning: too many groups\n"
+msgstr "ការព្រមាន​ ៖ មាន​ច្រើន​ក្រុម​ពេក\n"
+
+msgid "Your password has expired."
+msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​បាន​ផុត​កំណត់ហើយ​ ។"
+
+msgid "Your password is inactive."
+msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នកអសកម្ម​ ។"
+
+msgid "Your login has expired."
+msgstr "ការចូល​របស់អ្នក​បាន​ផុត​កំណត់ហើយ​ ។"
+
+#, fuzzy
+msgid "  Contact the system administrator."
+msgstr "  ទាក់ទងទៅ​អ្នកគ្រប់គ្រងប្រព័ន្ធ​ ។\n"
+
+#, fuzzy
+msgid "  Choose a new password."
+msgstr "  ជ្រើស​ពាក្យ​សម្ងាត់​មួយ ។\n"
+
+msgid "You must change your password."
+msgstr ""
+
+#, c-format
+msgid "Your password will expire in %ld days.\n"
+msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹង​ផុត​កំណត់ក្នុងពេល​ %ld ថ្ងៃ ។\n"
+
+#, fuzzy
+msgid "Your password will expire tomorrow."
+msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹងផុត​កំណត់នៅ​ថ្ងៃ​ស្អែក​ ។​\n"
+
+#, fuzzy
+msgid "Your password will expire today."
+msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹងផុត​កំណត់នៅ​ថ្ងៃ​នេះ ។\n"
+
+msgid "Cannot open audit interface - aborting.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Unable to change owner or mode of tty stdin: %s"
+msgstr "មិន​អាច​ប្តូរ​ tty %s បានឡើយ"
+
+#, fuzzy, c-format
+msgid "%s: failed to unlock %s\n"
+msgstr "%s ៖ វាល គឺ​វែងវែងពេក​\n"
+
+#, c-format
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: "
+msgstr "%s ៖ %s\n"
+
+msgid ": "
 msgstr ""
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
+
+msgid "Environment overflow\n"
+msgstr "​លើស​ចំណុះ​បរិស្ថាន\n"
+
+#, c-format
+msgid "You may not change $%s\n"
+msgstr "អ្នក​ប្រហែល​មិន​បាន​ប្តូរ​ $%s បានទេ\n"
+
+#, c-format
+msgid ""
+"%d failure since last login.\n"
+"Last was %s on %s.\n"
+msgid_plural ""
+"%d failures since last login.\n"
+"Last was %s on %s.\n"
+msgstr[0] ""
+"%d បានបរាជ័យ ចាប់តាំងពីចូលលើក​ចុងក្រោយ​គេមក​ ។\n"
+"ចុងក្រោយគេនៅ​ %s លើ %s ។\n"
+msgstr[1] ""
+"%d ចូល​ចុងក្រោយ​បានបរាជ័យ​ ។\n"
+"ចុងក្រោម​ %s  %s.\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred GID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to allocate memory: %s\n"
+msgstr "បរាជ័យ​ក្នុងការ​ផ្លាស់ប្ដូរ​ម្ចាស់​ប្រអប់សំបុត្រ"
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
+msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
+msgstr "%s ៖ មិនអាច​យក​​ GID ​ដែលមានតែមួយ​បានឡើយ​\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique GID (no more available GIDs)\n"
+msgstr "%s ៖ មិនអាច​យក​​ GID ​ដែលមានតែមួយ​បានឡើយ​\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
+"SUB_GID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate GID range\n"
+msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
+"SUB_UID_COUNT (%lu)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique subordinate UID range\n"
+msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
+
+#, c-format
+msgid ""
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
+"(%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Encountered error attempting to use preferred UID: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
+msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
+msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
+
+#, fuzzy, c-format
+msgid "%s: Can't get unique UID (no more available UIDs)\n"
+msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
 
 #, c-format
 msgid "configuration error - cannot parse %s value: '%s'"
@@ -43,6 +199,68 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "កំហុស​ការ​កំណត់​រចនាសម្ព័ន្ធ​ - មិន​ស្គាល់​ធាតុ '%s' (ជូន​ដំណឹង​អ្នក​គ្រប់គ្រង​)\n"
 
 #, c-format
+msgid "%s: Not enough arguments to form %u mappings\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Memory allocation failure\n"
+msgstr "%s ៖ PAM ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវបាន​បរាជ័យ​\n"
+
+#, c-format
+msgid "%s: subuid overflow detected.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: invalid field '%s'\n"
+msgid "%s: Invalid map file %s specified\n"
+msgstr "%s ៖ វាល​មិនត្រឹមត្រូវ​ '%s'\n"
+
+#, c-format
+msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: Could not seteuid to %d\n"
+msgstr "មិន​អាច​បម្រុង​ទុក​ទំហំ​សម្រាប់​ព័ត៌មាន​​កំណត់​រចនាសម្ព័ន្ធទេ​ ។\n"
+
+#, fuzzy, c-format
+msgid "%s: Could not set caps\n"
+msgstr "មិន​អាច​បម្រុង​ទុក​ទំហំ​សម្រាប់​ព័ត៌មាន​​កំណត់​រចនាសម្ព័ន្ធទេ​ ។\n"
+
+#, fuzzy, c-format
+#| msgid "%s: can't open file\n"
+msgid "%s: stpeprintf failed!\n"
+msgstr "%s ៖ មិន​អាច​បើក​​ឯកសារ​បានទេ\n"
+
+#, fuzzy, c-format
+msgid "%s: open of %s failed: %s\n"
+msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
+
+#, fuzzy, c-format
+msgid "%s: write to %s failed: %s\n"
+msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
+
+msgid "Too many logins.\n"
+msgstr "ចូល​ច្រើន​ពេក​ ។\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"%s ចូល​ ៖ "
+
+msgid "You have new mail."
+msgstr "អ្នក​មានសំបុត្រ​ថ្មី​ ។​"
+
+msgid "No mail."
+msgstr "គ្មាន​សំបុត្រ​​​ទេ​ ។"
+
+msgid "You have mail."
+msgstr "អ្នក​មាន​សំបុត្រ ។"
+
+#, c-format
 msgid "%s: nscd did not terminate normally (signal %d)\n"
 msgstr ""
 
@@ -50,12 +268,115 @@ msgstr ""
 msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
+msgid "no change"
+msgstr "គ្មាន​​ផ្លាស់ប្តូរ​ "
+
+msgid "a palindrome"
+msgstr "ឃ្លាដែលអាច​អាន​ត្រឡប់​ចុះត្រឡប់ឡើងបាន"
+
+msgid "case changes only"
+msgstr "ករណី​បាន​តែ​ប្តូរ​"
+
+msgid "too similar"
+msgstr "ស្រដៀងគ្នា​ពេក"
+
+msgid "rotated"
+msgstr "បានបង្វិល​"
+
+msgid "too short"
+msgstr "ខ្លីពេក​"
+
+#, c-format
+msgid "Bad password: %s.  "
+msgstr "ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ​ ៖ %s ។  "
+
+#, c-format
+msgid "passwd: pam_start() failed, error %d\n"
+msgstr "ពាក្យ​សម្ងាត់​ ៖ pam_start() បាន​បរាជ័យ​, កំហុស​ %d\n"
+
+#, c-format
+msgid "passwd: %s\n"
+msgstr "ពាក្យសម្ងាត់ ៖ %s\n"
+
+#, fuzzy
+msgid "passwd: password unchanged\n"
+msgstr "ពាក្យ​សម្ងាត់​បាន​ប្តូរ​ ។\n"
+
+msgid "passwd: password updated successfully\n"
+msgstr "ពាក្យសម្ងាត់ ៖ ពាក្យ​សម្ងាត់​បាន​ធ្វើ​ឲ្យ​ទាន់​សម័យ​ដោយ​ជោគជ័យ​\n"
+
+#, c-format
+msgid "%s: PAM modules requesting echoing are not supported.\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: repository %s not supported\n"
+msgid "%s: conversation type %d not supported.\n"
+msgstr "%s ៖ ឃ្លាំង​ %s មិន​បាន​គាំទ្រឡើយ​\n"
+
+#, fuzzy, c-format
+#| msgid "%s: pam_start: error %d\n"
+msgid "%s: (user %s) pam_start failure %d\n"
+msgstr "%s ៖ pam_start ៖ កំហុស​ %d\n"
+
+#, fuzzy, c-format
+#| msgid "passwd: pam_start() failed, error %d\n"
+msgid ""
+"%s: (user %s) pam_chauthtok() failed, error:\n"
+"%s\n"
+msgstr "ពាក្យ​សម្ងាត់​ ៖ pam_start() បាន​បរាជ័យ​, កំហុស​ %d\n"
+
 msgid "Password: "
 msgstr "ពាក្យ​សម្ងាត់​ ៖ "
 
 #, c-format
 msgid "%s's Password: "
 msgstr "ពាក្យសម្ងាត់​របស់ %sសម្ងាត់ ៖ "
+
+#, c-format
+msgid "Incorrect password for %s.\n"
+msgstr "ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ​សម្រាប់​ %s ។\n"
+
+#, c-format
+msgid "%s: multiple --root options\n"
+msgstr ""
+
+#, c-format
+msgid "%s: option '%s' requires an argument\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to drop privileges (%s)\n"
+msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
+
+#, fuzzy, c-format
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
+msgstr "%s ៖ លេខ​ទូរស័ព្ទនៅផ្ទះ​មិន​ត្រឹមត្រូវ​ ៖ '%s'\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot access chroot directory %s: %s\n"
+msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
+
+#, fuzzy, c-format
+msgid "%s: unable to chroot to directory %s: %s\n"
+msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
+
+#, fuzzy, c-format
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
+
+#, c-format
+msgid ""
+"Invalid ENCRYPT_METHOD value: '%s'.\n"
+"Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, fuzzy
 #| msgid "Cannot open the password file.\n"
@@ -159,6 +480,29 @@ msgid "Could not delete login mapping for %s"
 msgstr ""
 
 #, c-format
+msgid "Unable to cd to '%s'\n"
+msgstr "មិន​អាច​​ cd ចូលទៅ​ '%s' បានទេ\n"
+
+msgid "No directory, logging in with HOME=/"
+msgstr "គ្មាន​ថត​ ការចូល​ជាមួយ​ HOME=/"
+
+#, c-format
+msgid "Cannot execute %s"
+msgstr "មិន​អាចប្រតិបត្តិ​ %s បានទេ"
+
+#, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
+msgid "Invalid root directory '%s'\n"
+msgstr "ថត​ root មិន​ត្រឹមត្រូវ​ '%s'\n"
+
+#, c-format
+msgid "Can't change root directory to '%s'\n"
+msgstr "មិន​អាច​ប្តូរ​ថត root ទៅ​ '%s'បាន​ទេ​\n"
+
+#, c-format
 msgid "%s: out of memory\n"
 msgstr "%s ៖ អស់​សតិ​\n"
 
@@ -235,350 +579,6 @@ msgstr "%s ៖​ ប្តូរ​ឈ្មោះ​ ៖ %s"
 #, fuzzy, c-format
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារ​ %s បានទេ\n"
-
-#, c-format
-msgid "Warning: unknown group %s\n"
-msgstr "ការ​ព្រមាន ៖ មិន​ស្គាល់​ក្រុម %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "ការព្រមាន​ ៖ មាន​ច្រើន​ក្រុម​ពេក\n"
-
-msgid "Your password has expired."
-msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​បាន​ផុត​កំណត់ហើយ​ ។"
-
-msgid "Your password is inactive."
-msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នកអសកម្ម​ ។"
-
-msgid "Your login has expired."
-msgstr "ការចូល​របស់អ្នក​បាន​ផុត​កំណត់ហើយ​ ។"
-
-#, fuzzy
-msgid "  Contact the system administrator."
-msgstr "  ទាក់ទងទៅ​អ្នកគ្រប់គ្រងប្រព័ន្ធ​ ។\n"
-
-#, fuzzy
-msgid "  Choose a new password."
-msgstr "  ជ្រើស​ពាក្យ​សម្ងាត់​មួយ ។\n"
-
-msgid "You must change your password."
-msgstr ""
-
-#, c-format
-msgid "Your password will expire in %ld days.\n"
-msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹង​ផុត​កំណត់ក្នុងពេល​ %ld ថ្ងៃ ។\n"
-
-#, fuzzy
-msgid "Your password will expire tomorrow."
-msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹងផុត​កំណត់នៅ​ថ្ងៃ​ស្អែក​ ។​\n"
-
-#, fuzzy
-msgid "Your password will expire today."
-msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​នឹងផុត​កំណត់នៅ​ថ្ងៃ​នេះ ។\n"
-
-msgid "Cannot open audit interface - aborting.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "Unable to change owner or mode of tty stdin: %s"
-msgstr "មិន​អាច​ប្តូរ​ tty %s បានឡើយ"
-
-#, fuzzy, c-format
-msgid "%s: failed to unlock %s\n"
-msgstr "%s ៖ វាល គឺ​វែងវែងពេក​\n"
-
-#, fuzzy, c-format
-msgid "%s: "
-msgstr "%s ៖ %s\n"
-
-msgid ": "
-msgstr ""
-
-msgid "Environment overflow\n"
-msgstr "​លើស​ចំណុះ​បរិស្ថាន\n"
-
-#, c-format
-msgid "You may not change $%s\n"
-msgstr "អ្នក​ប្រហែល​មិន​បាន​ប្តូរ​ $%s បានទេ\n"
-
-#, c-format
-msgid ""
-"%d failure since last login.\n"
-"Last was %s on %s.\n"
-msgid_plural ""
-"%d failures since last login.\n"
-"Last was %s on %s.\n"
-msgstr[0] ""
-"%d បានបរាជ័យ ចាប់តាំងពីចូលលើក​ចុងក្រោយ​គេមក​ ។\n"
-"ចុងក្រោយគេនៅ​ %s លើ %s ។\n"
-msgstr[1] ""
-"%d ចូល​ចុងក្រោយ​បានបរាជ័យ​ ។\n"
-"ចុងក្រោម​ %s  %s.\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: GID_MIN (%lu), GID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred GID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: failed to allocate memory: %s\n"
-msgstr "បរាជ័យ​ក្នុងការ​ផ្លាស់ប្ដូរ​ម្ចាស់​ប្រអប់សំបុត្រ"
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system GID (%s). Suppressing additional messages.\n"
-msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (%s). Suppressing additional messages.\n"
-msgstr "%s ៖ មិនអាច​យក​​ GID ​ដែលមានតែមួយ​បានឡើយ​\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique GID (no more available GIDs)\n"
-msgstr "%s ៖ មិនអាច​យក​​ GID ​ដែលមានតែមួយ​បានឡើយ​\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_GID_MIN (%lu), SUB_GID_MAX (%lu), "
-"SUB_GID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate GID range\n"
-msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SUB_UID_MIN (%lu), SUB_UID_MAX (%lu), "
-"SUB_UID_COUNT (%lu)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique subordinate UID range\n"
-msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
-
-#, c-format
-msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Encountered error attempting to use preferred UID: %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid ""
-"%s: Can't get unique system UID (%s). Suppressing additional messages.\n"
-msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (%s). Suppressing additional messages.\n"
-msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
-
-#, fuzzy, c-format
-msgid "%s: Can't get unique UID (no more available UIDs)\n"
-msgstr "%s ៖ មិនអាចយក​ UID ដែលមានតែមួយ​បានទេ\n"
-
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Memory allocation failure\n"
-msgstr "%s ៖ PAM ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវបាន​បរាជ័យ​\n"
-
-#, c-format
-msgid "%s: subuid overflow detected.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: invalid field '%s'\n"
-msgid "%s: Invalid map file %s specified\n"
-msgstr "%s ៖ វាល​មិនត្រឹមត្រូវ​ '%s'\n"
-
-#, c-format
-msgid "%s: Could not prctl(PR_SET_KEEPCAPS)\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not seteuid to %d\n"
-msgstr "មិន​អាច​បម្រុង​ទុក​ទំហំ​សម្រាប់​ព័ត៌មាន​​កំណត់​រចនាសម្ព័ន្ធទេ​ ។\n"
-
-#, fuzzy, c-format
-msgid "%s: Could not set caps\n"
-msgstr "មិន​អាច​បម្រុង​ទុក​ទំហំ​សម្រាប់​ព័ត៌មាន​​កំណត់​រចនាសម្ព័ន្ធទេ​ ។\n"
-
-#, fuzzy, c-format
-#| msgid "%s: can't open file\n"
-msgid "%s: stpeprintf failed!\n"
-msgstr "%s ៖ មិន​អាច​បើក​​ឯកសារ​បានទេ\n"
-
-#, fuzzy, c-format
-msgid "%s: open of %s failed: %s\n"
-msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
-
-#, fuzzy, c-format
-msgid "%s: write to %s failed: %s\n"
-msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
-
-msgid "Too many logins.\n"
-msgstr "ចូល​ច្រើន​ពេក​ ។\n"
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"%s ចូល​ ៖ "
-
-msgid "You have new mail."
-msgstr "អ្នក​មានសំបុត្រ​ថ្មី​ ។​"
-
-msgid "No mail."
-msgstr "គ្មាន​សំបុត្រ​​​ទេ​ ។"
-
-msgid "You have mail."
-msgstr "អ្នក​មាន​សំបុត្រ ។"
-
-msgid "no change"
-msgstr "គ្មាន​​ផ្លាស់ប្តូរ​ "
-
-msgid "a palindrome"
-msgstr "ឃ្លាដែលអាច​អាន​ត្រឡប់​ចុះត្រឡប់ឡើងបាន"
-
-msgid "case changes only"
-msgstr "ករណី​បាន​តែ​ប្តូរ​"
-
-msgid "too similar"
-msgstr "ស្រដៀងគ្នា​ពេក"
-
-msgid "rotated"
-msgstr "បានបង្វិល​"
-
-msgid "too short"
-msgstr "ខ្លីពេក​"
-
-#, c-format
-msgid "Bad password: %s.  "
-msgstr "ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ​ ៖ %s ។  "
-
-#, c-format
-msgid "passwd: pam_start() failed, error %d\n"
-msgstr "ពាក្យ​សម្ងាត់​ ៖ pam_start() បាន​បរាជ័យ​, កំហុស​ %d\n"
-
-#, c-format
-msgid "passwd: %s\n"
-msgstr "ពាក្យសម្ងាត់ ៖ %s\n"
-
-#, fuzzy
-msgid "passwd: password unchanged\n"
-msgstr "ពាក្យ​សម្ងាត់​បាន​ប្តូរ​ ។\n"
-
-msgid "passwd: password updated successfully\n"
-msgstr "ពាក្យសម្ងាត់ ៖ ពាក្យ​សម្ងាត់​បាន​ធ្វើ​ឲ្យ​ទាន់​សម័យ​ដោយ​ជោគជ័យ​\n"
-
-#, c-format
-msgid "%s: PAM modules requesting echoing are not supported.\n"
-msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: repository %s not supported\n"
-msgid "%s: conversation type %d not supported.\n"
-msgstr "%s ៖ ឃ្លាំង​ %s មិន​បាន​គាំទ្រឡើយ​\n"
-
-#, fuzzy, c-format
-#| msgid "%s: pam_start: error %d\n"
-msgid "%s: (user %s) pam_start failure %d\n"
-msgstr "%s ៖ pam_start ៖ កំហុស​ %d\n"
-
-#, fuzzy, c-format
-#| msgid "passwd: pam_start() failed, error %d\n"
-msgid ""
-"%s: (user %s) pam_chauthtok() failed, error:\n"
-"%s\n"
-msgstr "ពាក្យ​សម្ងាត់​ ៖ pam_start() បាន​បរាជ័យ​, កំហុស​ %d\n"
-
-#, c-format
-msgid "Incorrect password for %s.\n"
-msgstr "ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ​សម្រាប់​ %s ។\n"
-
-#, c-format
-msgid "%s: multiple --root options\n"
-msgstr ""
-
-#, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr ""
-
-#, c-format
-msgid "%s: failed to drop privileges (%s)\n"
-msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
-
-#, fuzzy, c-format
-msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
-msgstr "%s ៖ លេខ​ទូរស័ព្ទនៅផ្ទះ​មិន​ត្រឹមត្រូវ​ ៖ '%s'\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot access chroot directory %s: %s\n"
-msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
-
-#, fuzzy, c-format
-msgid "%s: unable to chroot to directory %s: %s\n"
-msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot chdir in chroot directory %s: %s\n"
-msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
-
-#, c-format
-msgid ""
-"Invalid ENCRYPT_METHOD value: '%s'.\n"
-"Defaulting to DES.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"Unable to generate a salt from setting \"%s\", check your settings in "
-"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
-"method.\n"
-msgstr ""
-
-#, c-format
-msgid "Unable to cd to '%s'\n"
-msgstr "មិន​អាច​​ cd ចូលទៅ​ '%s' បានទេ\n"
-
-msgid "No directory, logging in with HOME=/"
-msgstr "គ្មាន​ថត​ ការចូល​ជាមួយ​ HOME=/"
-
-#, c-format
-msgid "Cannot execute %s"
-msgstr "មិន​អាចប្រតិបត្តិ​ %s បានទេ"
-
-#, c-format
-msgid "Maximum subsystem depth reached\n"
-msgstr ""
-
-#, c-format
-msgid "Invalid root directory '%s'\n"
-msgstr "ថត​ root មិន​ត្រឹមត្រូវ​ '%s'\n"
-
-#, c-format
-msgid "Can't change root directory to '%s'\n"
-msgstr "មិន​អាច​ប្តូរ​ថត root ទៅ​ '%s'បាន​ទេ​\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"
