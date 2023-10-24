@@ -194,8 +194,6 @@ endif
 
 if ENABLE_LOGIND
 libshadow_la_SOURCES += logind.c
-else
-libshadow_la_SOURCES += utmp.c
 endif
 
 if !WITH_LIBBSD
