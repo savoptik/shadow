@@ -28,7 +28,6 @@ libshadow_la_SOURCES = \
 	alloc.c \
 	alloc.h \
 	audit_help.c \
-	basename.c \
 	bit.c \
 	bit.h \
 	chkname.c \
