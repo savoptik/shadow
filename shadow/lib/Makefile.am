@@ -155,7 +155,7 @@ libshadow_la_SOURCES = \
 	yesno.c
 
 if WITH_TCB
-libshadow_la_SOURCES += tcbfuncs.c tcbfuncs.h
+libshadow_la_SOURCES += tcbfuncs.c tcbfuncs.h remove_tcbdir.c
 endif
 
 semanage_filter = sed -n 's/.*\(semanage_[[:alpha:]_]\+\)[[:space:]]*(.*/\1/p'
