@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-10-30 02:11+0100\n"
+"POT-Creation-Date: 2024-01-16 00:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -639,7 +639,7 @@ msgstr ""
 #: userdel.8.xml.out:43
 #: usermod.8.xml.out:44
 #: vipw.8.xml.out:39
-msgid "4.14.2"
+msgid "4.14.3"
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose
