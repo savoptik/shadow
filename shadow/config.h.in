@@ -60,6 +60,10 @@
    */
 #undef HAVE_DCGETTEXT
 
+/* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
+   you don't. */
+#undef HAVE_DECL_CYGWIN_CONV_PATH
+
 /* Define to 1 if you have the declaration of `PAM_DATA_SILENT', and to 0 if
    you don't. */
 #undef HAVE_DECL_PAM_DATA_SILENT
@@ -76,8 +80,17 @@
    if you don't. */
 #undef HAVE_DECL_PAM_NEW_AUTHTOK_REQD
 
+/* Define if you have the GNU dld library. */
+#undef HAVE_DLD
+
+/* Define to 1 if you have the `dlerror' function. */
+#undef HAVE_DLERROR
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Define if you have the _dyld_func_lookup function. */
+#undef HAVE_DYLD
 
 /* Define to 1 if you have the `explicit_bzero' function. */
 #undef HAVE_EXPLICIT_BZERO
@@ -135,6 +148,12 @@
 
 /* Defined if it includes *Pw functions. */
 #undef HAVE_LIBCRACK_PW
+
+/* Define if you have the libdl library or equivalent. */
+#undef HAVE_LIBDL
+
+/* Define if libdlloader will be built on this platform */
+#undef HAVE_LIBDLLOADER
 
 /* Define to 1 if you have the <linux/btrfs_tree.h> header file. */
 #undef HAVE_LINUX_BTRFS_TREE_H
@@ -207,6 +226,9 @@
 
 /* Have working shadow group support in libc */
 #undef HAVE_SHADOWGRP
+
+/* Define if you have the shl_load function. */
+#undef HAVE_SHL_LOAD
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

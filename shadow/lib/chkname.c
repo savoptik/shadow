@@ -129,17 +129,23 @@ static size_t min (size_t a, size_t b)
 
 bool is_valid_user_name (const char *name)
 {
-	size_t max_len, sc_max_name;
+	size_t maxlen, sc_max_name;
+
 	/*
 	 * User names length are limited by the kernel
 	 * and the settings in login.defs.
 	 */
 	sc_max_name = sysconf(_SC_LOGIN_NAME_MAX);
-	max_len = min (getdef_unum ("USERNAME_MAX", sc_max_name),
+	/*
+	 * The _SC_LOGIN_NAME_MAX value includes space for the NUL byte,
+	 * so we must subtract 1 from it.
+	 */
+	if (sc_max_name > 0 && sc_max_name != (size_t)-1)
+		sc_max_name--;
+	maxlen = min (getdef_unum ("USERNAME_MAX", sc_max_name),
 					sc_max_name);
-	if (strlen (name) > max_len) {
+	if (strlen(name) > maxlen)
 		return false;
-	}
 
 	return is_valid_name (name);
 }

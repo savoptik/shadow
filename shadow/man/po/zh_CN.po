@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: shadow-man-pages VERSION\n"
-"POT-Creation-Date: 2024-01-16 00:08+0100\n"
+"POT-Creation-Date: 2024-02-12 00:24+0100\n"
 "PO-Revision-Date: 2013-08-23 01:42+0200\n"
 "Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -265,7 +265,7 @@ msgstr "shadow-utils"
 #: shadow.3.xml.out:37 shadow.5.xml.out:37 sg.1.xml.out:38 su.1.xml.out:54
 #: suauth.5.xml.out:37 useradd.8.xml.out:56 userdel.8.xml.out:43
 #: usermod.8.xml.out:44 vipw.8.xml.out:39
-msgid "4.14.3"
+msgid "4.14.4"
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose
