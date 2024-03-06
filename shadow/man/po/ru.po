@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1:4.0.18.2-1\n"
-"POT-Creation-Date: 2024-02-12 00:24+0100\n"
+"POT-Creation-Date: 2024-03-02 01:07+0100\n"
 "PO-Revision-Date: 2013-08-23 01:39+0200\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -271,7 +271,7 @@ msgstr "shadow-utils"
 #: shadow.3.xml.out:37 shadow.5.xml.out:37 sg.1.xml.out:38 su.1.xml.out:54
 #: suauth.5.xml.out:37 useradd.8.xml.out:56 userdel.8.xml.out:43
 #: usermod.8.xml.out:44 vipw.8.xml.out:39
-msgid "4.14.4"
+msgid "4.14.6"
 msgstr ""
 
 # type: Content of: <refentry><refnamediv><refpurpose>

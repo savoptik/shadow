@@ -1625,7 +1625,7 @@ yyreduce:
   case 33: /* relunit: tYEAR_UNIT  */
 #line 320 "getdate.y"
                      {
-	    yyRelYear++;
+	    yyRelYear += (yyvsp[0].Number);
 	}
 #line 1631 "getdate.c"
     break;
@@ -1649,7 +1649,7 @@ yyreduce:
   case 36: /* relunit: tMONTH_UNIT  */
 #line 329 "getdate.y"
                       {
-	    yyRelMonth++;
+	    yyRelMonth += (yyvsp[0].Number);
 	}
 #line 1655 "getdate.c"
     break;
@@ -1673,7 +1673,7 @@ yyreduce:
   case 39: /* relunit: tDAY_UNIT  */
 #line 338 "getdate.y"
                     {
-	    yyRelDay++;
+	    yyRelDay += (yyvsp[0].Number);
 	}
 #line 1679 "getdate.c"
     break;
@@ -1697,7 +1697,7 @@ yyreduce:
   case 42: /* relunit: tHOUR_UNIT  */
 #line 347 "getdate.y"
                      {
-	    yyRelHour++;
+	    yyRelHour += (yyvsp[0].Number);
 	}
 #line 1703 "getdate.c"
     break;
@@ -1721,7 +1721,7 @@ yyreduce:
   case 45: /* relunit: tMINUTE_UNIT  */
 #line 356 "getdate.y"
                        {
-	    yyRelMinutes++;
+	    yyRelMinutes += (yyvsp[0].Number);
 	}
 #line 1727 "getdate.c"
     break;
@@ -1745,7 +1745,7 @@ yyreduce:
   case 48: /* relunit: tSEC_UNIT  */
 #line 365 "getdate.y"
                     {
-	    yyRelSeconds++;
+	    yyRelSeconds += (yyvsp[0].Number);
 	}
 #line 1751 "getdate.c"
     break;

@@ -12,6 +12,7 @@ pamd_files = \
 
 pamd_acct_tools_files = \
 	chage \
+	chgpasswd \
 	groupadd \
 	groupdel \
 	groupmod \
