@@ -28,6 +28,8 @@
 #endif				/* ENABLE_SUBIDS */
 #include "getdef.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 static char *passwd_db_file = NULL;
 static char *spw_db_file = NULL;
@@ -104,50 +106,33 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 				 log_get_progname());
 			exit (E_BAD_ARG);
 		}
-		size_t len;
-		len = strlen(prefix) + strlen(PASSWD_FILE) + 2;
-		passwd_db_file = XMALLOC(len, char);
-		snprintf(passwd_db_file, len, "%s/%s", prefix, PASSWD_FILE);
+
+		xasprintf(&passwd_db_file, "%s/%s", prefix, PASSWD_FILE);
 		pw_setdbname(passwd_db_file);
 
-		len = strlen(prefix) + strlen(GROUP_FILE) + 2;
-		group_db_file = XMALLOC(len, char);
-		snprintf(group_db_file, len, "%s/%s", prefix, GROUP_FILE);
+		xasprintf(&group_db_file, "%s/%s", prefix, GROUP_FILE);
 		gr_setdbname(group_db_file);
 
 #ifdef  SHADOWGRP
-		len = strlen(prefix) + strlen(SGROUP_FILE) + 2;
-		sgroup_db_file = XMALLOC(len, char);
-		snprintf(sgroup_db_file, len, "%s/%s", prefix, SGROUP_FILE);
+		xasprintf(&sgroup_db_file, "%s/%s", prefix, SGROUP_FILE);
 		sgr_setdbname(sgroup_db_file);
 #endif
-#ifdef	USE_NIS
-		__setspNIS(0); /* disable NIS for now, at least until it is properly supporting a "prefix" */
-#endif
 
-		len = strlen(prefix) + strlen(SHADOW_FILE) + 2;
-		spw_db_file = XMALLOC(len, char);
-		snprintf(spw_db_file, len, "%s/%s", prefix, SHADOW_FILE);
+		xasprintf(&spw_db_file, "%s/%s", prefix, SHADOW_FILE);
 		spw_setdbname(spw_db_file);
 
 #ifdef ENABLE_SUBIDS
-		len = strlen(prefix) + strlen("/etc/subuid") + 2;
-		suid_db_file = XMALLOC(len, char);
-		snprintf(suid_db_file, len, "%s/%s", prefix, "/etc/subuid");
+		xasprintf(&suid_db_file, "%s/%s", prefix, SUBUID_FILE);
 		sub_uid_setdbname(suid_db_file);
 
-		len = strlen(prefix) + strlen("/etc/subgid") + 2;
-		sgid_db_file = XMALLOC(len, char);
-		snprintf(sgid_db_file, len, "%s/%s", prefix, "/etc/subgid");
+		xasprintf(&sgid_db_file, "%s/%s", prefix, SUBGID_FILE);
 		sub_gid_setdbname(sgid_db_file);
 #endif
 
 #ifdef USE_ECONF
 		setdef_config_file(prefix);
 #else
-		len = strlen(prefix) + strlen("/etc/login.defs") + 2;
-		def_conf_file = XMALLOC(len, char);
-		snprintf(def_conf_file, len, "%s/%s", prefix, "/etc/login.defs");
+		xasprintf(&def_conf_file, "%s/%s", prefix, "/etc/login.defs");
 		setdef_config_file(def_conf_file);
 #endif
 	}
@@ -349,7 +334,7 @@ extern void prefix_endgrent(void)
 
 extern struct group *prefix_getgr_nam_gid(const char *grname)
 {
-	long long int gid;
+	long long  gid;
 	char *endptr;
 	struct group *g;
 
@@ -357,18 +342,19 @@ extern struct group *prefix_getgr_nam_gid(const char *grname)
 		return NULL;
 	}
 
-	if (group_db_file) {
-		errno = 0;
-		gid = strtoll (grname, &endptr, 10);
-		if (   ('\0' != *grname)
-	    	&& ('\0' == *endptr)
-	    	&& (ERANGE != errno)
-	    	&& (gid == (gid_t)gid)) {
-			return prefix_getgrgid (gid);
-		}
-		g = prefix_getgrnam (grname);
-		return g ? __gr_dup(g) : NULL;
-	}
-	else
+	if (!group_db_file)
 		return getgr_nam_gid(grname);
+
+	errno = 0;
+	gid = strtoll(grname, &endptr, 10);
+	if (   ('\0' != *grname)
+	    && ('\0' == *endptr)
+	    && (0 == errno)
+	    && (gid == (gid_t)gid))
+	{
+		return prefix_getgrgid(gid);
+	}
+
+	g = prefix_getgrnam(grname);
+	return g ? __gr_dup(g) : NULL;
 }

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2004-06-03 21:41+0200\n"
 "Last-Translator: Håvard Korsvoll <korsvoll@skulelinux.no>\n"
 "Language-Team: Norwegian (Nynorsk) <i18n-nn@lister.ping.uio.no>\n"
@@ -185,10 +185,6 @@ msgstr "Klarte ikkje finna plass for oppsettsinformasjon.\n"
 msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "oppsettsfeil - ukjent element «%s» (gje melding til administrator)\n"
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 msgid "%s: Memory allocation failure\n"
 msgstr "%s: PAM-autentisering feila\n"
@@ -224,6 +220,10 @@ msgstr "%s: linje %d: chown feila\n"
 
 #, fuzzy, c-format
 msgid "%s: write to %s failed: %s\n"
+msgstr "%s: linje %d: chown feila\n"
+
+#, fuzzy, c-format
+msgid "%s: closing %s failed: %s\n"
 msgstr "%s: linje %d: chown feila\n"
 
 msgid "Too many logins.\n"
@@ -656,12 +656,15 @@ msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Dato for når kontoen utgår (ÅÅÅÅ-MM-DD)"
 
 #, fuzzy
-msgid "Last password change\t\t\t\t\t: "
-msgstr "Førre passordendring (ÅÅÅÅ-MM-DD)"
-
-#, fuzzy
 msgid "never"
 msgstr "Aldri"
+
+msgid "future"
+msgstr ""
+
+#, fuzzy
+msgid "Last password change\t\t\t\t\t: "
+msgstr "Førre passordendring (ÅÅÅÅ-MM-DD)"
 
 msgid "password must be changed"
 msgstr "Passord er endra"
@@ -832,14 +835,6 @@ msgstr "%s: «%s» inneheld ulovlege teikn\n"
 #, fuzzy, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: brukar %s finst ikkje\n"
-
-#, fuzzy, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s: klarer ikkje endra brukar «%s» på NIS-klient.\n"
-
-#, fuzzy, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s: «%s» er NIS-hovud for denne klienten.\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1171,6 +1166,10 @@ msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: %s er ikkje eit gyldig gruppenamn\n"
 
 #, fuzzy, c-format
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: klarer ikkje opna fila %s\n"
+
+#, fuzzy, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "ugyldig gruppenamn «%s»\n"
 
@@ -1211,14 +1210,6 @@ msgstr "%s: klarer ikkje endra brukar «%s» på NIS-klient.\n"
 #, fuzzy, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: gruppe %s eksisterer ikkje\n"
-
-#, fuzzy, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: gruppe «%s» er ei NIS-gruppe.\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s: %s er NIS-hovudet\n"
 
 #, fuzzy, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1294,10 +1285,6 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "ugyldig gruppenamn «%s»\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s: gruppe %s er ei NIS-gruppe\n"
 
 #, c-format
 msgid "%s: unknown user %s\n"
@@ -1786,6 +1773,9 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+
 msgid "Old password: "
 msgstr "Gamalt passord:"
 
@@ -1804,6 +1794,11 @@ msgid ""
 msgstr ""
 "Skriv inn det nye passordet (minimum %d, maksimum %d teikn)\n"
 "Bruk ein kombinasjon av store og små bokstavar og tal.\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s: felta er for lange\n"
 
 msgid "New password: "
 msgstr "Nytt passord: "
@@ -1844,6 +1839,10 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s: arkiv %s er ikkje støtta\n"
+
+#, c-format
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr ""
 
 #, c-format
 msgid "%s: root is not authorized by SELinux to change the password of %s\n"
@@ -1988,11 +1987,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -2138,10 +2135,6 @@ msgstr "%s: kan ikkje oppretta mappa %s\n"
 #, fuzzy, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s: gje nytt namn: %s"
-
-#, fuzzy, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: gruppe «%s» er ei NIS-gruppe.\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2386,6 +2379,12 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr ""
 
+msgid "Synchronize mailbox file"
+msgstr ""
+
+msgid "Closing mailbox file"
+msgstr ""
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2499,10 +2498,6 @@ msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 #, fuzzy, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s: brukar %s er ikkje ein NIS brukar\n"
 
 #, fuzzy, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2689,9 +2684,17 @@ msgstr ""
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr "%s: klarer ikkje oppdatere passordfil\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
+msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, c-format
 msgid "%s: warning: %s not owned by %s\n"
@@ -2797,8 +2800,9 @@ msgid "failed to stat edited file"
 msgstr "klarte ikkje endra namn på mailbox"
 
 #, fuzzy
-msgid "failed to allocate memory"
-msgstr "klarte ikke å endra eigar av mailbox"
+#| msgid "%s: can't open file\n"
+msgid "asprintf(3) failed"
+msgstr "%s: klarer ikkje opna fil\n"
 
 #, fuzzy
 msgid "failed to create backup file"
@@ -2813,8 +2817,40 @@ msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: ugyldig startmappe «%s»\n"
 
 #, fuzzy, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s: klarer ikkje endra brukar «%s» på NIS-klient.\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s: «%s» er NIS-hovud for denne klienten.\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: gruppe «%s» er ei NIS-gruppe.\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s: %s er NIS-hovudet\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s: gruppe %s er ei NIS-gruppe\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: gruppe «%s» er ei NIS-gruppe.\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s: brukar %s er ikkje ein NIS brukar\n"
+
+#, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "%s: ugyldig startmappe «%s»\n"
+
+#, fuzzy
+#~ msgid "failed to allocate memory"
+#~ msgstr "klarte ikke å endra eigar av mailbox"
 
 #~ msgid "Usage: id\n"
 #~ msgstr "Bruk: id\n"

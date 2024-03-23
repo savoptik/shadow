@@ -19,6 +19,8 @@
 #include "defines.h"
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "sizeof.h"
+#include "string/zustr2stp.h"
 /*
  * Global variables
  */
@@ -44,21 +46,19 @@ static void send_mesg_to_tty (int tty_fd);
 static int
 check_login(const struct utmpx *ut)
 {
-	char user[sizeof (ut->ut_user) + 1];
-	time_t now;
+	char    user[sizeof(ut->ut_user) + 1];
+	char    line[sizeof(ut->ut_line) + 1];
+	time_t  now;
 
-	/*
-	 * ut_user may not have the terminating NUL.
-	 */
-	strncpy (user, ut->ut_user, sizeof (ut->ut_user));
-	user[sizeof (ut->ut_user)] = '\0';
+	ZUSTR2STP(user, ut->ut_user);
+	ZUSTR2STP(line, ut->ut_line);
 
 	(void) time (&now);
 
 	/*
 	 * Check if they are allowed to be logged in right now.
 	 */
-	if (!isttytime (user, ut->ut_line, now)) {
+	if (!isttytime(user, line, now)) {
 		return 0;
 	}
 	return 1;
@@ -229,8 +229,7 @@ main(int argc, char **argv)
 				kill (-ut->ut_pid, SIGKILL);
 			}
 
-			strncpy (user, ut->ut_user, sizeof (user) - 1);
-			user[sizeof (user) - 1] = '\0';
+			ZUSTR2STP(user, ut->ut_user);
 
 			SYSLOG ((LOG_NOTICE,
 				 "logged off user '%s' on '%s'", user,

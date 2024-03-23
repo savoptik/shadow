@@ -16,11 +16,13 @@
 #include <signal.h>
 
 #include "alloc.h"
+#include "attr.h"
+#include "memzero.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
 
-static void login_exit (unused int sig)
+static void login_exit (MAYBE_UNUSED int sig)
 {
 	_exit (EXIT_FAILURE);
 }
@@ -36,8 +38,6 @@ void login_prompt (char *name, int namesize)
 {
 	char buf[1024];
 
-#define MAX_ENV 32
-	char *envp[MAX_ENV];
 	char *cp;
 	int i;
 	FILE *fp;
@@ -79,7 +79,7 @@ void login_prompt (char *name, int namesize)
 	 * removed.
 	 */
 
-	memzero (buf, sizeof buf);
+	MEMZERO(buf);
 	if (fgets (buf, sizeof buf, stdin) != buf) {
 		exit (EXIT_FAILURE);
 	}

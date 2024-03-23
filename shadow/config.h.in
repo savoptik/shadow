@@ -140,15 +140,6 @@
 /* Define to 1 if you have the `lckpwdf' function. */
 #undef HAVE_LCKPWDF
 
-/* Defined if you have libcrack. */
-#undef HAVE_LIBCRACK
-
-/* Defined if you have the ts&szs cracklib. */
-#undef HAVE_LIBCRACK_HIST
-
-/* Defined if it includes *Pw functions. */
-#undef HAVE_LIBCRACK_PW
-
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
 
@@ -166,9 +157,6 @@
 
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
-
-/* Define to 1 if you have the `mempcpy' function. */
-#undef HAVE_MEMPCPY
 
 /* Define to 1 if you have the `memset_explicit' function. */
 #undef HAVE_MEMSET_EXPLICIT

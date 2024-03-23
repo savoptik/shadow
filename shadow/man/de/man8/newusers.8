@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 26.03.2024
+.\"      Date: 23.03.2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.14.7
+.\"    Source: shadow-utils 4.15.1
 .\"  Language: German
 .\"
-.TH "NEWUSERS" "8" "26.03.2024" "shadow\-utils 4\&.14\&.7" "System Management Commands"
+.TH "NEWUSERS" "8" "23.03.2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -168,14 +168,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 legt die Anzahl von Runden beim Verschl\(:usseln von Passw\(:ortern fest\&.
 .sp
-Ein Wert von 0 bedeutet, dass das System den Standard von 5000 Runden zur Verschl\(:usselung ausw\(:ahlen wird\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Der Mindestwert ist 1000, der H\(:ochstwert 999\&.999\&.999\&.
-.sp
-Sie k\(:onnen diese Option nur mit den Verschl\(:usselungsmethoden SHA256 und SHA512 verwenden\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default is 5000\&.
 .RE
 .SH "WARNUNGEN"
 .PP

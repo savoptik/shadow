@@ -47,6 +47,8 @@
 #endif				/* !USE_PAM */
 
 #include "alloc.h"
+#include "attr.h"
+#include "cast.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "pwauth.h"
@@ -57,6 +59,9 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+#include "string/strtcpy.h"
+
 
 /*
  * Global variables
@@ -106,7 +111,7 @@ static void execve_shell (const char *shellname,
                           char *args[],
                           char *const envp[]);
 #ifdef USE_PAM
-static void kill_child (int unused(s));
+static void kill_child (MAYBE_UNUSED int s);
 static void prepare_pam_close_session (void);
 #else				/* !USE_PAM */
 static void die (int);
@@ -160,13 +165,13 @@ static bool iswheel (const char *username)
 	return is_on_list (grp->gr_mem, username);
 }
 #else				/* USE_PAM */
-static void kill_child (int unused(s))
+static void kill_child (MAYBE_UNUSED int s)
 {
 	if (0 != pid_child) {
 		(void) kill (-pid_child, SIGKILL);
-		(void) write_full (STDERR_FILENO, kill_msg, strlen (kill_msg));
+		(void) write_full(STDERR_FILENO, kill_msg, strlen(kill_msg));
 	} else {
-		(void) write_full (STDERR_FILENO, wait_msg, strlen (wait_msg));
+		(void) write_full(STDERR_FILENO, wait_msg, strlen(wait_msg));
 	}
 	_exit (255);
 }
@@ -385,8 +390,8 @@ static void prepare_pam_close_session (void)
 		              stderr);
 		(void) kill (-pid_child, caught);
 
-		snprintf (kill_msg, sizeof kill_msg, _(" ...killed.\n"));
-		snprintf (wait_msg, sizeof wait_msg, _(" ...waiting for child to terminate.\n"));
+		SNPRINTF(kill_msg, _(" ...killed.\n"));
+		SNPRINTF(wait_msg, _(" ...waiting for child to terminate.\n"));
 
 		/* Any signals other than SIGCHLD and SIGALRM will no longer have any effect,
 		 * so it's time to block all of them. */
@@ -433,6 +438,7 @@ static void prepare_pam_close_session (void)
 /*
  * usage - print command line syntax and exit
  */
+NORETURN
 static void usage (int status)
 {
 	(void)
@@ -640,8 +646,9 @@ static /*@only@*/struct passwd * check_perms (void)
 static /*@only@*/struct passwd * do_check_perms (void)
 {
 #ifdef USE_PAM
-	const void *tmp_name;
-	int ret;
+	int         ret;
+	const char  *tmp_name;
+	const void  *item;
 #endif				/* !USE_PAM */
 	/*
 	 * The password file entries for the user is gotten and the account
@@ -661,7 +668,7 @@ static /*@only@*/struct passwd * do_check_perms (void)
 #ifdef USE_PAM
 	check_perms_pam (pw);
 	/* PAM authentication can request a change of account */
-	ret = pam_get_item(pamh, PAM_USER, &tmp_name);
+	ret = pam_get_item(pamh, PAM_USER, &item);
 	if (ret != PAM_SUCCESS) {
 		SYSLOG((LOG_ERR, "pam_get_item: internal PAM error\n"));
 		(void) fprintf (stderr,
@@ -670,11 +677,12 @@ static /*@only@*/struct passwd * do_check_perms (void)
 		(void) pam_end (pamh, ret);
 		su_failure (caller_tty, 0 == pw->pw_uid);
 	}
+	tmp_name = item;
 	if (strcmp (name, tmp_name) != 0) {
 		SYSLOG ((LOG_INFO,
 		         "Change user from '%s' to '%s' as requested by PAM",
 		         name, tmp_name));
-		if (strlcpy (name, tmp_name, sizeof(name)) >= sizeof(name)) {
+		if (STRTCPY(name, tmp_name) == -1) {
 			fprintf (stderr, _("Overlong user name '%s'\n"),
 			         tmp_name);
 			SYSLOG ((LOG_NOTICE, "Overlong user name '%s'",
@@ -771,7 +779,7 @@ static void save_caller_context (char **argv)
 		         (unsigned long) caller_uid));
 		su_failure (caller_tty, true); /* unknown target UID*/
 	}
-	STRFCPY (caller_name, pw->pw_name);
+	STRTCPY(caller_name, pw->pw_name);
 
 #ifndef USE_PAM
 #ifdef SU_ACCESS
@@ -846,7 +854,7 @@ static void process_flags (int argc, char **argv)
 	}
 
 	if (optind < argc) {
-		STRFCPY (name, argv[optind++]);	/* use this login id */
+		STRTCPY(name, argv[optind++]);	/* use this login id */
 	}
 	if ('\0' == name[0]) {		/* use default user */
 		struct passwd *root_pw = getpwnam ("root");
@@ -1218,7 +1226,7 @@ int main (int argc, char **argv)
 		 * Use the shell and create an argv
 		 * with the rest of the command line included.
 		 */
-		argv[-1] = cp;
+		argv[-1] = const_cast(char *, cp);
 		execve_shell (shellstr, &argv[-1], environ);
 		err = errno;
 		(void) fprintf (stderr,

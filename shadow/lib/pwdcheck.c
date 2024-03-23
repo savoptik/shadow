@@ -13,12 +13,14 @@
 
 #include <stdio.h>
 #include <shadow.h>
+
+#include "attr.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "pwauth.h"
 #include "shadowlog.h"
 
-void passwd_check (const char *user, const char *passwd, unused const char *progname)
+void passwd_check (const char *user, const char *passwd, MAYBE_UNUSED const char *progname)
 {
 	struct spwd *sp;
 

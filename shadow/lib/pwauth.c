@@ -18,21 +18,26 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "prototypes.h"
+
+#include "agetpass.h"
 #include "defines.h"
+#include "memzero.h"
+#include "prototypes.h"
 #include "pwauth.h"
 #include "getdef.h"
+#include "string/sprintf.h"
+
 #ifdef SKEY
 #include <skey.h>
 #endif
+
+
 #ifdef __linux__		/* standard password prompt by default */
 static const char *PROMPT = gettext_noop ("Password: ");
 #else
 static const char *PROMPT = gettext_noop ("%s's Password: ");
 #endif
 
-bool wipe_clear_pass = true;
-/*@null@*/char *clear_pass = NULL;
 
 /*
  * pw_auth - perform getpass/crypt authentication
@@ -47,16 +52,16 @@ int pw_auth (const char *cipher,
              int reason,
              /*@null@*/const char *input)
 {
-	char prompt[1024];
-	char *clear = NULL;
-	const char *cp;
-	const char *encrypted;
-	int retval;
+	int          retval;
+	char         prompt[1024];
+	char         *clear = NULL;
+	const char   *cp;
+	const char   *encrypted;
 
 #ifdef	SKEY
-	bool use_skey = false;
-	char challenge_info[40];
-	struct skey skey;
+	bool         use_skey = false;
+	char         challenge_info[40];
+	struct skey  skey;
 #endif
 
 	/*
@@ -137,15 +142,9 @@ int pw_auth (const char *cipher,
 		}
 #endif
 
-		snprintf (prompt, sizeof prompt, cp, user);
-		clear = getpass (prompt);
-		if (NULL == clear) {
-			static char c[1];
-
-			c[0] = '\0';
-			clear = c;
-		}
-		input = clear;
+		SNPRINTF(prompt, cp, user);
+		clear = agetpass(prompt);
+		input = (clear == NULL) ? "" : clear;
 	}
 
 	/*
@@ -171,14 +170,9 @@ int pw_auth (const char *cipher,
 	 * -- AR 8/22/1999
 	 */
 	if ((0 != retval) && ('\0' == input[0]) && use_skey) {
-		clear = getpass (prompt);
-		if (NULL == clear) {
-			static char c[1];
-
-			c[0] = '\0';
-			clear = c;
-		}
-		input = clear;
+		erase_pass(clear);
+		clear = agetpass(prompt);
+		input = (clear == NULL) ? "" : clear;
 	}
 
 	if ((0 != retval) && use_skey) {
@@ -192,18 +186,8 @@ int pw_auth (const char *cipher,
 		}
 	}
 #endif
+	erase_pass(clear);
 
-	/*
-	 * Things like RADIUS authentication may need the password -
-	 * if the external variable wipe_clear_pass is zero, we will
-	 * not wipe it (the caller should wipe clear_pass when it is
-	 * no longer needed).  --marekm
-	 */
-
-	clear_pass = clear;
-	if (wipe_clear_pass && (NULL != clear) && ('\0' != *clear)) {
-		strzero (clear);
-	}
 	return retval;
 }
 #else				/* !USE_PAM */

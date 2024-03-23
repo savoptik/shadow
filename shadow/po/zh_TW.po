@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.9\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2022-07-27 23:04+0800\n"
 "Last-Translator: Celeste Liu <coelacanthus@outlook.com>\n"
 "Language-Team: Chinese <chinese-l10n@googlegroups.com>\n"
@@ -200,10 +200,6 @@ msgstr "無法為組態設定資訊分配空間。\n"
 msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "組態設定錯誤 - 項目「%s」未知（請通知管理員）\n"
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 #| msgid "%s: Authentication failure\n"
 msgid "%s: Memory allocation failure\n"
@@ -245,6 +241,11 @@ msgstr "%s：第 %d 行：變更 %s 的擁有權失敗：%s\n"
 #, fuzzy, c-format
 #| msgid "%s: line %d: chown %s failed: %s\n"
 msgid "%s: write to %s failed: %s\n"
+msgstr "%s：第 %d 行：變更 %s 的擁有權失敗：%s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: closing %s failed: %s\n"
 msgstr "%s：第 %d 行：變更 %s 的擁有權失敗：%s\n"
 
 msgid "Too many logins.\n"
@@ -687,11 +688,14 @@ msgstr "密碼停用時間"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "帳戶過期時間 (YYYY-MM-DD)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr "最近一次密碼變更時間\t\t\t\t："
-
 msgid "never"
 msgstr "永不"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr "最近一次密碼變更時間\t\t\t\t："
 
 msgid "password must be changed"
 msgstr "必須變更密碼"
@@ -864,14 +868,6 @@ msgstr "%s：「%s」包含無效字元\n"
 #, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s：使用者「%s」不存在\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s：無法在 NIS 客戶端變更使用者「%s」。\n"
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s：「%s」是此客戶端的 NIS 管理員。\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1229,6 +1225,11 @@ msgstr "無效的使用者名稱「%s」\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s：「%s」非有效群組名稱\n"
 
+#, fuzzy, c-format
+#| msgid "%s: Cannot open %s: %s\n"
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s：無法開啟 %s：%s\n"
+
 #, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "%s：GID「%s」無效\n"
@@ -1271,14 +1272,6 @@ msgstr "%s：無法移除「%s」使用者的主要群組\n"
 #, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s：「%s」群組不存在\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s：「%s」群組為 NIS 群組\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s：%s 是 NIS 管理員\n"
 
 #, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1368,10 +1361,6 @@ msgstr "  -p, --password 密碼          將密碼變更成此（已加密）<�
 #, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s：群組名稱「%s」無效\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s：%s 群組是 NIS 群組\n"
 
 #, c-format
 msgid "%s: unknown user %s\n"
@@ -1887,6 +1876,11 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "  -l, --list                    show account aging information\n"
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr "  -l, --list                    顯示帳號的時效資訊\n"
+
 msgid "Old password: "
 msgstr "舊密碼："
 
@@ -1905,6 +1899,11 @@ msgid ""
 msgstr ""
 "請輸入新密碼(最少 %d 最多 %d 個字元)\n"
 "請混合使用大小寫字母和數字。\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s：欄位過長\n"
 
 msgid "New password: "
 msgstr "新密碼："
@@ -1947,6 +1946,11 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s：不支持 %s 套件存庫。\n"
+
+#, fuzzy, c-format
+#| msgid "%s: only root can use the -g/--group option\n"
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr "%s：只有 root 才能使用 -g/--group 選項\n"
 
 #, fuzzy, c-format
 #| msgid "%s: %s is not authorized to change the password of %s\n"
@@ -2098,11 +2102,9 @@ msgstr "%s: 訊號發生問題\n"
 msgid "Session terminated, terminating shell..."
 msgstr "已終止工作階段，正在終止 shell..."
 
-#, c-format
 msgid " ...killed.\n"
 msgstr " ...已強制結束。\n"
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr " ...等待子處理程序終止。\n"
 
@@ -2263,10 +2265,6 @@ msgstr "%s：無法建立備份檔案 (%s)：%s\n"
 #, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s：重新命名：%s：%s\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s：群組「%s」是 NIS 群組。\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2535,6 +2533,16 @@ msgstr "找不到 'mail' 群組。將建立模式為 0600 的使用者 mailbox �
 msgid "Setting mailbox file permissions"
 msgstr "正在設定 mailbox 檔案的權限"
 
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Synchronize mailbox file"
+msgstr "正在建立 mailbox 檔案"
+
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Closing mailbox file"
+msgstr "正在建立 mailbox 檔案"
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2656,10 +2664,6 @@ msgstr "%s：無法移除 %s 的內容：%s\n"
 #, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s：無法移除 %s 的 tcb 檔案：%s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s：使用者 %s 是 NIS 使用者\n"
 
 #, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2871,8 +2875,18 @@ msgstr ""
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr "%s: 無法複製使用者編號為 %lu 的 lastlog 項目至使用者 %lu：%s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr "%s: 無法複製使用者編號為 %lu 的 lastlog 項目至使用者 %lu：%s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgstr "%s: 無法複製使用者編號為 %lu 的 faillog 項目至使用者 %lu：%s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
 msgstr "%s: 無法複製使用者編號為 %lu 的 faillog 項目至使用者 %lu：%s\n"
 
 #, c-format
@@ -2973,8 +2987,10 @@ msgstr "無法取消暫存檔的連結"
 msgid "failed to stat edited file"
 msgstr "無法取得編輯過檔案的資訊"
 
-msgid "failed to allocate memory"
-msgstr "無法配置記憶體"
+#, fuzzy
+#| msgid "%s: can't open file\n"
+msgid "asprintf(3) failed"
+msgstr "%s：無法打開檔案\n"
 
 msgid "failed to create backup file"
 msgstr "無法建立備份檔案"
@@ -2987,6 +3003,34 @@ msgstr "%s：無法復原 %s：%s (您的修改在 %s 中)\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s：找不到 %s 的 tcb 目錄\n"
 
+#, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s：無法在 NIS 客戶端變更使用者「%s」。\n"
+
+#, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s：「%s」是此客戶端的 NIS 管理員。\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s：「%s」群組為 NIS 群組\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s：%s 是 NIS 管理員\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s：%s 群組是 NIS 群組\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s：群組「%s」是 NIS 群組。\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s：使用者 %s 是 NIS 使用者\n"
+
 #~ msgid "too simple"
 #~ msgstr "過於簡單"
 
@@ -2997,6 +3041,9 @@ msgstr "%s：找不到 %s 的 tcb 目錄\n"
 #~| msgid "%s: failed to find tcb directory for %s\n"
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "%s：找不到 %s 的 tcb 目錄\n"
+
+#~ msgid "failed to allocate memory"
+#~ msgstr "無法配置記憶體"
 
 #~ msgid "Usage: id\n"
 #~ msgstr "用法：id\n"

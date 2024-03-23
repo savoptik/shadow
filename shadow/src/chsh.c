@@ -31,6 +31,7 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strtcpy.h"
 
 #ifndef SHELLS_FILE
 #define SHELLS_FILE "/etc/shells"
@@ -203,21 +204,17 @@ static bool shell_is_listed (const char *sh)
 	}
 	endusershell ();
 #else
-	char buf[BUFSIZ];
+	char *buf = NULL;
 	FILE *fp;
+	size_t n = 0;
 
 	fp = fopen (SHELLS_FILE, "r");
 	if (NULL == fp) {
 		return false;
 	}
 
-	while (fgets (buf, sizeof (buf), fp) == buf) {
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		}
-
-		if (buf[0] == '#') {
+	while (getline (&buf, &n, fp) != -1) {
+		if (buf[0] != '/') {
 			continue;
 		}
 
@@ -226,6 +223,8 @@ static bool shell_is_listed (const char *sh)
 			break;
 		}
 	}
+
+	free(buf);
 	fclose (fp);
 #endif
 	return found;
@@ -257,7 +256,7 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 's':
 			sflg = true;
-			STRFCPY (loginsh, optarg);
+			STRTCPY(loginsh, optarg);
 			break;
 		default:
 			usage (E_USAGE);
@@ -519,28 +518,6 @@ int main (int argc, char **argv)
 		user = xstrdup (pw->pw_name);
 	}
 
-#ifdef	USE_NIS
-	/*
-	 * Now we make sure this is a LOCAL password entry for this user ...
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: cannot change user '%s' on NIS client.\n"),
-		         Prog, user);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: '%s' is the NIS master for this client.\n"),
-			         Prog, nis_master);
-		}
-		fail_exit (1);
-	}
-#endif
-
 	check_perms (pw);
 
 	/*
@@ -548,7 +525,7 @@ int main (int argc, char **argv)
 	 * file, or use the value from the command line.
 	 */
 	if (!sflg) {
-		STRFCPY (loginsh, pw->pw_shell);
+		STRTCPY(loginsh, pw->pw_shell);
 	}
 
 	/*

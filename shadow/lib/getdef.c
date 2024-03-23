@@ -25,6 +25,8 @@
 #include "alloc.h"
 #include "getdef.h"
 #include "shadowlog_internal.h"
+#include "string/sprintf.h"
+
 
 /*
  * A configuration item definition.
@@ -37,7 +39,6 @@ struct itemdef {
 #define PAMDEFS					\
 	{"CHFN_AUTH", NULL},			\
 	{"CHSH_AUTH", NULL},			\
-	{"CRACKLIB_DICTPATH", NULL},		\
 	{"ENV_HZ", NULL},			\
 	{"ENVIRON_FILE", NULL},			\
 	{"ENV_TZ", NULL},			\
@@ -175,7 +176,7 @@ static const char* def_fname = LOGINDEFS;	/* login config defs file       */
 static bool def_loaded = false;		/* are defs already loaded?     */
 
 /* local function prototypes */
-static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *);
+static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *, const char *);
 static void def_load (void);
 
 
@@ -194,7 +195,7 @@ static void def_load (void);
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	return (NULL == d) ? NULL : d->value;
 }
 
@@ -213,7 +214,7 @@ bool getdef_bool (const char *item)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return false;
 	}
@@ -239,14 +240,14 @@ int getdef_num (const char *item, int dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (   (getlong (d->value, &val) == 0)
+	if (   (getlong(d->value, &val) == -1)
 	    || (val > INT_MAX)
-	    || (val < INT_MIN)) {
+	    || (val < -1)) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -274,12 +275,12 @@ unsigned int getdef_unum (const char *item, unsigned int dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (   (getlong (d->value, &val) == 0)
+	if (   (getlong(d->value, &val) == -1)
 	    || (val < 0)
 	    || (val > INT_MAX)) {
 		fprintf (shadow_logfd,
@@ -309,12 +310,12 @@ long getdef_long (const char *item, long dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (getlong (d->value, &val) == 0) {
+	if (getlong(d->value, &val) == -1 || val < -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -341,12 +342,12 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (getulong (d->value, &val) == 0) {
+	if (getulong(d->value, &val) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -361,7 +362,7 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
  * (also used when loading the initial defaults)
  */
 
-int putdef_str (const char *name, const char *value)
+int putdef_str (const char *name, const char *value, const char *srcfile)
 {
 	struct itemdef *d;
 	char *cp;
@@ -374,10 +375,9 @@ int putdef_str (const char *name, const char *value)
 	 * Locate the slot to save the value.  If this parameter
 	 * is unknown then "def_find" will print an err message.
 	 */
-	d = def_find (name);
-	if (NULL == d) {
+	d = def_find (name, srcfile);
+	if (NULL == d)
 		return -1;
-	}
 
 	/*
 	 * Save off the value.
@@ -401,9 +401,12 @@ int putdef_str (const char *name, const char *value)
  *
  * Search through a table of configurable items to locate the
  * specified configuration option.
+ *
+ * If srcfile is not NULL, and the item is not found, then report an error saying
+ * the unknown item was used in this file.
  */
 
-static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
+static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name, const char *srcfile)
 {
 	struct itemdef *ptr;
 
@@ -429,7 +432,8 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 	fprintf (shadow_logfd,
 	         _("configuration error - unknown item '%s' (notify administrator)\n"),
 	         name);
-	SYSLOG ((LOG_CRIT, "unknown configuration item `%s'", name));
+	if (srcfile != NULL)
+		SYSLOG ((LOG_CRIT, "shadow: unknown configuration item '%s' in '%s'", name, srcfile));
 
 out:
 	return NULL;
@@ -444,21 +448,12 @@ out:
 void setdef_config_file (const char* file)
 {
 #ifdef USE_ECONF
-	size_t len;
-	char* cp;
+	char  *cp;
 
-	len = strlen(file) + strlen(sysconfdir) + 2;
-	cp = MALLOC(len, char);
-	if (cp == NULL)
-		exit (13);
-	snprintf(cp, len, "%s/%s", file, sysconfdir);
+	xasprintf(&cp, "%s/%s", file, sysconfdir);
 	sysconfdir = cp;
 #ifdef VENDORDIR
-	len = strlen(file) + strlen(vendordir) + 2;
-	cp = MALLOC(len, char);
-	if (cp == NULL)
-		exit (13);
-	snprintf(cp, len, "%s/%s", file, vendordir);
+	xasprintf(&cp, "%s/%s", file, vendordir);
 	vendordir = cp;
 #endif
 #else
@@ -519,7 +514,7 @@ static void def_load (void)
 		 * The error was already reported to the user and to
 		 * syslog. The tools will just use their default values.
 		 */
-		(void)putdef_str (keys[i], value);
+		(void)putdef_str (keys[i], value, econf_getPath(defs_file));
 
 		free(value);
 	}
@@ -592,7 +587,7 @@ static void def_load (void)
 		 * The error was already reported to the user and to
 		 * syslog. The tools will just use their default values.
 		 */
-		(void)putdef_str (name, value);
+		(void)putdef_str (name, value, def_fname);
 	}
 
 	if (ferror (fp) != 0) {
@@ -617,7 +612,7 @@ int main (int argc, char **argv)
 	def_load ();
 
 	for (i = 0; i < NUMDEFS; ++i) {
-		d = def_find (def_table[i].name);
+		d = def_find (def_table[i].name, NULL);
 		if (NULL == d) {
 			printf ("error - lookup '%s' failed\n",
 			        def_table[i].name);

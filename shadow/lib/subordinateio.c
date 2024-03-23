@@ -16,8 +16,11 @@
 #include <pwd.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "alloc.h"
+#include "string/sprintf.h"
+
 
 #define ID_SIZE 31
 
@@ -54,7 +57,8 @@ static /*@null@*/ /*@only@*/void *subordinate_dup (const void *ent)
  *
  * @ent: pointer to a subordinate_range struct to free.
  */
-static void subordinate_free (/*@out@*/ /*@only@*/void *ent)
+static void
+subordinate_free(/*@only@*/void *ent)
 {
 	struct subordinate_range *rangeent = ent;
 
@@ -71,7 +75,8 @@ static void subordinate_free (/*@out@*/ /*@only@*/void *ent)
  * in @line, or NULL on failure.  Note that the returned value should not
  * be freed by the caller.
  */
-static void *subordinate_parse (const char *line)
+static void *
+subordinate_parse(const char *line)
 {
 	static struct subordinate_range range;
 	static char rangebuf[1024];
@@ -92,19 +97,8 @@ static void *subordinate_parse (const char *line)
 	 * field.  The fields are converted into NUL terminated strings.
 	 */
 
-	for (cp = rangebuf, i = 0; (i < SUBID_NFIELDS) && (NULL != cp); i++) {
-		fields[i] = cp;
-		while (('\0' != *cp) && (':' != *cp)) {
-			cp++;
-		}
-
-		if ('\0' != *cp) {
-			*cp = '\0';
-			cp++;
-		} else {
-			cp = NULL;
-		}
-	}
+	for (cp = rangebuf, i = 0; (i < SUBID_NFIELDS) && (NULL != cp); i++)
+		fields[i] = strsep(&cp, ":");
 
 	/*
 	 * There must be exactly SUBID_NFIELDS colon separated fields or
@@ -113,9 +107,9 @@ static void *subordinate_parse (const char *line)
 	if (i != SUBID_NFIELDS || *fields[0] == '\0' || *fields[1] == '\0' || *fields[2] == '\0')
 		return NULL;
 	range.owner = fields[0];
-	if (getulong (fields[1], &range.start) == 0)
+	if (getulong(fields[1], &range.start) == -1)
 		return NULL;
-	if (getulong (fields[2], &range.count) == 0)
+	if (getulong(fields[2], &range.count) == -1)
 		return NULL;
 
 	return &range;
@@ -210,7 +204,7 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
         /*
          * We only do special handling for these two files
          */
-        if ((0 != strcmp(db->filename, "/etc/subuid")) && (0 != strcmp(db->filename, "/etc/subgid")))
+        if ((0 != strcmp(db->filename, SUBUID_FILE)) && (0 != strcmp(db->filename, SUBGID_FILE)))
                 return NULL;
 
         /*
@@ -220,9 +214,9 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
          * (It may be specified as literal UID or as another username which
          * has the same UID as the username we are looking for.)
          */
-        struct passwd *pwd;
+        char           owner_uid_string[33];
         uid_t          owner_uid;
-        char           owner_uid_string[33] = "";
+        struct passwd  *pwd;
 
 
         /* Get UID of the username we are looking for */
@@ -232,7 +226,8 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
                 return NULL;
         }
         owner_uid = pwd->pw_uid;
-        sprintf(owner_uid_string, "%lu", (unsigned long int)owner_uid);
+        if (SNPRINTF(owner_uid_string, "%lu", (unsigned long) owner_uid) == -1)
+                return NULL;
 
         commonio_rewind(db);
         while ((range = commonio_next(db)) != NULL) {
@@ -352,14 +347,17 @@ void free_subordinate_ranges(struct subordinate_range **ranges, int count)
  */
 static int subordinate_range_cmp (const void *p1, const void *p2)
 {
-	struct subordinate_range *range1, *range2;
+	const struct commonio_entry *const *ce1;
+	const struct commonio_entry *const *ce2;
+	const struct subordinate_range *range1, *range2;
 
-
-	range1 = (*(struct commonio_entry **) p1)->eptr;
+	ce1 = p1;
+	range1 = (*ce1)->eptr;
 	if (range1 == NULL)
 		return 1;
 
-	range2 = (*(struct commonio_entry **) p2)->eptr;
+	ce2 = p2;
+	range2 = (*ce2)->eptr;
 	if (range2 == NULL)
 		return -1;
 
@@ -556,7 +554,7 @@ static int remove_range (struct commonio_db *db,
 }
 
 static struct commonio_db subordinate_uid_db = {
-	"/etc/subuid",		/* filename */
+	SUBUID_FILE,		/* filename */
 	&subordinate_ops,	/* ops */
 	NULL,			/* fp */
 #ifdef WITH_SELINUX
@@ -663,7 +661,7 @@ uid_t sub_uid_find_free_range(uid_t min, uid_t max, unsigned long count)
 }
 
 static struct commonio_db subordinate_gid_db = {
-	"/etc/subgid",		/* filename */
+	SUBGID_FILE,		/* filename */
 	&subordinate_ops,	/* ops */
 	NULL,			/* fp */
 #ifdef WITH_SELINUX

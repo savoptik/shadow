@@ -19,6 +19,7 @@
 #include <stdio.h>
 
 #include "alloc.h"
+#include "attr.h"
 #include "prototypes.h"
 #include "defines.h"
 #ifdef WITH_SELINUX
@@ -35,6 +36,7 @@
 #include <attr/libattr.h>
 #endif				/* WITH_ATTR */
 #include "shadowlog.h"
+#include "string/sprintf.h"
 
 
 static /*@null@*/const char *src_orig;
@@ -66,12 +68,12 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
                      gid_t old_gid, gid_t new_gid);
 static /*@null@*/char *readlink_malloc (const char *filename);
 static int copy_symlink (const struct path_info *src, const struct path_info *dst,
-                         unused bool reset_selinux,
+                         MAYBE_UNUSED bool reset_selinux,
                          const struct stat *statp, const struct timespec mt[],
                          uid_t old_uid, uid_t new_uid,
                          gid_t old_gid, gid_t new_gid);
 static int copy_hardlink (const struct path_info *dst,
-                          unused bool reset_selinux,
+                          MAYBE_UNUSED bool reset_selinux,
                           struct link_name *lp);
 static int copy_special (const struct path_info *src, const struct path_info *dst,
                          bool reset_selinux,
@@ -95,7 +97,7 @@ static int fchown_if_needed (int fdst, const struct stat *statp,
  * error_acl - format the error messages for the ACL and EQ libraries.
  */
 format_attr(printf, 2, 3)
-static void error_acl (unused struct error_context *ctx, const char *fmt, ...)
+static void error_acl (MAYBE_UNUSED struct error_context *ctx, const char *fmt, ...)
 {
 	va_list ap;
 	FILE *shadow_logfd = log_get_logfd();
@@ -208,11 +210,7 @@ static void remove_link (/*@only@*/struct link_name *ln)
 
 static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, const struct stat *sb)
 {
-	struct link_name *lp;
-	size_t src_len;
-	size_t dst_len;
-	size_t name_len;
-	size_t len;
+	struct link_name  *lp;
 
 	/* copy_tree () must be the entry point */
 	assert (NULL != src_orig);
@@ -229,15 +227,10 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
 	}
 
 	lp = XMALLOC(1, struct link_name);
-	src_len = strlen (src_orig);
-	dst_len = strlen (dst_orig);
-	name_len = strlen (name);
 	lp->ln_dev = sb->st_dev;
 	lp->ln_ino = sb->st_ino;
 	lp->ln_count = sb->st_nlink;
-	len = name_len - src_len + dst_len + 1;
-	lp->ln_name = XMALLOC(len, char);
-	(void) snprintf (lp->ln_name, len, "%s%s", dst_orig, name + src_len);
+	xasprintf(&lp->ln_name, "%s%s", dst_orig, name + strlen(src_orig));
 	lp->ln_next = links;
 	links = lp;
 
@@ -314,51 +307,43 @@ static int copy_tree_impl (const struct path_info *src, const struct path_info *
 		set_orig = true;
 	}
 	while ((0 == err) && (ent = readdir (dir)) != NULL) {
+		char              *src_name = NULL;
+		char              *dst_name;
+		struct path_info  src_entry, dst_entry;
 		/*
 		 * Skip the "." and ".." entries
 		 */
-		if ((strcmp (ent->d_name, ".") != 0) &&
-		    (strcmp (ent->d_name, "..") != 0)) {
-			char *src_name;
-			char *dst_name;
-			size_t src_len = strlen (ent->d_name) + 2;
-			size_t dst_len = strlen (ent->d_name) + 2;
-			src_len += strlen (src->full_path);
-			dst_len += strlen (dst->full_path);
-
-			src_name = MALLOC(src_len, char);
-			dst_name = MALLOC(dst_len, char);
-
-			if ((NULL == src_name) || (NULL == dst_name)) {
-				err = -1;
-			} else {
-				/*
-				 * Build the filename for both the source and
-				 * the destination files.
-				 */
-				struct path_info src_entry, dst_entry;
-
-				(void) snprintf (src_name, src_len, "%s/%s",
-				                 src->full_path, ent->d_name);
-				(void) snprintf (dst_name, dst_len, "%s/%s",
-				                 dst->full_path, ent->d_name);
-
-				src_entry.full_path = src_name;
-				src_entry.dirfd = dirfd(dir);
-				src_entry.name = ent->d_name;
-
-				dst_entry.full_path = dst_name;
-				dst_entry.dirfd = dst_fd;
-				dst_entry.name = ent->d_name;
-
-				err = copy_entry (&src_entry, &dst_entry,
-				                  reset_selinux,
-				                  old_uid, new_uid,
-				                  old_gid, new_gid);
-			}
-			free (src_name);
-			free (dst_name);
+		if (strcmp(ent->d_name, ".") == 0 ||
+		    strcmp(ent->d_name, "..") == 0)
+		{
+			continue;
 		}
+
+		if (asprintf(&src_name, "%s/%s", src->full_path, ent->d_name) == -1)
+		{
+			err = -1;
+			continue;
+		}
+		if (asprintf(&dst_name, "%s/%s", dst->full_path, ent->d_name) == -1)
+		{
+			err = -1;
+			goto skip;
+		}
+
+		src_entry.full_path = src_name;
+		src_entry.dirfd = dirfd(dir);
+		src_entry.name = ent->d_name;
+
+		dst_entry.full_path = dst_name;
+		dst_entry.dirfd = dst_fd;
+		dst_entry.name = ent->d_name;
+
+		err = copy_entry(&src_entry, &dst_entry, reset_selinux,
+				 old_uid, new_uid, old_gid, new_gid);
+
+		free(dst_name);
+skip:
+		free(src_name);
 	}
 	(void) closedir (dir);
 	(void) close (dst_fd);
@@ -421,63 +406,64 @@ static int copy_entry (const struct path_info *src, const struct path_info *dst,
 
 	if (fstatat(src->dirfd, src->name, &sb, AT_SYMLINK_NOFOLLOW) == -1) {
 		/* If we cannot stat the file, do not care. */
-	} else {
-		mt[0].tv_sec  = sb.st_atim.tv_sec;
-		mt[0].tv_nsec = sb.st_atim.tv_nsec;
+		return 0;
+	}
 
-		mt[1].tv_sec  = sb.st_mtim.tv_sec;
-		mt[1].tv_nsec = sb.st_mtim.tv_nsec;
+	mt[0].tv_sec  = sb.st_atim.tv_sec;
+	mt[0].tv_nsec = sb.st_atim.tv_nsec;
 
-		if (S_ISDIR (sb.st_mode)) {
-			err = copy_dir (src, dst, reset_selinux, &sb, mt,
-			                old_uid, new_uid, old_gid, new_gid);
-		}
+	mt[1].tv_sec  = sb.st_mtim.tv_sec;
+	mt[1].tv_nsec = sb.st_mtim.tv_nsec;
 
-		/*
-		 * If the destination already exists do nothing.
-		 * This is after the copy_dir above to still iterate into subdirectories.
-		 */
-		if (fstatat(dst->dirfd, dst->name, &tmp_sb, AT_SYMLINK_NOFOLLOW) != -1) {
-			return 0;
-		}
+	if (S_ISDIR (sb.st_mode)) {
+		err = copy_dir (src, dst, reset_selinux, &sb, mt,
+				old_uid, new_uid, old_gid, new_gid);
+	}
 
-		/*
-		 * Copy any symbolic links
-		 */
+	/*
+	* If the destination already exists do nothing.
+	* This is after the copy_dir above to still iterate into subdirectories.
+	*/
+	if (fstatat(dst->dirfd, dst->name, &tmp_sb, AT_SYMLINK_NOFOLLOW) != -1) {
+		return err;
+	}
 
-		else if (S_ISLNK (sb.st_mode)) {
-			err = copy_symlink (src, dst, reset_selinux, &sb, mt,
-			                    old_uid, new_uid, old_gid, new_gid);
-		}
+	/*
+	* Copy any symbolic links
+	*/
 
-		/*
-		 * See if this is a previously copied link
-		 */
+	else if (S_ISLNK (sb.st_mode)) {
+		err = copy_symlink (src, dst, reset_selinux, &sb, mt,
+				    old_uid, new_uid, old_gid, new_gid);
+	}
 
-		else if ((lp = check_link (src->full_path, &sb)) != NULL) {
-			err = copy_hardlink (dst, reset_selinux, lp);
-		}
+	/*
+	* See if this is a previously copied link
+	*/
 
-		/*
-		 * Deal with FIFOs and special files.  The user really
-		 * shouldn't have any of these, but it seems like it
-		 * would be nice to copy everything ...
-		 */
+	else if ((lp = check_link (src->full_path, &sb)) != NULL) {
+		err = copy_hardlink (dst, reset_selinux, lp);
+	}
 
-		else if (!S_ISREG (sb.st_mode)) {
-			err = copy_special (src, dst, reset_selinux, &sb, mt,
-			                    old_uid, new_uid, old_gid, new_gid);
-		}
+	/*
+	* Deal with FIFOs and special files.  The user really
+	* shouldn't have any of these, but it seems like it
+	* would be nice to copy everything ...
+	*/
 
-		/*
-		 * Create the new file and copy the contents.  The new
-		 * file will be owned by the provided UID and GID values.
-		 */
+	else if (!S_ISREG (sb.st_mode)) {
+		err = copy_special (src, dst, reset_selinux, &sb, mt,
+				    old_uid, new_uid, old_gid, new_gid);
+	}
 
-		else {
-			err = copy_file (src, dst, reset_selinux, &sb, mt,
-			                 old_uid, new_uid, old_gid, new_gid);
-		}
+	/*
+	* Create the new file and copy the contents.  The new
+	* file will be owned by the provided UID and GID values.
+	*/
+
+	else {
+		err = copy_file (src, dst, reset_selinux, &sb, mt,
+				 old_uid, new_uid, old_gid, new_gid);
 	}
 
 	return err;
@@ -597,7 +583,7 @@ static /*@null@*/char *readlink_malloc (const char *filename)
  *	Return 0 on success, -1 on error.
  */
 static int copy_symlink (const struct path_info *src, const struct path_info *dst,
-                         unused bool reset_selinux,
+                         MAYBE_UNUSED bool reset_selinux,
                          const struct stat *statp, const struct timespec mt[],
                          uid_t old_uid, uid_t new_uid,
                          gid_t old_gid, gid_t new_gid)
@@ -625,13 +611,11 @@ static int copy_symlink (const struct path_info *src, const struct path_info *ds
 	 * create a link to the corresponding entry in the dst_orig
 	 * directory.
 	 */
-	if (strncmp (oldlink, src_orig, strlen (src_orig)) == 0) {
-		size_t len = strlen (dst_orig) + strlen (oldlink) - strlen (src_orig) + 1;
-		char *dummy = XMALLOC(len, char);
-		(void) snprintf (dummy, len, "%s%s",
-		                 dst_orig,
-		                 oldlink + strlen (src_orig));
-		free (oldlink);
+	if (strncmp(oldlink, src_orig, strlen(src_orig)) == 0) {
+		char  *dummy;
+
+		xasprintf(&dummy, "%s%s", dst_orig, oldlink + strlen(src_orig));
+		free(oldlink);
 		oldlink = dummy;
 	}
 
@@ -671,7 +655,7 @@ static int copy_symlink (const struct path_info *src, const struct path_info *ds
  *	Return 0 on success, -1 on error.
  */
 static int copy_hardlink (const struct path_info *dst,
-                          unused bool reset_selinux,
+                          MAYBE_UNUSED bool reset_selinux,
                           struct link_name *lp)
 {
 	/* FIXME: selinux, ACL, Extended Attributes needed? */
@@ -690,6 +674,7 @@ static int copy_hardlink (const struct path_info *dst,
 	return 0;
 }
 
+
 /*
  * copy_special - copy a special file
  *
@@ -700,29 +685,33 @@ static int copy_hardlink (const struct path_info *dst,
  *
  *	Return 0 on success, -1 on error.
  */
-static int copy_special (const struct path_info *src, const struct path_info *dst,
-                         bool reset_selinux,
-                         const struct stat *statp, const struct timespec mt[],
-                         uid_t old_uid, uid_t new_uid,
-                         gid_t old_gid, gid_t new_gid)
+static int
+copy_special(const struct path_info *src, const struct path_info *dst,
+             bool reset_selinux,
+             const struct stat *statp, const struct timespec mt[],
+             uid_t old_uid, uid_t new_uid,
+             gid_t old_gid, gid_t new_gid)
 {
-	int err = 0;
-
-#ifdef WITH_SELINUX
-	if (set_selinux_file_context (dst->full_path, statp->st_mode & S_IFMT) != 0) {
+#if defined(WITH_SELINUX)
+	if (set_selinux_file_context(dst->full_path, statp->st_mode & S_IFMT) != 0)
 		return -1;
-	}
-#endif				/* WITH_SELINUX */
+#endif
 
-	if (   (mknodat (dst->dirfd, dst->name, statp->st_mode & ~07777U, statp->st_rdev) != 0)
-	    || (chownat_if_needed (dst, statp,
-	                         old_uid, new_uid, old_gid, new_gid) != 0)
-	    || (fchmodat (dst->dirfd, dst->name, statp->st_mode & 07777, AT_SYMLINK_NOFOLLOW) != 0)
-#ifdef WITH_ACL
-	    || (   (perm_copy_path (src, dst, &ctx) != 0)
-	        && (errno != 0))
-#endif				/* WITH_ACL */
-#ifdef WITH_ATTR
+	if (mknodat(dst->dirfd, dst->name, statp->st_mode & ~07777U, statp->st_rdev) == -1)
+		return -1;
+
+	if (chownat_if_needed(dst, statp, old_uid, new_uid, old_gid, new_gid) == -1)
+		return -1;
+
+	if (fchmodat(dst->dirfd, dst->name, statp->st_mode & 07777, AT_SYMLINK_NOFOLLOW) == -1)
+		return -1;
+
+#if defined(WITH_ACL)
+	if (perm_copy_path(src, dst, &ctx) == -1 && errno != 0)
+		return -1;
+#endif
+
+#if defined(WITH_ATTR)
 	/*
 	 * If the third parameter is NULL, all extended attributes
 	 * except those that define Access Control Lists are copied.
@@ -730,15 +719,16 @@ static int copy_special (const struct path_info *src, const struct path_info *ds
 	 * file systems with and without ACL support needs some
 	 * additional logic so that no unexpected permissions result.
 	 */
-	    || (   !reset_selinux
-	        && (attr_copy_path (src, dst, NULL, &ctx) != 0)
-	        && (errno != 0))
-#endif				/* WITH_ATTR */
-		|| (utimensat (dst->dirfd, dst->name, mt, AT_SYMLINK_NOFOLLOW) != 0)) {
-		err = -1;
+	if (!reset_selinux) {
+		if (attr_copy_path(src, dst, NULL, &ctx) == -1 && errno != 0)
+			return -1;
 	}
+#endif
 
-	return err;
+	if (utimensat(dst->dirfd, dst->name, mt, AT_SYMLINK_NOFOLLOW) == -1)
+		return -1;
+
+	return 0;
 }
 
 /*
@@ -817,7 +807,7 @@ static int copy_file (const struct path_info *src, const struct path_info *dst,
 			break;
 		}
 
-		if (write_full (ofd, buf, cnt) < 0) {
+		if (write_full(ofd, buf, cnt) == -1) {
 			(void) close (ofd);
 			(void) close (ifd);
 			return -1;
@@ -825,7 +815,7 @@ static int copy_file (const struct path_info *src, const struct path_info *dst,
 	}
 
 	(void) close (ifd);
-	if (close (ofd) != 0) {
+	if (close (ofd) != 0 && errno != EINTR) {
 		return -1;
 	}
 

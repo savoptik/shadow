@@ -18,12 +18,16 @@
 #include <sys/types.h>
 #include <time.h>
 #include <assert.h>
+
 #include "defines.h"
 #include "faillog.h"
+#include "memzero.h"
 #include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strftime.h"
+
 
 /* local function prototypes */
 NORETURN static void usage (int status);
@@ -83,11 +87,53 @@ usage (int status)
 	exit (status);
 }
 
+/*
+ * Looks up the offset in the faillog file for the given uid.
+ * Returns -1 on error.
+ */
+static off_t lookup_faillog(struct faillog *fl, uid_t uid)
+{
+	off_t offset, size;
+
+	/* Ensure multiplication does not overflow and retrieving a wrong entry */
+	if (__builtin_mul_overflow(uid, sizeof(*fl), &offset)) {
+		fprintf(stderr,
+		        _("%s: Failed to get the entry for UID %lu\n"),
+		        Prog, (unsigned long)uid);
+		return -1;
+	}
+
+	if (!__builtin_add_overflow(offset, sizeof(*fl), &size)
+	    && size <= statbuf.st_size) {
+		/* fseeko errors are not really relevant for us. */
+		int err = fseeko(fail, offset, SEEK_SET);
+		assert(0 == err);
+		/* faillog is a sparse file. Even if no entries were
+		 * entered for this user, which should be able to get the
+		 * empty entry in this case.
+		 */
+		if (fread(fl, sizeof(*fl), 1, fail) != 1) {
+			fprintf(stderr,
+			        _("%s: Failed to get the entry for UID %lu\n"),
+			        Prog, (unsigned long)uid);
+			return -1;
+		}
+	} else {
+		/* Outsize of the faillog file.
+		 * Behave as if there were a missing entry (same behavior
+		 * as if we were reading an non existing entry in the
+		 * sparse faillog file).
+		 */
+		memzero(fl, sizeof(*fl));
+	}
+
+	return offset;
+}
+
 static void print_one (/*@null@*/const struct passwd *pw, bool force)
 {
 	static bool once = false;
 	struct tm *tm;
-	off_t offset;
 	struct faillog fl;
 	time_t now;
 	char *cp;
@@ -97,28 +143,8 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 		return;
 	}
 
-	offset = (off_t) pw->pw_uid * sizeof (fl);
-	if (offset + sizeof (fl) <= statbuf.st_size) {
-		/* fseeko errors are not really relevant for us. */
-		int err = fseeko (fail, offset, SEEK_SET);
-		assert (0 == err);
-		/* faillog is a sparse file. Even if no entries were
-		 * entered for this user, which should be able to get the
-		 * empty entry in this case.
-		 */
-		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
-			fprintf (stderr,
-			         _("%s: Failed to get the entry for UID %lu\n"),
-			         Prog, (unsigned long int)pw->pw_uid);
-			return;
-		}
-	} else {
-		/* Outsize of the faillog file.
-		 * Behave as if there were a missing entry (same behavior
-		 * as if we were reading an non existing entry in the
-		 * sparse faillog file).
-		 */
-		memzero (&fl, sizeof (fl));
+	if (lookup_faillog(&fl, pw->pw_uid) < 0) {
+		return;
 	}
 
 	/* Nothing to report */
@@ -144,7 +170,7 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 		fprintf (stderr, "Cannot read time from faillog.\n");
 		return;
 	}
-	strftime (ptime, sizeof (ptime), "%D %H:%M:%S %z", tm);
+	STRFTIME(ptime, "%D %H:%M:%S %z", tm);
 	cp = ptime;
 
 	printf ("%-9s   %5d    %5d   ",
@@ -199,28 +225,10 @@ static bool reset_one (uid_t uid)
 	off_t offset;
 	struct faillog fl;
 
-	offset = (off_t) uid * sizeof (fl);
-	if (offset + sizeof (fl) <= statbuf.st_size) {
-		/* fseeko errors are not really relevant for us. */
-		int err = fseeko (fail, offset, SEEK_SET);
-		assert (0 == err);
-		/* faillog is a sparse file. Even if no entries were
-		 * entered for this user, which should be able to get the
-		 * empty entry in this case.
-		 */
-		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
-			fprintf (stderr,
-			         _("%s: Failed to get the entry for UID %lu\n"),
-			         Prog, (unsigned long int)uid);
-			return true;
-		}
-	} else {
-		/* Outsize of the faillog file.
-		 * Behave as if there were a missing entry (same behavior
-		 * as if we were reading an non existing entry in the
-		 * sparse faillog file).
-		 */
-		memzero (&fl, sizeof (fl));
+	offset = lookup_faillog(&fl, uid);
+	if (offset < 0) {
+		/* failure */
+		return true;
 	}
 
 	if (0 == fl.fail_cnt) {
@@ -241,7 +249,7 @@ static bool reset_one (uid_t uid)
 
 	fprintf (stderr,
 	         _("%s: Failed to reset fail count for UID %lu\n"),
-	         Prog, (unsigned long int)uid);
+	         Prog, (unsigned long)uid);
 	return true;
 }
 
@@ -291,7 +299,7 @@ static void reset (void)
 			while ( (pwent = getpwent ()) != NULL ) {
 				if (   uflg
 				    && (   (has_umin && (pwent->pw_uid < (uid_t)umin))
-				        || (pwent->pw_uid > (uid_t)uidmax))) {
+				        || (pwent->pw_uid > uidmax))) {
 					continue;
 				}
 				if (reset_one (pwent->pw_uid)) {
@@ -313,28 +321,9 @@ static bool setmax_one (uid_t uid, short max)
 	off_t offset;
 	struct faillog fl;
 
-	offset = (off_t) uid * sizeof (fl);
-	if (offset + sizeof (fl) <= statbuf.st_size) {
-		/* fseeko errors are not really relevant for us. */
-		int err = fseeko (fail, offset, SEEK_SET);
-		assert (0 == err);
-		/* faillog is a sparse file. Even if no entries were
-		 * entered for this user, which should be able to get the
-		 * empty entry in this case.
-		 */
-		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
-			fprintf (stderr,
-			         _("%s: Failed to get the entry for UID %lu\n"),
-			         Prog, (unsigned long int)uid);
-			return true;
-		}
-	} else {
-		/* Outsize of the faillog file.
-		 * Behave as if there were a missing entry (same behavior
-		 * as if we were reading an non existing entry in the
-		 * sparse faillog file).
-		 */
-		memzero (&fl, sizeof (fl));
+	offset = lookup_faillog(&fl, uid);
+	if (offset < 0) {
+		return true;
 	}
 
 	if (max == fl.fail_max) {
@@ -356,7 +345,7 @@ static bool setmax_one (uid_t uid, short max)
 
 	fprintf (stderr,
 	         _("%s: Failed to set max for UID %lu\n"),
-	         Prog, (unsigned long int)uid);
+	         Prog, (unsigned long)uid);
 	return true;
 }
 
@@ -430,28 +419,9 @@ static bool set_locktime_one (uid_t uid, long locktime)
 	off_t offset;
 	struct faillog fl;
 
-	offset = (off_t) uid * sizeof (fl);
-	if (offset + sizeof (fl) <= statbuf.st_size) {
-		/* fseeko errors are not really relevant for us. */
-		int err = fseeko (fail, offset, SEEK_SET);
-		assert (0 == err);
-		/* faillog is a sparse file. Even if no entries were
-		 * entered for this user, which should be able to get the
-		 * empty entry in this case.
-		 */
-		if (fread (&fl, sizeof (fl), 1, fail) != 1) {
-			fprintf (stderr,
-			         _("%s: Failed to get the entry for UID %lu\n"),
-			         Prog, (unsigned long int)uid);
-			return true;
-		}
-	} else {
-		/* Outsize of the faillog file.
-		 * Behave as if there were a missing entry (same behavior
-		 * as if we were reading an non existing entry in the
-		 * sparse faillog file).
-		 */
-		memzero (&fl, sizeof (fl));
+	offset = lookup_faillog(&fl, uid);
+	if (offset < 0) {
+		return true;
 	}
 
 	if (locktime == fl.fail_locktime) {
@@ -473,7 +443,7 @@ static bool set_locktime_one (uid_t uid, long locktime)
 
 	fprintf (stderr,
 	         _("%s: Failed to set locktime for UID %lu\n"),
-	         Prog, (unsigned long int)uid);
+	         Prog, (unsigned long)uid);
 	return true;
 }
 
@@ -575,7 +545,7 @@ int main (int argc, char **argv)
 				usage (E_SUCCESS);
 				/*@notreached@*/break;
 			case 'l':
-				if (getlong (optarg, &fail_locktime) == 0) {
+				if (getlong(optarg, &fail_locktime) == -1) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -585,9 +555,10 @@ int main (int argc, char **argv)
 				break;
 			case 'm':
 			{
-				long int lmax;
-				if (   (getlong (optarg, &lmax) == 0)
-				    || ((long int)(short) lmax != lmax)) {
+				long  lmax;
+
+				if (   (getlong(optarg, &lmax) == -1)
+				    || ((long)(short) lmax != lmax)) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -603,7 +574,7 @@ int main (int argc, char **argv)
 			case 'R': /* no-op, handled in process_root_flag () */
 				break;
 			case 't':
-				if (getlong (optarg, &days) == 0) {
+				if (getlong(optarg, &days) == -1) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -632,9 +603,9 @@ int main (int argc, char **argv)
 					umax = umin;
 					has_umax = true;
 				} else {
-					if (getrange (optarg,
-					              &umin, &has_umin,
-					              &umax, &has_umax) == 0) {
+					if (getrange(optarg,
+					             &umin, &has_umin,
+					             &umax, &has_umax) == -1) {
 						fprintf (stderr,
 						         _("%s: Unknown user or range: %s\n"),
 						         Prog, optarg);

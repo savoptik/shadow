@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.3\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2004-11-20 03:28+0100\n"
 "Last-Translator: Elian Myftiu <pinguini AT fastwebnet DOT it>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -188,10 +188,6 @@ msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr ""
 
 #, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
-#, c-format
 msgid "%s: Memory allocation failure\n"
 msgstr ""
 
@@ -225,6 +221,10 @@ msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
 msgid "%s: write to %s failed: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
+msgid "%s: closing %s failed: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 msgid "Too many logins.\n"
@@ -645,10 +645,13 @@ msgstr ""
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr ""
 
-msgid "Last password change\t\t\t\t\t: "
+msgid "never"
 msgstr ""
 
-msgid "never"
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
 msgstr ""
 
 msgid "password must be changed"
@@ -817,14 +820,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: user '%s' does not exist\n"
-msgstr ""
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
 msgstr ""
 
 #, c-format
@@ -1153,6 +1148,10 @@ msgid "%s: '%s' is not a valid group name\n"
 msgstr ""
 
 #, fuzzy, c-format
+msgid "%s: cannot open %s: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
@@ -1192,14 +1191,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: group '%s' does not exist\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr ""
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
 msgstr ""
 
 #, c-format
@@ -1275,10 +1266,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
 msgstr ""
 
 #, c-format
@@ -1754,6 +1741,9 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+
 msgid "Old password: "
 msgstr ""
 
@@ -1768,6 +1758,10 @@ msgid ""
 "Enter the new password (minimum of %d, maximum of %d characters)\n"
 "Please use a combination of upper and lower case letters and numbers.\n"
 msgstr ""
+
+#, fuzzy
+msgid "Password is too long.\n"
+msgstr "Fjalëkalimi yt ka skaduar."
 
 msgid "New password: "
 msgstr ""
@@ -1804,6 +1798,10 @@ msgstr ""
 
 #, c-format
 msgid "%s: repository %s not supported\n"
+msgstr ""
+
+#, c-format
+msgid "%s: only root can use --stdin/-s option\n"
 msgstr ""
 
 #, c-format
@@ -1949,11 +1947,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -2092,10 +2088,6 @@ msgstr "Kujdes: grup i panjohur %s\n"
 #, fuzzy, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr ""
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2337,6 +2329,12 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr ""
 
+msgid "Synchronize mailbox file"
+msgstr ""
+
+msgid "Closing mailbox file"
+msgstr ""
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2448,10 +2446,6 @@ msgstr "Kujdes: grup i panjohur %s\n"
 #, fuzzy, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr ""
 
 #, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2636,9 +2630,17 @@ msgstr ""
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 #, c-format
 msgid "%s: warning: %s not owned by %s\n"
@@ -2735,7 +2737,7 @@ msgstr ""
 msgid "failed to stat edited file"
 msgstr ""
 
-msgid "failed to allocate memory"
+msgid "asprintf(3) failed"
 msgstr ""
 
 msgid "failed to create backup file"
@@ -2755,10 +2757,6 @@ msgstr ""
 
 #, fuzzy, c-format
 #~ msgid "%s: password expiry information changed.\n"
-#~ msgstr "Fjalëkalimi yt ka skaduar."
-
-#, fuzzy
-#~ msgid "Password set to expire."
 #~ msgstr "Fjalëkalimi yt ka skaduar."
 
 #, fuzzy

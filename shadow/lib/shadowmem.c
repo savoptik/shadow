@@ -18,6 +18,7 @@
 #include <stdio.h>
 
 #include "alloc.h"
+#include "memzero.h"
 #include "shadowio.h"
 
 /*@null@*/ /*@only@*/struct spwd *__spw_dup (const struct spwd *spent)
@@ -55,7 +56,8 @@
 	return sp;
 }
 
-void spw_free (/*@out@*/ /*@only@*/struct spwd *spent)
+void
+spw_free(/*@only@*/struct spwd *spent)
 {
 	if (spent != NULL) {
 		free (spent->sp_namp);

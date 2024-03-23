@@ -14,23 +14,26 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "string/sprintf.h"
+
+
 int get_pid (const char *pidstr, pid_t *pid)
 {
-	long long int val;
+	long long  val;
 	char *endptr;
 
 	errno = 0;
-	val = strtoll (pidstr, &endptr, 10);
+	val = strtoll(pidstr, &endptr, 10);
 	if (   ('\0' == *pidstr)
 	    || ('\0' != *endptr)
-	    || (ERANGE == errno)
+	    || (0 != errno)
 	    || (val < 1)
 	    || (/*@+longintegral@*/val != (pid_t)val)/*@=longintegral@*/) {
-		return 0;
+		return -1;
 	}
 
 	*pid = val;
-	return 1;
+	return 0;
 }
 
 /*
@@ -40,16 +43,16 @@ int get_pid (const char *pidstr, pid_t *pid)
  */
 int get_pidfd_from_fd(const char *pidfdstr)
 {
-	long long int val;
+	long long  val;
 	char *endptr;
 	struct stat st;
 	dev_t proc_st_dev, proc_st_rdev;
 
 	errno = 0;
-	val = strtoll (pidfdstr, &endptr, 10);
+	val = strtoll(pidfdstr, &endptr, 10);
 	if (   ('\0' == *pidfdstr)
 	    || ('\0' != *endptr)
-	    || (ERANGE == errno)
+	    || (0 != errno)
 	    || (val < 0)
 	    || (/*@+longintegral@*/val != (int)val)/*@=longintegral@*/) {
 		return -1;
@@ -75,18 +78,15 @@ int get_pidfd_from_fd(const char *pidfdstr)
 
 int open_pidfd(const char *pidstr)
 {
-	int proc_dir_fd;
-	int written;
-	char proc_dir_name[32];
-	pid_t target;
+	int    proc_dir_fd;
+	char   proc_dir_name[32];
+	pid_t  target;
 
-	if (get_pid(pidstr, &target) == 0)
+	if (get_pid(pidstr, &target) == -1)
 		return -ENOENT;
 
 	/* max string length is 6 + 10 + 1 + 1 = 18, allocate 32 bytes */
-	written = snprintf(proc_dir_name, sizeof(proc_dir_name), "/proc/%u/",
-		target);
-	if ((written <= 0) || ((size_t)written >= sizeof(proc_dir_name))) {
+	if (SNPRINTF(proc_dir_name, "/proc/%u/", target) == -1) {
 		fprintf(stderr, "snprintf of proc path failed for %u: %s\n",
 			target, strerror(errno));
 		return -EINVAL;

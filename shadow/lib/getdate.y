@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <time.h>
 
+#include "attr.h"
 #include "getdate.h"
 
 #include <string.h>
@@ -569,7 +570,7 @@ static TABLE const MilitaryTable[] = {
 
 
 
-static int yyerror (unused const char *s)
+static int yyerror (MAYBE_UNUSED const char *s)
 {
   return 0;
 }
@@ -922,11 +923,8 @@ time_t get_date (const char *p, const time_t *now)
 
 #if	defined (TEST)
 
-/* ARGSUSED */
 int
-main (ac, av)
-     int ac;
-     char *av[];
+main(void)
 {
   char buff[MAX_BUFF_LEN + 1];
   time_t d;

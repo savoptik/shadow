@@ -14,10 +14,16 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+
 #include "defines.h"
 #include "faillog.h"
 #include "failure.h"
+#include "memzero.h"
 #include "prototypes.h"
+#include "string/strftime.h"
+#include "string/strtcpy.h"
+
+
 #define	YEAR	(365L*DAY)
 /*
  * failure - make failure entry
@@ -41,7 +47,7 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 	fd = open (FAILLOG_FILE, O_RDWR);
 	if (fd < 0) {
 		SYSLOG ((LOG_WARN,
-		         "Can't write faillog entry for UID %lu in %s.",
+		         "Can't write faillog entry for UID %lu in %s: %m",
 		         (unsigned long) uid, FAILLOG_FILE));
 		return;
 	}
@@ -75,7 +81,7 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 		fl->fail_cnt++;
 	}
 
-	strncpy (fl->fail_line, tty, sizeof (fl->fail_line) - 1);
+	STRTCPY(fl->fail_line, tty);
 	(void) time (&fl->fail_time);
 
 	/*
@@ -86,13 +92,26 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 	 */
 
 	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
-	    || (write_full (fd, fl, sizeof *fl) != (ssize_t) sizeof *fl)
-	    || (close (fd) != 0)) {
-		SYSLOG ((LOG_WARN,
-		         "Can't write faillog entry for UID %lu in %s.",
-		         (unsigned long) uid, FAILLOG_FILE));
-		(void) close (fd);
+	    || (write_full(fd, fl, sizeof *fl) == -1)) {
+		goto err_write;
 	}
+
+	if (close (fd) != 0 && errno != EINTR) {
+		goto err_close;
+	}
+
+	return;
+
+err_write:
+	{
+		int saved_errno = errno;
+		(void) close (fd);
+		errno = saved_errno;
+	}
+err_close:
+	SYSLOG ((LOG_WARN,
+	         "Can't write faillog entry for UID %lu to %s: %m",
+	         (unsigned long) uid, FAILLOG_FILE));
 }
 
 static bool too_many_failures (const struct faillog *fl)
@@ -144,7 +163,7 @@ int failcheck (uid_t uid, struct faillog *fl, bool failed)
 	fd = open (FAILLOG_FILE, failed?O_RDONLY:O_RDWR);
 	if (fd < 0) {
 		SYSLOG ((LOG_WARN,
-		         "Can't open the faillog file (%s) to check UID %lu. "
+		         "Can't open the faillog file (%s) to check UID %lu: %m; "
 		         "User access authorized.",
 		         FAILLOG_FILE, (unsigned long) uid));
 		return 1;
@@ -185,17 +204,29 @@ int failcheck (uid_t uid, struct faillog *fl, bool failed)
 		fail.fail_cnt = 0;
 
 		if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
-		    || (write_full (fd, &fail, sizeof fail) != (ssize_t) sizeof fail)
-		    || (close (fd) != 0)) {
-			SYSLOG ((LOG_WARN,
-			         "Can't reset faillog entry for UID %lu in %s.",
-			         (unsigned long) uid, FAILLOG_FILE));
-			(void) close (fd);
+		    || (write_full(fd, &fail, sizeof fail) == -1)) {
+			    goto err_write;
+		}
+
+		if (close (fd) != 0 && errno != EINTR) {
+			goto err_close;
 		}
 	} else {
 		(void) close (fd);
 	}
 
+	return 1;
+
+err_write:
+	{
+		int saved_errno = errno;
+		(void) close (fd);
+		errno = saved_errno;
+	}
+err_close:
+	SYSLOG ((LOG_WARN,
+	         "Can't reset faillog entry for UID %lu in %s: %m",
+	         (unsigned long) uid, FAILLOG_FILE));
 	return 1;
 }
 
@@ -223,7 +254,7 @@ void failprint (const struct faillog *fail)
 	/*
 	 * Print all information we have.
 	 */
-	(void) strftime (lasttimeb, sizeof lasttimeb, "%c", tp);
+	STRFTIME(lasttimeb, "%c", tp);
 
 	/*@-formatconst@*/
 	(void) printf (ngettext ("%d failure since last login.\n"

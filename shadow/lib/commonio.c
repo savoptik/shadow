@@ -23,6 +23,7 @@
 #include <signal.h>
 
 #include "alloc.h"
+#include "memzero.h"
 #include "nscd.h"
 #include "sssd.h"
 #ifdef WITH_TCB
@@ -31,6 +32,8 @@
 #include "prototypes.h"
 #include "commonio.h"
 #include "shadowlog_internal.h"
+#include "string/sprintf.h"
+
 
 /* local function prototypes */
 static int lrename (const char *, const char *);
@@ -108,9 +111,9 @@ static int check_link_count (const char *file, bool log)
 
 	if (sb.st_nlink != 2) {
 		if (log) {
-			(void) fprintf (shadow_logfd,
-			                "%s: %s: lock file already used (nlink: %u)\n",
-			                shadow_progname, file, sb.st_nlink);
+			fprintf(shadow_logfd,
+			        "%s: %s: lock file already used (nlink: %ju)\n",
+			        shadow_progname, file, (uintmax_t) sb.st_nlink);
 		}
 		return 0;
 	}
@@ -121,11 +124,11 @@ static int check_link_count (const char *file, bool log)
 
 static int do_lock_file (const char *file, const char *lock, bool log)
 {
-	int fd;
-	pid_t pid;
-	ssize_t len;
-	int retval;
-	char buf[32];
+	int      fd;
+	int      retval;
+	char     buf[32];
+	pid_t    pid;
+	ssize_t  len;
 
 	fd = open (file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (-1 == fd) {
@@ -138,9 +141,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	}
 
 	pid = getpid ();
-	snprintf (buf, sizeof buf, "%lu", (unsigned long) pid);
+	SNPRINTF(buf, "%lu", (unsigned long) pid);
 	len = (ssize_t) strlen (buf) + 1;
-	if (write_full (fd, buf, (size_t) len) != len) {
+	if (write_full(fd, buf, len) == -1) {
 		if (log) {
 			(void) fprintf (shadow_logfd,
 			                "%s: %s file write error: %s\n",
@@ -192,7 +195,7 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 		return 0;
 	}
 	buf[len] = '\0';
-	if (get_pid (buf, &pid) == 0) {
+	if (get_pid(buf, &pid) == -1) {
 		if (log) {
 			(void) fprintf (shadow_logfd,
 			                "%s: existing lock file %s with an invalid PID '%s'\n",
@@ -339,7 +342,7 @@ static void free_linked_list (struct commonio_db *db)
 
 int commonio_setname (struct commonio_db *db, const char *name)
 {
-	snprintf (db->filename, sizeof (db->filename), "%s", name);
+	SNPRINTF(db->filename, "%s", name);
 	db->setname = true;
 	return 1;
 }
@@ -353,33 +356,25 @@ bool commonio_present (const struct commonio_db *db)
 
 int commonio_lock_nowait (struct commonio_db *db, bool log)
 {
-	char* file = NULL;
-	char* lock = NULL;
-	size_t lock_file_len;
-	size_t file_len;
-	int err = 0;
+	int   err = 0;
+	char  *file = NULL;
+	char  *lock = NULL;
 
 	if (db->locked) {
 		return 1;
 	}
-	file_len = strlen(db->filename) + 11;/* %lu max size */
-	lock_file_len = strlen(db->filename) + 6; /* sizeof ".lock" */
-	file = MALLOC(file_len, char);
-	if (file == NULL) {
+
+	if (asprintf(&file, "%s.%ju", db->filename, (uintmax_t) getpid()) == -1)
 		goto cleanup_ENOMEM;
-	}
-	lock = MALLOC(lock_file_len, char);
-	if (lock == NULL) {
+	if (asprintf(&lock, "%s.lock", db->filename) == -1)
 		goto cleanup_ENOMEM;
-	}
-	snprintf (file, file_len, "%s.%lu",
-	          db->filename, (unsigned long) getpid ());
-	snprintf (lock, lock_file_len, "%s.lock", db->filename);
+
 	if (do_lock_file (file, lock, log) != 0) {
 		db->locked = true;
 		lock_count++;
 		err = 1;
 	}
+
 cleanup_ENOMEM:
 	free(file);
 	free(lock);
@@ -473,7 +468,7 @@ static void dec_lock_count (void)
 
 int commonio_unlock (struct commonio_db *db)
 {
-	char lock[1024];
+	char  lock[1029];
 
 	if (db->isopen) {
 		db->readonly = true;
@@ -490,7 +485,7 @@ int commonio_unlock (struct commonio_db *db)
 		 * then call ulckpwdf() (if used) on last unlock.
 		 */
 		db->locked = false;
-		snprintf (lock, sizeof lock, "%s.lock", db->filename);
+		SNPRINTF(lock, "%s.lock", db->filename);
 		unlink (lock);
 		dec_lock_count ();
 		return 1;
@@ -646,7 +641,7 @@ int commonio_open (struct commonio_db *db, int mode)
 	}
 
 	while (db->ops->fgets (buf, buflen, db->fp) == buf) {
-		while (   ((cp = strrchr (buf, '\n')) == NULL)
+		while (   (strrchr (buf, '\n') == NULL)
 		       && (feof (db->fp) == 0)) {
 			size_t len;
 
@@ -899,9 +894,9 @@ static int write_all (const struct commonio_db *db)
 
 int commonio_close (struct commonio_db *db)
 {
-	char buf[1024];
-	int errors = 0;
-	struct stat sb;
+	int          errors = 0;
+	char         buf[1024];
+	struct stat  sb;
 
 	if (!db->isopen) {
 		errno = EINVAL;
@@ -932,7 +927,11 @@ int commonio_close (struct commonio_db *db)
 		/*
 		 * Create backup file.
 		 */
-		snprintf (buf, sizeof buf, "%s-", db->filename);
+		if (SNPRINTF(buf, "%s-", db->filename) == -1) {
+			(void) fclose (db->fp);
+			db->fp = NULL;
+			goto fail;
+		}
 
 #ifdef WITH_SELINUX
 		if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
@@ -947,15 +946,15 @@ int commonio_close (struct commonio_db *db)
 			errors++;
 		}
 
+		db->fp = NULL;
+
 #ifdef WITH_SELINUX
 		if (reset_selinux_file_context () != 0) {
 			errors++;
 		}
 #endif
-		if (errors != 0) {
-			db->fp = NULL;
+		if (errors != 0)
 			goto fail;
-		}
 	} else {
 		/*
 		 * Default permissions for new [g]shadow files.
@@ -965,7 +964,8 @@ int commonio_close (struct commonio_db *db)
 		sb.st_gid = db->st_gid;
 	}
 
-	snprintf (buf, sizeof buf, "%s+", db->filename);
+	if (SNPRINTF(buf, "%s+", db->filename) == -1)
+		goto fail;
 
 #ifdef WITH_SELINUX
 	if (set_selinux_file_context (db->filename, S_IFREG) != 0) {

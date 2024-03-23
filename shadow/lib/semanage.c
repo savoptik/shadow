@@ -16,15 +16,19 @@
 #endif
 #include <stdio.h>
 #include <stdarg.h>
+
 #include <selinux/selinux.h>
+
 #include <semanage/semanage.h>
+
+#include "attr.h"
 #include "prototypes.h"
 
 #include "shadowlog_internal.h"
 
 
 format_attr(printf, 3, 4)
-static void semanage_error_callback (unused void *varg,
+static void semanage_error_callback (MAYBE_UNUSED void *varg,
                                      semanage_handle_t *handle,
                                      const char *fmt, ...)
 {

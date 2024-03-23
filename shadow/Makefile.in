@@ -108,7 +108,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = man/po/Makefile shadow.spec
+CONFIG_CLEAN_FILES = man/po/Makefile
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -163,12 +163,11 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
-DIST_SUBDIRS = lib libsubid src po contrib doc etc man
+DIST_SUBDIRS = lib libsubid src po contrib doc etc tests/unit man
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/shadow.spec.in $(top_srcdir)/man/po/Makefile.in \
-	ABOUT-NLS AUTHORS.md COPYING ChangeLog NEWS README TODO \
-	compile config.guess config.rpath config.sub install-sh \
-	ltmain.sh missing
+	$(top_srcdir)/man/po/Makefile.in ABOUT-NLS AUTHORS.md COPYING \
+	ChangeLog NEWS README compile config.guess config.rpath \
+	config.sub install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -224,6 +223,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -242,7 +243,6 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -267,7 +267,6 @@ LIBAUDIT = @LIBAUDIT@
 LIBBSD = @LIBBSD@
 LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
 LIBBSD_LIBS = @LIBBSD_LIBS@
-LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -390,8 +389,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = NEWS README TODO shadow.spec.in
-SUBDIRS = lib $(am__append_1) src po contrib doc etc $(am__append_2)
+EXTRA_DIST = NEWS README
+SUBDIRS = lib $(am__append_1) src po contrib doc etc tests/unit \
+	$(am__append_2)
+CLEANFILES = man/8.out man/po/remove-potcdate.* man/*/login.defs.d man/*/*.mo
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -445,8 +446,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 man/po/Makefile: $(top_builddir)/config.status $(top_srcdir)/man/po/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-shadow.spec: $(top_builddir)/config.status $(srcdir)/shadow.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
@@ -786,6 +785,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)

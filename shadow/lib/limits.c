@@ -29,6 +29,7 @@
 #include "getdef.h"
 #include "shadowlog.h"
 #include <sys/resource.h>
+#include "memzero.h"
 #ifndef LIMITS_FILE
 #define LIMITS_FILE "/etc/limits"
 #endif
@@ -44,8 +45,10 @@ static int setrlimit_value (unsigned int resource,
                             const char *value,
                             unsigned int multiplier)
 {
-	struct rlimit rlim;
-	rlim_t limit;
+	char           *endptr;
+	long           l;
+	rlim_t         limit;
+	struct rlimit  rlim;
 
 	/* The "-" is special, not belonging to a strange negative limit.
 	 * It is infinity, in a controlled way.
@@ -59,18 +62,13 @@ static int setrlimit_value (unsigned int resource,
 		 * Also, we are limited to base 10 here (hex numbers will not
 		 * work with the limit string parser as is anyway)
 		 */
-		char *endptr;
-		long longlimit = strtol (value, &endptr, 10);
-		if ((0 == longlimit) && (value == endptr)) {
-			/* No argument at all. No-op.
-			 * FIXME: We could instead throw an error, though.
-			 */
-			return 0;
-		}
-		longlimit *= multiplier;
-		limit = longlimit;
-		if (longlimit != limit)
-		{
+		errno = 0;
+		l = strtol(value, &endptr, 10);
+
+		if (value == endptr || errno != 0)
+			return 0;  // FIXME: We could instead throw an error, though.
+
+		if (__builtin_mul_overflow(l, multiplier, &limit)) {
 			/* FIXME: Again, silent error handling...
 			 * Wouldn't screaming make more sense?
 			 */
@@ -91,7 +89,7 @@ static int set_prio (const char *value)
 {
 	long prio;
 
-	if (   (getlong (value, &prio) == 0)
+	if (   (getlong(value, &prio) == -1)
 	    || (prio != (int) prio)) {
 		return 0;
 	}
@@ -104,9 +102,9 @@ static int set_prio (const char *value)
 
 static int set_umask (const char *value)
 {
-	unsigned long int mask;
+	unsigned long  mask;
 
-	if (   (getulong (value, &mask) == 0)
+	if (   (getulong(value, &mask) == -1)
 	    || (mask != (mode_t) mask)) {
 		return 0;
 	}
@@ -121,7 +119,7 @@ static int check_logins (const char *name, const char *maxlogins)
 {
 	unsigned long limit, count;
 
-	if (getulong (maxlogins, &limit) == 0) {
+	if (getulong(maxlogins, &limit) == -1) {
 		return 0;
 	}
 
@@ -356,11 +354,11 @@ static int setup_user_limits (const char *uname)
 	char tempbuf[1024];
 
 	/* init things */
-	memzero (buf, sizeof (buf));
-	memzero (name, sizeof (name));
-	memzero (limits, sizeof (limits));
-	memzero (deflimits, sizeof (deflimits));
-	memzero (tempbuf, sizeof (tempbuf));
+	MEMZERO(buf);
+	MEMZERO(name);
+	MEMZERO(limits);
+	MEMZERO(deflimits);
+	MEMZERO(tempbuf);
 
 	/* start the checks */
 	fil = fopen (LIMITS_FILE, "r");
@@ -377,7 +375,7 @@ static int setup_user_limits (const char *uname)
 		if (('#' == buf[0]) || ('\n' == buf[0])) {
 			continue;
 		}
-		memzero (tempbuf, sizeof (tempbuf));
+		MEMZERO(tempbuf);
 		/* a valid line should have a username, then spaces,
 		 * then limits
 		 * we allow the format:
@@ -482,8 +480,9 @@ void setup_limits (const struct passwd *info)
 			}
 
 			if (strncmp (cp, "pri=", 4) == 0) {
-				long int inc;
-				if (   (getlong (cp + 4, &inc) == 1)
+				long  inc;
+
+				if (   (getlong(cp + 4, &inc) == 0)
 				    && (inc >= -20) && (inc <= 20)) {
 					errno = 0;
 					if (   (nice (inc) != -1)
@@ -500,8 +499,8 @@ void setup_limits (const struct passwd *info)
 				continue;
 			}
 			if (strncmp (cp, "ulimit=", 7) == 0) {
-				long int blocks;
-				if (   (getlong (cp + 7, &blocks) == 0)
+				long  blocks;
+				if (   (getlong(cp + 7, &blocks) == -1)
 				    || (blocks != (int) blocks)
 				    || (set_filesize_limit (blocks) != 0)) {
 					SYSLOG ((LOG_WARN,
@@ -511,8 +510,9 @@ void setup_limits (const struct passwd *info)
 				continue;
 			}
 			if (strncmp (cp, "umask=", 6) == 0) {
-				unsigned long int mask;
-				if (   (getulong (cp + 6, &mask) == 0)
+				unsigned long  mask;
+
+				if (   (getulong(cp + 6, &mask) == -1)
 				    || (mask != (mode_t) mask)) {
 					SYSLOG ((LOG_WARN,
 					         "Can't set umask value for user %s",

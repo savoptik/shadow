@@ -48,20 +48,6 @@
 #include <sys/time.h>
 #include <time.h>
 
-#ifdef HAVE_MEMSET_EXPLICIT
-# define memzero(ptr, size) memset_explicit((ptr), 0, (size))
-#elif defined HAVE_EXPLICIT_BZERO	/* !HAVE_MEMSET_S */
-# define memzero(ptr, size) explicit_bzero((ptr), (size))
-#else					/* !HAVE_MEMSET_S && HAVE_EXPLICIT_BZERO */
-static inline void memzero(void *ptr, size_t size)
-{
-	ptr = memset(ptr, '\0', size);
-	__asm__ __volatile__ ("" : : "r"(ptr) : "memory");
-}
-#endif					/* !HAVE_MEMSET_S && !HAVE_EXPLICIT_BZERO */
-
-#define strzero(s) memzero(s, strlen(s))	/* warning: evaluates twice */
-
 #include <dirent.h>
 
 /*
@@ -158,22 +144,10 @@ static inline void memzero(void *ptr, size_t size)
 
 /* Solaris defines this in shadow.h */
 #ifndef DAY
-#define DAY (24L*3600L)
+#define DAY  ((time_t) 24 * 3600)
 #endif
 
 #define WEEK (7*DAY)
-
-#define WIDTHOF(x)   (sizeof(x) * CHAR_BIT)
-#define NITEMS(arr)  (sizeof((arr)) / sizeof((arr)[0]))
-#define STRLEN(s)    (NITEMS(s) - 1)
-
-/* Copy string pointed by B to array A with size checking.  It was originally
-   in lmain.c but is _very_ useful elsewhere.  Some setuid root programs with
-   very sloppy coding used to assume that BUFSIZ will always be enough...  */
-
-					/* danger - side effects */
-#define STRFCPY(A,B) \
-	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
 
 #ifndef PASSWD_FILE
 #define PASSWD_FILE "/etc/passwd"
@@ -185,6 +159,14 @@ static inline void memzero(void *ptr, size_t size)
 
 #ifndef SHADOW_FILE
 #define SHADOW_FILE "/etc/shadow"
+#endif
+
+#ifndef SUBUID_FILE
+#define SUBUID_FILE "/etc/subuid"
+#endif
+
+#ifndef SUBGID_FILE
+#define SUBGID_FILE "/etc/subgid"
 #endif
 
 #ifdef SHADOWGRP
@@ -202,38 +184,18 @@ static inline void memzero(void *ptr, size_t size)
 #define SHADOW_PASSWD_STRING "x"
 #endif
 
-#define SHADOW_SP_FLAG_UNSET ((unsigned long int)-1)
+#define SHADOW_SP_FLAG_UNSET ((unsigned long)-1)
 
 #ifdef WITH_AUDIT
-#ifdef __u8			/* in case we use pam < 0.80 */
+/* in case we use pam < 0.80 */
 #undef __u8
-#endif
-#ifdef __u32
 #undef __u32
-#endif
 
 #include <libaudit.h>
 #endif
 
-/* To be used for verified unused parameters */
-#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
-# define unused    __attribute__((unused))
-# define NORETURN  __attribute__((__noreturn__))
-# define format_attr(type, index, check) __attribute__((format (type, index, check)))
-#else
-# define unused
-# define NORETURN
-# define format_attr(type, index, check)
-#endif
-
 /* Maximum length of passwd entry */
 #define PASSWD_ENTRY_MAX_LENGTH 32768
-
-#if (__GNUC__ >= 11) && !defined(__clang__)
-# define ATTR_MALLOC(deallocator)  [[gnu::malloc(deallocator)]]
-#else
-# define ATTR_MALLOC(deallocator)
-#endif
 
 #ifdef HAVE_SECURE_GETENV
 #  define shadow_getenv(name) secure_getenv(name)

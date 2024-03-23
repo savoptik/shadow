@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2024-03-26
+.\"      Date: 2024-03-23
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.14.7
+.\"    Source: shadow-utils 4.15.1
 .\"  Language: Chinese Simplified
 .\"
-.TH "USERADD" "8" "2024-03-26" "shadow\-utils 4\&.14\&.7" "System Management Commands"
+.TH "USERADD" "8" "2024-03-23" "shadow\-utils 4\&.15\&.1" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -197,6 +197,10 @@ variable in
 /etc/default/useradd
 or, by default,
 /etc/skel\&.
+.sp
+Absolute symlinks that link back to the skel directory will have the
+/etc/skel
+prefix replaced with the user\*(Aqs home directory\&.
 .sp
 如果可以，也复制 ACL 和扩展属性。
 .RE

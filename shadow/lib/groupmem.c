@@ -13,6 +13,7 @@
 #ident "$Id$"
 
 #include "alloc.h"
+#include "memzero.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "groupio.h"
@@ -22,12 +23,11 @@
 	struct group *gr;
 	int i;
 
-	gr = MALLOC(1, struct group);
+	gr = CALLOC(1, struct group);
 	if (NULL == gr) {
 		return NULL;
 	}
 	/* The libc might define other fields. They won't be copied. */
-	memset (gr, 0, sizeof *gr);
 	gr->gr_gid = grent->gr_gid;
 	/*@-mustfreeonly@*/
 	gr->gr_name = strdup (grent->gr_name);
@@ -77,7 +77,8 @@ void gr_free_members (struct group *grent)
 	}
 }
 
-void gr_free (/*@out@*/ /*@only@*/struct group *grent)
+void
+gr_free(/*@only@*/struct group *grent)
 {
 	free (grent->gr_name);
 	if (NULL != grent->gr_passwd) {

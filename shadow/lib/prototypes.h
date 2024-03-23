@@ -31,6 +31,7 @@
 #include <lastlog.h>
 #endif /* ENABLE_LASTLOG */
 
+#include "attr.h"
 #include "defines.h"
 #include "commonio.h"
 
@@ -42,11 +43,6 @@ extern int add_groups (const char *);
 /* age.c */
 extern void agecheck (/*@null@*/const struct spwd *);
 extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
-
-/* agetpass.c */
-extern void erase_pass(char *pass);
-ATTR_MALLOC(erase_pass)
-extern char *agetpass(const char *prompt);
 
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
@@ -96,11 +92,11 @@ void cleanup_report_del_group_gshadow (void *group_name);
 void cleanup_report_mod_passwd (void *cleanup_info);
 void cleanup_report_mod_group (void *cleanup_info);
 void cleanup_report_mod_gshadow (void *cleanup_info);
-void cleanup_unlock_group (/*@null@*/void *unused);
+void cleanup_unlock_group (/*@null@*/void *MAYBE_UNUSED);
 #ifdef SHADOWGRP
-void cleanup_unlock_gshadow (/*@null@*/void *unused);
+void cleanup_unlock_gshadow (/*@null@*/void *MAYBE_UNUSED);
 #endif
-void cleanup_unlock_passwd (/*@null@*/void *unused);
+void cleanup_unlock_passwd (/*@null@*/void *MAYBE_UNUSED);
 
 /* console.c */
 extern bool console (const char *);
@@ -112,14 +108,8 @@ extern int copy_tree (const char *src_root, const char *dst_root,
                       uid_t old_uid, uid_t new_uid,
                       gid_t old_gid, gid_t new_gid);
 
-/* date_to_str.c */
-extern void date_to_str (size_t size, char buf[size], long date);
-
 /* encrypt.c */
 extern /*@exposed@*//*@null@*/char *pw_encrypt (const char *, const char *);
-
-/* entry.c */
-extern void pw_entry (const char *, struct passwd *);
 
 /* env.c */
 extern void addenv (const char *, /*@null@*/const char *);
@@ -160,7 +150,8 @@ extern int get_gid (const char *gidstr, gid_t *gid);
 extern /*@only@*//*@null@*/struct group *getgr_nam_gid (/*@null@*/const char *grname);
 
 /* getlong.c */
-extern int getlong (const char *numstr, /*@out@*/long int *result);
+ATTR_ACCESS(write_only, 2)
+extern int getlong(const char *restrict numstr, long *restrict result);
 
 /* get_pid.c */
 extern int get_pid (const char *pidstr, pid_t *pid);
@@ -179,10 +170,12 @@ extern time_t gettime (void);
 extern int get_uid (const char *uidstr, uid_t *uid);
 
 /* getulong.c */
-extern int getulong (const char *numstr, /*@out@*/unsigned long int *result);
+ATTR_ACCESS(write_only, 2)
+extern int getulong(const char *restrict numstr, unsigned long *restrict result);
 
 /* fputsx.c */
-extern /*@null@*/char *fgetsx (/*@returned@*/ /*@out@*/char *, int, FILE *);
+ATTR_ACCESS(write_only, 1, 2)
+extern /*@null@*/char *fgetsx(/*@returned@*/char *restrict, int, FILE *restrict);
 extern int fputsx (const char *, FILE *);
 
 /* groupio.c */
@@ -194,7 +187,7 @@ extern void __gr_set_changed (void);
 /* groupmem.c */
 extern /*@null@*/ /*@only@*/struct group *__gr_dup (const struct group *grent);
 extern void gr_free_members (struct group *grent);
-extern void gr_free (/*@out@*/ /*@only@*/struct group *grent);
+extern void gr_free(/*@only@*/struct group *grent);
 
 /* hushed.c */
 extern bool hushed (const char *username);
@@ -220,9 +213,9 @@ extern void setup_limits (const struct passwd *);
 #endif
 
 /* list.c */
-extern /*@only@*/ /*@out@*/char **add_list (/*@returned@*/ /*@only@*/char **, const char *);
-extern /*@only@*/ /*@out@*/char **del_list (/*@returned@*/ /*@only@*/char **, const char *);
-extern /*@only@*/ /*@out@*/char **dup_list (char *const *);
+extern /*@only@*/char **add_list (/*@returned@*/ /*@only@*/char **, const char *);
+extern /*@only@*/char **del_list (/*@returned@*/ /*@only@*/char **, const char *);
+extern /*@only@*/char **dup_list (char *const *);
 extern bool is_on_list (char *const *list, const char *member);
 extern /*@only@*/char **comma_to_list (const char *);
 
@@ -361,7 +354,7 @@ extern /*@dependent@*/ /*@null@*/struct commonio_entry *__pw_get_head (void);
 
 /* pwmem.c */
 extern /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent);
-extern void pw_free (/*@out@*/ /*@only@*/struct passwd *pwent);
+extern void pw_free(/*@only@*/struct passwd *pwent);
 
 /* csrand.c */
 unsigned long csrand (void);
@@ -372,8 +365,8 @@ unsigned long csrand_interval (unsigned long min, unsigned long max);
 extern int remove_tree (const char *root, bool remove_root);
 
 /* rlogin.c */
-extern int do_rlogin (const char *remote_host, char *name, size_t namelen,
-                      char *term, size_t termlen);
+extern int do_rlogin(const char *remote_host, char *name, size_t namesize,
+                     char *term, size_t termsize);
 
 /* root_flag.c */
 extern void process_root_flag (const char* short_opt, int argc, char **argv);
@@ -424,7 +417,7 @@ extern struct spwd *sgetspent (const char *string);
 /* sgroupio.c */
 extern void __sgr_del_entry (const struct commonio_entry *ent);
 extern /*@null@*/ /*@only@*/struct sgrp *__sgr_dup (const struct sgrp *sgent);
-extern void sgr_free (/*@out@*/ /*@only@*/struct sgrp *sgent);
+extern void sgr_free(/*@only@*/struct sgrp *sgent);
 extern /*@dependent@*/ /*@null@*/struct commonio_entry *__sgr_get_head (void);
 extern void __sgr_set_changed (void);
 
@@ -434,14 +427,15 @@ extern void __spw_del_entry (const struct commonio_entry *ent);
 
 /* shadowmem.c */
 extern /*@null@*/ /*@only@*/struct spwd *__spw_dup (const struct spwd *spent);
-extern void spw_free (/*@out@*/ /*@only@*/struct spwd *spent);
+extern void spw_free(/*@only@*/struct spwd *spent);
 
 /* shell.c */
 extern int shell (const char *file, /*@null@*/const char *arg, char *const envp[]);
 
 /* spawn.c */
-extern int run_command (const char *cmd, const char *argv[],
-                        /*@null@*/const char *envp[], /*@out@*/int *status);
+ATTR_ACCESS(write_only, 4)
+extern int run_command(const char *cmd, const char *argv[],
+                       /*@null@*/const char *envp[], int *restrict status);
 
 /* strtoday.c */
 extern long strtoday (const char *);
@@ -530,7 +524,7 @@ extern unsigned long active_sessions_count(const char *name,
 extern bool valid (const char *, const struct passwd *);
 
 /* write_full.c */
-extern ssize_t write_full(int fd, const void *buf, size_t count);
+extern int write_full(int fd, const void *buf, size_t count);
 
 /* xgetpwnam.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwnam (const char *);

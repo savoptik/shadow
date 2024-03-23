@@ -32,6 +32,9 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+#include "string/strtcpy.h"
+
 
 /*
  * Global variables.
@@ -56,7 +59,7 @@ static bool pw_locked = false;
  */
 
 /* local function prototypes */
-static void fail_exit (int code);
+NORETURN static void fail_exit (int code);
 NORETURN static void usage (int status);
 static bool may_change_field (int);
 static void new_fields (void);
@@ -275,7 +278,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			fflg = true;
-			STRFCPY (fullnm, optarg);
+			STRTCPY(fullnm, optarg);
 			break;
 		case 'h':
 			if (!may_change_field ('h')) {
@@ -284,7 +287,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			hflg = true;
-			STRFCPY (homeph, optarg);
+			STRTCPY(homeph, optarg);
 			break;
 		case 'o':
 			if (!amroot) {
@@ -298,7 +301,7 @@ static void process_flags (int argc, char **argv)
 				         _("%s: fields too long\n"), Prog);
 				exit (E_NOPERM);
 			}
-			STRFCPY (slop, optarg);
+			STRTCPY(slop, optarg);
 			break;
 		case 'r':
 			if (!may_change_field ('r')) {
@@ -307,7 +310,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			rflg = true;
-			STRFCPY (roomno, optarg);
+			STRTCPY(roomno, optarg);
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
@@ -321,7 +324,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			wflg = true;
-			STRFCPY (workph, optarg);
+			STRTCPY(workph, optarg);
 			break;
 		default:
 			usage (E_USAGE);
@@ -508,7 +511,8 @@ static void get_old_fields (const char *gecos)
 {
 	char *cp;		/* temporary character pointer       */
 	char old_gecos[BUFSIZ];	/* buffer for old GECOS fields       */
-	STRFCPY (old_gecos, gecos);
+
+	STRTCPY(old_gecos, gecos);
 
 	/*
 	 * Now get the full name. It is the first comma separated field in
@@ -612,9 +616,9 @@ static void check_fields (void)
  */
 int main (int argc, char **argv)
 {
-	const struct passwd *pw;	/* password file entry               */
-	char new_gecos[BUFSIZ];	/* buffer for new GECOS fields       */
-	char *user;
+	char                 new_gecos[BUFSIZ];
+	char                 *user;
+	const struct passwd  *pw;
 
 	sanitize_env ();
 	check_fds ();
@@ -664,29 +668,6 @@ int main (int argc, char **argv)
 		user = xstrdup (pw->pw_name);
 	}
 
-#ifdef	USE_NIS
-	/*
-	 * Now we make sure this is a LOCAL password entry for this user ...
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: cannot change user '%s' on NIS client.\n"),
-		         Prog, user);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _
-			         ("%s: '%s' is the NIS master for this client.\n"),
-			         Prog, nis_master);
-		}
-		fail_exit (E_NOPERM);
-	}
-#endif
-
 	/* Check that the caller is allowed to change the gecos of the
 	 * specified user */
 	check_perms (pw);
@@ -718,9 +699,9 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: fields too long\n"), Prog);
 		fail_exit (E_NOPERM);
 	}
-	snprintf (new_gecos, sizeof new_gecos, "%s,%s,%s,%s%s%s",
-	          fullnm, roomno, workph, homeph,
-	          ('\0' != slop[0]) ? "," : "", slop);
+	SNPRINTF(new_gecos, "%s,%s,%s,%s%s%s",
+	         fullnm, roomno, workph, homeph,
+	         ('\0' != slop[0]) ? "," : "", slop);
 
 	/* Rewrite the user's gecos in the passwd file */
 	update_gecos (user, new_gecos);

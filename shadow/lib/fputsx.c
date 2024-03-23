@@ -16,7 +16,8 @@
 #ident "$Id$"
 
 
-/*@null@*/char *fgetsx (/*@returned@*/ /*@out@*/char *buf, int cnt, FILE * f)
+/*@null@*/char *
+fgetsx(/*@returned@*/char *restrict buf, int cnt, FILE *restrict f)
 {
 	char *cp = buf;
 	char *ep;

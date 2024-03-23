@@ -50,6 +50,8 @@
 #endif				/* ENABLE_SUBIDS */
 #include "chkname.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 /*
  * Global variables
@@ -90,8 +92,8 @@ static bool sub_gid_locked = false;
 #endif				/* ENABLE_SUBIDS */
 
 /* local function prototypes */
-static void usage (int status);
-static void fail_exit (int);
+NORETURN static void usage (int status);
+NORETURN static void fail_exit (int);
 static int add_group (const char *, const char *, gid_t *, gid_t);
 static int get_user_id (const char *, uid_t *);
 static int add_user (const char *, uid_t, gid_t);
@@ -237,7 +239,7 @@ static int add_group (const char *name, const char *gid, gid_t *ngid, uid_t uid)
 		 * new group, or an existing group.
 		 */
 
-		if (get_gid (gid, &grent.gr_gid) == 0) {
+		if (get_gid(gid, &grent.gr_gid) == -1) {
 			fprintf (stderr,
 			         _("%s: invalid group ID '%s'\n"),
 			         Prog, gid);
@@ -341,7 +343,7 @@ static int get_user_id (const char *uid, uid_t *nuid) {
 	 * caller provided, or the next available UID.
 	 */
 	if (isdigit (uid[0])) {
-		if ((get_uid (uid, nuid) == 0) || (*nuid == (uid_t)-1)) {
+		if ((get_uid(uid, nuid) == -1) || (*nuid == (uid_t)-1)) {
 			fprintf (stderr,
 			         _("%s: invalid user ID '%s'\n"),
 			         Prog, uid);
@@ -671,19 +673,19 @@ static void process_flags (int argc, char **argv)
 			}
 #if defined(USE_SHA_CRYPT)
 			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
-			       && (0 == getlong(optarg, &sha_rounds)))) {
+			       && (-1 == getlong(optarg, &sha_rounds)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
                         if ((   (0 == strcmp (crypt_method, "BCRYPT"))
-			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+			       && (-1 == getlong(optarg, &bcrypt_rounds)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
                         if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
-			       && (0 == getlong(optarg, &yescrypt_cost)))) {
+			       && (-1 == getlong(optarg, &yescrypt_cost)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_YESCRYPT */
@@ -709,8 +711,9 @@ static void process_flags (int argc, char **argv)
 
 	if (argv[optind] != NULL) {
 		if (freopen (argv[optind], "r", stdin) == NULL) {
-			char buf[BUFSIZ];
-			snprintf (buf, sizeof buf, "%s: %s", Prog, argv[1]);
+			char  buf[BUFSIZ];
+
+			SNPRINTF(buf, "%s: %s", Prog, argv[1]);
 			perror (buf);
 			fail_exit (EXIT_FAILURE);
 		}

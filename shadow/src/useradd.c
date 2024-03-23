@@ -42,6 +42,7 @@
 #include "faillog.h"
 #include "getdef.h"
 #include "groupio.h"
+#include "memzero.h"
 #include "nscd.h"
 #include "sssd.h"
 #include "prototypes.h"
@@ -62,6 +63,8 @@
 #include "tcbfuncs.h"
 #endif
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 #ifndef SKEL_DIR
 #define SKEL_DIR "/etc/skel"
@@ -205,13 +208,13 @@ static bool home_added = false;
 #define DLOG_INIT	"LOG_INIT="
 
 /* local function prototypes */
-static void fail_exit (int);
+NORETURN static void fail_exit (int);
 static void get_defaults (void);
 static void show_defaults (void);
 static int set_defaults (void);
 static int get_groups (char *);
 static struct group * get_local_group (char * grp_name);
-static void usage (int status);
+NORETURN static void usage (int status);
 static void new_pwent (struct passwd *);
 
 static void new_spent (struct spwd *);
@@ -326,21 +329,15 @@ static void fail_exit (int code)
  */
 static void get_defaults (void)
 {
-	FILE *fp;
-	char *default_file = USER_DEFAULTS_FILE;
-	char buf[1024];
-	char *cp;
+	FILE        *fp;
+	char        *default_file = USER_DEFAULTS_FILE;
+	char        buf[1024];
+	char        *cp;
+	const char  *ccp;
 
 	if (prefix[0]) {
-		size_t len;
-		int wlen;
-
-		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
-		default_file = MALLOC(len, char);
-                if (default_file == NULL)
-                       return;
-		wlen = snprintf(default_file, len, "%s/%s", prefix, USER_DEFAULTS_FILE);
-		assert (wlen == (int) len -1);
+		if (asprintf(&default_file, "%s/%s", prefix, USER_DEFAULTS_FILE) == -1)
+			return;
 	}
 
 	/*
@@ -387,6 +384,8 @@ static void get_defaults (void)
 			}
 		}
 
+		ccp = cp;
+
 		if (MATCH (buf, DGROUPS)) {
 			if (get_groups (cp) != 0) {
 				fprintf (stderr,
@@ -402,25 +401,25 @@ static void get_defaults (void)
 		 * Default HOME filesystem
 		 */
 		else if (MATCH (buf, DHOME)) {
-			def_home = xstrdup (cp);
+			def_home = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Login Shell command
 		 */
 		else if (MATCH (buf, DSHELL)) {
-			def_shell = xstrdup (cp);
+			def_shell = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Password Inactive value
 		 */
 		else if (MATCH (buf, DINACT)) {
-			if (   (getlong (cp, &def_inactive) == 0)
+			if (   (getlong(ccp, &def_inactive) == -1)
 			    || (def_inactive < -1)) {
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
-				         Prog, cp);
+				         Prog, ccp);
 				fprintf (stderr,
 				         _("%s: the %s configuration in %s will be ignored\n"),
 				         Prog, DINACT, default_file);
@@ -432,30 +431,23 @@ static void get_defaults (void)
 		 * Default account expiration date
 		 */
 		else if (MATCH (buf, DEXPIRE)) {
-			def_expire = xstrdup (cp);
+			def_expire = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Skeleton information
 		 */
 		else if (MATCH (buf, DSKEL)) {
-			if ('\0' == *cp) {
-				cp = SKEL_DIR;	/* XXX warning: const */
-			}
+			if ('\0' == *ccp)
+				ccp = SKEL_DIR;
 
 			if (prefix[0]) {
-				size_t len;
-				int wlen;
-				char* _def_template; /* avoid const warning */
+				char  *dt;
 
-				len = strlen(prefix) + strlen(cp) + 2;
-				_def_template = XMALLOC(len, char);
-				wlen = snprintf(_def_template, len, "%s/%s", prefix, cp);
-				assert (wlen == (int) len -1);
-				def_template = _def_template;
-			}
-			else {
-				def_template = xstrdup (cp);
+				xasprintf(&dt, "%s/%s", prefix, ccp);
+				def_template = dt;
+			} else {
+				def_template = xstrdup(ccp);
 			}
 		}
 
@@ -463,44 +455,36 @@ static void get_defaults (void)
 		 * Default Usr Skeleton information
 		 */
 		else if (MATCH (buf, DUSRSKEL)) {
-			if ('\0' == *cp) {
-				cp = USRSKELDIR;	/* XXX warning: const */
-			}
+			if ('\0' == *ccp)
+				ccp = USRSKELDIR;
 
-			if(prefix[0]) {
-				size_t len;
-				int wlen;
-				char* _def_usrtemplate; /* avoid const warning */
+			if (prefix[0]) {
+				char  *dut;
 
-				len = strlen(prefix) + strlen(cp) + 2;
-				_def_usrtemplate = XMALLOC(len, char);
-				wlen = snprintf(_def_usrtemplate, len, "%s/%s", prefix, cp);
-				assert (wlen == (int) len -1);
-				def_usrtemplate = _def_usrtemplate;
-			}
-			else {
-				def_usrtemplate = xstrdup (cp);
+				xasprintf(&dut, "%s/%s", prefix, ccp);
+				def_usrtemplate = dut;
+			} else {
+				def_usrtemplate = xstrdup(ccp);
 			}
 		}
 		/*
 		 * Create by default user mail spool or not ?
 		 */
 		else if (MATCH (buf, DCREATE_MAIL_SPOOL)) {
-			if (*cp == '\0') {
-				cp = "no";	/* XXX warning: const */
-			}
+			if (*ccp == '\0')
+				ccp = "no";
 
-			def_create_mail_spool = xstrdup (cp);
+			def_create_mail_spool = xstrdup(ccp);
 		}
 
 		/*
 		 * By default do we add the user to the lastlog and faillog databases ?
 		 */
 		else if (MATCH (buf, DLOG_INIT)) {
-			if (*cp == '\0') {
-				cp = def_log_init;	/* XXX warning: const */
-			}
-			def_log_init = xstrdup (cp);
+			if (*ccp == '\0')
+				ccp = def_log_init;
+
+			def_log_init = xstrdup(ccp);
 		}
 	}
 	(void) fclose (fp);
@@ -539,51 +523,42 @@ static void show_defaults (void)
  */
 static int set_defaults (void)
 {
-	FILE *ifp;
-	FILE *ofp;
-	char buf[1024];
-	char *new_file = NULL;
-	char *new_file_dup = NULL;
-	char *default_file = USER_DEFAULTS_FILE;
-	char *cp;
-	int ofd;
-	int wlen;
-	bool out_group = false;
-	bool out_groups = false;
-	bool out_home = false;
-	bool out_inactive = false;
-	bool out_expire = false;
-	bool out_shell = false;
-	bool out_skel = false;
-	bool out_usrskel = false;
-	bool out_create_mail_spool = false;
-	bool out_log_init = false;
-	size_t len;
-	int ret = -1;
+	int   ofd;
+	int   ret = -1;
+	bool  out_group = false;
+	bool  out_groups = false;
+	bool  out_home = false;
+	bool  out_inactive = false;
+	bool  out_expire = false;
+	bool  out_shell = false;
+	bool  out_skel = false;
+	bool  out_usrskel = false;
+	bool  out_create_mail_spool = false;
+	bool  out_log_init = false;
+	char  buf[1024];
+	char  *new_file = NULL;
+	char  *new_file_dup = NULL;
+	char  *default_file = USER_DEFAULTS_FILE;
+	char  *cp;
+	FILE  *ifp;
+	FILE  *ofp;
 
 
-	len = strlen(prefix) + strlen(NEW_USER_FILE) + 2;
-	new_file = MALLOC(len, char);
-        if (new_file == NULL) {
-		fprintf (stderr,
-		         _("%s: cannot create new defaults file: %s\n"),
-		         Prog, strerror(errno));
+	if (asprintf(&new_file, "%s%s%s", prefix, prefix[0]?"/":"", NEW_USER_FILE) == -1)
+	{
+		fprintf(stderr, _("%s: cannot create new defaults file: %s\n"),
+		        Prog, strerror(errno));
 		return -1;
         }
-	wlen = snprintf(new_file, len, "%s%s%s", prefix, prefix[0]?"/":"", NEW_USER_FILE);
-	assert (wlen <= (int) len -1);
 
 	if (prefix[0]) {
-		len = strlen(prefix) + strlen(USER_DEFAULTS_FILE) + 2;
-		default_file = MALLOC(len, char);
-		if (default_file == NULL) {
-			fprintf (stderr,
-			         _("%s: cannot create new defaults file: %s\n"),
-			         Prog, strerror(errno));
+		if (asprintf(&default_file, "%s/%s", prefix, USER_DEFAULTS_FILE) == -1)
+		{
+			fprintf(stderr,
+			        _("%s: cannot create new defaults file: %s\n"),
+			        Prog, strerror(errno));
 			goto setdef_err;
 		}
-		wlen = snprintf(default_file, len, "%s/%s", prefix, USER_DEFAULTS_FILE);
-		assert (wlen == (int) len -1);
 	}
 
 	new_file_dup = strdup(new_file);
@@ -734,8 +709,7 @@ static int set_defaults (void)
 	/*
 	 * Rename the current default file to its backup name.
 	 */
-	wlen = snprintf (buf, sizeof buf, "%s-", default_file);
-	assert (wlen < (int) sizeof buf);
+	assert(SNPRINTF(buf, "%s-", default_file) != -1);
 	unlink (buf);
 	if ((link (default_file, buf) != 0) && (ENOENT != errno)) {
 		int err = errno;
@@ -843,20 +817,6 @@ static int get_groups (char *list)
 			continue;
 		}
 
-#ifdef	USE_NIS
-		/*
-		 * Don't add this group if they are an NIS group. Tell
-		 * the user to go to the server for this group.
-		 */
-		if (__isgrNIS ()) {
-			fprintf (stderr,
-			         _("%s: group '%s' is a NIS group.\n"),
-			         Prog, grp->gr_name);
-			gr_free(grp);
-			continue;
-		}
-#endif
-
 		if (ngroups == sys_ngroups) {
 			fprintf (stderr,
 			         _("%s: too many groups specified (max %d).\n"),
@@ -898,7 +858,7 @@ static struct group * get_local_group(char * grp_name)
 {
 	const struct group *grp;
 	struct group *result_grp = NULL;
-	long long int gid;
+	long long  gid;
 	char *endptr;
 
 	gid = strtoll (grp_name, &endptr, 10);
@@ -1341,7 +1301,7 @@ static void process_flags (int argc, char **argv)
 				eflg = true;
 				break;
 			case 'f':
-				if (   (getlong (optarg, &def_inactive) == 0)
+				if (   (getlong(optarg, &def_inactive) == -1)
 				    || (def_inactive < -1)) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
@@ -1413,7 +1373,7 @@ static void process_flags (int argc, char **argv)
 				/* terminate name, point to value */
 				*cp = '\0';
 				cp++;
-				if (putdef_str (optarg, cp) < 0) {
+				if (putdef_str (optarg, cp, NULL) < 0) {
 					exit (E_BAD_ARG);
 				}
 				break;
@@ -1473,7 +1433,7 @@ static void process_flags (int argc, char **argv)
 				sflg = true;
 				break;
 			case 'u':
-				if (   (get_uid (optarg, &user_id) == 0)
+				if (   (get_uid(optarg, &user_id) == -1)
 				    || (user_id == (gid_t)-1)) {
 					fprintf (stderr,
 					         _("%s: invalid user ID '%s'\n"),
@@ -1593,26 +1553,17 @@ static void process_flags (int argc, char **argv)
 			exit (E_BAD_ARG);
 		}
 		if (!dflg) {
-			char *uh;
-			size_t len = strlen (def_home) + strlen (user_name) + 2;
-			int wlen;
+			char  *uh;
 
-			uh = XMALLOC(len, char);
-			wlen = snprintf (uh, len, "%s/%s", def_home, user_name);
-			assert (wlen == (int) len -1);
-
+			xasprintf(&uh, "%s/%s", def_home, user_name);
 			user_home = uh;
 		}
 		if (prefix[0]) {
-			size_t len = strlen(prefix) + strlen(user_home) + 2;
-			int wlen;
-			char* _prefix_user_home; /* to avoid const warning */
-			_prefix_user_home = XMALLOC(len, char);
-			wlen = snprintf(_prefix_user_home, len, "%s/%s", prefix, user_home);
-			assert (wlen == (int) len -1);
-			prefix_user_home = _prefix_user_home;
-		}
-		else {
+			char  *puh; /* to avoid const warning */
+
+			xasprintf(&puh, "%s/%s", prefix, user_home);
+			prefix_user_home = puh;
+		} else {
 			prefix_user_home = user_home;
 		}
 	}
@@ -2057,14 +2008,14 @@ static void faillog_reset (uid_t uid)
 		return;
 	}
 	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
-	    || (write_full (fd, &fl, sizeof (fl)) != (ssize_t) sizeof (fl))
+	    || (write_full(fd, &fl, sizeof (fl)) == -1)
 	    || (fsync (fd) != 0)) {
 		fprintf (stderr,
 		         _("%s: failed to reset the faillog entry of UID %lu: %s\n"),
 		         Prog, (unsigned long) uid, strerror (errno));
 		SYSLOG ((LOG_WARN, "failed to reset the faillog entry of UID %lu", (unsigned long) uid));
 	}
-	if (close (fd) != 0) {
+	if (close (fd) != 0 && errno != EINTR) {
 		fprintf (stderr,
 		         _("%s: failed to close the faillog file for UID %lu: %s\n"),
 		         Prog, (unsigned long) uid, strerror (errno));
@@ -2110,7 +2061,7 @@ static void lastlog_reset (uid_t uid)
 		SYSLOG ((LOG_WARN, "failed to reset the lastlog entry of UID %lu", (unsigned long) uid));
 		/* continue */
 	}
-	if (close (fd) != 0) {
+	if (close (fd) != 0 && errno != EINTR) {
 		fprintf (stderr,
 		         _("%s: failed to close the lastlog file for UID %lu: %s\n"),
 		         Prog, (unsigned long) uid, strerror (errno));
@@ -2342,6 +2293,7 @@ static void create_home (void)
 					Prog, path);
 				fail_exit(E_HOMEDIR);
 			}
+			free(btrfs_check);
 			// make subvolume to mount for user instead of directory
 			if (btrfs_create_subvolume(path)) {
 				fprintf(stderr,
@@ -2410,7 +2362,6 @@ static void create_mail (void)
 	char          *file;
 	gid_t         gid;
 	mode_t        mode;
-	size_t        size;
 	const char    *spool;
 	struct group  *gr;
 
@@ -2426,12 +2377,10 @@ static void create_mail (void)
 	if (NULL == spool) {
 		return;
 	}
-	size = strlen(prefix) + strlen(spool) + strlen(user_name) + 3;
-	file = XMALLOC(size, char);
 	if (prefix[0])
-		sprintf(file, "%s/%s/%s", prefix, spool, user_name);
+		xasprintf(&file, "%s/%s/%s", prefix, spool, user_name);
 	else
-		sprintf(file, "%s/%s", spool, user_name);
+		xasprintf(&file, "%s/%s", spool, user_name);
 
 #ifdef WITH_SELINUX
 	if (set_selinux_file_context(file, S_IFREG) != 0) {
@@ -2467,8 +2416,12 @@ static void create_mail (void)
 		perror(_("Setting mailbox file permissions"));
 	}
 
-	fsync(fd);
-	close(fd);
+	if (fsync(fd) != 0) {
+		perror (_("Synchronize mailbox file"));
+	}
+	if (close(fd) != 0 && errno != EINTR) {
+		perror (_("Closing mailbox file"));
+	}
 #ifdef WITH_SELINUX
 	/* Reset SELinux to create files with default contexts */
 	if (reset_selinux_file_context() != 0) {

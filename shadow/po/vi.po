@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -213,10 +213,6 @@ msgstr "Không thể cấp phát sức chứa cho thông tin cấu hình.\n"
 msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "lỗi cấu hình - không hiểu mục tin “%s” (báo cho người quản trị).\n"
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 #| msgid "%s: Authentication failure\n"
 msgid "%s: Memory allocation failure\n"
@@ -258,6 +254,11 @@ msgstr "%s: dòng %d: lỗi chown (thay đổi quyền sở hữu) %s: %s\n"
 #, fuzzy, c-format
 #| msgid "%s: line %d: chown %s failed: %s\n"
 msgid "%s: write to %s failed: %s\n"
+msgstr "%s: dòng %d: lỗi chown (thay đổi quyền sở hữu) %s: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: closing %s failed: %s\n"
 msgstr "%s: dòng %d: lỗi chown (thay đổi quyền sở hữu) %s: %s\n"
 
 msgid "Too many logins.\n"
@@ -721,11 +722,14 @@ msgstr "Mật khẩu không hoạt động"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Ngày hết hạn dùng tài khoản (NNNN-TT-Ng)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr "Thay đổi mặt khẩu cuối cùng\t\t\t\t\t: "
-
 msgid "never"
 msgstr "chưa bao giờ"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr "Thay đổi mặt khẩu cuối cùng\t\t\t\t\t: "
 
 msgid "password must be changed"
 msgstr "mật khẩu phải thay đổi"
@@ -898,14 +902,6 @@ msgstr "%s: “%s” chứa ký tự bị cấm\n"
 #, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: người dùng “%s” không tồn tại\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s: không thể thay đổi người dùng “%s” trên ứng dụng khách NIS.\n"
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s: “%s” là NIS cái cho ứng dụng khách này.\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1289,6 +1285,11 @@ msgstr "tên người dùng không hợp lệ “%s”\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: “%s” không phải là tên nhóm hợp lệ\n"
 
+#, fuzzy, c-format
+#| msgid "%s: Cannot open %s: %s\n"
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: Không thể mở %s: %s\n"
+
 #, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "%s: mã số nhóm (GID) không hợp lệ “%s”\n"
@@ -1332,14 +1333,6 @@ msgstr "%s: không thể gỡ bỏ nhóm chính của người dùng “%s”\n"
 #, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: nhóm “%s” không tồn tại\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: nhóm “%s” là một nhóm kiểu NIS\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s: %s là NIS chủ\n"
 
 #, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1434,10 +1427,6 @@ msgstr ""
 #, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s: tên nhóm không hợp lệ “%s”\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s: nhóm %s là một nhóm kiểu NIS\n"
 
 #, c-format
 msgid "%s: unknown user %s\n"
@@ -1979,6 +1968,13 @@ msgstr ""
 "khi\n"
 "                                        thay đổi được mật khẩu\n"
 
+#, fuzzy
+#| msgid "  -l, --list                    show account aging information\n"
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+"  -l, --list                    hiển thị thông tin về khoảng thời gian sử "
+"dụng tài khoản\n"
+
 msgid "Old password: "
 msgstr "Mật khẩu cũ: "
 
@@ -1997,6 +1993,11 @@ msgid ""
 msgstr ""
 "Nhập mật khẩu mới (số ký tự tối thiểu %d, tối đa %d).\n"
 "Hãy tổ hợp các chữ hoa, chữ thường và chữ số để tạo một mật khẩu mạnh.\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s: trường quá dài\n"
 
 msgid "New password: "
 msgstr "Mật khẩu mới: "
@@ -2040,6 +2041,11 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s: kho lưu %s không được hỗ trợ\n"
+
+#, fuzzy, c-format
+#| msgid "%s: only root can use the -g/--group option\n"
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr "%s: chỉ siêu quản trị có quyền sử dụng tùy chọn “-g/--group”\n"
 
 #, fuzzy, c-format
 #| msgid "%s: %s is not authorized to change the password of %s\n"
@@ -2195,11 +2201,9 @@ msgstr "%s: tín hiệu trục trặc\n"
 msgid "Session terminated, terminating shell..."
 msgstr "Phiên làm việc đã kết thúc, nên kết thúc hệ vỏ…"
 
-#, c-format
 msgid " ...killed.\n"
 msgstr " …đã chết.\n"
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr " …đang đợi tiến con chấm dứt.\n"
 
@@ -2376,10 +2380,6 @@ msgstr "%s: Không thể tạo tập tin sao lưu dự phòng (%s): %s\n"
 #, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s: thay tên: %s: %s\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: nhóm “%s” là nhóm kiểu NIS.\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2670,6 +2670,16 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr "Đang đặt quyền truy cập tập tin hộp thư"
 
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Synchronize mailbox file"
+msgstr "Đang tạo tập tin hộp thư"
+
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Closing mailbox file"
+msgstr "Đang tạo tập tin hộp thư"
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2799,10 +2809,6 @@ msgstr "%s: Không thể gỡ bỏ nội dung của %s: %s\n"
 #, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: Không thể gỡ bỏ tập tin tcb cho %s: %s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s: người dùng %s là người dùng kiểu NIS\n"
 
 #, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -3033,8 +3039,22 @@ msgstr ""
 "%s: gặp lỗi khi sao chép mục tin lastlog của người dùng %lu sang người dùng "
 "%lu: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr ""
+"%s: gặp lỗi khi sao chép mục tin lastlog của người dùng %lu sang người dùng "
+"%lu: %s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgstr ""
+"%s: không sao chép được mục tin faillog của người dùng %lu sang người dùng "
+"%lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
 msgstr ""
 "%s: không sao chép được mục tin faillog của người dùng %lu sang người dùng "
 "%lu: %s\n"
@@ -3140,8 +3160,8 @@ msgstr "gặp lỗi khi bỏ liên kết tập tin hỗn tạp"
 msgid "failed to stat edited file"
 msgstr "gặp lỗi khi lấy thống kê tập tin đã sửa"
 
-msgid "failed to allocate memory"
-msgstr "gặp lỗi khi phân bổ bộ nhớ"
+msgid "asprintf(3) failed"
+msgstr ""
 
 msgid "failed to create backup file"
 msgstr "không thể tạo tập tin sao lưu dự phòng"
@@ -3153,6 +3173,34 @@ msgstr "%s: không thể phục hồi %s: %s (các thay đổi của bạn nằm
 #, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
+
+#, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s: không thể thay đổi người dùng “%s” trên ứng dụng khách NIS.\n"
+
+#, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s: “%s” là NIS cái cho ứng dụng khách này.\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: nhóm “%s” là một nhóm kiểu NIS\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s: %s là NIS chủ\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s: nhóm %s là một nhóm kiểu NIS\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: nhóm “%s” là nhóm kiểu NIS.\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s: người dùng %s là người dùng kiểu NIS\n"
 
 #~ msgid "too simple"
 #~ msgstr "quá đơn giản"
@@ -3166,6 +3214,9 @@ msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
 #~| msgid "%s: failed to find tcb directory for %s\n"
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
+
+#~ msgid "failed to allocate memory"
+#~ msgstr "gặp lỗi khi phân bổ bộ nhớ"
 
 #~ msgid "Usage: id\n"
 #~ msgstr "Cách dùng: id\n"

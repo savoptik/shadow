@@ -2,12 +2,12 @@
 .\"     Title: chgpasswd
 .\"    Author: Thomas K\(/loczko <kloczek@pld.org.pl>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 26/03/2024
+.\"      Date: 23/03/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.14.7
+.\"    Source: shadow-utils 4.15.1
 .\"  Language: Ukrainian
 .\"
-.TH "chgpasswd" "8" "26/03/2024" "shadow\-utils 4\&.14\&.7" "System Management Commands"
+.TH "chgpasswd" "8" "23/03/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,7 +63,12 @@ command are:
 .RS 4
 Скористатися для шифрування паролів вказаним методом\&.
 .sp
-Доступними методами є DES, MD5, NONE і SHA256 або SHA512, якщо у вашій libc передбачено підтримку цих методів\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-encrypted\fR
@@ -94,14 +99,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 Використати вказану кількість циклів шифрування паролів\&.
 .sp
-Значення 0 означає, що система вибере типову кількість проходів для методу шифрування (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Буде примусово встановлено мінімальне значення 1000 і максимальне значення 999999999\&.
-.sp
-Ви можете скористатися цим параметром у поєднанні із методами шифрування SHA256 або SHA512\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP

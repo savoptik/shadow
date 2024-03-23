@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2004-05-09 12:03+0100\n"
 "Last-Translator: Safir Šećerović <sapphire@linux.org.ba>\n"
 "Language-Team: Bosnian <lokal@lugbih.org>\n"
@@ -185,10 +185,6 @@ msgstr ""
 msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr ""
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 #| msgid "%s: Try again later\n"
 msgid "%s: Memory allocation failure\n"
@@ -224,6 +220,10 @@ msgstr "nepoznata grupa: %s\n"
 
 #, fuzzy, c-format
 msgid "%s: write to %s failed: %s\n"
+msgstr "nepoznata grupa: %s\n"
+
+#, fuzzy, c-format
+msgid "%s: closing %s failed: %s\n"
 msgstr "nepoznata grupa: %s\n"
 
 msgid "Too many logins.\n"
@@ -644,12 +644,15 @@ msgstr "Šifra neaktivna"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Datum isteka računa (GGGG-MM-DD)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr ""
-
 #, fuzzy
 msgid "never"
 msgstr "Nikad"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr ""
 
 msgid "password must be changed"
 msgstr ""
@@ -819,14 +822,6 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: grupa %s postoji\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr ""
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1154,6 +1149,10 @@ msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: grupa %s postoji\n"
 
 #, fuzzy, c-format
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: nepoznat član %s\n"
+
+#, fuzzy, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "nepoznata grupa: %s\n"
 
@@ -1194,14 +1193,6 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: grupa %s postoji\n"
-
-#, fuzzy, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: grupa %s postoji\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr ""
 
 #, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1276,10 +1267,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
 msgstr ""
 
 #, c-format
@@ -1755,6 +1742,9 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+
 msgid "Old password: "
 msgstr "Stara šifra:"
 
@@ -1769,6 +1759,10 @@ msgid ""
 "Enter the new password (minimum of %d, maximum of %d characters)\n"
 "Please use a combination of upper and lower case letters and numbers.\n"
 msgstr ""
+
+#, fuzzy
+msgid "Password is too long.\n"
+msgstr "Vaša šifra je istekla."
 
 msgid "New password: "
 msgstr "Nova šifra:"
@@ -1807,6 +1801,10 @@ msgstr ""
 
 #, c-format
 msgid "%s: repository %s not supported\n"
+msgstr ""
+
+#, c-format
+msgid "%s: only root can use --stdin/-s option\n"
 msgstr ""
 
 #, c-format
@@ -1952,11 +1950,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -2096,10 +2092,6 @@ msgstr "nepoznata grupa: %s\n"
 #, fuzzy, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "nepoznata grupa: %s\n"
-
-#, fuzzy, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: grupa %s postoji\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2341,6 +2333,12 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr ""
 
+msgid "Synchronize mailbox file"
+msgstr ""
+
+msgid "Closing mailbox file"
+msgstr ""
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2452,10 +2450,6 @@ msgstr "nepoznata grupa: %s\n"
 #, fuzzy, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "nepoznata grupa: %s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr ""
 
 #, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2640,9 +2634,17 @@ msgstr ""
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr "nepoznata grupa: %s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
+msgstr "nepoznata grupa: %s\n"
 
 #, c-format
 msgid "%s: warning: %s not owned by %s\n"
@@ -2739,7 +2741,7 @@ msgstr ""
 msgid "failed to stat edited file"
 msgstr ""
 
-msgid "failed to allocate memory"
+msgid "asprintf(3) failed"
 msgstr ""
 
 msgid "failed to create backup file"
@@ -2754,16 +2756,20 @@ msgid "%s: failed to find tcb directory for %s\n"
 msgstr ""
 
 #, fuzzy, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: grupa %s postoji\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: grupa %s postoji\n"
+
+#, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "nepoznata grupa: %s\n"
 
 #, fuzzy, c-format
 #~ msgid "%s: password expiry information changed.\n"
 #~ msgstr "Upozorenje o isteku šifre"
-
-#, fuzzy
-#~ msgid "Password set to expire."
-#~ msgstr "Vaša šifra je istekla."
 
 #, fuzzy
 #~ msgid "\tRoom Number: %s\n"

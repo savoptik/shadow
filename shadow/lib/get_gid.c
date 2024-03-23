@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+
 #include <config.h>
 
 #ident "$Id$"
@@ -11,21 +12,23 @@
 #include "prototypes.h"
 #include "defines.h"
 
-int get_gid (const char *gidstr, gid_t *gid)
+
+int
+get_gid(const char *gidstr, gid_t *gid)
 {
-	long long int val;
+	long long  val;
 	char *endptr;
 
 	errno = 0;
-	val = strtoll (gidstr, &endptr, 10);
+	val = strtoll(gidstr, &endptr, 10);
 	if (   ('\0' == *gidstr)
 	    || ('\0' != *endptr)
-	    || (ERANGE == errno)
+	    || (0 != errno)
 	    || (/*@+longintegral@*/val != (gid_t)val)/*@=longintegral@*/) {
-		return 0;
+		return -1;
 	}
 
 	*gid = val;
-	return 1;
+	return 0;
 }
 
