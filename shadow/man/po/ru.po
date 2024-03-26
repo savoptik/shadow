@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1:4.0.18.2-1\n"
-"POT-Creation-Date: 2024-03-02 01:07+0100\n"
+"POT-Creation-Date: 2024-03-26 20:56+0100\n"
 "PO-Revision-Date: 2013-08-23 01:39+0200\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -271,7 +271,7 @@ msgstr "shadow-utils"
 #: shadow.3.xml.out:37 shadow.5.xml.out:37 sg.1.xml.out:38 su.1.xml.out:54
 #: suauth.5.xml.out:37 useradd.8.xml.out:56 userdel.8.xml.out:43
 #: usermod.8.xml.out:44 vipw.8.xml.out:39
-msgid "4.14.6"
+msgid "4.14.7"
 msgstr ""
 
 # type: Content of: <refentry><refnamediv><refpurpose>
@@ -5510,10 +5510,9 @@ msgstr ""
 msgid ""
 "The <_:filename-1/> file is a database which contains info on the last login "
 "of each user. You should not rotate it. It is a sparse file, so its size on "
-"the disk is usually much smaller than the one shown by \"<_:command-2/"
-">\" (which can indicate a really big file if you have in <_:filename-3/> "
-"users with a high UID). You can display its real size with \"<_:command-4/"
-">\"."
+"the disk is usually much smaller than the one shown by \"<_:command-2/>\" "
+"(which can indicate a really big file if you have in <_:filename-3/> users "
+"with a high UID). You can display its real size with \"<_:command-4/>\"."
 msgstr ""
 "Файл <filename>lastlog</filename> содержит информацию о последней "
 "регистрации в системе каждого пользователя. Вы не должны применять к нему "

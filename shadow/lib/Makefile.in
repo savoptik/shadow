@@ -126,7 +126,7 @@ am__libshadow_la_SOURCES_DIST = addgrps.c age.c agetpass.c alloc.c \
 	chkname.h chowndir.c chowntty.c cleanup.c cleanup_group.c \
 	cleanup_user.c commonio.c commonio.h console.c copydir.c \
 	csrand.c date_to_str.c defines.h encrypt.c entry.c env.c \
-	exitcodes.h faillog.h failure.c failure.h fields.c \
+	exitcodes.h faillog.h failure.c failure.h fd.c fields.c \
 	find_new_gid.c find_new_uid.c find_new_sub_gids.c \
 	find_new_sub_uids.c fputsx.c get_gid.c get_pid.c get_uid.c \
 	getdate.h getdate.y getdef.c getdef.h getlong.c \
@@ -166,7 +166,7 @@ am_libshadow_la_OBJECTS = libshadow_la-addgrps.lo libshadow_la-age.lo \
 	libshadow_la-console.lo libshadow_la-copydir.lo \
 	libshadow_la-csrand.lo libshadow_la-date_to_str.lo \
 	libshadow_la-encrypt.lo libshadow_la-entry.lo \
-	libshadow_la-env.lo libshadow_la-failure.lo \
+	libshadow_la-env.lo libshadow_la-failure.lo libshadow_la-fd.lo \
 	libshadow_la-fields.lo libshadow_la-find_new_gid.lo \
 	libshadow_la-find_new_uid.lo libshadow_la-find_new_sub_gids.lo \
 	libshadow_la-find_new_sub_uids.lo libshadow_la-fputsx.lo \
@@ -256,6 +256,7 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
 	./$(DEPDIR)/libshadow_la-entry.Plo \
 	./$(DEPDIR)/libshadow_la-env.Plo \
 	./$(DEPDIR)/libshadow_la-failure.Plo \
+	./$(DEPDIR)/libshadow_la-fd.Plo \
 	./$(DEPDIR)/libshadow_la-fields.Plo \
 	./$(DEPDIR)/libshadow_la-find_new_gid.Plo \
 	./$(DEPDIR)/libshadow_la-find_new_sub_gids.Plo \
@@ -592,7 +593,7 @@ libshadow_la_SOURCES = addgrps.c age.c agetpass.c alloc.c alloc.h \
 	chowndir.c chowntty.c cleanup.c cleanup_group.c cleanup_user.c \
 	commonio.c commonio.h console.c copydir.c csrand.c \
 	date_to_str.c defines.h encrypt.c entry.c env.c exitcodes.h \
-	faillog.h failure.c failure.h fields.c find_new_gid.c \
+	faillog.h failure.c failure.h fd.c fields.c find_new_gid.c \
 	find_new_uid.c find_new_sub_gids.c find_new_sub_uids.c \
 	fputsx.c get_gid.c get_pid.c get_uid.c getdate.h getdate.y \
 	getdef.c getdef.h getlong.c getgr_nam_gid.c getrange.c \
@@ -701,6 +702,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-entry.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-env.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-failure.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-fd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-fields.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-find_new_gid.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-find_new_sub_gids.Plo@am__quote@ # am--include-marker
@@ -970,6 +972,13 @@ libshadow_la-failure.lo: failure.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='failure.c' object='libshadow_la-failure.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-failure.lo `test -f 'failure.c' || echo '$(srcdir)/'`failure.c
+
+libshadow_la-fd.lo: fd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-fd.lo -MD -MP -MF $(DEPDIR)/libshadow_la-fd.Tpo -c -o libshadow_la-fd.lo `test -f 'fd.c' || echo '$(srcdir)/'`fd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-fd.Tpo $(DEPDIR)/libshadow_la-fd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fd.c' object='libshadow_la-fd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-fd.lo `test -f 'fd.c' || echo '$(srcdir)/'`fd.c
 
 libshadow_la-fields.lo: fields.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-fields.lo -MD -MP -MF $(DEPDIR)/libshadow_la-fields.Tpo -c -o libshadow_la-fields.lo `test -f 'fields.c' || echo '$(srcdir)/'`fields.c
@@ -1751,6 +1760,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-entry.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-env.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-failure.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-fd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-fields.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-find_new_gid.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-find_new_sub_gids.Plo
@@ -1907,6 +1917,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-entry.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-env.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-failure.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-fd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-fields.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-find_new_gid.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-find_new_sub_gids.Plo

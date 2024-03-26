@@ -45,7 +45,7 @@
 /*
  * Global variables
  */
-const char *Prog;		/* Program name */
+static const char Prog[] = "passwd";	/* Program name */
 
 static char *name;		/* The name of user whose password is being changed */
 static char *myname;		/* The current user's name */
@@ -730,12 +730,8 @@ int main (int argc, char **argv)
 	const struct spwd *sp;	/* Shadow file entry for user   */
 
 	sanitize_env ();
+	check_fds ();
 
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -757,7 +753,7 @@ int main (int argc, char **argv)
 	 */
 	amroot = (getuid () == 0);
 
-	OPENLOG ("passwd");
+	OPENLOG (Prog);
 
 	{
 		/*
@@ -976,7 +972,7 @@ int main (int argc, char **argv)
 #ifdef WITH_SELINUX
 	/* only do this check when getuid()==0 because it's a pre-condition for
 	   changing a password without entering the old one */
-	if (amroot && (check_selinux_permit ("passwd") != 0)) {
+	if (amroot && (check_selinux_permit (Prog) != 0)) {
 		SYSLOG ((LOG_ALERT,
 		         "root is not authorized by SELinux to change the password of %s",
 		         name));

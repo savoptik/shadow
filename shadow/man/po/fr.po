@@ -21,7 +21,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: shadow-man-pages 4.0.18\n"
-"POT-Creation-Date: 2024-03-02 01:07+0100\n"
+"POT-Creation-Date: 2024-03-26 20:56+0100\n"
 "PO-Revision-Date: 2019-01-30 21:55+0100\n"
 "Last-Translator: Jean-Philippe MENGUAL <mengualjeanphi@free.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -285,7 +285,7 @@ msgstr "shadow-utils"
 #: shadow.3.xml.out:37 shadow.5.xml.out:37 sg.1.xml.out:38 su.1.xml.out:54
 #: suauth.5.xml.out:37 useradd.8.xml.out:56 userdel.8.xml.out:43
 #: usermod.8.xml.out:44 vipw.8.xml.out:39
-msgid "4.14.6"
+msgid "4.14.7"
 msgstr ""
 
 #. (itstool) path: refnamediv/refpurpose
@@ -3498,7 +3498,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Usernames may only be up to 32 characters long."
 msgid "Groupnames may only be up to 32 characters long."
-msgstr "Les noms d'utilisateur sont limités à 16 caractères."
+msgstr "Les noms d'utilisateur sont limités à 32 caractères."
 
 #. (itstool) path: para/option
 #. (itstool) path: term/option
@@ -5331,10 +5331,9 @@ msgstr ""
 msgid ""
 "The <_:filename-1/> file is a database which contains info on the last login "
 "of each user. You should not rotate it. It is a sparse file, so its size on "
-"the disk is usually much smaller than the one shown by \"<_:command-2/"
-">\" (which can indicate a really big file if you have in <_:filename-3/> "
-"users with a high UID). You can display its real size with \"<_:command-4/"
-">\"."
+"the disk is usually much smaller than the one shown by \"<_:command-2/>\" "
+"(which can indicate a really big file if you have in <_:filename-3/> users "
+"with a high UID). You can display its real size with \"<_:command-4/>\"."
 msgstr ""
 "Le fichier <filename>lastlog</filename> est une base de données qui contient "
 "des informations concernant la dernière connexion de chaque utilisateur. "
@@ -11732,7 +11731,7 @@ msgstr ""
 #. (itstool) path: refsect1/para
 #: useradd.8.xml.out:724
 msgid "Usernames may only be up to 32 characters long."
-msgstr "Les noms d'utilisateur sont limités à 16 caractères."
+msgstr "Les noms d'utilisateur sont limités à 32 caractères."
 
 #. (itstool) path: listitem/para
 #: useradd.8.xml.out:789

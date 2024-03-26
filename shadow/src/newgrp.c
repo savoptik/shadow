@@ -28,7 +28,7 @@
 /*
  * Global variables
  */
-const char *Prog;
+static const char *Prog;
 
 extern char **newenvp;
 
@@ -390,6 +390,9 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
+
+	check_fds ();
+
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);

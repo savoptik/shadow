@@ -37,7 +37,7 @@
  * Global variables
  */
 /* The name of this command, as it is invoked */
-const char *Prog;
+static const char Prog[] = "gpasswd";
 
 #ifdef SHADOWGRP
 /* Indicate if shadow groups are enabled on the system
@@ -956,6 +956,8 @@ int main (int argc, char **argv)
 #endif
 
 	sanitize_env ();
+	check_fds ();
+
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
@@ -968,11 +970,10 @@ int main (int argc, char **argv)
 	 * with this command.
 	 */
 	bywho = getuid ();
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
-	OPENLOG ("gpasswd");
+	OPENLOG (Prog);
 	setbuf (stdout, NULL);
 	setbuf (stderr, NULL);
 
