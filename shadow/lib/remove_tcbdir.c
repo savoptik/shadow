@@ -28,6 +28,8 @@
 #include "shadowio.h"
 #include "tcbfuncs.h"
 
+#include "shadowlog_internal.h"
+
 /* This function can't be in tcbfuncs.c because of remove_tree() usage */
 
 bool remove_tcbdir (const char *user_name, uid_t user_id)
@@ -41,15 +43,15 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 	}
 
 	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix_dir, user_name) < 0) {
-		fprintf(stderr, "%s: Can't allocate memory, "
+		fprintf(shadow_logfd, "%s: Can't allocate memory, "
 				"tcb entry for %s not removed.\n",
-				Prog, user_name);
+				shadow_progname, user_name);
 		return false;
 	}
 
 	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
-		fprintf (stderr, _("%s: Cannot drop privileges: %s\n"),
-		         Prog, strerror (errno));
+		fprintf (shadow_logfd, _("%s: Cannot drop privileges: %s\n"),
+		         shadow_progname, strerror (errno));
 		shadowtcb_gain_priv ();
 		free (buf);
 		return false;
@@ -59,8 +61,8 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 	 * We will regain them and remove the user's tcb directory afterwards.
 	 */
 	if (remove_tree (buf, false) != 0) {
-		fprintf (stderr, _("%s: Cannot remove the content of %s: %s\n"),
-		         Prog, buf, strerror (errno));
+		fprintf (shadow_logfd, _("%s: Cannot remove the content of %s: %s\n"),
+		         shadow_progname, buf, strerror (errno));
 		shadowtcb_gain_priv ();
 		free (buf);
 		return false;
@@ -68,8 +70,8 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 	shadowtcb_gain_priv ();
 	free (buf);
 	if (shadowtcb_remove (prefix_dir, user_name) == SHADOWTCB_FAILURE) {
-		fprintf (stderr, _("%s: Cannot remove tcb files for %s: %s\n"),
-		         Prog, user_name, strerror (errno));
+		fprintf (shadow_logfd, _("%s: Cannot remove tcb files for %s: %s\n"),
+		         shadow_progname, user_name, strerror (errno));
 		ret = false;
 	}
 	return ret;
