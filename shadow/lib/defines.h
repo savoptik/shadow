@@ -31,9 +31,6 @@
 
 #include <errno.h>
 
-#define	Prog program_invocation_short_name
-#define	Progname program_invocation_short_name
-
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>

@@ -1,7 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 
-#define _GNU_SOURCE  /* for program_invocation_short_name in prototypes.h */
-
 #include <stdio.h>
 #include "subid.h"
 #include "stdlib.h"

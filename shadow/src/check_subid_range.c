@@ -3,8 +3,6 @@
 // Exits 0 if owner has subid range starting start, of size count
 // Exits 1 otherwise.
 
-#define _GNU_SOURCE  /* for program_invocation_short_name in prototypes.h */
-
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
