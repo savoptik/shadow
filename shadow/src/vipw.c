@@ -14,6 +14,10 @@
 
 #ident "$Id$"
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE  /* for program_invocation_short_name */
+#endif
+
 #include <errno.h>
 #include <getopt.h>
 #ifdef WITH_SELINUX
