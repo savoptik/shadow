@@ -533,12 +533,6 @@ static shadowtcb_status _shadowtcb_move (const char *prefix_dir, /*@NULL@*/const
 		         shadow_progname, tcbdir, strerror (errno));
 		goto out_free;
 	}
-	if (chmod (tcbdir, dirmode.st_mode & 07777)) {
-		fprintf (stderr,
-				 _("%s: Cannot change mode of %s: %s\n"),
-				 Prog, tcbdir, strerror (errno));
-		goto out_free;
-	}
 	ret = SHADOWTCB_SUCCESS;
 out_free:
 	free (tcbdir);
