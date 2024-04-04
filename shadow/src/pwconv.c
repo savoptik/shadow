@@ -66,6 +66,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "pwconv";
+
 static bool spw_locked = false;
 static bool pw_locked = false;
 
@@ -160,7 +162,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("pwconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 

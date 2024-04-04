@@ -33,6 +33,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "pwunconv";
+
 static bool spw_locked = false;
 static bool pw_locked = false;
 
@@ -124,7 +126,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("pwunconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 

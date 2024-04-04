@@ -39,6 +39,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "lastlog";	/* Program name */
 static FILE *lastlogfile;	/* lastlog file stream */
 static unsigned long umin;	/* if uflg and has_umin, only display users with uid >= umin */
 static bool has_umin = false;

@@ -70,6 +70,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "userdel";
 
 static char *user_name;
 static uid_t user_id;
@@ -929,7 +930,7 @@ int main (int argc, char **argv)
 	process_root_flag ("-R", argc, argv);
 	prefix = process_prefix_flag ("-P", argc, argv);
 
-	OPENLOG ("userdel");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif				/* WITH_AUDIT */
@@ -1013,7 +1014,7 @@ int main (int argc, char **argv)
 			exit (E_PW_UPDATE);
 		}
 
-		retval = pam_start ("userdel", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {

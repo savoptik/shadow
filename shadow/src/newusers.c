@@ -57,6 +57,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "newusers";
+
 static bool rflg = false;	/* create a system account */
 #ifndef USE_PAM
 static /*@null@*//*@observer@*/char *crypt_method = NULL;

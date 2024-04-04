@@ -38,6 +38,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "chpasswd";
 static bool eflg   = false;
 static bool md5flg = false;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
@@ -304,7 +305,7 @@ static void check_perms (void)
 		exit (1);
 	}
 
-	retval = pam_start ("chpasswd", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -571,7 +572,7 @@ int main (int argc, char **argv)
 	}
 #endif				/* USE_PAM */
 
-	OPENLOG ("chpasswd");
+	OPENLOG (Prog);
 
 	check_perms ();
 
@@ -647,7 +648,7 @@ int main (int argc, char **argv)
 					errors++;
 					break;
 				}
-			} else if (do_pam_passwd_non_interactive ("chpasswd", name, cp) != 0) {
+			} else if (do_pam_passwd_non_interactive (Prog, name, cp) != 0) {
 				fprintf (stderr,
 				         _("%s: (line %d, user %s) password not changed\n"),
 				         Prog, line, name);

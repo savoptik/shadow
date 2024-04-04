@@ -36,6 +36,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "groupdel";
+
 static char *group_name;
 static gid_t group_id = -1;
 static bool check_group_busy = true;
@@ -357,7 +359,7 @@ int main (int argc, char **argv)
 	process_root_flag ("-R", argc, argv);
 	prefix = process_prefix_flag ("-P", argc, argv);
 
-	OPENLOG ("groupdel");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
@@ -383,7 +385,7 @@ int main (int argc, char **argv)
 			exit (1);
 		}
 
-		retval = pam_start ("groupdel", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {
@@ -457,7 +459,7 @@ int main (int argc, char **argv)
 	}
 
 	if (run_parts ("/etc/shadow-maint/groupdel-pre.d", group_name,
-			"groupdel")) {
+			Prog)) {
 		exit(1);
 	}
 
@@ -472,7 +474,7 @@ int main (int argc, char **argv)
 	close_files ();
 
 	if (run_parts ("/etc/shadow-maint/groupdel-post.d", group_name,
-			"groupdel")) {
+			Prog)) {
 		exit(1);
 	}
 

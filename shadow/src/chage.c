@@ -41,6 +41,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "chage";
 
 static bool
     dflg = false,		/* set last password change date */
@@ -510,7 +511,7 @@ static void check_perms (void)
 		exit (E_NOPERM);
 	}
 
-	retval = pam_start ("chage", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -775,10 +776,12 @@ int main (int argc, char **argv)
 	gid_t rgid;
 	const struct passwd *pw;
 
+	sanitize_env ();
+	check_fds ();
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
-	sanitize_env ();
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
 		(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -791,7 +794,7 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
-	OPENLOG ("chage");
+	OPENLOG (Prog);
 
 	ruid = getuid ();
 	rgid = getgid ();

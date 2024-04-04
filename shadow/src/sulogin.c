@@ -27,6 +27,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "sulogin";
 
 static char pass[BUFSIZ];
 

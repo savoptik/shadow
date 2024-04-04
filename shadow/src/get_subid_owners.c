@@ -8,6 +8,8 @@
 #include "prototypes.h"
 #include "shadowlog.h"
 
+static const char Prog[] = "get_subid_owners";
+
 static void usage(void)
 {
 	fprintf(stderr, "Usage: [-g] %s subuid\n", Prog);

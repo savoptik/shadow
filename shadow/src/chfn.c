@@ -36,6 +36,7 @@
 /*
  * Global variables.
  */
+static const char Prog[] = "chfn";
 static char fullnm[BUFSIZ];
 static char roomno[BUFSIZ];
 static char workph[BUFSIZ];
@@ -361,7 +362,7 @@ static void check_perms (const struct passwd *pw)
 	 * check if the change is allowed by SELinux policy.
 	 */
 	if ((pw->pw_uid != getuid ())
-	    && (check_selinux_permit ("chfn") != 0)) {
+	    && (check_selinux_permit (Prog) != 0)) {
 		fprintf (stderr, _("%s: Permission denied.\n"), Prog);
 		closelog ();
 		exit (E_NOPERM);
@@ -376,7 +377,7 @@ static void check_perms (const struct passwd *pw)
 	 * --marekm
 	 */
 	if (!amroot && getdef_bool ("CHFN_AUTH")) {
-		passwd_check (pw->pw_name, pw->pw_passwd, "chfn");
+		passwd_check (pw->pw_name, pw->pw_passwd, Prog);
 	}
 
 #else				/* !USE_PAM */
@@ -388,7 +389,7 @@ static void check_perms (const struct passwd *pw)
 		exit (E_NOPERM);
 	}
 
-	retval = pam_start ("chfn", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -615,10 +616,12 @@ int main (int argc, char **argv)
 	char new_gecos[BUFSIZ];	/* buffer for new GECOS fields       */
 	char *user;
 
+	sanitize_env ();
+	check_fds ();
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
-	sanitize_env ();
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
 		(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -633,7 +636,7 @@ int main (int argc, char **argv)
 	 */
 	amroot = (getuid () == 0);
 
-	OPENLOG ("chfn");
+	OPENLOG (Prog);
 
 	/* parse the command line options */
 	process_flags (argc, argv);

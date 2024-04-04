@@ -47,6 +47,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "pwck";
+
 static bool use_system_pw_file = true;
 static bool use_system_spw_file = true;
 
@@ -832,7 +834,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("pwck");
+	OPENLOG (Prog);
 
 	/* Parse the command line arguments */
 	process_flags (argc, argv);

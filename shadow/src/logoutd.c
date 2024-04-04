@@ -22,6 +22,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "logoutd";
+
 #ifndef DEFAULT_HUP_MESG
 #define DEFAULT_HUP_MESG _("login time exceeded\n\n")
 #endif
@@ -158,7 +160,7 @@ main(int argc, char **argv)
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
-	OPENLOG ("logoutd");
+	OPENLOG (Prog);
 
 	/*
 	 * Scan the utmp file once per minute looking for users that

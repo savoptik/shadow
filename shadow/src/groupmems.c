@@ -44,6 +44,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "groupmems";
+
 static char *adduser = NULL;
 static char *deluser = NULL;
 static char *thisgroup = NULL;
@@ -441,7 +443,7 @@ static void check_perms (void)
 			fail_exit (1);
 		}
 
-		retval = pam_start ("groupmems", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 		if (PAM_SUCCESS == retval) {
 			retval = pam_authenticate (pamh, 0);
@@ -580,7 +582,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("groupmems");
+	OPENLOG (Prog);
 
 #ifdef SHADOWGRP
 	is_shadowgrp = sgr_file_present ();

@@ -11,6 +11,8 @@
 
 /* Test program for the subid creation routine */
 
+static const char Prog[] = "new_subid_range";
+
 static void usage(void)
 {
 	fprintf(stderr, "Usage: %s [-g] [-n] user count\n", Prog);

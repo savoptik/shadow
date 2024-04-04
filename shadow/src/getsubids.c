@@ -9,6 +9,8 @@
 #include "prototypes.h"
 #include "shadowlog.h"
 
+static const char Prog[] = "getsubids";
+
 static void usage(void)
 {
 	fprintf(stderr, "Usage: %s [-g] user\n", Prog);

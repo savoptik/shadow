@@ -20,6 +20,11 @@
 #include "prototypes.h"
 #include "shadowlog.h"
 
+/*
+ * Global variables
+ */
+static const char Prog[] = "groups";
+
 /* local function prototypes */
 static void print_groups (const char *member);
 

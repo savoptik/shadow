@@ -36,6 +36,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "grpconv";
+
 static bool gr_locked  = false;
 static bool sgr_locked = false;
 
@@ -130,7 +132,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("grpconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 

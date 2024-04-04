@@ -81,6 +81,11 @@
 #define LASTLOG_FILE "/var/log/lastlog"
 #endif
 /*
+ * Global variables
+ */
+static const char Prog[] = "useradd";
+
+/*
  * These defaults are used if there is no defaults file.
  */
 static gid_t def_group = 100;
@@ -2544,7 +2549,7 @@ int main (int argc, char **argv)
 
 	prefix = process_prefix_flag("-P", argc, argv);
 
-	OPENLOG ("useradd");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
@@ -2596,7 +2601,7 @@ int main (int argc, char **argv)
 			fail_exit (1);
 		}
 
-		retval = pam_start ("useradd", pampw?pampw->pw_name:"root", &conv, &pamh);
+		retval = pam_start (Prog, pampw?pampw->pw_name:"root", &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {

@@ -20,6 +20,8 @@
 #include "idmapping.h"
 #include "shadowlog.h"
 
+static const char Prog[] = "check_subid_range";
+
 int main(int argc, char **argv)
 {
 	char *owner;

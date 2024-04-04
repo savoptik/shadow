@@ -20,6 +20,11 @@
 #include "idmapping.h"
 #include "shadowlog.h"
 
+/*
+ * Global variables
+ */
+static const char Prog[] = "newuidmap";
+
 static bool verify_range(struct passwd *pw, struct map_range *range)
 {
 	/* An empty range is invalid */

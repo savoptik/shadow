@@ -58,6 +58,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "groupmod";
+
 #ifdef	SHADOWGRP
 static bool is_shadow_grp;
 #endif				/* SHADOWGRP */
@@ -758,7 +760,7 @@ int main (int argc, char **argv)
 	process_root_flag ("-R", argc, argv);
 	prefix = process_prefix_flag ("-P", argc, argv);
 
-	OPENLOG ("groupmod");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
@@ -784,7 +786,7 @@ int main (int argc, char **argv)
 			exit (E_PAM_USERNAME);
 		}
 
-		retval = pam_start ("groupmod", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {

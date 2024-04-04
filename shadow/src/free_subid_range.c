@@ -11,6 +11,8 @@
 
 /* Test program for the subid freeing routine */
 
+static const char Prog[] = "free_subid_range";
+
 static void usage(void)
 {
 	fprintf(stderr, "Usage: %s [-g] user start count\n", Prog);

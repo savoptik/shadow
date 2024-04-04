@@ -64,6 +64,8 @@ static pam_handle_t *pamh = NULL;
 /*
  * Global variables
  */
+static const char Prog[] = "login";
+
 static const char *hostname = "";
 static /*@null@*/ /*@only@*/char *username = NULL;
 static int reason = PW_LOGIN;
@@ -586,7 +588,7 @@ int main (int argc, char **argv)
 	}
 #endif				/* RLOGIN */
 
-	OPENLOG ("login");
+	OPENLOG (Prog);
 
 	setup_tty ();
 
@@ -672,7 +674,7 @@ int main (int argc, char **argv)
 	retries = getdef_unum ("LOGIN_RETRIES", RETRIES);
 
 #ifdef USE_PAM
-	retcode = pam_start ("login", username, &conv, &pamh);
+	retcode = pam_start (Prog, username, &conv, &pamh);
 	if (retcode != PAM_SUCCESS) {
 		fprintf (stderr,
 		         _("login: PAM Failure, aborting: %s\n"),

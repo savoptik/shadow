@@ -45,6 +45,8 @@
 /*
  * Global variables
  */
+static const char Prog[] = "passwd";	/* Program name */
+
 static char *name;		/* The name of user whose password is being changed */
 static char *myname;		/* The current user's name */
 static bool amroot;		/* The caller's real UID was 0 */
@@ -728,6 +730,10 @@ int main (int argc, char **argv)
 	const struct spwd *sp;	/* Shadow file entry for user   */
 
 	sanitize_env ();
+	check_fds ();
+
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
@@ -749,7 +755,7 @@ int main (int argc, char **argv)
 	 */
 	amroot = (getuid () == 0);
 
-	OPENLOG ("passwd");
+	OPENLOG (Prog);
 
 	{
 		/*
@@ -968,7 +974,7 @@ int main (int argc, char **argv)
 #ifdef WITH_SELINUX
 	/* only do this check when getuid()==0 because it's a pre-condition for
 	   changing a password without entering the old one */
-	if (amroot && (check_selinux_permit ("passwd") != 0)) {
+	if (amroot && (check_selinux_permit (Prog) != 0)) {
 		SYSLOG ((LOG_ALERT,
 		         "root is not authorized by SELinux to change the password of %s",
 		         name));

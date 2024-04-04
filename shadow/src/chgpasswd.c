@@ -36,6 +36,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "chgpasswd";
 static bool eflg   = false;
 static bool md5flg = false;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
@@ -302,7 +303,7 @@ static void check_perms (void)
 		exit (1);
 	}
 
-	retval = pam_start ("chgpasswd", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -439,7 +440,7 @@ int main (int argc, char **argv)
 
 	process_flags (argc, argv);
 
-	OPENLOG ("chgpasswd");
+	OPENLOG (Prog);
 
 	check_perms ();
 

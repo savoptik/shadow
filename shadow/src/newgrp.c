@@ -28,6 +28,8 @@
 /*
  * Global variables
  */
+static const char *Prog = program_invocation_short_name;
+
 extern char **newenvp;
 
 #ifdef HAVE_SETGROUPS
@@ -388,6 +390,9 @@ int main (int argc, char **argv)
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
+
+	check_fds ();
+
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
 		(void) bindtextdomain (PACKAGE, LOCALEDIR);

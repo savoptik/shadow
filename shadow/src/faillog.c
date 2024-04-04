@@ -39,6 +39,7 @@ static void reset (void);
 /*
  * Global variables
  */
+static const char Prog[] = "faillog";	/* Program name */
 static FILE *fail;		/* failure file stream */
 static time_t seconds;		/* that number of days in seconds */
 static unsigned long umin;	/* if uflg and has_umin, only display users with uid >= umin */

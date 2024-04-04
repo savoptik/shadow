@@ -61,6 +61,7 @@
 /*
  * Global variables
  */
+static const char Prog[] = "su";
 static /*@observer@*/const char *caller_tty = NULL;	/* Name of tty SU is run from */
 static bool caller_is_root = false;
 static uid_t caller_uid;
@@ -998,6 +999,8 @@ int main (int argc, char **argv)
 	int ret;
 #endif				/* USE_PAM */
 
+	check_fds ();
+
 	if (getuid() == 0) {
 		(void) setlocale (LC_ALL, "");
 		(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -1006,14 +1009,14 @@ int main (int argc, char **argv)
 
 	save_caller_context (argv);
 
-	OPENLOG ("su");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 
 	initenv ();
 
 #ifdef USE_PAM
-	ret = pam_start ("su", name, &conv, &pamh);
+	ret = pam_start (Prog, name, &conv, &pamh);
 	if (PAM_SUCCESS != ret) {
 		SYSLOG ((LOG_ERR, "pam_start: error %d", ret);
 		fprintf (stderr,
