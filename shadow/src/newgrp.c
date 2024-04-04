@@ -32,7 +32,7 @@
 /*
  * Global variables
  */
-static const char *Prog = program_invocation_short_name;
+static const char *Prog;
 
 extern char **newenvp;
 
@@ -432,6 +432,7 @@ int main (int argc, char **argv)
 	 * injecting arbitrary strings into our stderr/stdout, as this can
 	 * be an exploit vector.
 	 */
+	Prog = program_invocation_short_name;
 	is_newgrp = (strcmp (Prog, "newgrp") == 0);
 	if (!is_newgrp && (strcmp (Prog, "sg") != 0)) {
 		fputs ("Bad programm name.\n", stderr);
