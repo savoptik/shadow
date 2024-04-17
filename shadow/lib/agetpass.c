@@ -7,6 +7,8 @@
 
 #include <config.h>
 
+#include "agetpass.h"
+
 #include <limits.h>
 #include <readpassphrase.h>
 #include <stdlib.h>
@@ -15,7 +17,6 @@
 #ident "$Id$"
 
 #include "alloc.h"
-#include "prototypes.h"
 
 #if WITH_LIBBSD == 0
 #include "freezero.h"
@@ -26,6 +27,7 @@
  * SYNOPSIS
  *	[[gnu::malloc(erase_pass)]]
  *	char *agetpass(const char *prompt);
+ *	char *agetpass_stdin();
  *
  *	void erase_pass(char *pass);
  *
@@ -58,6 +60,10 @@
  *	erased by calling erase_pass(), to avoid possibly leaking the
  *	password.
  *
+ *   agetpass_stdin()
+ *	This function is the same as previous one (agetpass). Just the
+ *	password is read from stdin and terminal is not required.
+ *
  *   erase_pass()
  *	This function first clears the password, by calling
  *	explicit_bzero(3) (or an equivalent call), and then frees the
@@ -86,8 +92,8 @@
  */
 
 
-char *
-agetpass(const char *prompt)
+static char *
+agetpass_internal(const char *prompt, int flags)
 {
 	char    *pass;
 	size_t  len;
@@ -104,7 +110,7 @@ agetpass(const char *prompt)
 	if (pass == NULL)
 		return NULL;
 
-	if (readpassphrase(prompt, pass, PASS_MAX + 2, RPP_REQUIRE_TTY) == NULL)
+	if (readpassphrase(prompt, pass, PASS_MAX + 2, flags) == NULL)
 		goto fail;
 
 	len = strlen(pass);
@@ -120,6 +126,17 @@ fail:
 	return NULL;
 }
 
+char *
+agetpass(const char *prompt)
+{
+	return agetpass_internal(prompt, RPP_REQUIRE_TTY);
+}
+
+char *
+agetpass_stdin()
+{
+	return agetpass_internal(NULL, RPP_STDIN);
+}
 
 void
 erase_pass(char *pass)

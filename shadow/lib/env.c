@@ -20,6 +20,9 @@
 #include "prototypes.h"
 #include "defines.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
+
 /*
  * NEWENVP_STEP must be a power of two.  This is the number
  * of (char *) pointers to allocate at a time, to avoid using
@@ -67,16 +70,11 @@ void initenv (void)
 
 void addenv (const char *string, /*@null@*/const char *value)
 {
-	char *cp, *newstring;
-	size_t i;
-	size_t n;
+	char    *cp, *newstring;
+	size_t  i, n;
 
 	if (NULL != value) {
-		size_t len = strlen (string) + strlen (value) + 2;
-		int wlen;
-		newstring = XMALLOC(len, char);
-		wlen = snprintf (newstring, len, "%s=%s", string, value);
-		assert (wlen == (int) len -1);
+		xasprintf(&newstring, "%s=%s", string, value);
 	} else {
 		newstring = xstrdup (string);
 	}
@@ -88,7 +86,7 @@ void addenv (const char *string, /*@null@*/const char *value)
 
 	cp = strchr (newstring, '=');
 	if (NULL == cp) {
-		free (newstring);
+		free(newstring);
 		return;
 	}
 
@@ -105,7 +103,7 @@ void addenv (const char *string, /*@null@*/const char *value)
 	}
 
 	if (i < newenvc) {
-		free (newenvp[i]);
+		free(newenvp[i]);
 		newenvp[i] = newstring;
 		return;
 	}
@@ -168,9 +166,9 @@ void addenv (const char *string, /*@null@*/const char *value)
  */
 void set_env (int argc, char *const *argv)
 {
-	int noname = 1;
-	char variable[1024];
-	char *cp;
+	int   noname = 1;
+	char  variable[1024];
+	char  *cp;
 
 	for (; argc > 0; argc--, argv++) {
 		if (strlen (*argv) >= sizeof variable) {
@@ -179,9 +177,7 @@ void set_env (int argc, char *const *argv)
 
 		cp = strchr (*argv, '=');
 		if (NULL == cp) {
-			int wlen;
-			wlen = snprintf (variable, sizeof variable, "L%d", noname);
-			assert (wlen < (int) sizeof(variable));
+			assert(SNPRINTF(variable, "L%d", noname) != -1);
 			noname++;
 			addenv (variable, *argv);
 		} else {
@@ -194,8 +190,7 @@ void set_env (int argc, char *const *argv)
 			}
 
 			if (NULL != *p) {
-				strncpy (variable, *argv, (size_t)(cp - *argv));
-				variable[cp - *argv] = '\0';
+				stpcpy(mempcpy(variable, *argv, (size_t)(cp - *argv)), "");
 				printf (_("You may not change $%s\n"),
 					variable);
 				continue;

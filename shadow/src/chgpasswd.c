@@ -62,7 +62,7 @@ static bool sgr_locked = false;
 static bool gr_locked = false;
 
 /* local function prototypes */
-static void fail_exit (int code);
+NORETURN static void fail_exit (int code);
 NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 static void check_flags (void);
@@ -195,19 +195,19 @@ static void process_flags (int argc, char **argv)
 			}
 #if defined(USE_SHA_CRYPT)
 			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
-			       && (0 == getlong(optarg, &sha_rounds)))) {
+			       && (-1 == getlong(optarg, &sha_rounds)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
                         if ((   (0 == strcmp (crypt_method, "BCRYPT"))
-			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+			       && (-1 == getlong(optarg, &bcrypt_rounds)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
                         if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
-			       && (0 == getlong(optarg, &yescrypt_cost)))) {
+			       && (-1 == getlong(optarg, &yescrypt_cost)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_YESCRYPT */

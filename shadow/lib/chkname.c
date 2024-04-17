@@ -1,11 +1,9 @@
-/*
- * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
- * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
- * SPDX-FileCopyrightText: 2001 - 2005, Tomasz Kłoczko
- * SPDX-FileCopyrightText: 2005 - 2008, Nicolas François
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+// SPDX-FileCopyrightText: 1990-1994, Julianne Frances Haugh
+// SPDX-FileCopyrightText: 1996-2000, Marek Michałkiewicz
+// SPDX-FileCopyrightText: 2001-2005, Tomasz Kłoczko
+// SPDX-FileCopyrightText: 2005-2008, Nicolas François
+// SPDX-FileCopyrightText: 2023-2024, Alejandro Colomar <alx@kernel.org>
+// SPDX-License-Identifier: BSD-3-Clause
 
 /*
  * is_valid_user_name(), is_valid_group_name() - check the new user/group
@@ -20,6 +18,8 @@
 #ident "$Id$"
 
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <sys/types.h>
 #include <regex.h>
 #include "defines.h"
@@ -127,28 +127,36 @@ static size_t min (size_t a, size_t b)
 	return a < b ? a : b;
 }
 
-bool is_valid_user_name (const char *name)
-{
-	size_t maxlen, sc_max_name;
 
-	/*
-	 * User names length are limited by the kernel
-	 * and the settings in login.defs.
-	 */
-	sc_max_name = sysconf(_SC_LOGIN_NAME_MAX);
+bool
+is_valid_user_name(const char *name)
+{
+	long    conf;
+	size_t  maxsize;
+
+	errno = 0;
+	conf = sysconf(_SC_LOGIN_NAME_MAX);
+
+	if (conf == -1 && errno != 0)
+		maxsize = LOGIN_NAME_MAX;
+	else
+		maxsize = conf;
+
 	/*
 	 * The _SC_LOGIN_NAME_MAX value includes space for the NUL byte,
 	 * so we must subtract 1 from it.
+	 * Decreasing LOGIN_NAME_MAX by 1 is a good thing as well.
 	 */
-	if (sc_max_name > 0 && sc_max_name != (size_t)-1)
-		sc_max_name--;
-	maxlen = min (getdef_unum ("USERNAME_MAX", sc_max_name),
-					sc_max_name);
-	if (strlen(name) > maxlen)
+	maxsize--;
+
+	maxsize = min (getdef_unum ("USERNAME_MAX", maxsize),
+					maxsize);
+	if (strlen(name) > maxsize)
 		return false;
 
-	return is_valid_name (name);
+	return is_valid_name(name);
 }
+
 
 bool is_valid_group_name (const char *name)
 {
@@ -168,4 +176,3 @@ bool is_valid_group_name (const char *name)
 
 	return is_valid_name (name);
 }
-

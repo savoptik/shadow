@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2011-11-26 19:42+0100\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <debian-l10n-eu@lists.debian.org>\n"
@@ -199,10 +199,6 @@ msgstr ""
 "konfigurazio errorea - %s item ezezaguna (eman honen berri "
 "administratzaileari)\n"
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 #| msgid "%s: Authentication failure\n"
 msgid "%s: Memory allocation failure\n"
@@ -242,6 +238,11 @@ msgstr "%s: %d lerroa: chown %s-ek huts egin du: %s\n"
 #, fuzzy, c-format
 #| msgid "%s: line %d: chown %s failed: %s\n"
 msgid "%s: write to %s failed: %s\n"
+msgstr "%s: %d lerroa: chown %s-ek huts egin du: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: closing %s failed: %s\n"
 msgstr "%s: %d lerroa: chown %s-ek huts egin du: %s\n"
 
 msgid "Too many logins.\n"
@@ -690,11 +691,14 @@ msgstr "Pasahitza ezgaitua"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Kontuaren iraungitze data (UUUU-HH-EE)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr "Azken pasahitz aldaketa\t\t\t\t\t: "
-
 msgid "never"
 msgstr "Inoiz ere ez"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr "Azken pasahitz aldaketa\t\t\t\t\t: "
 
 msgid "password must be changed"
 msgstr "Pasahitza aldatu egin behar da"
@@ -866,14 +870,6 @@ msgstr "%s: '%s'(e)k karaktere baliogabeak ditu\n"
 #, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: '%s' erabiltzailea ez da existitzen\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s: ezin da NIS bezeroko '%s' erabiltzailea aldatu.\n"
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s: '%s' da bezero honen NIS nagusia.\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1250,6 +1246,10 @@ msgstr "%s erabiltzaile-izen baliogabea\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: '%s' ez da baliozko talde-izena\n"
 
+#, fuzzy, c-format
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: ezin da %s ireki\n"
+
 #, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "%s: '%s' talde ID baliogabea\n"
@@ -1294,14 +1294,6 @@ msgstr "%s: Ezin da '%s' erabiltzailearen talde nagusia kendu\n"
 #, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: '%s' taldea ez da existitzen\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: '%s' taldea NIS talde bat da\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s: %s NIS nagusia da\n"
 
 #, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1398,10 +1390,6 @@ msgstr ""
 #, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s: '%s' talde izen baliogabea\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s: %s taldea NIS talde bat da\n"
 
 #, c-format
 msgid "%s: unknown user %s\n"
@@ -1930,6 +1918,11 @@ msgstr ""
 "  -x, --maxdays GEHI_EGUN       ezarri pasahitz aldatu aurretik gehienezko\n"
 "                                egun kopurua GEHI_EGUN-era\n"
 
+#, fuzzy
+#| msgid "  -l, --list                    show account aging information\n"
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr "  -l, --list                    kontu denbora informazioa bistarazi\n"
+
 msgid "Old password: "
 msgstr "Pasahitz zaharra: "
 
@@ -1948,6 +1941,11 @@ msgid ""
 msgstr ""
 "Sartu pasahitz berria (gutxienez %d eta gehienez %d karaktere)\n"
 "Erabili maiuskulen, minuskulen eta zenbakien arteko konbinazioa.\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s: eremu luzegiak\n"
 
 msgid "New password: "
 msgstr "Pasahitz berria: "
@@ -1991,6 +1989,11 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s: %s biltegia ez da onartzen\n"
+
+#, fuzzy, c-format
+#| msgid "%s: only root can use the -g/--group option\n"
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr "%s: root-ek bakarrik erabili dezake -g/--group aukera\n"
 
 #, fuzzy, c-format
 #| msgid "%s: %s is not authorized to change the password of %s\n"
@@ -2145,11 +2148,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -2322,10 +2323,6 @@ msgstr "%s: ezin da %s direktorioa sortu\n"
 #, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s: berrizendatu: %s: %s\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: taldea '%s' NIS talde bat da.\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2599,6 +2596,16 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr "Postakutxa fitxategi baimenak ezartzen"
 
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Synchronize mailbox file"
+msgstr "Postakutxa fitxategia sortzen"
+
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Closing mailbox file"
+msgstr "Postakutxa fitxategia sortzen"
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2730,10 +2737,6 @@ msgstr "lastlog: Ezinda %s-ren tamaina eskuratu: %s\n"
 #, fuzzy, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: ezin da '%s' sarrera %s-tik kendu\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s:  %s erabiltzailea NIS erabiltzaile bat da\n"
 
 #, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2960,8 +2963,22 @@ msgstr ""
 "%s: huts %lu erabiltzailearen lastlog sarrera %lu erabiltzailera kopiatzean: "
 "%s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr ""
+"%s: huts %lu erabiltzailearen lastlog sarrera %lu erabiltzailera kopiatzean: "
+"%s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgstr ""
+"%s: huts %lu erabiltzailearen faillog sarrera %lu erabiltzailera kopiatzean: "
+"%s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
 msgstr ""
 "%s: huts %lu erabiltzailearen faillog sarrera %lu erabiltzailera kopiatzean: "
 "%s\n"
@@ -3069,9 +3086,8 @@ msgstr "%s: huts %s desblokeatzean\n"
 msgid "failed to stat edited file"
 msgstr "huts egin du postontzia izenez aldatzean"
 
-#, fuzzy
-msgid "failed to allocate memory"
-msgstr "huts egin du postontzia jabez aldatzean"
+msgid "asprintf(3) failed"
+msgstr ""
 
 #, fuzzy
 msgid "failed to create backup file"
@@ -3085,6 +3101,34 @@ msgstr "%s: ezin da %s leheneratu: %s (zure aldaketak %s(e)n daude)\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: oinarrizko '%s' direktorio baliogabea\n"
 
+#, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s: ezin da NIS bezeroko '%s' erabiltzailea aldatu.\n"
+
+#, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s: '%s' da bezero honen NIS nagusia.\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: '%s' taldea NIS talde bat da\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s: %s NIS nagusia da\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s: %s taldea NIS talde bat da\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: taldea '%s' NIS talde bat da.\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s:  %s erabiltzailea NIS erabiltzaile bat da\n"
+
 #~ msgid "too simple"
 #~ msgstr "sinpleegia"
 
@@ -3096,6 +3140,10 @@ msgstr "%s: oinarrizko '%s' direktorio baliogabea\n"
 #, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "%s: oinarrizko '%s' direktorio baliogabea\n"
+
+#, fuzzy
+#~ msgid "failed to allocate memory"
+#~ msgstr "huts egin du postontzia jabez aldatzean"
 
 #~ msgid "Usage: id\n"
 #~ msgstr "Erabilera: id\n"

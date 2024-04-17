@@ -19,6 +19,7 @@
 #include "defines.h"
 #include "commonio.h"
 #include "getdef.h"
+#include "memzero.h"
 #include "sgroupio.h"
 
 /*@null@*/ /*@only@*/struct sgrp *__sgr_dup (const struct sgrp *sgent)
@@ -116,14 +117,16 @@ static /*@null@*/ /*@only@*/void *gshadow_dup (const void *ent)
 	return __sgr_dup (sg);
 }
 
-static void gshadow_free (/*@out@*/ /*@only@*/void *ent)
+static void
+gshadow_free(/*@only@*/void *ent)
 {
 	struct sgrp *sg = ent;
 
 	sgr_free (sg);
 }
 
-void sgr_free (/*@out@*/ /*@only@*/struct sgrp *sgent)
+void
+sgr_free(/*@only@*/struct sgrp *sgent)
 {
 	size_t i;
 	free (sgent->sg_name);

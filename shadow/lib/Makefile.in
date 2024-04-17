@@ -121,34 +121,40 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libshadow_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__libshadow_la_SOURCES_DIST = addgrps.c age.c agetpass.c alloc.c \
-	alloc.h audit_help.c basename.c bit.c bit.h chkname.c \
-	chkname.h chowndir.c chowntty.c cleanup.c cleanup_group.c \
-	cleanup_user.c commonio.c commonio.h console.c copydir.c \
-	csrand.c date_to_str.c defines.h encrypt.c entry.c env.c \
-	exitcodes.h faillog.h failure.c failure.h fd.c fields.c \
-	find_new_gid.c find_new_uid.c find_new_sub_gids.c \
+am__libshadow_la_SOURCES_DIST = addgrps.c adds.c adds.h age.c \
+	agetpass.c agetpass.h alloc.c alloc.h atoi/strtoi.c \
+	atoi/strtoi.h atoi/strtou_noneg.c atoi/strtou_noneg.h attr.h \
+	audit_help.c basename.c bit.c bit.h cast.h chkname.c chkname.h \
+	chowndir.c chowntty.c cleanup.c cleanup_group.c cleanup_user.c \
+	commonio.c commonio.h console.c copydir.c csrand.c defines.h \
+	encrypt.c env.c exitcodes.h faillog.h failure.c failure.h fd.c \
+	fields.c find_new_gid.c find_new_uid.c find_new_sub_gids.c \
 	find_new_sub_uids.c fputsx.c get_gid.c get_pid.c get_uid.c \
 	getdate.h getdate.y getdef.c getdef.h getlong.c \
 	getgr_nam_gid.c getrange.c gettime.c getulong.c groupio.c \
 	groupmem.c groupio.h gshadow.c hushed.c idmapping.h \
 	idmapping.c isexpired.c limits.c list.c lockpw.c loginprompt.c \
-	mail.c mempcpy.c mempcpy.h motd.c myname.c nss.c nscd.c nscd.h \
-	obscure.c pam_defs.h pam_pass.c pam_pass_non_interactive.c \
-	port.c port.h prefix_flag.c prototypes.h pwauth.c pwauth.h \
-	pwio.c pwio.h pwd_init.c pwd2spwd.c pwdcheck.c pwmem.c \
-	remove_tree.c rlogin.c root_flag.c run_part.h run_part.c \
-	salt.c selinux.c semanage.c setugid.c setupenv.c sgetgrent.c \
-	sgetpwent.c sgetspent.c sgroupio.c sgroupio.h shadow.c \
-	shadowio.c shadowio.h shadowlog.c shadowlog.h \
-	shadowlog_internal.h shadowmem.c shell.c spawn.c sssd.c sssd.h \
-	stpecpy.c stpecpy.h stpeprintf.c stpeprintf.h strtoday.c sub.c \
-	subordinateio.h subordinateio.c sulog.c ttytype.c tz.c \
-	ulimit.c user_busy.c valid.c write_full.c xgetpwnam.c \
-	xprefix_getpwnam.c xgetpwuid.c xgetgrnam.c xgetgrgid.c \
-	xgetspnam.c yesno.c tcbfuncs.c tcbfuncs.h btrfs.c log.c \
-	logind.c utmp.c freezero.h freezero.c readpassphrase.h \
-	readpassphrase.c
+	mail.c memzero.c memzero.h motd.c must_be.h myname.c nss.c \
+	nscd.c nscd.h obscure.c pam_defs.h pam_pass.c \
+	pam_pass_non_interactive.c port.c port.h prefix_flag.c \
+	prototypes.h pwauth.c pwauth.h pwio.c pwio.h pwd_init.c \
+	pwd2spwd.c pwdcheck.c pwmem.c remove_tree.c rlogin.c \
+	root_flag.c run_part.h run_part.c salt.c selinux.c semanage.c \
+	setugid.c setupenv.c sgetgrent.c sgetpwent.c sgetspent.c \
+	sgroupio.c sgroupio.h shadow.c shadowio.c shadowio.h \
+	shadowlog.c shadowlog.h shadowlog_internal.h shadowmem.c \
+	shell.c sizeof.h spawn.c sssd.c sssd.h string/sprintf.c \
+	string/sprintf.h string/stpecpy.c string/stpecpy.h \
+	string/stpeprintf.c string/stpeprintf.h string/strftime.c \
+	string/strftime.h string/strncpy.h string/strtcpy.c \
+	string/strtcpy.h string/zustr2stp.h strtoday.c sub.c \
+	subordinateio.h subordinateio.c sulog.c time/day_to_str.c \
+	time/day_to_str.h ttytype.c tz.c ulimit.c user_busy.c valid.c \
+	write_full.c xgetpwnam.c xprefix_getpwnam.c xgetpwuid.c \
+	xgetgrnam.c xgetgrgid.c xgetspnam.c yesno.c tcbfuncs.c \
+	tcbfuncs.h btrfs.c log.c logind.c utmp.c freezero.h freezero.c \
+	readpassphrase.h readpassphrase.c
+am__dirstamp = $(am__leading_dot)dirstamp
 @WITH_TCB_TRUE@am__objects_1 = libshadow_la-tcbfuncs.lo
 @WITH_BTRFS_TRUE@am__objects_2 = libshadow_la-btrfs.lo
 @ENABLE_LASTLOG_TRUE@am__objects_3 = libshadow_la-log.lo
@@ -156,17 +162,18 @@ am__libshadow_la_SOURCES_DIST = addgrps.c age.c agetpass.c alloc.c \
 @ENABLE_LOGIND_FALSE@am__objects_5 = libshadow_la-utmp.lo
 @WITH_LIBBSD_FALSE@am__objects_6 = libshadow_la-freezero.lo \
 @WITH_LIBBSD_FALSE@	libshadow_la-readpassphrase.lo
-am_libshadow_la_OBJECTS = libshadow_la-addgrps.lo libshadow_la-age.lo \
-	libshadow_la-agetpass.lo libshadow_la-alloc.lo \
-	libshadow_la-audit_help.lo libshadow_la-basename.lo \
-	libshadow_la-bit.lo libshadow_la-chkname.lo \
-	libshadow_la-chowndir.lo libshadow_la-chowntty.lo \
-	libshadow_la-cleanup.lo libshadow_la-cleanup_group.lo \
-	libshadow_la-cleanup_user.lo libshadow_la-commonio.lo \
-	libshadow_la-console.lo libshadow_la-copydir.lo \
-	libshadow_la-csrand.lo libshadow_la-date_to_str.lo \
-	libshadow_la-encrypt.lo libshadow_la-entry.lo \
-	libshadow_la-env.lo libshadow_la-failure.lo libshadow_la-fd.lo \
+am_libshadow_la_OBJECTS = libshadow_la-addgrps.lo libshadow_la-adds.lo \
+	libshadow_la-age.lo libshadow_la-agetpass.lo \
+	libshadow_la-alloc.lo atoi/libshadow_la-strtoi.lo \
+	atoi/libshadow_la-strtou_noneg.lo libshadow_la-audit_help.lo \
+	libshadow_la-basename.lo libshadow_la-bit.lo \
+	libshadow_la-chkname.lo libshadow_la-chowndir.lo \
+	libshadow_la-chowntty.lo libshadow_la-cleanup.lo \
+	libshadow_la-cleanup_group.lo libshadow_la-cleanup_user.lo \
+	libshadow_la-commonio.lo libshadow_la-console.lo \
+	libshadow_la-copydir.lo libshadow_la-csrand.lo \
+	libshadow_la-encrypt.lo libshadow_la-env.lo \
+	libshadow_la-failure.lo libshadow_la-fd.lo \
 	libshadow_la-fields.lo libshadow_la-find_new_gid.lo \
 	libshadow_la-find_new_uid.lo libshadow_la-find_new_sub_gids.lo \
 	libshadow_la-find_new_sub_uids.lo libshadow_la-fputsx.lo \
@@ -180,7 +187,7 @@ am_libshadow_la_OBJECTS = libshadow_la-addgrps.lo libshadow_la-age.lo \
 	libshadow_la-idmapping.lo libshadow_la-isexpired.lo \
 	libshadow_la-limits.lo libshadow_la-list.lo \
 	libshadow_la-lockpw.lo libshadow_la-loginprompt.lo \
-	libshadow_la-mail.lo libshadow_la-mempcpy.lo \
+	libshadow_la-mail.lo libshadow_la-memzero.lo \
 	libshadow_la-motd.lo libshadow_la-myname.lo \
 	libshadow_la-nss.lo libshadow_la-nscd.lo \
 	libshadow_la-obscure.lo libshadow_la-pam_pass.lo \
@@ -198,10 +205,13 @@ am_libshadow_la_OBJECTS = libshadow_la-addgrps.lo libshadow_la-age.lo \
 	libshadow_la-shadow.lo libshadow_la-shadowio.lo \
 	libshadow_la-shadowlog.lo libshadow_la-shadowmem.lo \
 	libshadow_la-shell.lo libshadow_la-spawn.lo \
-	libshadow_la-sssd.lo libshadow_la-stpecpy.lo \
-	libshadow_la-stpeprintf.lo libshadow_la-strtoday.lo \
-	libshadow_la-sub.lo libshadow_la-subordinateio.lo \
-	libshadow_la-sulog.lo libshadow_la-ttytype.lo \
+	libshadow_la-sssd.lo string/libshadow_la-sprintf.lo \
+	string/libshadow_la-stpecpy.lo \
+	string/libshadow_la-stpeprintf.lo \
+	string/libshadow_la-strftime.lo string/libshadow_la-strtcpy.lo \
+	libshadow_la-strtoday.lo libshadow_la-sub.lo \
+	libshadow_la-subordinateio.lo libshadow_la-sulog.lo \
+	time/libshadow_la-day_to_str.lo libshadow_la-ttytype.lo \
 	libshadow_la-tz.lo libshadow_la-ulimit.lo \
 	libshadow_la-user_busy.lo libshadow_la-valid.lo \
 	libshadow_la-write_full.lo libshadow_la-xgetpwnam.lo \
@@ -234,6 +244,7 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
+	./$(DEPDIR)/libshadow_la-adds.Plo \
 	./$(DEPDIR)/libshadow_la-age.Plo \
 	./$(DEPDIR)/libshadow_la-agetpass.Plo \
 	./$(DEPDIR)/libshadow_la-alloc.Plo \
@@ -251,9 +262,7 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
 	./$(DEPDIR)/libshadow_la-console.Plo \
 	./$(DEPDIR)/libshadow_la-copydir.Plo \
 	./$(DEPDIR)/libshadow_la-csrand.Plo \
-	./$(DEPDIR)/libshadow_la-date_to_str.Plo \
 	./$(DEPDIR)/libshadow_la-encrypt.Plo \
-	./$(DEPDIR)/libshadow_la-entry.Plo \
 	./$(DEPDIR)/libshadow_la-env.Plo \
 	./$(DEPDIR)/libshadow_la-failure.Plo \
 	./$(DEPDIR)/libshadow_la-fd.Plo \
@@ -287,7 +296,7 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
 	./$(DEPDIR)/libshadow_la-logind.Plo \
 	./$(DEPDIR)/libshadow_la-loginprompt.Plo \
 	./$(DEPDIR)/libshadow_la-mail.Plo \
-	./$(DEPDIR)/libshadow_la-mempcpy.Plo \
+	./$(DEPDIR)/libshadow_la-memzero.Plo \
 	./$(DEPDIR)/libshadow_la-motd.Plo \
 	./$(DEPDIR)/libshadow_la-myname.Plo \
 	./$(DEPDIR)/libshadow_la-nscd.Plo \
@@ -324,8 +333,6 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
 	./$(DEPDIR)/libshadow_la-shell.Plo \
 	./$(DEPDIR)/libshadow_la-spawn.Plo \
 	./$(DEPDIR)/libshadow_la-sssd.Plo \
-	./$(DEPDIR)/libshadow_la-stpecpy.Plo \
-	./$(DEPDIR)/libshadow_la-stpeprintf.Plo \
 	./$(DEPDIR)/libshadow_la-strtoday.Plo \
 	./$(DEPDIR)/libshadow_la-sub.Plo \
 	./$(DEPDIR)/libshadow_la-subordinateio.Plo \
@@ -344,7 +351,15 @@ am__depfiles_remade = ./$(DEPDIR)/libshadow_la-addgrps.Plo \
 	./$(DEPDIR)/libshadow_la-xgetpwuid.Plo \
 	./$(DEPDIR)/libshadow_la-xgetspnam.Plo \
 	./$(DEPDIR)/libshadow_la-xprefix_getpwnam.Plo \
-	./$(DEPDIR)/libshadow_la-yesno.Plo
+	./$(DEPDIR)/libshadow_la-yesno.Plo \
+	atoi/$(DEPDIR)/libshadow_la-strtoi.Plo \
+	atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Plo \
+	string/$(DEPDIR)/libshadow_la-sprintf.Plo \
+	string/$(DEPDIR)/libshadow_la-stpecpy.Plo \
+	string/$(DEPDIR)/libshadow_la-stpeprintf.Plo \
+	string/$(DEPDIR)/libshadow_la-strftime.Plo \
+	string/$(DEPDIR)/libshadow_la-strtcpy.Plo \
+	time/$(DEPDIR)/libshadow_la-day_to_str.Plo
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -413,6 +428,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -431,7 +448,6 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -456,7 +472,6 @@ LIBAUDIT = @LIBAUDIT@
 LIBBSD = @LIBBSD@
 LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
 LIBBSD_LIBS = @LIBBSD_LIBS@
-LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -588,19 +603,21 @@ libshadow_la_CPPFLAGS = $(ECONF_CPPFLAGS) $(am__append_1) \
 	-I$(top_srcdir)
 libshadow_la_CFLAGS = $(LIBBSD_CFLAGS) $(LIBCRYPT_PAM) $(LIBSYSTEMD)
 libshadow_la_LIBADD = $(LIBADD_DLOPEN)
-libshadow_la_SOURCES = addgrps.c age.c agetpass.c alloc.c alloc.h \
-	audit_help.c basename.c bit.c bit.h chkname.c chkname.h \
-	chowndir.c chowntty.c cleanup.c cleanup_group.c cleanup_user.c \
-	commonio.c commonio.h console.c copydir.c csrand.c \
-	date_to_str.c defines.h encrypt.c entry.c env.c exitcodes.h \
-	faillog.h failure.c failure.h fd.c fields.c find_new_gid.c \
-	find_new_uid.c find_new_sub_gids.c find_new_sub_uids.c \
-	fputsx.c get_gid.c get_pid.c get_uid.c getdate.h getdate.y \
-	getdef.c getdef.h getlong.c getgr_nam_gid.c getrange.c \
-	gettime.c getulong.c groupio.c groupmem.c groupio.h gshadow.c \
-	hushed.c idmapping.h idmapping.c isexpired.c limits.c list.c \
-	lockpw.c loginprompt.c mail.c mempcpy.c mempcpy.h motd.c \
-	myname.c nss.c nscd.c nscd.h obscure.c pam_defs.h pam_pass.c \
+libshadow_la_SOURCES = addgrps.c adds.c adds.h age.c agetpass.c \
+	agetpass.h alloc.c alloc.h atoi/strtoi.c atoi/strtoi.h \
+	atoi/strtou_noneg.c atoi/strtou_noneg.h attr.h audit_help.c \
+	basename.c bit.c bit.h cast.h chkname.c chkname.h chowndir.c \
+	chowntty.c cleanup.c cleanup_group.c cleanup_user.c commonio.c \
+	commonio.h console.c copydir.c csrand.c defines.h encrypt.c \
+	env.c exitcodes.h faillog.h failure.c failure.h fd.c fields.c \
+	find_new_gid.c find_new_uid.c find_new_sub_gids.c \
+	find_new_sub_uids.c fputsx.c get_gid.c get_pid.c get_uid.c \
+	getdate.h getdate.y getdef.c getdef.h getlong.c \
+	getgr_nam_gid.c getrange.c gettime.c getulong.c groupio.c \
+	groupmem.c groupio.h gshadow.c hushed.c idmapping.h \
+	idmapping.c isexpired.c limits.c list.c lockpw.c loginprompt.c \
+	mail.c memzero.c memzero.h motd.c must_be.h myname.c nss.c \
+	nscd.c nscd.h obscure.c pam_defs.h pam_pass.c \
 	pam_pass_non_interactive.c port.c port.h prefix_flag.c \
 	prototypes.h pwauth.c pwauth.h pwio.c pwio.h pwd_init.c \
 	pwd2spwd.c pwdcheck.c pwmem.c remove_tree.c rlogin.c \
@@ -608,9 +625,13 @@ libshadow_la_SOURCES = addgrps.c age.c agetpass.c alloc.c alloc.h \
 	setugid.c setupenv.c sgetgrent.c sgetpwent.c sgetspent.c \
 	sgroupio.c sgroupio.h shadow.c shadowio.c shadowio.h \
 	shadowlog.c shadowlog.h shadowlog_internal.h shadowmem.c \
-	shell.c spawn.c sssd.c sssd.h stpecpy.c stpecpy.h stpeprintf.c \
-	stpeprintf.h strtoday.c sub.c subordinateio.h subordinateio.c \
-	sulog.c ttytype.c tz.c ulimit.c user_busy.c valid.c \
+	shell.c sizeof.h spawn.c sssd.c sssd.h string/sprintf.c \
+	string/sprintf.h string/stpecpy.c string/stpecpy.h \
+	string/stpeprintf.c string/stpeprintf.h string/strftime.c \
+	string/strftime.h string/strncpy.h string/strtcpy.c \
+	string/strtcpy.h string/zustr2stp.h strtoday.c sub.c \
+	subordinateio.h subordinateio.c sulog.c time/day_to_str.c \
+	time/day_to_str.h ttytype.c tz.c ulimit.c user_busy.c valid.c \
 	write_full.c xgetpwnam.c xprefix_getpwnam.c xgetpwuid.c \
 	xgetgrnam.c xgetgrgid.c xgetspnam.c yesno.c $(am__append_2) \
 	$(am__append_3) $(am__append_4) $(am__append_5) \
@@ -669,17 +690,58 @@ clean-noinstLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+atoi/$(am__dirstamp):
+	@$(MKDIR_P) atoi
+	@: > atoi/$(am__dirstamp)
+atoi/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) atoi/$(DEPDIR)
+	@: > atoi/$(DEPDIR)/$(am__dirstamp)
+atoi/libshadow_la-strtoi.lo: atoi/$(am__dirstamp) \
+	atoi/$(DEPDIR)/$(am__dirstamp)
+atoi/libshadow_la-strtou_noneg.lo: atoi/$(am__dirstamp) \
+	atoi/$(DEPDIR)/$(am__dirstamp)
+string/$(am__dirstamp):
+	@$(MKDIR_P) string
+	@: > string/$(am__dirstamp)
+string/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) string/$(DEPDIR)
+	@: > string/$(DEPDIR)/$(am__dirstamp)
+string/libshadow_la-sprintf.lo: string/$(am__dirstamp) \
+	string/$(DEPDIR)/$(am__dirstamp)
+string/libshadow_la-stpecpy.lo: string/$(am__dirstamp) \
+	string/$(DEPDIR)/$(am__dirstamp)
+string/libshadow_la-stpeprintf.lo: string/$(am__dirstamp) \
+	string/$(DEPDIR)/$(am__dirstamp)
+string/libshadow_la-strftime.lo: string/$(am__dirstamp) \
+	string/$(DEPDIR)/$(am__dirstamp)
+string/libshadow_la-strtcpy.lo: string/$(am__dirstamp) \
+	string/$(DEPDIR)/$(am__dirstamp)
+time/$(am__dirstamp):
+	@$(MKDIR_P) time
+	@: > time/$(am__dirstamp)
+time/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) time/$(DEPDIR)
+	@: > time/$(DEPDIR)/$(am__dirstamp)
+time/libshadow_la-day_to_str.lo: time/$(am__dirstamp) \
+	time/$(DEPDIR)/$(am__dirstamp)
 
 libshadow.la: $(libshadow_la_OBJECTS) $(libshadow_la_DEPENDENCIES) $(EXTRA_libshadow_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libshadow_la_LINK)  $(libshadow_la_OBJECTS) $(libshadow_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f atoi/*.$(OBJEXT)
+	-rm -f atoi/*.lo
+	-rm -f string/*.$(OBJEXT)
+	-rm -f string/*.lo
+	-rm -f time/*.$(OBJEXT)
+	-rm -f time/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-addgrps.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-adds.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-age.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-agetpass.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-alloc.Plo@am__quote@ # am--include-marker
@@ -697,9 +759,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-console.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-copydir.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-csrand.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-date_to_str.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-encrypt.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-entry.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-env.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-failure.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-fd.Plo@am__quote@ # am--include-marker
@@ -733,7 +793,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-logind.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-loginprompt.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-mail.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-mempcpy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-memzero.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-motd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-myname.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-nscd.Plo@am__quote@ # am--include-marker
@@ -770,8 +830,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-shell.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-spawn.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-sssd.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-stpecpy.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-stpeprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-strtoday.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-sub.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-subordinateio.Plo@am__quote@ # am--include-marker
@@ -791,6 +849,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-xgetspnam.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-xprefix_getpwnam.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshadow_la-yesno.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@atoi/$(DEPDIR)/libshadow_la-strtoi.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@string/$(DEPDIR)/libshadow_la-sprintf.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@string/$(DEPDIR)/libshadow_la-stpecpy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@string/$(DEPDIR)/libshadow_la-stpeprintf.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@string/$(DEPDIR)/libshadow_la-strftime.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@string/$(DEPDIR)/libshadow_la-strtcpy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@time/$(DEPDIR)/libshadow_la-day_to_str.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -799,22 +865,25 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -825,6 +894,13 @@ libshadow_la-addgrps.lo: addgrps.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='addgrps.c' object='libshadow_la-addgrps.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-addgrps.lo `test -f 'addgrps.c' || echo '$(srcdir)/'`addgrps.c
+
+libshadow_la-adds.lo: adds.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-adds.lo -MD -MP -MF $(DEPDIR)/libshadow_la-adds.Tpo -c -o libshadow_la-adds.lo `test -f 'adds.c' || echo '$(srcdir)/'`adds.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-adds.Tpo $(DEPDIR)/libshadow_la-adds.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='adds.c' object='libshadow_la-adds.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-adds.lo `test -f 'adds.c' || echo '$(srcdir)/'`adds.c
 
 libshadow_la-age.lo: age.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-age.lo -MD -MP -MF $(DEPDIR)/libshadow_la-age.Tpo -c -o libshadow_la-age.lo `test -f 'age.c' || echo '$(srcdir)/'`age.c
@@ -846,6 +922,20 @@ libshadow_la-alloc.lo: alloc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='alloc.c' object='libshadow_la-alloc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-alloc.lo `test -f 'alloc.c' || echo '$(srcdir)/'`alloc.c
+
+atoi/libshadow_la-strtoi.lo: atoi/strtoi.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT atoi/libshadow_la-strtoi.lo -MD -MP -MF atoi/$(DEPDIR)/libshadow_la-strtoi.Tpo -c -o atoi/libshadow_la-strtoi.lo `test -f 'atoi/strtoi.c' || echo '$(srcdir)/'`atoi/strtoi.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) atoi/$(DEPDIR)/libshadow_la-strtoi.Tpo atoi/$(DEPDIR)/libshadow_la-strtoi.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='atoi/strtoi.c' object='atoi/libshadow_la-strtoi.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o atoi/libshadow_la-strtoi.lo `test -f 'atoi/strtoi.c' || echo '$(srcdir)/'`atoi/strtoi.c
+
+atoi/libshadow_la-strtou_noneg.lo: atoi/strtou_noneg.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT atoi/libshadow_la-strtou_noneg.lo -MD -MP -MF atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Tpo -c -o atoi/libshadow_la-strtou_noneg.lo `test -f 'atoi/strtou_noneg.c' || echo '$(srcdir)/'`atoi/strtou_noneg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Tpo atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='atoi/strtou_noneg.c' object='atoi/libshadow_la-strtou_noneg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o atoi/libshadow_la-strtou_noneg.lo `test -f 'atoi/strtou_noneg.c' || echo '$(srcdir)/'`atoi/strtou_noneg.c
 
 libshadow_la-audit_help.lo: audit_help.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-audit_help.lo -MD -MP -MF $(DEPDIR)/libshadow_la-audit_help.Tpo -c -o libshadow_la-audit_help.lo `test -f 'audit_help.c' || echo '$(srcdir)/'`audit_help.c
@@ -938,26 +1028,12 @@ libshadow_la-csrand.lo: csrand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-csrand.lo `test -f 'csrand.c' || echo '$(srcdir)/'`csrand.c
 
-libshadow_la-date_to_str.lo: date_to_str.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-date_to_str.lo -MD -MP -MF $(DEPDIR)/libshadow_la-date_to_str.Tpo -c -o libshadow_la-date_to_str.lo `test -f 'date_to_str.c' || echo '$(srcdir)/'`date_to_str.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-date_to_str.Tpo $(DEPDIR)/libshadow_la-date_to_str.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='date_to_str.c' object='libshadow_la-date_to_str.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-date_to_str.lo `test -f 'date_to_str.c' || echo '$(srcdir)/'`date_to_str.c
-
 libshadow_la-encrypt.lo: encrypt.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-encrypt.lo -MD -MP -MF $(DEPDIR)/libshadow_la-encrypt.Tpo -c -o libshadow_la-encrypt.lo `test -f 'encrypt.c' || echo '$(srcdir)/'`encrypt.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-encrypt.Tpo $(DEPDIR)/libshadow_la-encrypt.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='encrypt.c' object='libshadow_la-encrypt.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-encrypt.lo `test -f 'encrypt.c' || echo '$(srcdir)/'`encrypt.c
-
-libshadow_la-entry.lo: entry.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-entry.lo -MD -MP -MF $(DEPDIR)/libshadow_la-entry.Tpo -c -o libshadow_la-entry.lo `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-entry.Tpo $(DEPDIR)/libshadow_la-entry.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry.c' object='libshadow_la-entry.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-entry.lo `test -f 'entry.c' || echo '$(srcdir)/'`entry.c
 
 libshadow_la-env.lo: env.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-env.lo -MD -MP -MF $(DEPDIR)/libshadow_la-env.Tpo -c -o libshadow_la-env.lo `test -f 'env.c' || echo '$(srcdir)/'`env.c
@@ -1169,12 +1245,12 @@ libshadow_la-mail.lo: mail.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-mail.lo `test -f 'mail.c' || echo '$(srcdir)/'`mail.c
 
-libshadow_la-mempcpy.lo: mempcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-mempcpy.lo -MD -MP -MF $(DEPDIR)/libshadow_la-mempcpy.Tpo -c -o libshadow_la-mempcpy.lo `test -f 'mempcpy.c' || echo '$(srcdir)/'`mempcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-mempcpy.Tpo $(DEPDIR)/libshadow_la-mempcpy.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mempcpy.c' object='libshadow_la-mempcpy.lo' libtool=yes @AMDEPBACKSLASH@
+libshadow_la-memzero.lo: memzero.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-memzero.lo -MD -MP -MF $(DEPDIR)/libshadow_la-memzero.Tpo -c -o libshadow_la-memzero.lo `test -f 'memzero.c' || echo '$(srcdir)/'`memzero.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-memzero.Tpo $(DEPDIR)/libshadow_la-memzero.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memzero.c' object='libshadow_la-memzero.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-mempcpy.lo `test -f 'mempcpy.c' || echo '$(srcdir)/'`mempcpy.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-memzero.lo `test -f 'memzero.c' || echo '$(srcdir)/'`memzero.c
 
 libshadow_la-motd.lo: motd.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-motd.lo -MD -MP -MF $(DEPDIR)/libshadow_la-motd.Tpo -c -o libshadow_la-motd.lo `test -f 'motd.c' || echo '$(srcdir)/'`motd.c
@@ -1421,19 +1497,40 @@ libshadow_la-sssd.lo: sssd.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-sssd.lo `test -f 'sssd.c' || echo '$(srcdir)/'`sssd.c
 
-libshadow_la-stpecpy.lo: stpecpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-stpecpy.lo -MD -MP -MF $(DEPDIR)/libshadow_la-stpecpy.Tpo -c -o libshadow_la-stpecpy.lo `test -f 'stpecpy.c' || echo '$(srcdir)/'`stpecpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-stpecpy.Tpo $(DEPDIR)/libshadow_la-stpecpy.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stpecpy.c' object='libshadow_la-stpecpy.lo' libtool=yes @AMDEPBACKSLASH@
+string/libshadow_la-sprintf.lo: string/sprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT string/libshadow_la-sprintf.lo -MD -MP -MF string/$(DEPDIR)/libshadow_la-sprintf.Tpo -c -o string/libshadow_la-sprintf.lo `test -f 'string/sprintf.c' || echo '$(srcdir)/'`string/sprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) string/$(DEPDIR)/libshadow_la-sprintf.Tpo string/$(DEPDIR)/libshadow_la-sprintf.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='string/sprintf.c' object='string/libshadow_la-sprintf.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-stpecpy.lo `test -f 'stpecpy.c' || echo '$(srcdir)/'`stpecpy.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o string/libshadow_la-sprintf.lo `test -f 'string/sprintf.c' || echo '$(srcdir)/'`string/sprintf.c
 
-libshadow_la-stpeprintf.lo: stpeprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-stpeprintf.lo -MD -MP -MF $(DEPDIR)/libshadow_la-stpeprintf.Tpo -c -o libshadow_la-stpeprintf.lo `test -f 'stpeprintf.c' || echo '$(srcdir)/'`stpeprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libshadow_la-stpeprintf.Tpo $(DEPDIR)/libshadow_la-stpeprintf.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stpeprintf.c' object='libshadow_la-stpeprintf.lo' libtool=yes @AMDEPBACKSLASH@
+string/libshadow_la-stpecpy.lo: string/stpecpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT string/libshadow_la-stpecpy.lo -MD -MP -MF string/$(DEPDIR)/libshadow_la-stpecpy.Tpo -c -o string/libshadow_la-stpecpy.lo `test -f 'string/stpecpy.c' || echo '$(srcdir)/'`string/stpecpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) string/$(DEPDIR)/libshadow_la-stpecpy.Tpo string/$(DEPDIR)/libshadow_la-stpecpy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='string/stpecpy.c' object='string/libshadow_la-stpecpy.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-stpeprintf.lo `test -f 'stpeprintf.c' || echo '$(srcdir)/'`stpeprintf.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o string/libshadow_la-stpecpy.lo `test -f 'string/stpecpy.c' || echo '$(srcdir)/'`string/stpecpy.c
+
+string/libshadow_la-stpeprintf.lo: string/stpeprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT string/libshadow_la-stpeprintf.lo -MD -MP -MF string/$(DEPDIR)/libshadow_la-stpeprintf.Tpo -c -o string/libshadow_la-stpeprintf.lo `test -f 'string/stpeprintf.c' || echo '$(srcdir)/'`string/stpeprintf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) string/$(DEPDIR)/libshadow_la-stpeprintf.Tpo string/$(DEPDIR)/libshadow_la-stpeprintf.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='string/stpeprintf.c' object='string/libshadow_la-stpeprintf.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o string/libshadow_la-stpeprintf.lo `test -f 'string/stpeprintf.c' || echo '$(srcdir)/'`string/stpeprintf.c
+
+string/libshadow_la-strftime.lo: string/strftime.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT string/libshadow_la-strftime.lo -MD -MP -MF string/$(DEPDIR)/libshadow_la-strftime.Tpo -c -o string/libshadow_la-strftime.lo `test -f 'string/strftime.c' || echo '$(srcdir)/'`string/strftime.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) string/$(DEPDIR)/libshadow_la-strftime.Tpo string/$(DEPDIR)/libshadow_la-strftime.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='string/strftime.c' object='string/libshadow_la-strftime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o string/libshadow_la-strftime.lo `test -f 'string/strftime.c' || echo '$(srcdir)/'`string/strftime.c
+
+string/libshadow_la-strtcpy.lo: string/strtcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT string/libshadow_la-strtcpy.lo -MD -MP -MF string/$(DEPDIR)/libshadow_la-strtcpy.Tpo -c -o string/libshadow_la-strtcpy.lo `test -f 'string/strtcpy.c' || echo '$(srcdir)/'`string/strtcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) string/$(DEPDIR)/libshadow_la-strtcpy.Tpo string/$(DEPDIR)/libshadow_la-strtcpy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='string/strtcpy.c' object='string/libshadow_la-strtcpy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o string/libshadow_la-strtcpy.lo `test -f 'string/strtcpy.c' || echo '$(srcdir)/'`string/strtcpy.c
 
 libshadow_la-strtoday.lo: strtoday.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-strtoday.lo -MD -MP -MF $(DEPDIR)/libshadow_la-strtoday.Tpo -c -o libshadow_la-strtoday.lo `test -f 'strtoday.c' || echo '$(srcdir)/'`strtoday.c
@@ -1462,6 +1559,13 @@ libshadow_la-sulog.lo: sulog.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sulog.c' object='libshadow_la-sulog.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o libshadow_la-sulog.lo `test -f 'sulog.c' || echo '$(srcdir)/'`sulog.c
+
+time/libshadow_la-day_to_str.lo: time/day_to_str.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT time/libshadow_la-day_to_str.lo -MD -MP -MF time/$(DEPDIR)/libshadow_la-day_to_str.Tpo -c -o time/libshadow_la-day_to_str.lo `test -f 'time/day_to_str.c' || echo '$(srcdir)/'`time/day_to_str.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) time/$(DEPDIR)/libshadow_la-day_to_str.Tpo time/$(DEPDIR)/libshadow_la-day_to_str.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='time/day_to_str.c' object='time/libshadow_la-day_to_str.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -c -o time/libshadow_la-day_to_str.lo `test -f 'time/day_to_str.c' || echo '$(srcdir)/'`time/day_to_str.c
 
 libshadow_la-ttytype.lo: ttytype.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libshadow_la_CPPFLAGS) $(CPPFLAGS) $(libshadow_la_CFLAGS) $(CFLAGS) -MT libshadow_la-ttytype.lo -MD -MP -MF $(DEPDIR)/libshadow_la-ttytype.Tpo -c -o libshadow_la-ttytype.lo `test -f 'ttytype.c' || echo '$(srcdir)/'`ttytype.c
@@ -1611,6 +1715,9 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf atoi/.libs atoi/_libs
+	-rm -rf string/.libs string/_libs
+	-rm -rf time/.libs time/_libs
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1726,6 +1833,12 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f atoi/$(DEPDIR)/$(am__dirstamp)
+	-rm -f atoi/$(am__dirstamp)
+	-rm -f string/$(DEPDIR)/$(am__dirstamp)
+	-rm -f string/$(am__dirstamp)
+	-rm -f time/$(DEPDIR)/$(am__dirstamp)
+	-rm -f time/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1738,6 +1851,7 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/libshadow_la-addgrps.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-adds.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-age.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-agetpass.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-alloc.Plo
@@ -1755,9 +1869,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-console.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-copydir.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-csrand.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-date_to_str.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-encrypt.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-entry.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-env.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-failure.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-fd.Plo
@@ -1791,7 +1903,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-logind.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-loginprompt.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-mail.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-mempcpy.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-memzero.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-motd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-myname.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-nscd.Plo
@@ -1828,8 +1940,6 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-shell.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-spawn.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-sssd.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-stpecpy.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-stpeprintf.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-strtoday.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-sub.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-subordinateio.Plo
@@ -1849,6 +1959,14 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-xgetspnam.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-xprefix_getpwnam.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-yesno.Plo
+	-rm -f atoi/$(DEPDIR)/libshadow_la-strtoi.Plo
+	-rm -f atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-sprintf.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-stpecpy.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-stpeprintf.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-strftime.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-strtcpy.Plo
+	-rm -f time/$(DEPDIR)/libshadow_la-day_to_str.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1895,6 +2013,7 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/libshadow_la-addgrps.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-adds.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-age.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-agetpass.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-alloc.Plo
@@ -1912,9 +2031,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-console.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-copydir.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-csrand.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-date_to_str.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-encrypt.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-entry.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-env.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-failure.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-fd.Plo
@@ -1948,7 +2065,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-logind.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-loginprompt.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-mail.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-mempcpy.Plo
+	-rm -f ./$(DEPDIR)/libshadow_la-memzero.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-motd.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-myname.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-nscd.Plo
@@ -1985,8 +2102,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-shell.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-spawn.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-sssd.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-stpecpy.Plo
-	-rm -f ./$(DEPDIR)/libshadow_la-stpeprintf.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-strtoday.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-sub.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-subordinateio.Plo
@@ -2006,6 +2121,14 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libshadow_la-xgetspnam.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-xprefix_getpwnam.Plo
 	-rm -f ./$(DEPDIR)/libshadow_la-yesno.Plo
+	-rm -f atoi/$(DEPDIR)/libshadow_la-strtoi.Plo
+	-rm -f atoi/$(DEPDIR)/libshadow_la-strtou_noneg.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-sprintf.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-stpecpy.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-stpeprintf.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-strftime.Plo
+	-rm -f string/$(DEPDIR)/libshadow_la-strtcpy.Plo
+	-rm -f time/$(DEPDIR)/libshadow_la-day_to_str.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -22,6 +22,7 @@
 #include "getdef.h"
 #include "groupio.h"
 
+
 static /*@null@*/struct commonio_entry *merge_group_entries (
 	/*@null@*/ /*@returned@*/struct commonio_entry *gr1,
 	/*@null@*/struct commonio_entry *gr2);
@@ -35,7 +36,8 @@ static /*@null@*/ /*@only@*/void *group_dup (const void *ent)
 	return __gr_dup (gr);
 }
 
-static void group_free (/*@out@*/ /*@only@*/void *ent)
+static void
+group_free(/*@only@*/void *ent)
 {
 	struct group *gr = ent;
 
@@ -210,17 +212,25 @@ void __gr_del_entry (const struct commonio_entry *ent)
 
 static int gr_cmp (const void *p1, const void *p2)
 {
+	const struct commonio_entry *const *ce1;
+	const struct commonio_entry *const *ce2;
+	const struct group *g1, *g2;
 	gid_t u1, u2;
 
-	if ((*(struct commonio_entry **) p1)->eptr == NULL) {
+	ce1 = p1;
+	g1 = (*ce1)->eptr;
+	if (g1 == NULL) {
 		return 1;
 	}
-	if ((*(struct commonio_entry **) p2)->eptr == NULL) {
+
+	ce2 = p2;
+	g2 = (*ce2)->eptr;
+	if (g2 == NULL) {
 		return -1;
 	}
 
-	u1 = ((struct group *) (*(struct commonio_entry **) p1)->eptr)->gr_gid;
-	u2 = ((struct group *) (*(struct commonio_entry **) p2)->eptr)->gr_gid;
+	u1 = g1->gr_gid;
+	u2 = g2->gr_gid;
 
 	if (u1 < u2) {
 		return -1;
@@ -292,12 +302,13 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	/*@null@*/ /*@returned@*/struct commonio_entry *gr1,
 	/*@null@*/struct commonio_entry *gr2)
 {
-	struct group *gptr1;
-	struct group *gptr2;
-	char **new_members;
-	size_t members = 0;
-	char *new_line;
-	size_t new_line_len, i;
+	char          *new_line;
+	char          **new_members;
+	size_t        i;
+	size_t        members = 0;
+	struct group  *gptr1;
+	struct group  *gptr2;
+
 	if (NULL == gr2 || NULL == gr1) {
 		errno = EINVAL;
 		return NULL;
@@ -311,12 +322,8 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	}
 
 	/* Concatenate the 2 lines */
-	new_line_len = strlen (gr1->line) + strlen (gr2->line) +1;
-	new_line = MALLOC(new_line_len + 1, char);
-	if (NULL == new_line) {
+	if (asprintf(&new_line, "%s\n%s", gr1->line, gr2->line) == -1)
 		return NULL;
-	}
-	snprintf(new_line, new_line_len + 1, "%s\n%s", gr1->line, gr2->line);
 
 	/* Concatenate the 2 list of members */
 	for (i=0; NULL != gptr1->gr_mem[i]; i++);
@@ -335,7 +342,7 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	}
 	new_members = CALLOC (members + 1, char *);
 	if (NULL == new_members) {
-		free (new_line);
+		free(new_line);
 		return NULL;
 	}
 	for (i=0; NULL != gptr1->gr_mem[i]; i++) {

@@ -12,9 +12,11 @@
 #ident "$Id$"
 
 #include <sys/types.h>
-#include "defines.h"
 #include <stdio.h>
 #include <pwd.h>
+#include <string.h>
+
+#include "defines.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
 
@@ -32,7 +34,8 @@
  *	performance reasons.  I am going to come up with some conditional
  *	compilation glarp to improve on this in the future.
  */
-struct passwd *sgetpwent (const char *buf)
+struct passwd *
+sgetpwent(const char *buf)
 {
 	static struct passwd pwent;
 	static char pwdbuf[PASSWD_ENTRY_MAX_LENGTH];
@@ -58,19 +61,8 @@ struct passwd *sgetpwent (const char *buf)
 	 * field.  The fields are converted into NUL terminated strings.
 	 */
 
-	for (cp = pwdbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++) {
-		fields[i] = cp;
-		while (('\0' != *cp) && (':' != *cp)) {
-			cp++;
-		}
-
-		if ('\0' != *cp) {
-			*cp = '\0';
-			cp++;
-		} else {
-			cp = NULL;
-		}
-	}
+	for (cp = pwdbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++)
+		fields[i] = strsep(&cp, ":");
 
 	/* something at the end, columns over shot */
 	if ( cp != NULL ) {
@@ -94,10 +86,10 @@ struct passwd *sgetpwent (const char *buf)
 
 	pwent.pw_name = fields[0];
 	pwent.pw_passwd = fields[1];
-	if (get_uid (fields[2], &pwent.pw_uid) == 0) {
+	if (get_uid(fields[2], &pwent.pw_uid) == -1) {
 		return NULL;
 	}
-	if (get_gid (fields[3], &pwent.pw_gid) == 0) {
+	if (get_gid(fields[3], &pwent.pw_gid) == -1) {
 		return NULL;
 	}
 	pwent.pw_gecos = fields[4];

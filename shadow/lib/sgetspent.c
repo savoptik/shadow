@@ -14,17 +14,25 @@
 
 #ident "$Id$"
 
+#include <stddef.h>
+#include <stdio.h>
 #include <sys/types.h>
+#include <string.h>
+
 #include "prototypes.h"
 #include "shadowlog_internal.h"
 #include "defines.h"
-#include <stdio.h>
+
+
 #define	FIELDS	9
 #define	OFIELDS	5
+
+
 /*
  * sgetspent - convert string in shadow file format to (struct spwd *)
  */
-struct spwd *sgetspent (const char *string)
+struct spwd *
+sgetspent(const char *string)
 {
 	static char spwbuf[PASSWD_ENTRY_MAX_LENGTH];
 	static struct spwd spwd;
@@ -41,7 +49,7 @@ struct spwd *sgetspent (const char *string)
 		fprintf (shadow_logfd,
 		         "%s: Too long passwd entry encountered, file corruption?\n",
 		         shadow_progname);
-		return 0;	/* fail if too long */
+		return NULL;	/* fail if too long */
 	}
 	strcpy (spwbuf, string);
 
@@ -57,9 +65,7 @@ struct spwd *sgetspent (const char *string)
 
 	for (cp = spwbuf, i = 0; ('\0' != *cp) && (i < FIELDS); i++) {
 		fields[i] = cp;
-		while (('\0' != *cp) && (':' != *cp)) {
-			cp++;
-		}
+		cp = strchrnul(cp, ':');
 
 		if ('\0' != *cp) {
 			*cp = '\0';
@@ -67,13 +73,12 @@ struct spwd *sgetspent (const char *string)
 		}
 	}
 
-	if (i == (FIELDS - 1)) {
-		fields[i++] = cp;
-	}
+	if (i == (FIELDS - 1))
+		fields[i++] = "";
 
 	if ( ((NULL != cp) && ('\0' != *cp)) ||
 	     ((i != FIELDS) && (i != OFIELDS)) ) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -92,9 +97,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[2][0] == '\0') {
 		spwd.sp_lstchg = -1;
-	} else if (   (getlong (fields[2], &spwd.sp_lstchg) == 0)
+	} else if (   (getlong(fields[2], &spwd.sp_lstchg) == -1)
 	           || (spwd.sp_lstchg < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -103,9 +108,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[3][0] == '\0') {
 		spwd.sp_min = -1;
-	} else if (   (getlong (fields[3], &spwd.sp_min) == 0)
+	} else if (   (getlong(fields[3], &spwd.sp_min) == -1)
 	           || (spwd.sp_min < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -114,9 +119,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[4][0] == '\0') {
 		spwd.sp_max = -1;
-	} else if (   (getlong (fields[4], &spwd.sp_max) == 0)
+	} else if (   (getlong(fields[4], &spwd.sp_max) == -1)
 	           || (spwd.sp_max < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -139,9 +144,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[5][0] == '\0') {
 		spwd.sp_warn = -1;
-	} else if (   (getlong (fields[5], &spwd.sp_warn) == 0)
+	} else if (   (getlong(fields[5], &spwd.sp_warn) == -1)
 	           || (spwd.sp_warn < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -151,9 +156,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[6][0] == '\0') {
 		spwd.sp_inact = -1;
-	} else if (   (getlong (fields[6], &spwd.sp_inact) == 0)
+	} else if (   (getlong(fields[6], &spwd.sp_inact) == -1)
 	           || (spwd.sp_inact < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -163,9 +168,9 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[7][0] == '\0') {
 		spwd.sp_expire = -1;
-	} else if (   (getlong (fields[7], &spwd.sp_expire) == 0)
+	} else if (   (getlong(fields[7], &spwd.sp_expire) == -1)
 	           || (spwd.sp_expire < 0)) {
-		return 0;
+		return NULL;
 	}
 
 	/*
@@ -175,8 +180,8 @@ struct spwd *sgetspent (const char *string)
 
 	if (fields[8][0] == '\0') {
 		spwd.sp_flag = SHADOW_SP_FLAG_UNSET;
-	} else if (getulong (fields[8], &spwd.sp_flag) == 0) {
-		return 0;
+	} else if (getulong(fields[8], &spwd.sp_flag) == -1) {
+		return NULL;
 	}
 
 	return (&spwd);
@@ -184,4 +189,3 @@ struct spwd *sgetspent (const char *string)
 #else
 extern int ISO_C_forbids_an_empty_translation_unit;
 #endif
-

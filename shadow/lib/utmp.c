@@ -23,11 +23,15 @@
 #include <fcntl.h>
 
 #include "alloc.h"
+#include "sizeof.h"
+#include "string/strncpy.h"
+#include "string/strtcpy.h"
+#include "string/zustr2stp.h"
 
 #ident "$Id$"
 
 
-#define UTX_LINESIZE  NITEMS((struct utmpx){}.ut_line)
+#define UTX_LINESIZE  NITEMS(memberof(struct utmpx, ut_line))
 
 
 /*
@@ -48,7 +52,7 @@ is_my_tty(const char tty[UTX_LINESIZE])
 	if ('\0' == tmptty[0]) {
 		const char *tname = ttyname (STDIN_FILENO);
 		if (NULL != tname)
-			(void) strlcpy (tmptty, tname, sizeof(tmptty));
+			STRTCPY(tmptty, tname);
 	}
 
 	if ('\0' == tmptty[0]) {
@@ -87,15 +91,13 @@ failtmp(const char *username, const struct utmpx *failent)
 	 * feature to be used.
 	 */
 
-	if (access (ftmp, F_OK) != 0) {
-		return;
-	}
-
 	fd = open (ftmp, O_WRONLY | O_APPEND);
 	if (-1 == fd) {
-		SYSLOG ((LOG_WARN,
-		         "Can't append failure of user %s to %s.",
-		         username, ftmp));
+		if (errno != ENOENT) {
+			SYSLOG ((LOG_WARN,
+			        "Can't append failure of user %s to %s: %m",
+			        username, ftmp));
+		}
 		return;
 	}
 
@@ -103,13 +105,26 @@ failtmp(const char *username, const struct utmpx *failent)
 	 * Append the new failure record and close the log file.
 	 */
 
-	if (   (write_full (fd, failent, sizeof *failent) != (ssize_t) sizeof *failent)
-	    || (close (fd) != 0)) {
-		SYSLOG ((LOG_WARN,
-		         "Can't append failure of user %s to %s.",
-		         username, ftmp));
-		(void) close (fd);
+	if (write_full(fd, failent, sizeof *failent) == -1) {
+		goto err_write;
 	}
+
+	if (close (fd) != 0 && errno != EINTR) {
+		goto err_close;
+	}
+
+	return;
+
+err_write:
+	{
+		int saved_errno = errno;
+		(void) close (fd);
+		errno = saved_errno;
+	}
+err_close:
+	SYSLOG ((LOG_WARN,
+	         "Can't append failure of user %s to %s: %m",
+	         username, ftmp));
 }
 
 
@@ -164,16 +179,16 @@ int
 get_session_host(char **out)
 {
 	int           ret = 0;
-	char          *hostname;
 	struct utmpx  *ut;
 
 	ut = get_current_utmp();
 
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
 	if ((ut != NULL) && (ut->ut_host[0] != '\0')) {
+		char  *hostname;
+
 		hostname = XMALLOC(sizeof(ut->ut_host) + 1, char);
-		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
-		hostname[sizeof (ut->ut_host)] = '\0';
+		ZUSTR2STP(hostname, ut->ut_host);
 		*out = hostname;
 		free (ut);
 	} else {
@@ -201,7 +216,7 @@ updwtmpx(const char *filename, const struct utmpx *ut)
 
 	fd = open (filename, O_APPEND | O_WRONLY, 0);
 	if (fd >= 0) {
-		write_full (fd, ut, sizeof (*ut));
+		write_full(fd, ut, sizeof(*ut));
 		close (fd);
 	}
 }
@@ -246,9 +261,8 @@ prepare_utmp(const char *name, const char *line, const char *host,
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
 	} else if (   (NULL != ut)
 	           && ('\0' != ut->ut_host[0])) {
-		hostname = XMALLOC(sizeof(ut->ut_host) + 1, char);
-		strncpy (hostname, ut->ut_host, sizeof (ut->ut_host));
-		hostname[sizeof (ut->ut_host)] = '\0';
+		hostname = XMALLOC(NITEMS(ut->ut_host) + 1, char);
+		ZUSTR2STP(hostname, ut->ut_host);
 #endif
 	}
 
@@ -262,21 +276,21 @@ prepare_utmp(const char *name, const char *line, const char *host,
 
 	utent->ut_type = USER_PROCESS;
 	utent->ut_pid = getpid ();
-	strncpy (utent->ut_line, line,      sizeof (utent->ut_line) - 1);
+	STRNCPY(utent->ut_line, line);
 	if (NULL != ut) {
-		strncpy (utent->ut_id, ut->ut_id, sizeof (utent->ut_id));
+		STRNCPY(utent->ut_id, ut->ut_id);
 	} else {
 		/* XXX - assumes /dev/tty?? */
-		strncpy (utent->ut_id, line + 3, sizeof (utent->ut_id) - 1);
+		STRNCPY(utent->ut_id, line + 3);
 	}
 #if defined(HAVE_STRUCT_UTMPX_UT_NAME)
-	strncpy (utent->ut_name, name,      sizeof (utent->ut_name));
+	STRNCPY(utent->ut_name, name);
 #endif
-	strncpy (utent->ut_user, name,      sizeof (utent->ut_user) - 1);
+	STRNCPY(utent->ut_user, name);
 	if (NULL != hostname) {
 		struct addrinfo *info = NULL;
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
-		strncpy (utent->ut_host, hostname, sizeof (utent->ut_host) - 1);
+		STRNCPY(utent->ut_host, hostname);
 #endif
 #if defined(HAVE_STRUCT_UTMPX_UT_SYSLEN)
 		utent->ut_syslen = MIN (strlen (hostname),
@@ -369,10 +383,8 @@ update_utmp(const char *user, const char *tty, const char *host)
 
 	(void) setutmp  (ut);	/* make entry in the utmp & wtmp files */
 
-	if (utent != NULL) {
-		free (utent);
-	}
-	free (ut);
+	free(utent);
+	free(ut);
 
 	return 0;
 }

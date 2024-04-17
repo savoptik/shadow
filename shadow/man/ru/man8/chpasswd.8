@@ -2,12 +2,12 @@
 .\"     Title: chpasswd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 03/26/2024
+.\"      Date: 03/23/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.14.7
+.\"    Source: shadow-utils 4.15.1
 .\"  Language: Russian
 .\"
-.TH "chpasswd" "8" "03/26/2024" "shadow\-utils 4\&.14\&.7" "System Management Commands"
+.TH "chpasswd" "8" "03/23/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -68,7 +68,12 @@ command are:
 .RS 4
 Использовать указанный метод для шифрования паролей\&.
 .sp
-Возможные методы: DES, MD5, NONE и SHA256 или SHA512, если эти методы поддерживается libc\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .sp
 By default (if none of the
 \fB\-c\fR,
@@ -116,18 +121,13 @@ Apply changes to configuration files under the root filesystem found under the d
 .RS 4
 Использовать указанное количество раундов шифрования паролей\&.
 .sp
-Значение 0 означает, что система выберет количество раундов по умолчанию для выбранного метода шифрования (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Минимальное значение равно 1000, а максимальное значение равно 999,999,999\&.
-.sp
-Вы можете использовать этот параметр только при методе шифрования SHA256 или SHA512\&.
-.sp
-By default, the number of rounds is defined by the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-and
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "ПРЕДОСТЕРЕЖЕНИЯ"
 .PP

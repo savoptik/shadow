@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 26.03.2024
+.\"      Date: 23.03.2024
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.14.7
+.\"    Source: shadow-utils 4.15.1
 .\"  Language: German
 .\"
-.TH "PASSWD" "1" "26.03.2024" "shadow\-utils 4\&.14\&.7" "User Commands"
+.TH "PASSWD" "1" "23.03.2024" "shadow\-utils 4\&.15\&.1" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -177,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "WARNUNGEN"
 .PP

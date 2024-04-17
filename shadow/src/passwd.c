@@ -20,9 +20,11 @@
 #include <sys/types.h>
 #include <time.h>
 
+#include "agetpass.h"
 #include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
+#include "memzero.h"
 #include "nscd.h"
 #include "sssd.h"
 #include "prototypes.h"
@@ -30,6 +32,9 @@
 #include "pwio.h"
 #include "shadowio.h"
 #include "shadowlog.h"
+#include "string/strtcpy.h"
+#include "time/day_to_str.h"
+
 
 /*
  * exit status values
@@ -65,7 +70,8 @@ static bool
     Sflg = false,			/* -S - show password status */
     uflg = false,			/* -u - unlock the user's password */
     wflg = false,			/* -w - set warning days */
-    xflg = false;			/* -x - set maximum days */
+    xflg = false,			/* -x - set maximum days */
+    sflg = false;			/* -s - read passwd from stdin */
 
 /*
  * set to 1 if there are any flags which require root privileges,
@@ -111,7 +117,6 @@ static bool do_update_pwd = false;
 /* local function prototypes */
 NORETURN static void usage (int);
 
-static bool reuse (const char *, const struct passwd *);
 static int new_password (const struct passwd *);
 
 static void check_password (const struct passwd *, const struct spwd *);
@@ -156,31 +161,11 @@ usage (int status)
 	(void) fputs (_("  -w, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"), usageout);
 	(void) fputs (_("  -x, --maxdays MAX_DAYS        set maximum number of days before password\n"
 	                "                                change to MAX_DAYS\n"), usageout);
+	(void) fputs (_("  -s, --stdin                   read new token from stdin\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
 
-static bool reuse (const char *pass, const struct passwd *pw)
-{
-#ifdef HAVE_LIBCRACK_HIST
-	const char *reason;
-
-#ifdef HAVE_LIBCRACK_PW
-	const char *FascistHistoryPw (const char *, const struct passwd *);
-
-	reason = FascistHistory (pass, pw);
-#else				/* !HAVE_LIBCRACK_PW */
-	const char *FascistHistory (const char *, int);
-
-	reason = FascistHistory (pass, pw->pw_uid);
-#endif				/* !HAVE_LIBCRACK_PW */
-	if (NULL != reason) {
-		(void) printf (_("Bad password: %s.  "), reason);
-		return true;
-	}
-#endif				/* HAVE_LIBCRACK_HIST */
-	return false;
-}
 
 /*
  * new_password - validate old password and replace with new (both old and
@@ -195,13 +180,10 @@ static int new_password (const struct passwd *pw)
 	char orig[PASS_MAX + 1];	/* Original password */
 	char pass[PASS_MAX + 1];	/* New password */
 	int i;			/* Counter for retries */
+	int ret;
 	bool warned;
 	int pass_max_len = -1;
 	const char *method;
-
-#ifdef HAVE_LIBCRACK_HIST
-	int HistUpdate (const char *, const char *);
-#endif				/* HAVE_LIBCRACK_HIST */
 
 	/*
 	 * Authenticate the user. The user will be prompted for their own
@@ -238,7 +220,7 @@ static int new_password (const struct passwd *pw)
 			                pw->pw_name);
 			return -1;
 		}
-		STRFCPY (orig, clear);
+		STRTCPY(orig, clear);
 		erase_pass (clear);
 		strzero (cipher);
 	} else {
@@ -275,7 +257,7 @@ static int new_password (const struct passwd *pw)
 			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
 		}
 	}
-	if (!qflg) {
+	if (!qflg && !sflg) {
 		if (pass_max_len == -1) {
 			(void) printf (_(
 "Enter the new password (minimum of %d characters)\n"
@@ -289,63 +271,87 @@ static int new_password (const struct passwd *pw)
 		}
 	}
 
-	warned = false;
-	for (i = getdef_num ("PASS_CHANGE_TRIES", 5); i > 0; i--) {
-		cp = agetpass (_("New password: "));
-		if (NULL == cp) {
-			memzero (orig, sizeof orig);
-			memzero (pass, sizeof pass);
-			return -1;
-		}
-		if (warned && (strcmp (pass, cp) != 0)) {
-			warned = false;
-		}
-		STRFCPY (pass, cp);
-		erase_pass (cp);
-
-		if (!amroot && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
-			(void) puts (_("Try again."));
-			continue;
-		}
-
+	if (sflg) {
 		/*
-		 * If enabled, warn about weak passwords even if you are
-		 * root (enter this password again to use it anyway).
-		 * --marekm
+		 * root is setting the passphrase from stdin
 		 */
-		if (amroot && !warned && getdef_bool ("PASS_ALWAYS_WARN")
-		    && (!obscure (orig, pass, pw) || reuse (pass, pw))) {
-			(void) puts (_("\nWarning: weak password (enter it again to use it anyway)."));
-			warned = true;
-			continue;
-		}
-		cp = agetpass (_("Re-enter new password: "));
+		cp = agetpass_stdin ();
 		if (NULL == cp) {
-			memzero (orig, sizeof orig);
-			memzero (pass, sizeof pass);
 			return -1;
 		}
-		if (strcmp (cp, pass) != 0) {
+		ret = STRTCPY (pass, cp);
+		erase_pass (cp);
+		if (ret == -1) {
+			(void) fputs (_("Password is too long.\n"), stderr);
+			MEMZERO(pass);
+			return -1;
+		}
+	} else {
+		warned = false;
+		for (i = getdef_num ("PASS_CHANGE_TRIES", 5); i > 0; i--) {
+			cp = agetpass (_("New password: "));
+			if (NULL == cp) {
+				MEMZERO(orig);
+				MEMZERO(pass);
+				return -1;
+			}
+			if (warned && (strcmp (pass, cp) != 0)) {
+				warned = false;
+			}
+			ret = STRTCPY (pass, cp);
 			erase_pass (cp);
-			(void) fputs (_("They don't match; try again.\n"), stderr);
-		} else {
-			erase_pass (cp);
-			break;
+			if (ret == -1) {
+				(void) fputs (_("Password is too long.\n"), stderr);
+				MEMZERO(orig);
+				MEMZERO(pass);
+				return -1;
+			}
+
+			if (!amroot && !obscure(orig, pass, pw)) {
+				(void) puts (_("Try again."));
+				continue;
+			}
+
+			/*
+			 * If enabled, warn about weak passwords even if you are
+			 * root (enter this password again to use it anyway).
+			 * --marekm
+			 */
+			if (amroot && !warned && getdef_bool ("PASS_ALWAYS_WARN")
+				&& !obscure(orig, pass, pw)) {
+				(void) puts (_("\nWarning: weak password (enter it again to use it anyway)."));
+				warned = true;
+				continue;
+			}
+			cp = agetpass (_("Re-enter new password: "));
+			if (NULL == cp) {
+				MEMZERO(orig);
+				MEMZERO(pass);
+				return -1;
+			}
+			if (strcmp (cp, pass) != 0) {
+				erase_pass (cp);
+				(void) fputs (_("They don't match; try again.\n"), stderr);
+			} else {
+				erase_pass (cp);
+				break;
+			}
+		}
+		MEMZERO(orig);
+
+		if (i == 0) {
+			MEMZERO(pass);
+			return -1;
 		}
 	}
-	memzero (orig, sizeof orig);
 
-	if (i == 0) {
-		memzero (pass, sizeof pass);
-		return -1;
-	}
 
 	/*
 	 * Encrypt the password, then wipe the cleartext password.
 	 */
 	salt = crypt_make_salt (NULL, NULL);
 	cp = pw_encrypt (pass, salt);
-	memzero (pass, sizeof pass);
+	MEMZERO(pass);
 
 	if (NULL == cp) {
 		fprintf (stderr,
@@ -354,10 +360,7 @@ static int new_password (const struct passwd *pw)
 		return -1;
 	}
 
-#ifdef HAVE_LIBCRACK_HIST
-	HistUpdate (pw->pw_name, crypt_passwd);
-#endif				/* HAVE_LIBCRACK_HIST */
-	STRFCPY (crypt_passwd, cp);
+	STRTCPY(crypt_passwd, cp);
 	return 0;
 }
 
@@ -369,7 +372,6 @@ static int new_password (const struct passwd *pw)
  */
 static void check_password (const struct passwd *pw, const struct spwd *sp)
 {
-	time_t now;
 	int exp_status;
 
 	exp_status = isexpired (pw, sp);
@@ -388,8 +390,6 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 	if (amroot) {
 		return;
 	}
-
-	(void) time (&now);
 
 	/*
 	 * Expired accounts cannot be changed ever. Passwords which are
@@ -413,10 +413,12 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 	 * Passwords may only be changed after sp_min time is up.
 	 */
 	if (sp->sp_lstchg > 0) {
-		time_t ok;
-		ok = (time_t) sp->sp_lstchg * DAY;
-		if (sp->sp_min > 0) {
-			ok += (time_t) sp->sp_min * DAY;
+		long now, ok;
+		now = time(NULL) / DAY;
+		ok = sp->sp_lstchg;
+		if (   (sp->sp_min > 0)
+		    && __builtin_add_overflow(ok, sp->sp_min, &ok)) {
+			ok = LONG_MAX;
 		}
 
 		if (now < ok) {
@@ -451,7 +453,7 @@ static void print_status (const struct passwd *pw)
 
 	sp = prefix_getspnam (pw->pw_name); /* local, no need for xprefix_getspnam */
 	if (NULL != sp) {
-		date_to_str (sizeof(date), date, sp->sp_lstchg * DAY),
+		DAY_TO_STR(date, sp->sp_lstchg);
 		(void) printf ("%s %s %s %ld %ld %ld %ld\n",
 		               pw->pw_name,
 		               pw_status (sp->sp_pwdp),
@@ -702,18 +704,16 @@ static void update_shadow (void)
  *
  *	-d	delete the password for the named account (*)
  *	-e	expire the password for the named account (*)
- *	-f	execute chfn command to interpret flags
- *	-g	execute gpasswd command to interpret flags
  *	-i #	set sp_inact to # days (*)
  *	-k	change password only if expired
  *	-l	lock the password of the named account (*)
  *	-n #	set sp_min to # days (*)
  *	-r #	change password in # repository
- *	-s	execute chsh command to interpret flags
  *	-S	show password status of named account
  *	-u	unlock the password of the named account (*)
  *	-w #	set sp_warn to # days (*)
  *	-x #	set sp_max to # days (*)
+ *	-s	read password from stdin (*)
  *
  *	(*) requires root permission to execute.
  *
@@ -779,10 +779,11 @@ int main (int argc, char **argv)
 			{"unlock",      no_argument,       NULL, 'u'},
 			{"warndays",    required_argument, NULL, 'w'},
 			{"maxdays",     required_argument, NULL, 'x'},
+			{"stdin",       no_argument,       NULL, 's'},
 			{NULL, 0, NULL, '\0'}
 		};
 
-		while ((c = getopt_long (argc, argv, "adehi:kln:qr:R:P:Suw:x:",
+		while ((c = getopt_long (argc, argv, "adehi:kln:qr:R:P:Suw:x:s",
 		                         long_options, NULL)) != -1) {
 			switch (c) {
 			case 'a':
@@ -800,7 +801,7 @@ int main (int argc, char **argv)
 				usage (E_SUCCESS);
 				/*@notreached@*/break;
 			case 'i':
-				if (   (getlong (optarg, &inact) == 0)
+				if (   (getlong(optarg, &inact) == -1)
 				    || (inact < -1)) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
@@ -819,7 +820,7 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'n':
-				if (   (getlong (optarg, &age_min) == 0)
+				if (   (getlong(optarg, &age_min) == -1)
 				    || (age_min < -1)) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
@@ -854,7 +855,7 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'w':
-				if (   (getlong (optarg, &warn) == 0)
+				if (   (getlong(optarg, &warn) == -1)
 				    || (warn < -1)) {
 					(void) fprintf (stderr,
 					                _("%s: invalid numeric argument '%s'\n"),
@@ -865,7 +866,7 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'x':
-				if (   (getlong (optarg, &age_max) == 0)
+				if (   (getlong(optarg, &age_max) == -1)
 				    || (age_max < -1)) {
 					(void) fprintf (stderr,
 					                _("%s: invalid numeric argument '%s'\n"),
@@ -874,6 +875,15 @@ int main (int argc, char **argv)
 				}
 				xflg = true;
 				anyflag = true;
+				break;
+			case 's':
+				if (!amroot) {
+					(void) fprintf (stderr,
+					                _("%s: only root can use --stdin/-s option\n"),
+					                Prog);
+					usage (E_BAD_ARG);
+				}
+				sflg = true;
 				break;
 			default:
 				usage (E_BAD_ARG);
@@ -994,8 +1004,8 @@ int main (int argc, char **argv)
 		                _("%s: You may not view or modify password information for %s.\n"),
 		                Prog, name);
 		SYSLOG ((LOG_WARN,
-		         "%s: can't view or modify password information for %s",
-		         Prog, name));
+		         "can't view or modify password information for %s",
+		         name));
 		closelog ();
 		exit (E_NOPERM);
 	}
@@ -1026,7 +1036,7 @@ int main (int argc, char **argv)
 		 * If there are no other flags, just change the password.
 		 */
 		if (!anyflag) {
-			STRFCPY (crypt_passwd, cp);
+			STRTCPY(crypt_passwd, cp);
 
 			/*
 			 * See if the user is permitted to change the password.
@@ -1066,7 +1076,16 @@ int main (int argc, char **argv)
 	 * Don't set the real UID for PAM...
 	 */
 	if (!anyflag && use_pam) {
-		do_pam_passwd (name, qflg, kflg);
+		if (sflg) {
+			cp = agetpass_stdin ();
+			if (cp == NULL) {
+				exit (E_FAILURE);
+			}
+			do_pam_passwd_non_interactive ("passwd", name, cp);
+			erase_pass (cp);
+		} else {
+			do_pam_passwd (name, qflg, kflg);
+		}
 		exit (E_SUCCESS);
 	}
 #endif				/* USE_PAM */
@@ -1100,4 +1119,3 @@ int main (int argc, char **argv)
 
 	return E_SUCCESS;
 }
-

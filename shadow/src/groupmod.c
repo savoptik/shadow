@@ -17,6 +17,7 @@
 #include <grp.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <strings.h>
 #include <sys/types.h>
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
@@ -37,8 +38,8 @@
 #include "sgroupio.h"
 #endif
 #include "shadowlog.h"
-#include "stpecpy.h"
-#include "stpeprintf.h"
+#include "string/stpecpy.h"
+#include "string/stpeprintf.h"
 /*
  * exit status values
  */
@@ -229,7 +230,7 @@ static void grp_update (void)
 			 * shadowed password, we force the creation of a
 			 * gshadow entry when a new password is requested.
 			 */
-			memset (&sgrp, 0, sizeof sgrp);
+			bzero(&sgrp, sizeof sgrp);
 			sgrp.sg_name   = xstrdup (grp.gr_name);
 			sgrp.sg_passwd = xstrdup (grp.gr_passwd);
 			sgrp.sg_adm    = &empty;
@@ -338,7 +339,7 @@ static void check_new_gid (void)
 	 */
 	fprintf (stderr,
 	         _("%s: GID '%lu' already exists\n"),
-	         Prog, (unsigned long int) group_newid);
+	         Prog, (unsigned long) group_newid);
 	exit (E_GID_IN_USE);
 }
 
@@ -413,7 +414,7 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 'g':
 			gflg = true;
-			if (   (get_gid (optarg, &group_newid) == 0)
+			if (   (get_gid(optarg, &group_newid) == -1)
 			    || (group_newid == (gid_t)-1)) {
 				fprintf (stderr,
 				         _("%s: invalid group ID '%s'\n"),
@@ -828,28 +829,6 @@ int main (int argc, char **argv)
 			group_id = grp->gr_gid;
 		}
 	}
-
-#ifdef	USE_NIS
-	/*
-	 * Now make sure it isn't an NIS group.
-	 */
-	if (__isgrNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: group %s is a NIS group\n"),
-		         Prog, group_name);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "group.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: %s is the NIS master\n"),
-			         Prog, nis_master);
-		}
-		exit (E_NOTFOUND);
-	}
-#endif
 
 	if (gflg) {
 		check_new_gid ();

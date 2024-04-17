@@ -11,7 +11,10 @@
 #ifndef COMMONIO_H
 #define COMMONIO_H
 
+
+#include "attr.h"
 #include "defines.h" /* bool */
+
 
 /*
  * Linked list entry.
@@ -37,7 +40,7 @@ struct commonio_ops {
 	/*
 	 * free() the object including any strings pointed by it.
 	 */
-	void (*free) (/*@out@*/ /*@only@*/void *);
+	void (*free)(/*@only@*/void *);
 
 	/*
 	 * Return the name of the object (for example, pw_name
@@ -61,7 +64,9 @@ struct commonio_ops {
 	 * fgets and fputs (can be replaced by versions that
 	 * understand line continuation conventions).
 	 */
-	/*@null@*/char *(*fgets) (/*@returned@*/ /*@out@*/char *s, int n, FILE *stream);
+	ATTR_ACCESS(write_only, 1, 2)
+	/*@null@*/char *(*fgets)(/*@returned@*/char *restrict s, int n,
+	                         FILE *restrict stream);
 	int (*fputs) (const char *, FILE *);
 
 	/*

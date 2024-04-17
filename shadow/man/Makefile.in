@@ -240,6 +240,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -258,7 +260,6 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -283,7 +284,6 @@ LIBAUDIT = @LIBAUDIT@
 LIBBSD = @LIBBSD@
 LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
 LIBBSD_LIBS = @LIBBSD_LIBS@
-LIBCRACK = @LIBCRACK@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -445,6 +445,7 @@ man_XMANS = chage.1.xml chfn.1.xml chgpasswd.8.xml chpasswd.8.xml \
 	subgid.5.xml subuid.5.xml useradd.8.xml userdel.8.xml \
 	usermod.8.xml vipw.8.xml $(am__append_5)
 login_defs_v = \
+	BCRYPT_MIN_ROUNDS.xml \
 	CHFN_AUTH.xml \
 	CHFN_RESTRICT.xml \
 	CHSH_AUTH.xml \
@@ -511,9 +512,10 @@ login_defs_v = \
 	SUB_GID_COUNT.xml \
 	SUB_UID_COUNT.xml \
 	SYS_GID_MAX.xml \
-	SYS_UID_MAX.xml
+	SYS_UID_MAX.xml \
+	YESCRYPT_COST_FACTOR.xml
 
-EXTRA_DIST = $(man_MANS) $(man_XMANS) $(addprefix \
+EXTRA_DIST = $(man_MANS) $(man_XMANS) config.xml $(addprefix \
 	login.defs.d/,$(login_defs_v)) man1/id.1 id.1.xml \
 	man8/sulogin.8 sulogin.8.xml generate_mans.mak \
 	generate_translations.mak its.rules shadow-man.xsl \
@@ -528,6 +530,10 @@ EXTRA_DIST = $(man_MANS) $(man_XMANS) $(addprefix \
 @ENABLE_REGENERATE_MAN_TRUE@@WITH_TCB_TRUE@TCB_COND = tcb
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_FALSE@SHA_CRYPT_COND = no_sha_crypt
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_TRUE@SHA_CRYPT_COND = sha_crypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_FALSE@BCRYPT_COND = no_bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_TRUE@BCRYPT_COND = bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_FALSE@YESCRYPT_COND = no_yescrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_TRUE@YESCRYPT_COND = yescrypt
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_FALSE@SUBIDS_COND = no_subids
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_TRUE@SUBIDS_COND = subids
 @ENABLE_LASTLOG_FALSE@@ENABLE_REGENERATE_MAN_TRUE@LASTLOG_COND = no_lastlog
@@ -1048,13 +1054,13 @@ generate_mans.deps: $(man_XMANS)
 @ENABLE_REGENERATE_MAN_TRUE@	fi
 
 @ENABLE_REGENERATE_MAN_TRUE@man1/% man3/% man5/% man8/%: %.xml-config Makefile config.xml
-@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(SUBIDS_COND);$(VENDORDIR_COND);$(LASTLOG_COND)" \
+@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(BCRYPT_COND);$(YESCRYPT_COND);$(SUBIDS_COND);$(VENDORDIR_COND);$(LASTLOG_COND)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.authors.section.enabled" "0" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --stringparam "man.output.base.dir" "" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --stringparam vendordir "$(VENDORDIR)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.output.in.separate.dir" "1" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --path "$(srcdir)/login.defs.d" \
-@ENABLE_REGENERATE_MAN_TRUE@	            -nonet $(top_builddir)/man/shadow-man.xsl $<
+@ENABLE_REGENERATE_MAN_TRUE@	            -nonet $(top_srcdir)/man/shadow-man.xsl $<
 
 @ENABLE_REGENERATE_MAN_TRUE@clean-local:
 @ENABLE_REGENERATE_MAN_TRUE@	rm -rf man1 man3 man5 man8

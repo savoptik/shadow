@@ -20,6 +20,7 @@
 #include <selinux/selinux.h>
 #include "redir_sym.h"
 #include <semanage/semanage.h>
+#include "attr.h"
 #include "redef_sym.h"
 #include "prototypes.h"
 
@@ -27,7 +28,7 @@
 
 
 format_attr(printf, 3, 4)
-static void semanage_error_callback (unused void *varg,
+static void semanage_error_callback (MAYBE_UNUSED void *varg,
                                      semanage_handle_t *handle,
                                      const char *fmt, ...)
 {

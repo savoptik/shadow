@@ -557,7 +557,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	struct stat tcbdir_stat;
 	gid_t shadowgid, authgid;
 	struct group *gr;
-	int fd;
+	int fd = -1;
 	shadowtcb_status ret = SHADOWTCB_FAILURE;
 	const char *prefix_dir = get_root_prefix ();
 
@@ -607,14 +607,13 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 		         shadow_progname, shadow, strerror (errno));
 		goto out_free;
 	}
-	close (fd);
-	if (chown (shadow, 0, authgid) != 0) {
+	if (fchown (fd, 0, authgid) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owner of %s: %s\n"),
 		         shadow_progname, shadow, strerror (errno));
 		goto out_free;
 	}
-	if (chmod (shadow, (mode_t) ((authgid == shadowgid) ? 0600 : 0640)) != 0) {
+	if (fchmod (fd, (mode_t) ((authgid == shadowgid) ? 0600 : 0640)) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
 		         shadow_progname, shadow, strerror (errno));
@@ -642,6 +641,8 @@ out_free:
 	/* Reset SELinux to create files with default contexts */
 	reset_selinux_file_context ();
 #endif
+	if (fd != -1)
+		close(fd);
 	free (dir);
 	free (shadow);
 out_free_tcb_dir:

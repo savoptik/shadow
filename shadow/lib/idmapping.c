@@ -11,16 +11,18 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <strings.h>
 
 #include "alloc.h"
 #include "prototypes.h"
-#include "stpeprintf.h"
+#include "string/stpeprintf.h"
 #include "idmapping.h"
 #if HAVE_SYS_CAPABILITY_H
 #include <sys/prctl.h>
 #include <sys/capability.h>
 #endif
 #include "shadowlog.h"
+#include "sizeof.h"
 
 struct map_range *get_map_ranges(int ranges, int argc, char **argv)
 {
@@ -32,17 +34,8 @@ struct map_range *get_map_ranges(int ranges, int argc, char **argv)
 		return NULL;
 	}
 
-	if (ranges != ((argc + 2) / 3)) {
+	if (ranges * 3 != argc) {
 		fprintf(log_get_logfd(), "%s: ranges: %u is wrong for argc: %d\n", log_get_progname(), ranges, argc);
-		return NULL;
-	}
-
-	if ((ranges * 3) > argc) {
-		fprintf(log_get_logfd(), "ranges: %u argc: %d\n",
-			ranges, argc);
-		fprintf(log_get_logfd(),
-			_( "%s: Not enough arguments to form %u mappings\n"),
-			log_get_progname(), ranges);
 		return NULL;
 	}
 
@@ -56,15 +49,15 @@ struct map_range *get_map_ranges(int ranges, int argc, char **argv)
 	/* Gather up the ranges from the command line */
 	mapping = mappings;
 	for (idx = 0, argidx = 0; idx < ranges; idx++, argidx += 3, mapping++) {
-		if (!getulong(argv[argidx + 0], &mapping->upper)) {
+		if (getulong(argv[argidx + 0], &mapping->upper) == -1) {
 			free(mappings);
 			return NULL;
 		}
-		if (!getulong(argv[argidx + 1], &mapping->lower)) {
+		if (getulong(argv[argidx + 1], &mapping->lower) == -1) {
 			free(mappings);
 			return NULL;
 		}
-		if (!getulong(argv[argidx + 2], &mapping->count)) {
+		if (getulong(argv[argidx + 2], &mapping->count) == -1) {
 			free(mappings);
 			return NULL;
 		}
@@ -175,7 +168,7 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 	}
 
 	/* Lockdown new{g,u}idmap by dropping all unneeded capabilities. */
-	memset(data, 0, sizeof(data));
+	bzero(data, sizeof(data));
 	data[0].effective = CAP_TO_MASK(cap);
 	/*
 	 * When uid 0 from the ancestor userns is supposed to be mapped into
@@ -190,7 +183,7 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 	}
 #endif
 
-	bufsize = ranges * ((ULONG_DIGITS + 1) * 3);
+	bufsize = (ULONG_DIGITS + 1) * 3 * ranges + 1;
 	pos = buf = XMALLOC(bufsize, char);
 	end = buf + bufsize;
 
@@ -215,11 +208,15 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 			log_get_progname(), map_file, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	if (write_full(fd, buf, pos - buf) != (pos - buf)) {
+	if (write_full(fd, buf, pos - buf) == -1) {
 		fprintf(log_get_logfd(), _("%s: write to %s failed: %s\n"),
 			log_get_progname(), map_file, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	close(fd);
+	if (close(fd) != 0 && errno != EINTR) {
+		fprintf(log_get_logfd(), _("%s: closing %s failed: %s\n"),
+			log_get_progname(), map_file, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 	free(buf);
 }

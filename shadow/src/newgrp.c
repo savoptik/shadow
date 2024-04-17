@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "agetpass.h"
 #include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
@@ -28,6 +29,8 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 /*
  * Global variables
@@ -189,9 +192,8 @@ static void check_perms (const struct group *grp,
 		if (grp->gr_passwd[0] == '\0' ||
 		    strcmp (cpasswd, grp->gr_passwd) != 0) {
 #ifdef WITH_AUDIT
-			snprintf (audit_buf, sizeof(audit_buf),
-			          "authentication new-gid=%lu",
-			          (unsigned long) grp->gr_gid);
+			SNPRINTF(audit_buf, "authentication new-gid=%lu",
+			         (unsigned long) grp->gr_gid);
 			audit_logger (AUDIT_GRP_AUTH, Prog,
 			              audit_buf, NULL, getuid (), 0);
 #endif
@@ -203,9 +205,8 @@ static void check_perms (const struct group *grp,
 			goto failure;
 		}
 #ifdef WITH_AUDIT
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "authentication new-gid=%lu",
-		          (unsigned long) grp->gr_gid);
+		SNPRINTF(audit_buf, "authentication new-gid=%lu",
+		         (unsigned long) grp->gr_gid);
 		audit_logger (AUDIT_GRP_AUTH, Prog,
 		              audit_buf, NULL, getuid (), 1);
 #endif
@@ -220,8 +221,7 @@ failure:
 	closelog ();
 #ifdef WITH_AUDIT
 	if (groupname) {
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "changing new-group=%s", groupname);
+		SNPRINTF(audit_buf, "changing new-group=%s", groupname);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL, getuid (), 0);
 	} else {
@@ -302,8 +302,8 @@ static void syslog_sg (const char *name, const char *group)
 				 is_newgrp ? "newgrp" : "sg", strerror (errno));
 #ifdef WITH_AUDIT
 			if (group) {
-				snprintf (audit_buf, sizeof(audit_buf),
-				          "changing new-group=%s", group);
+				SNPRINTF(audit_buf,
+				         "changing new-group=%s", group);
 				audit_logger (AUDIT_CHGRP_ID, Prog,
 				              audit_buf, NULL, getuid (), 0);
 			} else {
@@ -569,8 +569,7 @@ int main (int argc, char **argv)
 		perror ("getgroups");
 #ifdef WITH_AUDIT
 		if (group) {
-			snprintf (audit_buf, sizeof(audit_buf),
-			          "changing new-group=%s", group);
+			SNPRINTF(audit_buf, "changing new-group=%s", group);
 			audit_logger (AUDIT_CHGRP_ID, Prog,
 			              audit_buf, NULL, getuid (), 0);
 		} else {
@@ -729,8 +728,7 @@ int main (int argc, char **argv)
 	if (setgid (gid) != 0) {
 		perror ("setgid");
 #ifdef WITH_AUDIT
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "changing new-gid=%lu", (unsigned long) gid);
+		SNPRINTF(audit_buf, "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL, getuid (), 0);
 #endif
@@ -740,8 +738,7 @@ int main (int argc, char **argv)
 	if (setuid (getuid ()) != 0) {
 		perror ("setuid");
 #ifdef WITH_AUDIT
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "changing new-gid=%lu", (unsigned long) gid);
+		SNPRINTF(audit_buf, "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL, getuid (), 0);
 #endif
@@ -756,8 +753,7 @@ int main (int argc, char **argv)
 		closelog ();
 		execl (SHELL, "sh", "-c", command, (char *) NULL);
 #ifdef WITH_AUDIT
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "changing new-gid=%lu", (unsigned long) gid);
+		SNPRINTF(audit_buf, "changing new-gid=%lu", (unsigned long) gid);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL, getuid (), 0);
 #endif
@@ -823,8 +819,7 @@ int main (int argc, char **argv)
 	}
 
 #ifdef WITH_AUDIT
-	snprintf (audit_buf, sizeof(audit_buf), "changing new-gid=%lu",
-	          (unsigned long) gid);
+	SNPRINTF(audit_buf, "changing new-gid=%lu", (unsigned long) gid);
 	audit_logger (AUDIT_CHGRP_ID, Prog,
 	              audit_buf, NULL, getuid (), 1);
 #endif
@@ -850,8 +845,7 @@ int main (int argc, char **argv)
 	closelog ();
 #ifdef WITH_AUDIT
 	if (NULL != group) {
-		snprintf (audit_buf, sizeof(audit_buf),
-		          "changing new-group=%s", group);
+		SNPRINTF(audit_buf, "changing new-group=%s", group);
 		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL, getuid (), 0);
 	} else {

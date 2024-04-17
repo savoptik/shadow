@@ -52,6 +52,8 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 /*
  * exit status values
@@ -787,11 +789,9 @@ static int is_owner (uid_t uid, const char *path)
 
 static int remove_mailbox (void)
 {
-	const char *maildir;
-	char* mailfile;
-	int i;
-	int errors = 0;
-	size_t len;
+	int         i, errors = 0;
+	char        *mailfile;
+	const char  *maildir;
 
 	maildir = getdef_str ("MAIL_DIR");
 #ifdef MAIL_SPOOL_DIR
@@ -803,18 +803,11 @@ static int remove_mailbox (void)
 		return 0;
 	}
 
-	len = strlen (prefix) + strlen (maildir) + strlen (user_name) + 3;
-	mailfile = XMALLOC(len, char);
-
 	if (prefix[0]) {
-		(void) snprintf (mailfile, len, "%s/%s/%s",
-	    	             prefix, maildir, user_name);
+		xasprintf(&mailfile, "%s/%s/%s", prefix, maildir, user_name);
+	} else {
+		xasprintf(&mailfile, "%s/%s", maildir, user_name);
 	}
-	else {
-		(void) snprintf (mailfile, len, "%s/%s",
-	    	             maildir, user_name);
-	}
-	mailfile[len-1] = '\0';
 
 	if (access (mailfile, F_OK) != 0) {
 		if (ENOENT == errno) {
@@ -1076,15 +1069,9 @@ int main (int argc, char **argv)
 		user_gid = pwd->pw_gid;
 
 		if (prefix[0]) {
-
-			size_t len = strlen(prefix) + strlen(pwd->pw_dir) + 2;
-			int wlen;
-			user_home = XMALLOC(len, char);
-			wlen = snprintf(user_home, len, "%s/%s", prefix, pwd->pw_dir);
-			assert (wlen == (int) len -1);
-		}
-		else {
-			user_home = xstrdup (pwd->pw_dir);
+			xasprintf(&user_home, "%s/%s", prefix, pwd->pw_dir);
+		} else {
+			user_home = xstrdup(pwd->pw_dir);
 		}
 		pw_close();
 	}
@@ -1093,26 +1080,6 @@ int main (int argc, char **argv)
 		exit (E_NOTFOUND);
 	}
 #endif				/* WITH_TCB */
-#ifdef	USE_NIS
-
-	/*
-	 * Now make sure it isn't an NIS user.
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: user %s is a NIS user\n"), Prog, user_name);
-		if (   !yp_get_default_domain (&nis_domain)
-		    && !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: %s is the NIS master\n"),
-			         Prog, nis_master);
-		}
-		exit (E_NOTFOUND);
-	}
-#endif				/* USE_NIS */
 	/*
 	 * Check to make certain the user isn't logged in.
 	 * Note: This is a best effort basis. The user may log in between,

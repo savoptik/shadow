@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
@@ -12,6 +14,8 @@
 #include "../libsubid/subid.h"
 #include "shadowlog_internal.h"
 #include "shadowlog.h"
+#include "string/sprintf.h"
+
 
 #define NSSWITCH "/etc/nsswitch.conf"
 
@@ -42,12 +46,12 @@ static void nss_exit(void) {
 
 // nsswitch_path is an argument only to support testing.
 void nss_init(const char *nsswitch_path) {
-	FILE *nssfp = NULL;
-	char *line = NULL, *p, *token, *saveptr;
-	size_t len = 0;
-	FILE *shadow_logfd = log_get_logfd();
-	char libname[65];
-	void *h;
+	char    *line = NULL, *p, *token, *saveptr;
+	char    libname[64];
+	FILE    *nssfp = NULL;
+	FILE    *shadow_logfd = log_get_logfd();
+	void    *h;
+	size_t  len = 0;
 
 	if (atomic_flag_test_and_set(&nss_init_started)) {
 		// Another thread has started nss_init, wait for it to complete
@@ -101,7 +105,7 @@ void nss_init(const char *nsswitch_path) {
 		fprintf(shadow_logfd, "Using files\n");
 		goto null_subid;
 	}
-	snprintf(libname, 64,  "libsubid_%s.so", token);
+	SNPRINTF(libname, "libsubid_%s.so", token);
 	h = dlopen(libname, RTLD_LAZY);
 	if (!h) {
 		fprintf(shadow_logfd, "Error opening %s: %s\n", libname, dlerror());

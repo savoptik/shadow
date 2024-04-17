@@ -98,6 +98,7 @@
 #include <ctype.h>
 #include <time.h>
 
+#include "attr.h"
 #include "getdate.h"
 
 #include <string.h>
@@ -212,7 +213,7 @@ static int	yyRelSeconds;
 static int	yyRelYear;
 
 
-#line 216 "getdate.c"
+#line 217 "getdate.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -298,12 +299,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 146 "getdate.y"
+#line 147 "getdate.y"
 
     int			Number;
     enum _MERIDIAN	Meridian;
 
-#line 307 "getdate.c"
+#line 308 "getdate.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -743,12 +744,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   162,   162,   163,   166,   169,   172,   175,   178,   181,
-     184,   190,   196,   205,   211,   223,   226,   230,   235,   239,
-     243,   249,   253,   271,   277,   283,   287,   292,   296,   303,
-     311,   314,   317,   320,   323,   326,   329,   332,   335,   338,
-     341,   344,   347,   350,   353,   356,   359,   362,   365,   370,
-     404,   407
+       0,   163,   163,   164,   167,   170,   173,   176,   179,   182,
+     185,   191,   197,   206,   212,   224,   227,   231,   236,   240,
+     244,   250,   254,   272,   278,   284,   288,   293,   297,   304,
+     312,   315,   318,   321,   324,   327,   330,   333,   336,   339,
+     342,   345,   348,   351,   354,   357,   360,   363,   366,   371,
+     405,   408
 };
 #endif
 
@@ -1349,69 +1350,69 @@ yyreduce:
   switch (yyn)
     {
   case 4: /* item: time  */
-#line 166 "getdate.y"
+#line 167 "getdate.y"
                {
 	    yyHaveTime++;
 	}
-#line 1357 "getdate.c"
+#line 1358 "getdate.c"
     break;
 
   case 5: /* item: zone  */
-#line 169 "getdate.y"
+#line 170 "getdate.y"
                {
 	    yyHaveZone++;
 	}
-#line 1365 "getdate.c"
+#line 1366 "getdate.c"
     break;
 
   case 6: /* item: date  */
-#line 172 "getdate.y"
+#line 173 "getdate.y"
                {
 	    yyHaveDate++;
 	}
-#line 1373 "getdate.c"
+#line 1374 "getdate.c"
     break;
 
   case 7: /* item: day  */
-#line 175 "getdate.y"
+#line 176 "getdate.y"
               {
 	    yyHaveDay++;
 	}
-#line 1381 "getdate.c"
+#line 1382 "getdate.c"
     break;
 
   case 8: /* item: rel  */
-#line 178 "getdate.y"
+#line 179 "getdate.y"
               {
 	    yyHaveRel++;
 	}
-#line 1389 "getdate.c"
+#line 1390 "getdate.c"
     break;
 
   case 10: /* time: tUNUMBER tMERIDIAN  */
-#line 184 "getdate.y"
+#line 185 "getdate.y"
                              {
 	    yyHour = (yyvsp[-1].Number);
 	    yyMinutes = 0;
 	    yySeconds = 0;
 	    yyMeridian = (yyvsp[0].Meridian);
 	}
-#line 1400 "getdate.c"
+#line 1401 "getdate.c"
     break;
 
   case 11: /* time: tUNUMBER ':' tUNUMBER o_merid  */
-#line 190 "getdate.y"
+#line 191 "getdate.y"
                                         {
 	    yyHour = (yyvsp[-3].Number);
 	    yyMinutes = (yyvsp[-1].Number);
 	    yySeconds = 0;
 	    yyMeridian = (yyvsp[0].Meridian);
 	}
-#line 1411 "getdate.c"
+#line 1412 "getdate.c"
     break;
 
   case 12: /* time: tUNUMBER ':' tUNUMBER tSNUMBER  */
-#line 196 "getdate.y"
+#line 197 "getdate.y"
                                          {
 	    yyHour = (yyvsp[-3].Number);
 	    yyMinutes = (yyvsp[-1].Number);
@@ -1421,22 +1422,22 @@ yyreduce:
 			  ? -(yyvsp[0].Number) % 100 + (-(yyvsp[0].Number) / 100) * 60
 			  : - ((yyvsp[0].Number) % 100 + ((yyvsp[0].Number) / 100) * 60));
 	}
-#line 1425 "getdate.c"
+#line 1426 "getdate.c"
     break;
 
   case 13: /* time: tUNUMBER ':' tUNUMBER ':' tUNUMBER o_merid  */
-#line 205 "getdate.y"
+#line 206 "getdate.y"
                                                      {
 	    yyHour = (yyvsp[-5].Number);
 	    yyMinutes = (yyvsp[-3].Number);
 	    yySeconds = (yyvsp[-1].Number);
 	    yyMeridian = (yyvsp[0].Meridian);
 	}
-#line 1436 "getdate.c"
+#line 1437 "getdate.c"
     break;
 
   case 14: /* time: tUNUMBER ':' tUNUMBER ':' tUNUMBER tSNUMBER  */
-#line 211 "getdate.y"
+#line 212 "getdate.y"
                                                       {
 	    yyHour = (yyvsp[-5].Number);
 	    yyMinutes = (yyvsp[-3].Number);
@@ -1447,71 +1448,71 @@ yyreduce:
 			  ? -(yyvsp[0].Number) % 100 + (-(yyvsp[0].Number) / 100) * 60
 			  : - ((yyvsp[0].Number) % 100 + ((yyvsp[0].Number) / 100) * 60));
 	}
-#line 1451 "getdate.c"
+#line 1452 "getdate.c"
     break;
 
   case 15: /* zone: tZONE  */
-#line 223 "getdate.y"
+#line 224 "getdate.y"
                 {
 	    yyTimezone = (yyvsp[0].Number);
 	}
-#line 1459 "getdate.c"
+#line 1460 "getdate.c"
     break;
 
   case 16: /* zone: tDAYZONE  */
-#line 226 "getdate.y"
+#line 227 "getdate.y"
                    {
 	    yyTimezone = (yyvsp[0].Number) - 60;
 	}
-#line 1467 "getdate.c"
+#line 1468 "getdate.c"
     break;
 
   case 17: /* zone: tZONE tDST  */
-#line 230 "getdate.y"
+#line 231 "getdate.y"
                      {
 	    yyTimezone = (yyvsp[-1].Number) - 60;
 	}
-#line 1475 "getdate.c"
+#line 1476 "getdate.c"
     break;
 
   case 18: /* day: tDAY  */
-#line 235 "getdate.y"
+#line 236 "getdate.y"
                {
 	    yyDayOrdinal = 1;
 	    yyDayNumber = (yyvsp[0].Number);
 	}
-#line 1484 "getdate.c"
+#line 1485 "getdate.c"
     break;
 
   case 19: /* day: tDAY ','  */
-#line 239 "getdate.y"
+#line 240 "getdate.y"
                    {
 	    yyDayOrdinal = 1;
 	    yyDayNumber = (yyvsp[-1].Number);
 	}
-#line 1493 "getdate.c"
+#line 1494 "getdate.c"
     break;
 
   case 20: /* day: tUNUMBER tDAY  */
-#line 243 "getdate.y"
+#line 244 "getdate.y"
                         {
 	    yyDayOrdinal = (yyvsp[-1].Number);
 	    yyDayNumber = (yyvsp[0].Number);
 	}
-#line 1502 "getdate.c"
+#line 1503 "getdate.c"
     break;
 
   case 21: /* date: tUNUMBER '/' tUNUMBER  */
-#line 249 "getdate.y"
+#line 250 "getdate.y"
                                 {
 	    yyMonth = (yyvsp[-2].Number);
 	    yyDay = (yyvsp[0].Number);
 	}
-#line 1511 "getdate.c"
+#line 1512 "getdate.c"
     break;
 
   case 22: /* date: tUNUMBER '/' tUNUMBER '/' tUNUMBER  */
-#line 253 "getdate.y"
+#line 254 "getdate.y"
                                              {
 	  /* Interpret as YYYY/MM/DD if $1 >= 1000, otherwise as MM/DD/YY.
 	     The goal in recognizing YYYY/MM/DD is solely to support legacy
@@ -1530,71 +1531,71 @@ yyreduce:
 	      yyYear = (yyvsp[0].Number);
 	    }
 	}
-#line 1534 "getdate.c"
+#line 1535 "getdate.c"
     break;
 
   case 23: /* date: tUNUMBER tSNUMBER tSNUMBER  */
-#line 271 "getdate.y"
+#line 272 "getdate.y"
                                      {
 	    /* ISO 8601 format.  yyyy-mm-dd.  */
 	    yyYear = (yyvsp[-2].Number);
 	    yyMonth = -(yyvsp[-1].Number);
 	    yyDay = -(yyvsp[0].Number);
 	}
-#line 1545 "getdate.c"
+#line 1546 "getdate.c"
     break;
 
   case 24: /* date: tUNUMBER tMONTH tSNUMBER  */
-#line 277 "getdate.y"
+#line 278 "getdate.y"
                                    {
 	    /* e.g. 17-JUN-1992.  */
 	    yyDay = (yyvsp[-2].Number);
 	    yyMonth = (yyvsp[-1].Number);
 	    yyYear = -(yyvsp[0].Number);
 	}
-#line 1556 "getdate.c"
+#line 1557 "getdate.c"
     break;
 
   case 25: /* date: tMONTH tUNUMBER  */
-#line 283 "getdate.y"
+#line 284 "getdate.y"
                           {
 	    yyMonth = (yyvsp[-1].Number);
 	    yyDay = (yyvsp[0].Number);
 	}
-#line 1565 "getdate.c"
+#line 1566 "getdate.c"
     break;
 
   case 26: /* date: tMONTH tUNUMBER ',' tUNUMBER  */
-#line 287 "getdate.y"
+#line 288 "getdate.y"
                                        {
 	    yyMonth = (yyvsp[-3].Number);
 	    yyDay = (yyvsp[-2].Number);
 	    yyYear = (yyvsp[0].Number);
 	}
-#line 1575 "getdate.c"
+#line 1576 "getdate.c"
     break;
 
   case 27: /* date: tUNUMBER tMONTH  */
-#line 292 "getdate.y"
+#line 293 "getdate.y"
                           {
 	    yyMonth = (yyvsp[0].Number);
 	    yyDay = (yyvsp[-1].Number);
 	}
-#line 1584 "getdate.c"
+#line 1585 "getdate.c"
     break;
 
   case 28: /* date: tUNUMBER tMONTH tUNUMBER  */
-#line 296 "getdate.y"
+#line 297 "getdate.y"
                                    {
 	    yyMonth = (yyvsp[-1].Number);
 	    yyDay = (yyvsp[-2].Number);
 	    yyYear = (yyvsp[0].Number);
 	}
-#line 1594 "getdate.c"
+#line 1595 "getdate.c"
     break;
 
   case 29: /* rel: relunit tAGO  */
-#line 303 "getdate.y"
+#line 304 "getdate.y"
                        {
 	    yyRelSeconds = -yyRelSeconds;
 	    yyRelMinutes = -yyRelMinutes;
@@ -1603,155 +1604,155 @@ yyreduce:
 	    yyRelMonth = -yyRelMonth;
 	    yyRelYear = -yyRelYear;
 	}
-#line 1607 "getdate.c"
+#line 1608 "getdate.c"
     break;
 
   case 31: /* relunit: tUNUMBER tYEAR_UNIT  */
-#line 314 "getdate.y"
+#line 315 "getdate.y"
                               {
 	    yyRelYear += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1615 "getdate.c"
+#line 1616 "getdate.c"
     break;
 
   case 32: /* relunit: tSNUMBER tYEAR_UNIT  */
-#line 317 "getdate.y"
+#line 318 "getdate.y"
                               {
 	    yyRelYear += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1623 "getdate.c"
+#line 1624 "getdate.c"
     break;
 
   case 33: /* relunit: tYEAR_UNIT  */
-#line 320 "getdate.y"
+#line 321 "getdate.y"
                      {
 	    yyRelYear += (yyvsp[0].Number);
 	}
-#line 1631 "getdate.c"
+#line 1632 "getdate.c"
     break;
 
   case 34: /* relunit: tUNUMBER tMONTH_UNIT  */
-#line 323 "getdate.y"
+#line 324 "getdate.y"
                                {
 	    yyRelMonth += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1639 "getdate.c"
+#line 1640 "getdate.c"
     break;
 
   case 35: /* relunit: tSNUMBER tMONTH_UNIT  */
-#line 326 "getdate.y"
+#line 327 "getdate.y"
                                {
 	    yyRelMonth += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1647 "getdate.c"
+#line 1648 "getdate.c"
     break;
 
   case 36: /* relunit: tMONTH_UNIT  */
-#line 329 "getdate.y"
+#line 330 "getdate.y"
                       {
 	    yyRelMonth += (yyvsp[0].Number);
 	}
-#line 1655 "getdate.c"
+#line 1656 "getdate.c"
     break;
 
   case 37: /* relunit: tUNUMBER tDAY_UNIT  */
-#line 332 "getdate.y"
+#line 333 "getdate.y"
                              {
 	    yyRelDay += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1663 "getdate.c"
+#line 1664 "getdate.c"
     break;
 
   case 38: /* relunit: tSNUMBER tDAY_UNIT  */
-#line 335 "getdate.y"
+#line 336 "getdate.y"
                              {
 	    yyRelDay += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1671 "getdate.c"
+#line 1672 "getdate.c"
     break;
 
   case 39: /* relunit: tDAY_UNIT  */
-#line 338 "getdate.y"
+#line 339 "getdate.y"
                     {
 	    yyRelDay += (yyvsp[0].Number);
 	}
-#line 1679 "getdate.c"
+#line 1680 "getdate.c"
     break;
 
   case 40: /* relunit: tUNUMBER tHOUR_UNIT  */
-#line 341 "getdate.y"
+#line 342 "getdate.y"
                               {
 	    yyRelHour += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1687 "getdate.c"
+#line 1688 "getdate.c"
     break;
 
   case 41: /* relunit: tSNUMBER tHOUR_UNIT  */
-#line 344 "getdate.y"
+#line 345 "getdate.y"
                               {
 	    yyRelHour += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1695 "getdate.c"
+#line 1696 "getdate.c"
     break;
 
   case 42: /* relunit: tHOUR_UNIT  */
-#line 347 "getdate.y"
+#line 348 "getdate.y"
                      {
 	    yyRelHour += (yyvsp[0].Number);
 	}
-#line 1703 "getdate.c"
+#line 1704 "getdate.c"
     break;
 
   case 43: /* relunit: tUNUMBER tMINUTE_UNIT  */
-#line 350 "getdate.y"
+#line 351 "getdate.y"
                                 {
 	    yyRelMinutes += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1711 "getdate.c"
+#line 1712 "getdate.c"
     break;
 
   case 44: /* relunit: tSNUMBER tMINUTE_UNIT  */
-#line 353 "getdate.y"
+#line 354 "getdate.y"
                                 {
 	    yyRelMinutes += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1719 "getdate.c"
+#line 1720 "getdate.c"
     break;
 
   case 45: /* relunit: tMINUTE_UNIT  */
-#line 356 "getdate.y"
+#line 357 "getdate.y"
                        {
 	    yyRelMinutes += (yyvsp[0].Number);
 	}
-#line 1727 "getdate.c"
+#line 1728 "getdate.c"
     break;
 
   case 46: /* relunit: tUNUMBER tSEC_UNIT  */
-#line 359 "getdate.y"
+#line 360 "getdate.y"
                              {
 	    yyRelSeconds += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1735 "getdate.c"
+#line 1736 "getdate.c"
     break;
 
   case 47: /* relunit: tSNUMBER tSEC_UNIT  */
-#line 362 "getdate.y"
+#line 363 "getdate.y"
                              {
 	    yyRelSeconds += (yyvsp[-1].Number) * (yyvsp[0].Number);
 	}
-#line 1743 "getdate.c"
+#line 1744 "getdate.c"
     break;
 
   case 48: /* relunit: tSEC_UNIT  */
-#line 365 "getdate.y"
+#line 366 "getdate.y"
                     {
 	    yyRelSeconds += (yyvsp[0].Number);
 	}
-#line 1751 "getdate.c"
+#line 1752 "getdate.c"
     break;
 
   case 49: /* number: tUNUMBER  */
-#line 371 "getdate.y"
+#line 372 "getdate.y"
           {
 	    if ((yyHaveTime != 0) && (yyHaveDate != 0) && (yyHaveRel == 0))
 	      yyYear = (yyvsp[0].Number);
@@ -1782,27 +1783,27 @@ yyreduce:
 		  }
 	      }
 	  }
-#line 1786 "getdate.c"
+#line 1787 "getdate.c"
     break;
 
   case 50: /* o_merid: %empty  */
-#line 404 "getdate.y"
+#line 405 "getdate.y"
           {
 	    (yyval.Meridian) = MER24;
 	  }
-#line 1794 "getdate.c"
+#line 1795 "getdate.c"
     break;
 
   case 51: /* o_merid: tMERIDIAN  */
-#line 408 "getdate.y"
+#line 409 "getdate.y"
           {
 	    (yyval.Meridian) = (yyvsp[0].Meridian);
 	  }
-#line 1802 "getdate.c"
+#line 1803 "getdate.c"
     break;
 
 
-#line 1806 "getdate.c"
+#line 1807 "getdate.c"
 
       default: break;
     }
@@ -1995,7 +1996,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 413 "getdate.y"
+#line 414 "getdate.y"
 
 
 /* Month and day table. */
@@ -2155,7 +2156,7 @@ static TABLE const MilitaryTable[] = {
 
 
 
-static int yyerror (unused const char *s)
+static int yyerror (MAYBE_UNUSED const char *s)
 {
   return 0;
 }
@@ -2508,11 +2509,8 @@ time_t get_date (const char *p, const time_t *now)
 
 #if	defined (TEST)
 
-/* ARGSUSED */
 int
-main (ac, av)
-     int ac;
-     char *av[];
+main(void)
 {
   char buff[MAX_BUFF_LEN + 1];
   time_t d;

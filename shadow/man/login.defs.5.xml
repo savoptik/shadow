@@ -7,6 +7,7 @@
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN" 
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY BCRYPT_MIN_ROUNDS     SYSTEM "login.defs.d/BCRYPT_MIN_ROUNDS.xml">
 <!ENTITY CHFN_AUTH             SYSTEM "login.defs.d/CHFN_AUTH.xml">
 <!ENTITY CHFN_RESTRICT         SYSTEM "login.defs.d/CHFN_RESTRICT.xml">
 <!ENTITY CHSH_AUTH             SYSTEM "login.defs.d/CHSH_AUTH.xml">
@@ -79,6 +80,7 @@
 <!ENTITY USERGROUPS_ENAB       SYSTEM "login.defs.d/USERGROUPS_ENAB.xml">
 <!ENTITY USERNAME_MAX          SYSTEM "login.defs.d/USERNAME_MAX.xml">
 <!ENTITY USE_TCB               SYSTEM "login.defs.d/USE_TCB.xml">
+<!ENTITY YESCRYPT_COST_FACTOR  SYSTEM "login.defs.d/YESCRYPT_COST_FACTOR.xml">
 <!-- SHADOW-CONFIG-HERE -->
 ]>
 
@@ -150,6 +152,7 @@
     <para>The following configuration items are provided:</para>
 
     <variablelist remap='IP'>
+      &BCRYPT_MIN_ROUNDS; <!-- documents also BCRYPT_MAX_ROUNDS -->
       &CHFN_AUTH;
       &CHFN_RESTRICT;
       &CHSH_AUTH;
@@ -228,6 +231,7 @@
       &USERGROUPS_ENAB;
       &USERNAME_MAX;
       &USE_TCB;
+      &YESCRYPT_COST_FACTOR;
     </variablelist>
   </refsect1>
 
@@ -260,9 +264,12 @@
 	<term>chgpasswd</term>
 	<listitem>
 	  <para>
+	    <phrase condition="bcrypt">BCRYPT_MAX_ROUNDS
+	    BCRYPT_MIN_ROUNDS</phrase>
 	    ENCRYPT_METHOD MAX_MEMBERS_PER_GROUP MD5_CRYPT_ENAB
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
 	    SHA_CRYPT_MIN_ROUNDS</phrase>
+	    <phrase condition="yescrypt">YESCRYPT_COST_FACTOR</phrase>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -270,10 +277,13 @@
 	<term>chpasswd</term>
 	<listitem>
 	  <para>
+	    <phrase condition="bcrypt">BCRYPT_MAX_ROUNDS
+	    BCRYPT_MIN_ROUNDS</phrase>
 	    <phrase condition="no_pam">ENCRYPT_METHOD
 	    MD5_CRYPT_ENAB </phrase>
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
 	    SHA_CRYPT_MIN_ROUNDS</phrase>
+	    <phrase condition="yescrypt">YESCRYPT_COST_FACTOR</phrase>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -291,9 +301,12 @@
 	<term>gpasswd</term>
 	<listitem>
 	  <para>
+	    <phrase condition="bcrypt">BCRYPT_MAX_ROUNDS
+	    BCRYPT_MIN_ROUNDS</phrase>
 	    ENCRYPT_METHOD MAX_MEMBERS_PER_GROUP MD5_CRYPT_ENAB
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
 	    SHA_CRYPT_MIN_ROUNDS</phrase>
+	    <phrase condition="yescrypt">YESCRYPT_COST_FACTOR</phrase>
 	    CRYPT_PREFIX CRYPT_ROUNDS
 	  </para>
 	</listitem>
@@ -393,6 +406,8 @@
 	<term>newusers</term>
 	<listitem>
 	  <para>
+	    <phrase condition="bcrypt">BCRYPT_MAX_ROUNDS
+	    BCRYPT_MIN_ROUNDS</phrase>
 	    ENCRYPT_METHOD
 	    GID_MAX GID_MIN
 	    MAX_MEMBERS_PER_GROUP MD5_CRYPT_ENAB
@@ -405,6 +420,7 @@
 	    SUB_UID_COUNT SUB_UID_MAX SUB_UID_MIN
 	    SYS_GID_MAX SYS_GID_MIN SYS_UID_MAX SYS_UID_MIN UID_MAX UID_MIN
 	    UMASK
+	    <phrase condition="yescrypt">YESCRYPT_COST_FACTOR</phrase>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -413,10 +429,13 @@
 	<term>passwd</term>
 	<listitem>
 	  <para>
+	    <phrase condition="bcrypt">BCRYPT_MAX_ROUNDS
+	    BCRYPT_MIN_ROUNDS</phrase>
 	    ENCRYPT_METHOD MD5_CRYPT_ENAB OBSCURE_CHECKS_ENAB
 	    PASS_ALWAYS_WARN PASS_CHANGE_TRIES PASS_MAX_LEN PASS_MIN_LEN
 	    <phrase condition="sha_crypt">SHA_CRYPT_MAX_ROUNDS
 	    SHA_CRYPT_MIN_ROUNDS</phrase>
+	    <phrase condition="yescrypt">YESCRYPT_COST_FACTOR</phrase>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -463,12 +482,12 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
+      <varlistentry condition="no_pam">
 	<term>sulogin</term>
 	<listitem>
 	  <para>
 	    ENV_HZ
-	    <phrase condition="no_pam">ENV_TZ</phrase>
+	    ENV_TZ
 	  </para>
 	</listitem>
       </varlistentry>

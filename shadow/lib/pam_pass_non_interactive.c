@@ -13,8 +13,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
+
 #include <security/pam_appl.h>
 #include <security/pam_userpass.h>
+
+#include "alloc.h"
+#include "attr.h"
+#include "memzero.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 

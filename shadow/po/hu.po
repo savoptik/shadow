@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-03-26 20:56+0100\n"
+"POT-Creation-Date: 2024-03-23 18:35-0500\n"
 "PO-Revision-Date: 2007-11-25 20:56+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -185,10 +185,6 @@ msgstr "Sikertelen helyfoglalás a beállítási infónak.\n"
 msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr "beállítási hiba - ismeretlen '%s' elem (értesítsd a rendszergazdát)\n"
 
-#, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr ""
-
 #, fuzzy, c-format
 msgid "%s: Memory allocation failure\n"
 msgstr "%s: PAM hitelesítési hiba\n"
@@ -225,6 +221,10 @@ msgstr "%s: %d. sor: chown sikertelen\n"
 
 #, fuzzy, c-format
 msgid "%s: write to %s failed: %s\n"
+msgstr "%s: %d. sor: chown sikertelen\n"
+
+#, fuzzy, c-format
+msgid "%s: closing %s failed: %s\n"
 msgstr "%s: %d. sor: chown sikertelen\n"
 
 msgid "Too many logins.\n"
@@ -654,11 +654,14 @@ msgstr "Inaktív jelszó"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Hozzáférés elévülési dátum (ÉÉÉÉ-HH-NN)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr "Utolsó jelszóváltás\t\t\t\t\t: "
-
 msgid "never"
 msgstr "soha"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr "Utolsó jelszóváltás\t\t\t\t\t: "
 
 msgid "password must be changed"
 msgstr "jelszóváltás kötelező"
@@ -826,14 +829,6 @@ msgstr "%s: \"%s\" illegális karaktereket tartalmaz\n"
 #, fuzzy, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: %s felhasználó nem létezik\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s: `%s' felhasználó nem módosítható NIS kliensen.\n"
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s: `%s' a NIS mester ehhez a klienshez.\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -1165,6 +1160,10 @@ msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: %s rossz csoport név\n"
 
 #, fuzzy, c-format
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: %s fájl nem nyitható meg\n"
+
+#, fuzzy, c-format
 msgid "%s: invalid group ID '%s'\n"
 msgstr "érvénytelen csoportnév: `%s'\n"
 
@@ -1205,14 +1204,6 @@ msgstr "%s: `%s' felhasználó nem módosítható NIS kliensen.\n"
 #, fuzzy, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: %s csoport nem létezik\n"
-
-#, fuzzy, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: a(z) \"%s\" csoport egy NIS csoport.\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s: %s a NIS mester\n"
 
 #, fuzzy, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1288,10 +1279,6 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "érvénytelen csoportnév: `%s'\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s: %s egy NIS csoport\n"
 
 #, c-format
 msgid "%s: unknown user %s\n"
@@ -1777,6 +1764,9 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+
 msgid "Old password: "
 msgstr "Régi jelszó: "
 
@@ -1795,6 +1785,11 @@ msgid ""
 msgstr ""
 "Add meg az új jelszót (minimum %d, maximum %d karakter)\n"
 "Biztonság: kérlek használj vegyesen Nagy és kisbetűket és számokat.\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s: túl hosszú mezők\n"
 
 msgid "New password: "
 msgstr "Új jelszó: "
@@ -1835,6 +1830,10 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s: %s tár nem támogatott\n"
+
+#, c-format
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr ""
 
 #, c-format
 msgid "%s: root is not authorized by SELinux to change the password of %s\n"
@@ -1979,11 +1978,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -2156,10 +2153,6 @@ msgstr "%s: %s könyvtár nem hozható létre\n"
 #, fuzzy, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s: átnevezés: %s"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: a(z) \"%s\" csoport egy NIS csoport.\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2406,6 +2399,16 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr "A postafiókfájl jogosultságainak beállítása"
 
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Synchronize mailbox file"
+msgstr "Postafiókfájl létrehozása"
+
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Closing mailbox file"
+msgstr "Postafiókfájl létrehozása"
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2526,10 +2529,6 @@ msgstr "%s: nem tudom átnevezni %s könyvtárat erre: %s\n"
 #, fuzzy, c-format
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: nem tudom átnevezni %s könyvtárat erre: %s\n"
-
-#, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s: %s egy NIS felhasználó\n"
 
 #, fuzzy, c-format
 msgid "%s: %s home directory (%s) not found\n"
@@ -2715,9 +2714,17 @@ msgstr ""
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr "%s: a jelszófájl frissítése sikertelen\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
 
 #, c-format
 msgid "%s: warning: %s not owned by %s\n"
@@ -2824,8 +2831,9 @@ msgid "failed to stat edited file"
 msgstr "a postafiók átnevezése sikertelen"
 
 #, fuzzy
-msgid "failed to allocate memory"
-msgstr "a postafiók tulajdonosának váltása sikertelen"
+#| msgid "%s: can't open file\n"
+msgid "asprintf(3) failed"
+msgstr "%s: nem tudom megnyitni a fájlt\n"
 
 #, fuzzy
 msgid "failed to create backup file"
@@ -2839,6 +2847,34 @@ msgstr "%s: nem tudom visszaállítani %s-t: %s (módosításaid itt vannak: %s)
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: érvénytelen alapkönyvtár: \"%s\"\n"
 
+#, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s: `%s' felhasználó nem módosítható NIS kliensen.\n"
+
+#, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s: `%s' a NIS mester ehhez a klienshez.\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: a(z) \"%s\" csoport egy NIS csoport.\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s: %s a NIS mester\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s: %s egy NIS csoport\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: a(z) \"%s\" csoport egy NIS csoport.\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s: %s egy NIS felhasználó\n"
+
 #~ msgid "too simple"
 #~ msgstr "túl egyszerű"
 
@@ -2850,6 +2886,10 @@ msgstr "%s: érvénytelen alapkönyvtár: \"%s\"\n"
 #, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "%s: érvénytelen alapkönyvtár: \"%s\"\n"
+
+#, fuzzy
+#~ msgid "failed to allocate memory"
+#~ msgstr "a postafiók tulajdonosának váltása sikertelen"
 
 #~ msgid "Usage: id\n"
 #~ msgstr "Használat: id\n"
