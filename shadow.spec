@@ -939,7 +939,7 @@ rm -f %save_login_defs_file
 * Thu Nov 06 1997 Cristian Gafton <gafton@redhat.com>
 - added forgot lastlog command to the spec file
 
-* Mon Oct 26 1997 Cristian Gafton <gafton@redhat.com>
+* Sun Oct 26 1997 Cristian Gafton <gafton@redhat.com>
 - obsoletes adduser
 
 * Thu Oct 23 1997 Cristian Gafton <gafton@redhat.com>
