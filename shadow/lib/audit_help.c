@@ -63,8 +63,12 @@ void audit_logger (int type, MAYBE_UNUSED const char *pgname, const char *op,
 	if (audit_fd < 0) {
 		return;
 	} else {
+/* We don't care if audit_log_acct_message() returns an error here */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 		audit_log_acct_message (audit_fd, type, NULL, op, name, id,
 		                        NULL, NULL, NULL, result);
+#pragma GCC diagnostic pop
 	}
 }
 
@@ -73,6 +77,9 @@ void audit_logger_message (const char *message, shadow_audit_result result)
 	if (audit_fd < 0) {
 		return;
 	} else {
+/* We don't care if audit_log_acct_message() returns an error here */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 		audit_log_user_message (audit_fd,
 		                        AUDIT_USYS_CONFIG,
 		                        message,
@@ -80,6 +87,7 @@ void audit_logger_message (const char *message, shadow_audit_result result)
 		                        NULL, /* addr */
 		                        NULL, /* tty */
 		                        result);
+#pragma GCC diagnostic pop
 	}
 }
 
