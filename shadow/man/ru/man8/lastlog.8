@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 03/23/2024
+.\"      Date: 06/18/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.15.1
+.\"    Source: shadow-utils 4.16.0
 .\"  Language: Russian
 .\"
-.TH "lastlog" "8" "03/23/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
+.TH "lastlog" "8" "06/18/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -128,5 +128,5 @@ change the behavior of this tool:
 Большие промежутки в значениях идентификаторов пользователей приводят к тому, что программа некоторое время ничего не выводит на экран (то есть, если в базе данных lastlog нет пользователей с идентификаторами с 170 по 800, то во время обработки UID с 171 по 799 программа кажется повисшей)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

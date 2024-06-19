@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 23/03/2024
+.\"      Date: 18/06/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.15.1
+.\"    Source: shadow-utils 4.16.0
 .\"  Language: French
 .\"
-.TH "LASTLOG" "8" "23/03/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
+.TH "LASTLOG" "8" "18/06/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -130,5 +130,5 @@ S\*(Aqil y a des trous importants dans les valeurs des UID,
 s\*(Aqex\('ecutera plus lentement, sans affichage \(`a l\*(Aq\('ecran (par exemple, s\*(Aqil n\*(Aqy a pas d\*(Aqentr\('ee pour les utilisateurs ayant un UID compris entre 170 et 800 dans base de donn\('ees lastlog, le programme lastlog semblera bloqu\('e comme s\*(Aqil traitait les entr\('ees correspondant aux UID 171 \(`a 799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

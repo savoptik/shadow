@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
-m4_define([libsubid_abi_major], 4)
+m4_define([libsubid_abi_major], 5)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.15.1], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.16.0], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
-AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects])
+AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects tar-pax])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h])
@@ -159,13 +159,6 @@ fi])
 AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "$shadow_cv_passwd_dir/passwd",
 	[Path to passwd program.])
 
-dnl XXX - quick hack, should disappear before anyone notices :).
-dnl XXX - I just read the above message :).
-if test "$ac_cv_func_ruserok" = "yes"; then
-	AC_DEFINE(RLOGIN, 1, [Define if login should support the -r flag for rlogind.])
-	AC_DEFINE(RUSEROK, 0, [Define to the ruserok() "success" return value (0 or 1).])
-fi
-
 AC_ARG_ENABLE(shadowgrp,
 	[AS_HELP_STRING([--enable-shadowgrp], [enable shadow group support @<:@default=yes@:>@])],
 	[case "${enableval}" in
@@ -274,6 +267,7 @@ AC_DEFINE_UNQUOTED(GROUP_NAME_MAX_LENGTH, $with_group_name_max_length, [max grou
 AC_SUBST(GROUP_NAME_MAX_LENGTH)
 GROUP_NAME_MAX_LENGTH="$with_group_name_max_length"
 
+
 AM_CONDITIONAL(USE_SHA_CRYPT, test "x$with_sha_crypt" = "xyes")
 if test "$with_sha_crypt" = "yes"; then
 	AC_DEFINE(USE_SHA_CRYPT, 1, [Define to allow the SHA256 and SHA512 password encryption algorithms])
@@ -309,6 +303,10 @@ dnl other libraries.  This should prevent linking libnsl if not really
 dnl needed (Linux glibc, Irix), but still link it if needed (Solaris).
 
 AC_SEARCH_LIBS(gethostbyname, nsl)
+
+PKG_CHECK_MODULES([CMOCKA], [cmocka], [have_cmocka="yes"],
+	[AC_MSG_WARN([libcmocka not found, cmocka tests will not be built])])
+AM_CONDITIONAL([HAVE_CMOCKA], [test x$have_cmocka = xyes])
 
 AC_CHECK_LIB([econf],[econf_readDirs],[LIBECONF="-leconf"],[LIBECONF=""])
 if test -n "$LIBECONF"; then
@@ -700,10 +698,6 @@ if test "$with_skey" = "yes"; then
 		skeychallenge((void*)0, (void*)0, (void*)0, 0);
 	]])],[AC_DEFINE(SKEY_BSD_STYLE, 1, [Define to support newer BSD S/Key API])],[])
 fi
-
-PKG_CHECK_MODULES([CMOCKA], [cmocka], [have_cmocka="yes"],
-	[AC_MSG_WARN([libcmocka not found, cmocka tests will not be built])])
-AM_CONDITIONAL([HAVE_CMOCKA], [test x$have_cmocka = xyes])
 
 AC_CHECK_FUNC(fgetpwent_r, [AC_DEFINE(HAVE_FGETPWENT_R, 1, [Defined to 1 if you have the declaration of 'fgetpwent_r'])])
 
