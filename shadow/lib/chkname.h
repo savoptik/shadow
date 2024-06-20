@@ -11,6 +11,7 @@
 #ifndef _CHKNAME_H_
 #define _CHKNAME_H_
 
+
 /*
  * is_valid_user_name(), is_valid_group_name() - check the new user/group
  * name for validity;
@@ -19,11 +20,17 @@
  *   false - bad name
  */
 
-#include "defines.h"
+
+#include <config.h>
+
+#include <stdbool.h>
+#include <stddef.h>
+
 
 extern const char *get_name_regexp (void);
 extern bool is_uniq_user(const char *name);
 extern bool is_uniq_group(const char *name);
+extern size_t login_name_max_size(void);
 extern bool is_valid_user_name (const char *name);
 extern bool is_valid_group_name (const char *name);
 

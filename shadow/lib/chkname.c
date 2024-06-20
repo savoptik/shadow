@@ -5,6 +5,7 @@
 // SPDX-FileCopyrightText: 2023-2024, Alejandro Colomar <alx@kernel.org>
 // SPDX-License-Identifier: BSD-3-Clause
 
+
 /*
  * is_valid_user_name(), is_valid_group_name() - check the new user/group
  * name for validity;
@@ -13,6 +14,7 @@
  *   false - bad name
  */
 
+
 #include <config.h>
 
 #ident "$Id$"
@@ -20,8 +22,12 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <regex.h>
+
 #include "defines.h"
 #include "getdef.h"
 #include "chkname.h"
@@ -47,6 +53,39 @@ bool is_uniq_group (const char *name)
 {
        IS_UNIQ_NAME (group, gr, name);
 }
+
+
+static size_t min (size_t a, size_t b)
+{
+	return a < b ? a : b;
+}
+
+
+size_t
+login_name_max_size(void)
+{
+	long  conf;
+	size_t  maxsize;
+
+	errno = 0;
+	conf = sysconf(_SC_LOGIN_NAME_MAX);
+
+	if (conf == -1 && errno != 0)
+		maxsize = LOGIN_NAME_MAX;
+	else
+		maxsize = conf;
+
+	/*
+	 * The _SC_LOGIN_NAME_MAX value includes space for the NUL byte,
+	 * so we must subtract 1 from it.
+	 * Decreasing LOGIN_NAME_MAX by 1 is a good thing as well.
+	 */
+	maxsize--;
+
+	return min(getdef_unum ("USERNAME_MAX", maxsize),
+					maxsize);
+}
+
 
 const char *get_name_regexp (void)
 {
@@ -122,36 +161,11 @@ static bool is_valid_name (const char *name)
 	return true;
 }
 
-static size_t min (size_t a, size_t b)
-{
-	return a < b ? a : b;
-}
-
 
 bool
 is_valid_user_name(const char *name)
 {
-	long    conf;
-	size_t  maxsize;
-
-	errno = 0;
-	conf = sysconf(_SC_LOGIN_NAME_MAX);
-
-	if (conf == -1 && errno != 0)
-		maxsize = LOGIN_NAME_MAX;
-	else
-		maxsize = conf;
-
-	/*
-	 * The _SC_LOGIN_NAME_MAX value includes space for the NUL byte,
-	 * so we must subtract 1 from it.
-	 * Decreasing LOGIN_NAME_MAX by 1 is a good thing as well.
-	 */
-	maxsize--;
-
-	maxsize = min (getdef_unum ("USERNAME_MAX", maxsize),
-					maxsize);
-	if (strlen(name) > maxsize)
+	if (strlen(name) > login_name_max_size())
 		return false;
 
 	return is_valid_name(name);

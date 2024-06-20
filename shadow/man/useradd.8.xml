@@ -713,7 +713,7 @@
       In regular expression terms: [a-z_][a-z0-9_-]*[$]?
     </para>
     <para>
-      Usernames may only be up to 32 characters long.
+      Usernames may only be up to 256 characters long.
     </para>
   </refsect1>
 

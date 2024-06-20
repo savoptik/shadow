@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 23/03/2024
+.\"      Date: 18/06/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.15.1
+.\"    Source: shadow-utils 4.16.0
 .\"  Language: Italian
 .\"
-.TH "LASTLOG" "8" "23/03/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
+.TH "LASTLOG" "8" "18/06/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -129,5 +129,5 @@ Database degli orari dei precedenti accessi utente\&.
 Se ci sono dei grossi scarti tra i valori di UID, il programma lastlog pu\(`o restare in esecuzione per un tempo prolungato senza produrre output sullo schermo (ad es\&. se nel database lastlog non ci sono registrazioni per UID tra 170 e 800, il programma sembrer\(`a bloccato mentre esamina gli UID tra 171 e 799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

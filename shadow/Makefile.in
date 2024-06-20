@@ -389,7 +389,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = NEWS README
+EXTRA_DIST = tests/
 SUBDIRS = lib $(am__append_1) src po contrib doc etc tests/unit \
 	$(am__append_2)
 CLEANFILES = man/8.out man/po/remove-potcdate.* man/*/login.defs.d man/*/*.mo

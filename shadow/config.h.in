@@ -341,12 +341,6 @@
 /* Path to passwd program. */
 #undef PASSWD_PROGRAM
 
-/* Define if login should support the -r flag for rlogind. */
-#undef RLOGIN
-
-/* Define to the ruserok() "success" return value (0 or 1). */
-#undef RUSEROK
-
 /* Define to support the shadow group file. */
 #undef SHADOWGRP
 

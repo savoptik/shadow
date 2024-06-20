@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 03/23/2024
+.\"      Date: 06/18/2024
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.15.1
+.\"    Source: shadow-utils 4.16.0
 .\"  Language: Polish
 .\"
-.TH "LASTLOG" "8" "03/23/2024" "shadow\-utils 4\&.15\&.1" "System Management Commands"
+.TH "LASTLOG" "8" "06/18/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -128,5 +128,5 @@ Baza danych ostatnich logowań użytkownik\('ow\&.
 Duże luki w numeracji UID powodują, że program będzie pracowa\(/l d\(/lużej, nie wyświetlając wynik\('ow (np\&. jeśli w bazie lastlog nie ma wpis\('ow dla o UID pomiedzy 170, a 800, to program będzie sprawia\(/l wrażenie zawieszonego w trakcie przetwarzania wpis\('ow dla użytkowanik\('o\(/l o UID 171\-799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

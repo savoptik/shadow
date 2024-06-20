@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2024-03-23
+.\"      Date: 2024-06-18
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.15.1
+.\"    Source: shadow-utils 4.16.0
 .\"  Language: Chinese Simplified
 .\"
-.TH "LASTLOG" "8" "2024-03-23" "shadow\-utils 4\&.15\&.1" "System Management Commands"
+.TH "LASTLOG" "8" "2024-06-18" "shadow\-utils 4\&.16\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -128,5 +128,5 @@ Database times of previous user logins\&.
 Large gaps in UID numbers will cause the lastlog program to run longer with no output to the screen (i\&.e\&. if in lastlog database there is no entries for users with UID between 170 and 800 lastlog will appear to hang as it processes entries with UIDs 171\-799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

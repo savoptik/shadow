@@ -23,6 +23,7 @@
 #endif
 
 #include "alloc.h"
+#include "atoi/str2i.h"
 #include "getdef.h"
 #include "shadowlog_internal.h"
 #include "string/sprintf.h"
@@ -250,7 +251,7 @@ int getdef_num (const char *item, int dflt)
 		return dflt;
 	}
 
-	if (   (getlong(d->value, &val) == -1)
+	if (   (str2sl(&val, d->value) == -1)
 	    || (val > INT_MAX)
 	    || (val < -1)) {
 		fprintf (shadow_logfd,
@@ -285,7 +286,7 @@ unsigned int getdef_unum (const char *item, unsigned int dflt)
 		return dflt;
 	}
 
-	if (   (getlong(d->value, &val) == -1)
+	if (   (str2sl(&val, d->value) == -1)
 	    || (val < 0)
 	    || (val > INT_MAX)) {
 		fprintf (shadow_logfd,
@@ -320,7 +321,7 @@ long getdef_long (const char *item, long dflt)
 		return dflt;
 	}
 
-	if (getlong(d->value, &val) == -1 || val < -1) {
+	if (str2sl(&val, d->value) == -1 || val < -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -352,7 +353,7 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
 		return dflt;
 	}
 
-	if (getulong(d->value, &val) == -1) {
+	if (str2ul(&val, d->value) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);

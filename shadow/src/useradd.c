@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include "alloc.h"
+#include "atoi/str2i.h"
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
@@ -239,6 +240,9 @@ static void create_home (void);
 static void create_mail (void);
 static void check_uid_range(int rflg, uid_t user_id);
 
+static FILE *fmkstemp(char *template);
+
+
 /*
  * fail_exit - undo as much as possible
  */
@@ -423,7 +427,7 @@ static void get_defaults (void)
 		 * Default Password Inactive value
 		 */
 		else if (MATCH (buf, DINACT)) {
-			if (   (getlong(ccp, &def_inactive) == -1)
+			if (   (str2sl(&def_inactive, ccp) == -1)
 			    || (def_inactive < -1)) {
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
@@ -531,7 +535,6 @@ static void show_defaults (void)
  */
 static int set_defaults (void)
 {
-	int   ofd;
 	int   ret = -1;
 	bool  out_group = false;
 	bool  out_groups = false;
@@ -565,7 +568,7 @@ static int set_defaults (void)
 			fprintf(stderr,
 			        _("%s: cannot create new defaults file: %s\n"),
 			        Prog, strerror(errno));
-			goto setdef_err;
+			goto err_free_new;
 		}
 	}
 
@@ -574,36 +577,27 @@ static int set_defaults (void)
 		fprintf (stderr,
 			_("%s: cannot create directory for defaults file\n"),
 			Prog);
-		goto setdef_err;
+		goto err_free_def;
 	}
 
 	ret = mkdir(dirname(new_file_dup), 0755);
+	free(new_file_dup);
 	if (-1 == ret && EEXIST != errno) {
 		fprintf (stderr,
 			_("%s: cannot create directory for defaults file\n"),
 			Prog);
-		free(new_file_dup);
-		goto setdef_err;
+		goto err_free_def;
 	}
-	free(new_file_dup);
 
 	/*
 	 * Create a temporary file to copy the new output to.
 	 */
-	ofd = mkstemp (new_file);
-	if (-1 == ofd) {
-		fprintf (stderr,
-		         _("%s: cannot create new defaults file\n"),
-		         Prog);
-		goto setdef_err;
-	}
-
-	ofp = fdopen (ofd, "w");
+	ofp = fmkstemp(new_file);
 	if (NULL == ofp) {
 		fprintf (stderr,
 		         _("%s: cannot open new defaults file\n"),
 		         Prog);
-		goto setdef_err;
+		goto err_free_def;
 	}
 
 	/*
@@ -629,8 +623,9 @@ static int set_defaults (void)
 				fprintf (stderr,
 				         _("%s: line too long in %s: %s..."),
 				         Prog, default_file, buf);
-				(void) fclose (ifp);
-				goto setdef_err;
+				fclose(ifp);
+				fclose(ofp);
+				goto err_free_def;
 			}
 		}
 
@@ -709,9 +704,10 @@ static int set_defaults (void)
 	(void) fflush (ofp);
 	if (   (ferror (ofp) != 0)
 	    || (fsync (fileno (ofp)) != 0)
-	    || (fclose (ofp) != 0)) {
+	    || (fclose (ofp) != 0))
+	{
 		unlink (new_file);
-		goto setdef_err;
+		goto err_free_def;
 	}
 
 	/*
@@ -725,7 +721,7 @@ static int set_defaults (void)
 		         _("%s: Cannot create backup file (%s): %s\n"),
 		         Prog, buf, strerror (err));
 		unlink (new_file);
-		goto setdef_err;
+		goto err_free_def;
 	}
 
 	/*
@@ -736,7 +732,7 @@ static int set_defaults (void)
 		fprintf (stderr,
 		         _("%s: rename: %s: %s\n"),
 		         Prog, new_file, strerror (err));
-		goto setdef_err;
+		goto err_free_def;
 	}
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_USYS_CONFIG, Prog,
@@ -751,11 +747,12 @@ static int set_defaults (void)
 	         def_inactive, def_expire, def_template,
 	         def_create_mail_spool, def_log_init));
 	ret = 0;
-    setdef_err:
-	free(new_file);
-	if (prefix[0]) {
+
+err_free_def:
+	if (prefix[0])
 		free(default_file);
-	}
+err_free_new:
+	free(new_file);
 
 	return ret;
 }
@@ -864,14 +861,14 @@ static int get_groups (char *list)
  */
 static struct group * get_local_group(char * grp_name)
 {
+	char  *end;
 	const struct group *grp;
 	struct group *result_grp = NULL;
 	long long  gid;
-	char *endptr;
 
-	gid = strtoll (grp_name, &endptr, 10);
+	gid = strtoll(grp_name, &end, 10);
 	if (   ('\0' != *grp_name)
-		&& ('\0' == *endptr)
+		&& ('\0' == *end)
 		&& (ERANGE != errno)
 		&& (gid == (gid_t)gid)) {
 		grp = gr_locate_gid (gid);
@@ -1304,7 +1301,7 @@ static void process_flags (int argc, char **argv)
 				eflg = true;
 				break;
 			case 'f':
-				if (   (getlong(optarg, &def_inactive) == -1)
+				if (   (str2sl(&def_inactive, optarg) == -1)
 				    || (def_inactive < -1)) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
@@ -2811,3 +2808,23 @@ int main (int argc, char **argv)
 	return rv;
 }
 
+
+static FILE *
+fmkstemp(char *template)
+{
+	int   fd;
+	FILE  *fp;
+
+	fd = mkstemp(template);
+	if (fd == -1)
+		return NULL;
+
+	fp = fdopen(fd, "w");
+	if (fp == NULL) {
+		close(fd);
+		unlink(template);
+		return NULL;
+	}
+
+	return fp;
+}
