@@ -41,6 +41,8 @@ Patch: %name-%version-%release.patch
 %def_enable man
 %endif
 
+%define lsubid_sovers 5
+
 # libbsd support for readpassphrase().
 # Using in-source implementation instead.
 %def_without libbsd
@@ -161,18 +163,18 @@ in user namespaces:
 * newuidmap: set the uid mapping of a user namespace;
 * newgidmap: set the gid mapping of a user namespace.
 
-%package -n libsubid
+%package -n libsubid%lsubid_sovers
 Summary: Subordinate id handling library
 Group: System/Libraries
 
-%description -n libsubid
+%description -n libsubid%lsubid_sovers
 The library provides an interface for querying, granding and ungranting
 subordinate user and group ids.
 
 %package -n libsubid-devel
 Summary: Development files for the subordinate id handling library
 Group: Development/C
-Requires: libsubid = %EVR
+Requires: libsubid%lsubid_sovers = %EVR
 
 %description -n libsubid-devel
 The library provides an interface for querying, granding and ungranting
@@ -447,8 +449,9 @@ rm -f %save_login_defs_file
 %_man5dir/subgid.*
 %endif
 
-%files -n libsubid
-%_libdir/libsubid.so.*
+%files -n libsubid%lsubid_sovers
+%_libdir/libsubid.so.%lsubid_sovers
+%_libdir/libsubid.so.%lsubid_sovers.*
 
 %files -n libsubid-devel
 %_libdir/libsubid.so
