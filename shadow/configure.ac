@@ -364,7 +364,11 @@ if test "$enable_lastlog" = "yes" && test "$ac_cv_header_lastlog_h" = "yes"; the
 	AC_CACHE_CHECK(for ll_host in struct lastlog,
 		ac_cv_struct_lastlog_ll_host,
 		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <lastlog.h>],
-					[struct lastlog ll; char *cp = ll.ll_host;]
+					[
+					 struct lastlog ll;
+					 #pragma GCC diagnostic ignored "-Wunused-variable"
+					 char *cp = ll.ll_host;
+					 ]
 				)],
 			[ac_cv_struct_lastlog_ll_host=yes],
 			[ac_cv_struct_lastlog_ll_host=no]
