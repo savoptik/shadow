@@ -224,7 +224,6 @@ This virtual package unifies all shadow suite subpackages.
 	--enable-lastlog \
 	%{?_with_pam:--with-tcb} \
 	%{?_with_pam:--with-libpam} \
-	--without-libcrack \
 	%{subst_with selinux} \
 	%{subst_with audit} \
 	%{subst_with btrfs} \
