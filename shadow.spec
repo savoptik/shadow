@@ -221,6 +221,7 @@ This virtual package unifies all shadow suite subpackages.
 %add_optflags -DEXTRA_CHECK_HOME_DIR
 %configure \
 	--disable-static \
+	--enable-lastlog \
 	%{?_with_pam:--with-tcb} \
 	%{?_with_pam:--with-libpam} \
 	--without-libcrack \
