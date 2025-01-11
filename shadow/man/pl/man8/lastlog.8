@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/18/2024
+.\"      Date: 01/11/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.16.0
+.\"    Source: shadow-utils 4.17.2
 .\"  Language: Polish
 .\"
-.TH "LASTLOG" "8" "06/18/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
+.TH "LASTLOG" "8" "01/11/2025" "shadow\-utils 4\&.17\&.2" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -98,6 +98,11 @@ The users can be specified by a login name, a numerical user ID, or a
 of users\&. This
 \fIRANGE\fR
 of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
+.RE
+.PP
+\fB\-a\fR
+.RS 4
+Print the lastlog records of the users that have logged in at least once\&. Excludes records for users with \*(Aq**Never logged in**\*(Aq\&.
 .RE
 .PP
 If the user has never logged in the message

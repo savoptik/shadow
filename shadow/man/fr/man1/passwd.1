@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 18/06/2024
+.\"      Date: 11/01/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.16.0
+.\"    Source: shadow-utils 4.17.2
 .\"  Language: French
 .\"
-.TH "PASSWD" "1" "18/06/2024" "shadow\-utils 4\&.16\&.0" "User Commands"
+.TH "PASSWD" "1" "11/01/2025" "shadow\-utils 4\&.17\&.2" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,7 +63,7 @@ Les compromissions de la s\('ecurit\('e des mots de passe r\('esultent le plus s
 .PP
 As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
 .PP
-Vous pouvez trouver des conseils sur la fa\(,con de choisir un mot de passe robuste sur http://en\&.wikipedia\&.org/wiki/Password_strength (en anglais)\&.
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "OPTIONS"
 .PP
 The options which apply to the
@@ -110,7 +110,7 @@ Verrouiller le mot de passe du compte indiqu\('e\&. Cette option d\('esactive un
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Les utilisateurs avec un mot de passe verrouill\('e ne sont pas autoris\('es \(`a le changer\&.
 .RE

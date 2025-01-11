@@ -30,8 +30,15 @@
 #include "shadowlog.h"
 #include <sys/resource.h>
 
-#include "atoi/str2i.h"
-#include "memzero.h"
+#include "atoi/a2i/a2i.h"
+#include "atoi/a2i/a2s.h"
+#include "atoi/str2i/str2i.h"
+#include "atoi/str2i/str2s.h"
+#include "atoi/str2i/str2u.h"
+#include "string/memset/memzero.h"
+#include "string/strchr/stpspn.h"
+#include "string/strcmp/streq.h"
+#include "typetraits.h"
 
 
 #ifndef LIMITS_FILE
@@ -49,9 +56,7 @@ static int setrlimit_value (unsigned int resource,
                             const char *value,
                             unsigned int multiplier)
 {
-	char           *end;
-	long           l;
-	rlim_t         limit;
+	rlim_t         l, limit;
 	struct rlimit  rlim;
 
 	/* The "-" is special, not belonging to a strange negative limit.
@@ -59,18 +64,13 @@ static int setrlimit_value (unsigned int resource,
 	 */
 	if ('-' == value[0]) {
 		limit = RLIM_INFINITY;
-	}
-	else {
-		/* We cannot use str2sl() here because it fails when there
-		 * is more to the value than just this number!
-		 * Also, we are limited to base 10 here (hex numbers will not
-		 * work with the limit string parser as is anyway)
-		 */
-		errno = 0;
-		l = strtol(value, &end, 10);
 
-		if (value == end || errno != 0)
+	} else {
+		if (a2i(rlim_t, &l, value, NULL, 10, 0, type_max(rlim_t)) == -1
+		    && errno != ENOTSUP)
+		{
 			return 0;  // FIXME: We could instead throw an error, though.
+		}
 
 		if (__builtin_mul_overflow(l, multiplier, &limit)) {
 			/* FIXME: Again, silent error handling...
@@ -89,14 +89,14 @@ static int setrlimit_value (unsigned int resource,
 }
 
 
-static int set_prio (const char *value)
+static int
+set_prio(const char *value)
 {
-	long prio;
+	int  prio;
 
-	if (   (str2sl(&prio, value) == -1)
-	    || (prio != (int) prio)) {
+	if (str2si(&prio, value) == -1)
 		return 0;
-	}
+
 	if (setpriority (PRIO_PROCESS, 0, prio) != 0) {
 		return LOGIN_ERROR_RLIMIT;
 	}
@@ -104,14 +104,13 @@ static int set_prio (const char *value)
 }
 
 
-static int set_umask (const char *value)
+static int
+set_umask(const char *value)
 {
-	unsigned long  mask;
+	mode_t  mask;
 
-	if (   (str2ul(&mask, value) == -1)
-	    || (mask != (mode_t) mask)) {
+	if (str2i(mode_t, &mask, value) == -1)
 		return 0;
-	}
 
 	(void) umask (mask);
 	return 0;
@@ -124,6 +123,10 @@ static int check_logins (const char *name, const char *maxlogins)
 	unsigned long limit, count;
 
 	if (str2ul(&limit, maxlogins) == -1) {
+		if (errno == ERANGE) {
+			SYSLOG((LOG_WARN, "Invalid maxlogins value\n"));
+			return LOGIN_ERROR_LOGIN;
+		}
 		return 0;
 	}
 
@@ -184,11 +187,7 @@ static int do_user_limits (const char *buf, const char *name)
 	int retval = 0;
 	bool reported = false;
 
-	pp = buf;
-	/* Skip leading whitespace. */
-	while ((' ' == *pp) || ('\t' == *pp)) {
-		pp++;
-	}
+	pp = stpspn(buf, " \t");
 
 	/* The special limit string "-" results in no limit for all known
 	 * limits.
@@ -196,7 +195,7 @@ static int do_user_limits (const char *buf, const char *name)
 	 * being ignored if a limit type is not known to the system.
 	 * Though, there will be complaining for unknown limit types.
 	 */
-	if (strcmp (pp, "-") == 0) {
+	if (streq(pp, "-")) {
 		/* Remember to extend this, too, when adding new limits!
 		 * Oh... but "unlimited" does not make sense for umask,
 		 * or does it? (K-)
@@ -204,7 +203,7 @@ static int do_user_limits (const char *buf, const char *name)
 		pp = "A- C- D- F- I- L- M- N- O- P- R- S- T- U-";
 	}
 
-	while ('\0' != *pp) {
+	while (!streq(pp, "")) {
 		switch (*pp++) {
 		case 'a':
 		case 'A':
@@ -312,12 +311,7 @@ static int do_user_limits (const char *buf, const char *name)
 		 * So, let's skip all digits, "-" and our limited set of
 		 * whitespace.
 		 */
-		while (   isdigit (*pp)
-		       || ('-'  == *pp)
-		       || (' '  == *pp)
-		       || ('\t' ==*pp)) {
-			pp++;
-		}
+		pp = stpspn(pp, "0123456789- \t");
 	}
 	return retval;
 }
@@ -402,10 +396,10 @@ static int setup_user_limits (const char *uname)
 		 */
 		if (sscanf (buf, "%s%[ACDFIKLMNOPRSTUacdfiklmnoprstu0-9 \t-]",
 		            name, tempbuf) == 2) {
-			if (strcmp (name, uname) == 0) {
+			if (streq(name, uname)) {
 				strcpy (limits, tempbuf);
 				break;
-			} else if (strcmp (name, "*") == 0) {
+			} else if (streq(name, "*")) {
 				strcpy (deflimits, tempbuf);
 			} else if (name[0] == '@') {
 				/* If the user is in the group, the group
@@ -419,9 +413,9 @@ static int setup_user_limits (const char *uname)
 		}
 	}
 	(void) fclose (fil);
-	if (limits[0] == '\0') {
+	if (streq(limits, "")) {
 		/* no user specific limits */
-		if (deflimits[0] == '\0') {	/* no default limits */
+		if (streq(deflimits, "")) {	/* no default limits */
 			return 0;
 		}
 		strcpy (limits, deflimits);	/* use the default limits */
@@ -443,7 +437,7 @@ static void setup_usergroups (const struct passwd *info)
 		/* local, no need for xgetgrgid */
 		grp = getgrgid (info->pw_gid);
 		if (   (NULL != grp)
-		    && (strcmp (info->pw_name, grp->gr_name) == 0)) {
+		    && streq(info->pw_name, grp->gr_name)) {
 			mode_t tmpmask;
 			tmpmask = umask (0777);
 			tmpmask = (tmpmask & ~070) | ((tmpmask >> 3) & 070);
@@ -484,10 +478,9 @@ void setup_limits (const struct passwd *info)
 			}
 
 			if (strncmp (cp, "pri=", 4) == 0) {
-				long  inc;
+				int  inc;
 
-				if (   (str2sl(&inc, cp + 4) == 0)
-				    && (inc >= -20) && (inc <= 20)) {
+				if (a2si(&inc, cp + 4, NULL, 0, -20, 20) == 0) {
 					errno = 0;
 					if (   (nice (inc) != -1)
 					    || (0 != errno)) {
@@ -503,9 +496,9 @@ void setup_limits (const struct passwd *info)
 				continue;
 			}
 			if (strncmp (cp, "ulimit=", 7) == 0) {
-				long  blocks;
-				if (   (str2sl(&blocks, cp + 7) == -1)
-				    || (blocks != (int) blocks)
+				int  blocks;
+
+				if (   (str2si(&blocks, cp + 7) == -1)
 				    || (set_filesize_limit (blocks) != 0)) {
 					SYSLOG ((LOG_WARN,
 					         "Can't set the ulimit for user %s",
@@ -514,10 +507,9 @@ void setup_limits (const struct passwd *info)
 				continue;
 			}
 			if (strncmp (cp, "umask=", 6) == 0) {
-				unsigned long  mask;
+				mode_t  mask;
 
-				if (   (str2ul(&mask, cp + 6) == -1)
-				    || (mask != (mode_t) mask)) {
+				if (str2i(mode_t, &mask, cp + 6) == -1) {
 					SYSLOG ((LOG_WARN,
 					         "Can't set umask value for user %s",
 					         info->pw_name));

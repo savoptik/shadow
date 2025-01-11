@@ -27,12 +27,10 @@
 #include <unistd.h>
 #include <utime.h>
 
-#include "alloc.h"
 #include "defines.h"
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "sgroupio.h"
@@ -44,7 +42,10 @@
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "sssd.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
 
 
 #define MSG_WARN_EDIT_OTHER_FILE _( \
@@ -389,7 +390,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		vipwexit (fileedit, 1, 1);
 	}
 	if (st1.st_mtime == st2.st_mtime) {
-		vipwexit (0, 0, 0);
+		vipwexit(NULL, 0, 0);
 	}
 #ifdef WITH_SELINUX
 	/* unset the fscreatecon */
@@ -446,7 +447,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 			free(to_rename);
 		}
 #endif				/* WITH_TCB */
-		vipwexit (0, 0, 1);
+		vipwexit(NULL, 0, 1);
 	}
 
 #ifdef WITH_TCB
@@ -471,7 +472,7 @@ int main (int argc, char **argv)
 	bool  editshadow = false;
 	bool  do_vigr;
 
-	do_vigr = (strcmp(Basename(argv[0]), "vigr") == 0);
+	do_vigr = streq(Basename(argv[0]), "vigr");
 
 	Prog = do_vigr ? "vigr" : "vipw";
 	log_set_progname(Prog);

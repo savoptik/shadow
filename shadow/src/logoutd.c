@@ -16,11 +16,15 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <utmpx.h>
+
 #include "defines.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 #include "sizeof.h"
-#include "string/zustr2stp.h"
+#include "string/strcpy/strncat.h"
+#include "string/strdup/strndupa.h"
+
+
 /*
  * Global variables
  */
@@ -46,22 +50,16 @@ static void send_mesg_to_tty (int tty_fd);
 static int
 check_login(const struct utmpx *ut)
 {
-	char    user[sizeof(ut->ut_user) + 1];
-	char    line[sizeof(ut->ut_line) + 1];
+	char    *user;
+	char    *line;
 	time_t  now;
 
-	ZUSTR2STP(user, ut->ut_user);
-	ZUSTR2STP(line, ut->ut_line);
+	user = STRNDUPA(ut->ut_user);
+	line = STRNDUPA(ut->ut_line);
 
-	(void) time (&now);
+	now = time(NULL);
 
-	/*
-	 * Check if they are allowed to be logged in right now.
-	 */
-	if (!isttytime(user, line, now)) {
-		return 0;
-	}
-	return 1;
+	return isttytime(user, line, now);
 }
 
 
@@ -118,14 +116,7 @@ static void send_mesg_to_tty (int tty_fd)
 int
 main(int argc, char **argv)
 {
-	int    i;
-	int    status;
 	pid_t  pid;
-
-	struct utmpx  *ut;
-	char          user[sizeof (ut->ut_user) + 1];	/* terminating NUL */
-	char          tty_name[sizeof (ut->ut_line) + 6];	/* /dev/ + NUL */
-	int           tty_fd;
 
 	if (1 != argc) {
 		(void) fputs (_("Usage: logoutd\n"), stderr);
@@ -136,7 +127,7 @@ main(int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 #ifndef DEBUG
-	for (i = 0; close (i) == 0; i++);
+	for (int i = 0; close(i) == 0; i++);
 
 	setpgrp ();
 
@@ -167,6 +158,7 @@ main(int argc, char **argv)
 	 * are not supposed to still be logged in.
 	 */
 	while (true) {
+		struct utmpx  *ut;
 
 		/*
 		 * Attempt to re-open the utmp file. The file is only
@@ -180,6 +172,9 @@ main(int argc, char **argv)
 		 * is permitted to be signed on at this time.
 		 */
 		while ((ut = getutxent()) != NULL) {
+			int   tty_fd;
+			char  tty_name[sizeof(ut->ut_line) + 6];  // /dev/ + NUL
+
 			if (ut->ut_type != USER_PROCESS) {
 				continue;
 			}
@@ -205,13 +200,12 @@ main(int argc, char **argv)
 			}
 			/* child */
 
-			if (strncmp (ut->ut_line, "/dev/", 5) != 0) {
-				strcpy (tty_name, "/dev/");
-			} else {
-				tty_name[0] = '\0';
-			}
+			if (strncmp(ut->ut_line, "/dev/", 5) != 0)
+				strcpy(tty_name, "/dev/");
+			else
+				strcpy(tty_name, "");
 
-			strncat(tty_name, ut->ut_line, NITEMS(ut->ut_line));
+			STRNCAT(tty_name, ut->ut_line);
 #ifndef O_NOCTTY
 #define O_NOCTTY 0
 #endif
@@ -229,10 +223,9 @@ main(int argc, char **argv)
 				kill (-ut->ut_pid, SIGKILL);
 			}
 
-			ZUSTR2STP(user, ut->ut_user);
-
 			SYSLOG ((LOG_NOTICE,
-				 "logged off user '%s' on '%s'", user,
+				 "logged off user '%s' on '%s'",
+			         STRNDUPA(ut->ut_user),
 				 tty_name));
 
 			/*
@@ -249,7 +242,7 @@ main(int argc, char **argv)
 		/*
 		 * Reap any dead babies ...
 		 */
-		while (wait (&status) != -1);
+		while (wait(NULL) != -1);
 	}
 
 	return EXIT_FAILURE;

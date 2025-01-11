@@ -16,9 +16,14 @@
 #include <grp.h>
 #include <string.h>
 
-#include "alloc.h"
+#include "alloc/malloc.h"
+#include "alloc/reallocf.h"
+#include "atoi/getnum.h"
 #include "defines.h"
 #include "prototypes.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
+
 
 #define	NFIELDS	4
 
@@ -50,7 +55,7 @@ list(char *s)
 				return NULL;
 			}
 		}
-		if (!s || s[0] == '\0')
+		if (!s || streq(s, ""))
 			break;
 		members[i++] = strsep(&s, ",");
 	}
@@ -80,16 +85,12 @@ struct group *sgetgrent (const char *buf)
 		}
 	}
 	strcpy (grpbuf, buf);
-
-	cp = strrchr (grpbuf, '\n');
-	if (NULL != cp) {
-		*cp = '\0';
-	}
+	stpsep(grpbuf, "\n");
 
 	for (cp = grpbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++)
 		grpfields[i] = strsep(&cp, ":");
 
-	if (i < (NFIELDS - 1) || *grpfields[2] == '\0' || cp != NULL) {
+	if (i < NFIELDS || streq(grpfields[2], "") || cp != NULL) {
 		return NULL;
 	}
 	grent.gr_name = grpfields[0];

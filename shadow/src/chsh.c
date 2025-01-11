@@ -17,21 +17,24 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include "alloc.h"
+#include "chkname.h"
 #include "defines.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "getdef.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif
-/*@-exitarg@*/
-#include "exitcodes.h"
 #include "shadowlog.h"
-#include "string/strtcpy.h"
+#include "sssd.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
+
 
 #ifndef SHELLS_FILE
 #define SHELLS_FILE "/etc/shells"
@@ -42,6 +45,7 @@
 #define SHELLS "shells"
 #define ETCDIR "/etc"
 #endif
+
 
 /*
  * Global variables
@@ -176,7 +180,7 @@ static bool shell_is_listed (const char *sh)
 	}
 
 	for (size_t i = 0; i < size; i++) {
-		if (strcmp (keys[i], sh) == 0) {
+		if (streq(keys[i], sh)) {
 			found = true;
 			break;
 		}
@@ -197,7 +201,7 @@ static bool shell_is_listed (const char *sh)
 	char *cp;
 	setusershell ();
 	while ((cp = getusershell ())) {
-		if (strcmp (cp, sh) == 0) {
+		if (streq(cp, sh)) {
 			found = true;
 			break;
 		}
@@ -218,7 +222,7 @@ static bool shell_is_listed (const char *sh)
 			continue;
 		}
 
-		if (strcmp (buf, sh) == 0) {
+		if (streq(buf, sh)) {
 			found = true;
 			break;
 		}
@@ -498,6 +502,10 @@ int main (int argc, char **argv)
 	 * name, or the name getlogin() returns.
 	 */
 	if (optind < argc) {
+		if (!is_valid_user_name (argv[optind])) {
+			fprintf (stderr, _("%s: Provided user name is not a valid name\n"), Prog);
+			fail_exit (1);
+		}
 		user = argv[optind];
 		pw = xgetpwnam (user);
 		if (NULL == pw) {

@@ -15,14 +15,16 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <getopt.h>
+
 #include "chkname.h"
 #include "commonio.h"
 #include "defines.h"
 #include "groupio.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "sssd.h"
+#include "string/strcmp/streq.h"
 
 #ifdef SHADOWGRP
 #include "sgroupio.h"
@@ -436,7 +438,7 @@ static void compare_members_lists (const char *groupname,
 
 	for (pmem = members; NULL != *pmem; pmem++) {
 		for (other_pmem = other_members; NULL != *other_pmem; other_pmem++) {
-			if (strcmp (*pmem, *other_pmem) == 0) {
+			if (streq(*pmem, *other_pmem)) {
 				break;
 			}
 		}
@@ -535,7 +537,7 @@ static void check_grp_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (grp->gr_name, ent->gr_name) != 0) {
+			if (!streq(grp->gr_name, ent->gr_name)) {
 				continue;
 			}
 
@@ -578,7 +580,8 @@ static void check_grp_file (int *errors, bool *changed)
 		 */
 		if (   (NULL != grp->gr_mem[0])
 		    && (NULL == grp->gr_mem[1])
-		    && ('\0' == grp->gr_mem[0][0])) {
+		    && streq(grp->gr_mem[0], ""))
+		{
 			grp->gr_mem[0] = NULL;
 		}
 
@@ -647,7 +650,7 @@ static void check_grp_file (int *errors, bool *changed)
 				/* The group entry has a gshadow counterpart.
 				 * Make sure no passwords are in group.
 				 */
-				if (strcmp (grp->gr_passwd, SHADOW_PASSWD_STRING) != 0) {
+				if (!streq(grp->gr_passwd, SHADOW_PASSWD_STRING)) {
 					printf (_("group %s has an entry in %s, but its password field in %s is not set to 'x'\n"),
 					        grp->gr_name, sgr_file, grp_file);
 					*errors += 1;
@@ -737,7 +740,7 @@ static void check_sgr_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (sgr->sg_name, ent->sg_name) != 0) {
+			if (!streq(sgr->sg_name, ent->sg_name)) {
 				continue;
 			}
 

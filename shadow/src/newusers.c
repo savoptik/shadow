@@ -30,28 +30,32 @@
 #include <errno.h>
 #include <string.h>
 
-#include "alloc.h"
-#include "atoi/str2i.h"
+#include "alloc/reallocf.h"
+#include "atoi/getnum.h"
+#include "atoi/str2i/str2s.h"
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
-#include "prototypes.h"
+#include "chkname.h"
 #include "defines.h"
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
-#include "sssd.h"
+#include "prototypes.h"
 #include "pwio.h"
 #include "sgroupio.h"
 #include "shadowio.h"
 #ifdef ENABLE_SUBIDS
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
-#include "chkname.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "sssd.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+#include "string/strtok/stpsep.h"
 
 
 /*
@@ -278,7 +282,7 @@ static int add_group (const char *name, const char *gid, gid_t *ngid, uid_t uid)
 	/*
 	 * Now I have all of the fields required to create the new group.
 	 */
-	if (('\0' != gid[0]) && (!isdigit (gid[0]))) {
+	if (!streq(gid, "") && (!isdigit(gid[0]))) {
 		grent.gr_name = xstrdup (gid);
 	} else {
 		grent.gr_name = xstrdup (name);
@@ -351,7 +355,7 @@ static int get_user_id (const char *uid, uid_t *nuid) {
 			return -1;
 		}
 	} else {
-		if ('\0' != uid[0]) {
+		if (!streq(uid, "")) {
 			const struct passwd *pwd;
 			/* local, no need for xgetpwnam */
 			pwd = getpwnam (uid);
@@ -383,10 +387,16 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 	struct passwd pwent;
 
 	/* Check if this is a valid user name */
-	if (!is_valid_user_name (name)) {
-		fprintf (stderr,
-		         _("%s: invalid user name '%s': use --badname to ignore\n"),
-		         Prog, name);
+	if (!is_valid_user_name(name)) {
+		if (errno == EINVAL) {
+			fprintf(stderr,
+			        _("%s: invalid user name '%s': use --badname to ignore\n"),
+			        Prog, name);
+		} else {
+			fprintf(stderr,
+			        _("%s: invalid user name '%s'\n"),
+			        Prog, name);
+		}
 		return -1;
 	}
 
@@ -419,29 +429,29 @@ static int update_passwd (struct passwd *pwd, const char *password)
 	if (NULL != crypt_method) {
 #if defined(USE_SHA_CRYPT)
 		if (sflg) {
-			if (   (0 == strcmp (crypt_method, "SHA256"))
-				|| (0 == strcmp (crypt_method, "SHA512"))) {
+			if (   streq(crypt_method, "SHA256")
+				|| streq(crypt_method, "SHA512")) {
 				crypt_arg = &sha_rounds;
 			}
 		}
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
 		if (sflg) {
-			if (0 == strcmp (crypt_method, "BCRYPT")) {
+			if (streq(crypt_method, "BCRYPT")) {
 				crypt_arg = &bcrypt_rounds;
 			}
 		}
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
 		if (sflg) {
-			if (0 == strcmp (crypt_method, "YESCRYPT")) {
+			if (streq(crypt_method, "YESCRYPT")) {
 				crypt_arg = &yescrypt_cost;
 			}
 		}
 #endif				/* USE_YESCRYPT */
 	}
 
-	if ((NULL != crypt_method) && (0 == strcmp(crypt_method, "NONE"))) {
+	if ((NULL != crypt_method) && streq(crypt_method, "NONE")) {
 		pwd->pw_passwd = (char *)password;
 	} else {
 		const char *salt = crypt_make_salt (crypt_method, crypt_arg);
@@ -475,22 +485,23 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	if (NULL != crypt_method) {
 #if defined(USE_SHA_CRYPT)
 		if (sflg) {
-			if (   (0 == strcmp (crypt_method, "SHA256"))
-				|| (0 == strcmp (crypt_method, "SHA512"))) {
+			if (streq(crypt_method, "SHA256")
+			    || streq(crypt_method, "SHA512"))
+			{
 				crypt_arg = &sha_rounds;
 			}
 		}
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
 		if (sflg) {
-			if (0 == strcmp (crypt_method, "BCRYPT")) {
+			if (streq(crypt_method, "BCRYPT")) {
 				crypt_arg = &bcrypt_rounds;
 			}
 		}
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
 		if (sflg) {
-			if (0 == strcmp (crypt_method, "YESCRYPT")) {
+			if (streq(crypt_method, "YESCRYPT")) {
 				crypt_arg = &yescrypt_cost;
 			}
 		}
@@ -516,7 +527,8 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	if (NULL != sp) {
 		spent = *sp;
 		if (   (NULL != crypt_method)
-		    && (0 == strcmp(crypt_method, "NONE"))) {
+		    && streq(crypt_method, "NONE"))
+		{
 			spent.sp_pwdp = (char *)password;
 		} else {
 			const char *salt = crypt_make_salt (crypt_method,
@@ -545,7 +557,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 * when the entry was created, so this user would have to have had
 	 * the password set someplace else.
 	 */
-	if (strcmp (pwd->pw_passwd, "x") != 0) {
+	if (!streq(pwd->pw_passwd, "x")) {
 		return update_passwd (pwd, password);
 	}
 #else				/* USE_PAM */
@@ -556,7 +568,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 * The password will be updated later for all users using PAM.
 	 */
 	if (   (NULL != sp)
-	    || (strcmp (pwd->pw_passwd, "x") != 0)) {
+	    || !streq(pwd->pw_passwd, "x")) {
 		return 0;
 	}
 #endif				/* USE_PAM */
@@ -567,7 +579,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 */
 	spent.sp_namp = pwd->pw_name;
 #ifndef USE_PAM
-	if ((crypt_method != NULL) && (0 == strcmp(crypt_method, "NONE"))) {
+	if ((crypt_method != NULL) && streq(crypt_method, "NONE")) {
 		spent.sp_pwdp = (char *)password;
 	} else {
 		const char *salt = crypt_make_salt (crypt_method, crypt_arg);
@@ -673,19 +685,19 @@ static void process_flags (int argc, char **argv)
 				usage (EXIT_FAILURE);
 			}
 #if defined(USE_SHA_CRYPT)
-			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
+			if (  (   (streq(crypt_method, "SHA256") || streq(crypt_method, "SHA512"))
 			       && (-1 == str2sl(&sha_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "BCRYPT"))
+                        if ((   streq(crypt_method, "BCRYPT")
 			       && (-1 == str2sl(&bcrypt_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
+                        if ((   streq(crypt_method, "YESCRYPT")
 			       && (-1 == str2sl(&yescrypt_cost, optarg)))) {
                             bad_s = 1;
                         }
@@ -742,18 +754,18 @@ static void check_flags (void)
 #endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 
 	if (cflg) {
-		if (   (0 != strcmp (crypt_method, "DES"))
-		    && (0 != strcmp (crypt_method, "MD5"))
-		    && (0 != strcmp (crypt_method, "NONE"))
+		if (   !streq(crypt_method, "DES")
+		    && !streq(crypt_method, "MD5")
+		    && !streq(crypt_method, "NONE")
 #ifdef USE_SHA_CRYPT
-		    && (0 != strcmp (crypt_method, "SHA256"))
-		    && (0 != strcmp (crypt_method, "SHA512"))
+		    && !streq(crypt_method, "SHA256")
+		    && !streq(crypt_method, "SHA512")
 #endif				/* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
-		    && (0 != strcmp (crypt_method, "BCRYPT"))
+		    && !streq(crypt_method, "BCRYPT")
 #endif				/* USE_BCRYPT */
 #ifdef USE_YESCRYPT
-		    && (0 != strcmp (crypt_method, "YESCRYPT"))
+		    && !streq(crypt_method, "YESCRYPT")
 #endif				/* USE_YESCRYPT */
 		    ) {
 			fprintf (stderr,
@@ -1099,14 +1111,10 @@ int main (int argc, char **argv)
 	 */
 	while (fgets (buf, sizeof buf, stdin) != NULL) {
 		line++;
-		cp = strrchr (buf, '\n');
-		if (cp == NULL && feof (stdin) == 0) {
+		if (stpsep(buf, "\n") == NULL && feof(stdin) == 0) {
 			fprintf (stderr, _("%s: line %d: line too long\n"),
 				 Prog, line);
 			fail_exit (EXIT_FAILURE);
-		}
-		if (cp != NULL) {
-			*cp = '\0';
 		}
 
 		/*
@@ -1115,13 +1123,9 @@ int main (int argc, char **argv)
 		 * values aren't that particular.
 		 */
 		for (cp = buf, nfields = 0; nfields < 7; nfields++) {
-			fields[nfields] = cp;
-			cp = strchr (cp, ':');
+			fields[nfields] = strsep(&cp, ":");
 			if (cp == NULL)
 				break;
-
-			*cp = '\0';
-			cp++;
 		}
 		if (nfields != 6) {
 			fprintf (stderr, _("%s: line %d: invalid line\n"),
@@ -1209,8 +1213,8 @@ int main (int argc, char **argv)
 			fail_exit (EXIT_FAILURE);
 		}
 		lines[nusers-1]     = line;
-		usernames[nusers-1] = strdup (fields[0]);
-		passwords[nusers-1] = strdup (fields[1]);
+		usernames[nusers-1] = xstrdup(fields[0]);
+		passwords[nusers-1] = xstrdup(fields[1]);
 #endif				/* USE_PAM */
 		if (add_passwd (&newpw, fields[1]) != 0) {
 			fprintf (stderr,
@@ -1218,19 +1222,19 @@ int main (int argc, char **argv)
 			         Prog, line);
 			fail_exit (EXIT_FAILURE);
 		}
-		if ('\0' != fields[4][0]) {
+		if (!streq(fields[4], "")) {
 			newpw.pw_gecos = fields[4];
 		}
 
-		if ('\0' != fields[5][0]) {
+		if (!streq(fields[5], "")) {
 			newpw.pw_dir = fields[5];
 		}
 
-		if ('\0' != fields[6][0]) {
+		if (!streq(fields[6], "")) {
 			newpw.pw_shell = fields[6];
 		}
 
-		if (   ('\0' != fields[5][0])
+		if (   !streq(fields[5], "")
 		    && (access (newpw.pw_dir, F_OK) != 0)) {
 /* FIXME: should check for directory */
 			mode_t mode = getdef_num ("HOME_MODE",

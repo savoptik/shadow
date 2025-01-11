@@ -25,22 +25,24 @@
 #include <sys/ioctl.h>
 #include <assert.h>
 
-#include "alloc.h"
+#include "alloc/x/xmalloc.h"
 #include "attr.h"
 #include "chkname.h"
 #include "defines.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "faillog.h"
 #include "failure.h"
 #include "getdef.h"
-#include "memzero.h"
 #include "prototypes.h"
 #include "pwauth.h"
-/*@-exitarg@*/
-#include "exitcodes.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
 #include "string/strftime.h"
-#include "string/strtcpy.h"
 
 
 #ifdef USE_PAM
@@ -268,7 +270,7 @@ static void process_flags (int argc, char *const *argv)
 		if (argv[arg][0] == '-' && strlen (argv[arg]) > 2) {
 			usage ();
 		}
-		if (strcmp(argv[arg], "--") == 0) {
+		if (streq(argv[arg], "--")) {
 			break; /* stop checking on a "--" */
 		}
 	}
@@ -420,7 +422,7 @@ static /*@observer@*/const char *get_failent_user (/*@returned@*/const char *use
 	const char *failent_user = "UNKNOWN";
 	bool log_unkfail_enab = getdef_bool("LOG_UNKFAIL_ENAB");
 
-	if ((NULL != user) && ('\0' != user[0])) {
+	if ((NULL != user) && !streq(user, "")) {
 		if (   log_unkfail_enab
 		    || (getpwnam (user) != NULL)) {
 			failent_user = user;
@@ -587,13 +589,13 @@ int main (int argc, char **argv)
 
 	if (hflg) {
 		cp = hostname;
-	} else if ((host != NULL) && (host[0] != '\0')) {
+	} else if ((host != NULL) && !streq(host, "")) {
 		cp = host;
 	} else {
 		cp = "";
 	}
 
-	if ('\0' != *cp) {
+	if (!streq(cp, "")) {
 		SNPRINTF(fromhost, " on '%.100s' from '%.200s'", tty, cp);
 	} else {
 		SNPRINTF(fromhost, " on '%.100s'", tty);
@@ -659,7 +661,7 @@ int main (int argc, char **argv)
 		/* if we didn't get a user on the command line,
 		   set it to NULL */
 		get_pam_user (&pam_user);
-		if ((NULL != pam_user) && ('\0' == pam_user[0])) {
+		if ((NULL != pam_user) && streq(pam_user, "")) {
 			retcode = pam_set_item (pamh, PAM_USER, NULL);
 			PAM_FAIL_CHECK;
 		}
@@ -834,10 +836,9 @@ int main (int argc, char **argv)
 			}
 			preauth_flag = false;
 			username = XMALLOC(max_size, char);
-			username[max_size - 1] = '\0';
 			login_prompt(username, max_size);
 
-			if ('\0' == username[0]) {
+			if (streq(username, "")) {
 				/* Prompt for a new login */
 				free (username);
 				username = NULL;
@@ -864,22 +865,22 @@ int main (int argc, char **argv)
 				failed = true;
 			}
 
-			if (strcmp (user_passwd, "") == 0) {
+			if (streq(user_passwd, "")) {
 				const char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
 
 				if (prevent_no_auth == NULL) {
 					prevent_no_auth = "superuser";
 				}
-				if (strcmp(prevent_no_auth, "yes") == 0) {
+				if (streq(prevent_no_auth, "yes")) {
 					failed = true;
 				} else if ((pwd->pw_uid == 0)
-					&& (strcmp(prevent_no_auth, "superuser") == 0)) {
+					&& streq(prevent_no_auth, "superuser")) {
 					failed = true;
 				}
 			}
 		}
 
-		if (strcmp (user_passwd, SHADOW_PASSWD_STRING) == 0) {
+		if (streq(user_passwd, SHADOW_PASSWD_STRING)) {
 			spwd = xgetspnam (username);
 			if (NULL != spwd) {
 				user_passwd = spwd->sp_pwdp;
@@ -924,7 +925,7 @@ int main (int argc, char **argv)
 			failed = true;
 		}
 		if (   !failed
-		    && !login_access (username, ('\0' != *hostname) ? hostname : tty)) {
+		    && !login_access(username, (!streq(hostname, "")) ? hostname : tty)) {
 			SYSLOG ((LOG_WARN, "LOGIN '%s' REFUSED %s",
 			         username, fromhost));
 			failed = true;
@@ -962,7 +963,7 @@ int main (int argc, char **argv)
 		 * guys won't see that the passwordless account exists at
 		 * all).  --marekm
 		 */
-		if (user_passwd[0] == '\0') {
+		if (streq(user_passwd, "")) {
 			pw_auth ("!", username, reason, NULL);
 		}
 

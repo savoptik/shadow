@@ -2,12 +2,12 @@
 .\"     Title: groupmod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 18/06/2024
+.\"      Date: 11/01/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.16.0
+.\"    Source: shadow-utils 4.17.2
 .\"  Language: Ukrainian
 .\"
-.TH "groupmod" "8" "18/06/2024" "shadow\-utils 4\&.16\&.0" "System Management Commands"
+.TH "groupmod" "8" "11/01/2025" "shadow\-utils 4\&.17\&.2" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -45,7 +45,7 @@ The options which apply to the
 \fBgroupmod\fR
 command are:
 .PP
-\fB\-a\fR, \fB\-\-append\fR\ \&\fIGID\fR
+\fB\-a\fR, \fB\-\-append\fR
 .RS 4
 Учасників групи вказують за допомогою параметра \-U\&. Записи буде дописано до наявного списку учасників, а не використано для заміни цього списку\&.
 .RE
@@ -131,11 +131,11 @@ directory\&. This option does not chroot and is intended for preparing a cross\-
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-Список імен користувачів, яких слід додати як учасників групи\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
-\fB\-g\fR,
-\fB\-N\fR, and
+\fB\-g\fR
+and
 \fB\-U\fR
 options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR

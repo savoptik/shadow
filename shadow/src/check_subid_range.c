@@ -6,27 +6,32 @@
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "atoi/str2i.h"
+#include "atoi/getnum.h"
+#include "atoi/str2i/str2u.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "subordinateio.h"
 #include "idmapping.h"
 #include "shadowlog.h"
 
+
 static const char Prog[] = "check_subid_range";
 
-int main(int argc, char **argv)
+
+int
+main(int argc, char **argv)
 {
-	char *owner;
-	unsigned long start, count;
-	bool check_uids;
+	bool           check_uids;
+	char           *owner;
+	uid_t          start;
+	unsigned long  count;
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -35,8 +40,7 @@ int main(int argc, char **argv)
 
 	owner = argv[1];
 	check_uids = argv[2][0] == 'u';
-	errno = 0;
-	if (str2ul(&start, argv[3]) == -1)
+	if (get_uid(argv[3], &start) == -1)
 		exit(1);
 	if (str2ul(&count, argv[4]) == -1)
 		exit(1);

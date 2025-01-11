@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.15\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-06-18 16:40-0500\n"
+"POT-Creation-Date: 2025-01-11 09:35-0600\n"
 "PO-Revision-Date: 2011-11-25 20:20+0100\n"
 "Last-Translator: Fred Ulisses Maranhão <fred.maranhao@gmail.com>\n"
 "Language-Team: Debian-BR Project <debian-l10n-portuguese@lists.debian.org>\n"
@@ -536,10 +536,6 @@ msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: Não foi possível ler o link simbólico %s: %s\n"
 
 #, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: link simbólico longo suspeito: %s\n"
-
-#, c-format
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: não foi possível criar o diretório %s: %s\n"
 
@@ -881,6 +877,11 @@ msgstr "%s: '%s' contém caracteres não-ASCII\n"
 #, c-format
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: '%s' contém caracteres ilegais\n"
+
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: '%s' não é um nome de grupo válido\n"
 
 #, c-format
 msgid "%s: user '%s' does not exist\n"
@@ -1406,10 +1407,6 @@ msgid "%s: invalid group name '%s'\n"
 msgstr "%s: nome de grupo '%s' inválido\n"
 
 #, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s : usuário %s desconhecido\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options] [group [gshadow]]\n"
 "\n"
@@ -1516,12 +1513,6 @@ msgstr "%s : nenhuma mudança\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: não é possível apagar %s\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Uso : id [-a]\n"
-
-msgid " groups="
-msgstr " grupos="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1556,6 +1547,16 @@ msgid ""
 msgstr ""
 "  -u, --user LOGIN              imprime registro lastlog para usuário com\n"
 "                                LOGIN especificado\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
+msgstr ""
+"  -a, --all                     mostrar registros de faillog de todos os "
+"usuários\n"
 
 #, fuzzy, c-format
 #| msgid "Username                Port     Latest"
@@ -1753,6 +1754,11 @@ msgstr "Senha inválida.\n"
 msgid "%s: failure forking: %s\n"
 msgstr "%s: falha ramificando: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: '%s' não é um nome de grupo válido\n"
+
 #, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: GID '%lu' não existe\n"
@@ -1794,6 +1800,10 @@ msgstr "%s: ID de usuário '%s' inválido\n"
 #, fuzzy, c-format
 #| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
+msgstr "%s : nome de usuário '%s' inválido\n"
+
+#, c-format
+msgid "%s: invalid user name '%s'\n"
 msgstr "%s : nome de usuário '%s' inválido\n"
 
 #, c-format
@@ -2071,6 +2081,11 @@ msgstr "entrada de senha duplicada"
 msgid "invalid user name '%s': use --badname to ignore\n"
 msgstr "%s : nome de usuário '%s' inválido\n"
 
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s'\n"
+msgstr "%s : nome de usuário '%s' inválido\n"
+
 #, c-format
 msgid "invalid user ID '%lu'\n"
 msgstr "ID de usuário '%lu' inválido\n"
@@ -2298,14 +2313,15 @@ msgstr "Entrando em Modo de Manutenção do Sistema"
 msgid "%s: %s was created, but could not be removed\n"
 msgstr "%s: %s foi criado, mas não pode ser removido\n"
 
-#, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
 msgstr "%s: a configuração %s em %s será ignorada\n"
 
 #, fuzzy, c-format
 #| msgid "%s: the %s configuration in %s will be ignored\n"
 msgid ""
-"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
 "group\n"
 msgstr "%s: a configuração %s em %s será ignorada\n"
 
@@ -3031,19 +3047,19 @@ msgid "failed to rename mailbox"
 msgstr "falha ao renomear caixa-postal"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: falha ao preparar a nova entrada %s '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: falha ao preparar a nova entrada %s '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: falha ao preparar a nova entrada %s '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: falha ao preparar a nova entrada %s '%s'\n"
 
 #, c-format
@@ -3140,6 +3156,10 @@ msgstr "%s: falha ao procurar o diretório tcb para %s\n"
 #~ msgstr "Overflow de ambiente\n"
 
 #, c-format
+#~ msgid "%s: Suspiciously long symlink: %s\n"
+#~ msgstr "%s: link simbólico longo suspeito: %s\n"
+
+#, c-format
 #~ msgid "%s: cannot change user '%s' on NIS client.\n"
 #~ msgstr "%s: não foi possível mudar o usuário '%s' no cliente NIS.\n"
 
@@ -3158,6 +3178,16 @@ msgstr "%s: falha ao procurar o diretório tcb para %s\n"
 #, c-format
 #~ msgid "%s: group %s is a NIS group\n"
 #~ msgstr "%s : grupo %s é um grupo NIS\n"
+
+#, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s : usuário %s desconhecido\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Uso : id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " grupos="
 
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
@@ -3197,10 +3227,6 @@ msgstr "%s: falha ao procurar o diretório tcb para %s\n"
 #, c-format
 #~ msgid "Last login: %.19s on %s"
 #~ msgstr "Último login : %.19s em %s"
-
-#, c-format
-#~ msgid "%s: invalid user name '%s'\n"
-#~ msgstr "%s : nome de usuário '%s' inválido\n"
 
 #, c-format
 #~ msgid "%s: password expiry information changed.\n"

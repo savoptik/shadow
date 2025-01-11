@@ -32,16 +32,18 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include "alloc.h"
-#include "atoi/str2i.h"
+#include "alloc/malloc.h"
+#include "alloc/x/xmalloc.h"
+#include "atoi/a2i/a2i.h"
+#include "atoi/a2i/a2s.h"
+#include "atoi/getnum.h"
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
 #include "getdef.h"
 #include "groupio.h"
-#include "memzero.h"
+#include "must_be.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -59,7 +61,11 @@
 #include "tcbfuncs.h"
 #endif
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "sssd.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
 #include "time/day_to_str.h"
 
 
@@ -212,7 +218,6 @@ extern int allow_bad_names;
  */
 static int get_groups (char *list)
 {
-	char *cp;
 	struct group *grp;
 	int errors = 0;
 	int ngroups = 0;
@@ -222,7 +227,7 @@ static int get_groups (char *list)
 	 */
 	user_groups[0] = NULL;
 
-	if ('\0' == *list) {
+	if (streq(list, "")) {
 		return 0;
 	}
 
@@ -231,21 +236,19 @@ static int get_groups (char *list)
 	 * name and look it up. A mix of numerical and string values for
 	 * group identifiers is permitted.
 	 */
-	do {
+	while (NULL != list) {
+		char  *g;
+
 		/*
 		 * Strip off a single name from the list
 		 */
-		cp = strchr (list, ',');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		}
+		g = strsep(&list, ",");
 
 		/*
 		 * Names starting with digits are treated as numerical GID
 		 * values, otherwise the string is looked up as is.
 		 */
-		grp = prefix_getgr_nam_gid (list);
+		grp = prefix_getgr_nam_gid(g);
 
 		/*
 		 * There must be a match, either by GID value or by
@@ -253,10 +256,9 @@ static int get_groups (char *list)
 		 */
 		if (NULL == grp) {
 			fprintf (stderr, _("%s: group '%s' does not exist\n"),
-			         Prog, list);
+			         Prog, g);
 			errors++;
 		}
-		list = cp;
 
 		/*
 		 * If the group doesn't exist, don't dump core. Instead,
@@ -279,7 +281,7 @@ static int get_groups (char *list)
 		 */
 		user_groups[ngroups++] = xstrdup (grp->gr_name);
 		gr_free (grp);
-	} while (NULL != list);
+	}
 
 	user_groups[ngroups] = NULL;
 
@@ -294,63 +296,64 @@ static int get_groups (char *list)
 }
 
 #ifdef ENABLE_SUBIDS
-struct ulong_range
+struct id_range
 {
-	unsigned long first;
-	unsigned long last;
+	id_t  first;
+	id_t  last;
 };
 
-static struct ulong_range getulong_range(const char *str)
+static struct id_range
+getid_range(const char *str)
 {
-	struct ulong_range result = { .first = ULONG_MAX, .last = 0 };
-	long long first, last;
-	char *pos;
+	id_t             first, last;
+	const char       *pos;
+	struct id_range  result = {
+		.first = type_max(id_t),
+		.last = type_min(id_t)
+	};
 
-	errno = 0;
-	first = strtoll(str, &pos, 10);
-	if (('\0' == *str) || ('-' != *pos ) || (0 != errno) ||
-	    (first != (unsigned long)first))
-		goto out;
+	static_assert(is_same_type(id_t, uid_t), "");
+	static_assert(is_same_type(id_t, gid_t), "");
 
-	errno = 0;
-	last = strtoll(pos + 1, &pos, 10);
-	if (('\0' != *pos ) || (0 != errno) ||
-	    (last != (unsigned long)last))
-		goto out;
+	first = type_min(id_t);
+	last = type_max(id_t);
 
-	if (first > last)
-		goto out;
+	if (a2i(id_t, &first, str, &pos, 10, first, last) == -1
+	    && errno != ENOTSUP)
+	{
+		return result;
+	}
 
-	/*
-	 * uid_t in linux is an unsigned int, anything over this is an invalid
-	 * range will be later refused anyway by get_map_ranges().
-	 */
-	if (first > UINT_MAX || last > UINT_MAX)
-		goto out;
+	if ('-' != *pos++)
+		return result;
 
-	result.first = (unsigned long)first;
-	result.last = (unsigned long)last;
-out:
+	if (a2i(id_t, &last, pos, NULL, 10, first, last) == -1)
+		return result;
+
+	result.first = first;
+	result.last = last;
 	return result;
 }
 
-struct ulong_range_list_entry {
-	struct ulong_range_list_entry *next;
-	struct ulong_range range;
+struct id_range_list_entry {
+	struct id_range_list_entry  *next;
+	struct id_range             range;
 };
 
-static struct ulong_range_list_entry *add_sub_uids = NULL, *del_sub_uids = NULL;
-static struct ulong_range_list_entry *add_sub_gids = NULL, *del_sub_gids = NULL;
+static struct id_range_list_entry  *add_sub_uids = NULL, *del_sub_uids = NULL;
+static struct id_range_list_entry  *add_sub_gids = NULL, *del_sub_gids = NULL;
 
-static int prepend_range(const char *str, struct ulong_range_list_entry **head)
+static int
+prepend_range(const char *str, struct id_range_list_entry **head)
 {
-	struct ulong_range range;
-	struct ulong_range_list_entry *entry;
-	range = getulong_range(str);
+	struct id_range             range;
+	struct id_range_list_entry  *entry;
+
+	range = getid_range(str);
 	if (range.first > range.last)
 		return 0;
 
-	entry = MALLOC(1, struct ulong_range_list_entry);
+	entry = MALLOC(1, struct id_range_list_entry);
 	if (!entry) {
 		fprintf (stderr,
 			_("%s: failed to allocate memory: %s\n"),
@@ -424,15 +427,14 @@ usage (int status)
 static char *new_pw_passwd (char *pw_pass)
 {
 	if (Lflg && ('!' != pw_pass[0])) {
-		char *buf = XMALLOC(strlen(pw_pass) + 2, char);
+		char  *buf;
 
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
 		              "updating passwd", user_newname, user_newid, 0);
 #endif
 		SYSLOG ((LOG_INFO, "lock user '%s' password", user_newname));
-		strcpy (buf, "!");
-		strcat (buf, pw_pass);
+		xasprintf(&buf, "!%s", pw_pass);
 		pw_pass = buf;
 	} else if (Uflg && pw_pass[0] == '!') {
 		if (pw_pass[1] == '\0') {
@@ -494,7 +496,7 @@ static void new_pwent (struct passwd *pwent)
 	 * used for this account.
 	 */
 	if (   (!is_shadow_pwd)
-	    || (strcmp (pwent->pw_passwd, SHADOW_PASSWD_STRING) != 0)) {
+	    || !streq(pwent->pw_passwd, SHADOW_PASSWD_STRING)) {
 		pwent->pw_passwd = new_pw_passwd (pwent->pw_passwd);
 	}
 
@@ -981,7 +983,8 @@ static void grp_update (void)
  *	values that the user will be created with accordingly. The values
  *	are checked for sanity.
  */
-static void process_flags (int argc, char **argv)
+static void
+process_flags(int argc, char **argv)
 {
 	struct stat st;
 	bool anyflag = false;
@@ -1060,7 +1063,7 @@ static void process_flags (int argc, char **argv)
 				}
 				dflg = true;
 				user_newhome = optarg;
-				if (user_newhome[0] != '/') {
+				if ((user_newhome[0] != '/') && !streq(user_newhome, "")) {
 					fprintf (stderr,
 					         _("%s: homedir must be an absolute path\n"),
 					         Prog);
@@ -1078,8 +1081,9 @@ static void process_flags (int argc, char **argv)
 				eflg = true;
 				break;
 			case 'f':
-				if (   (str2sl(&user_newinactive, optarg) == -1)
-				    || (user_newinactive < -1)) {
+				if (a2sl(&user_newinactive, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -1113,10 +1117,16 @@ static void process_flags (int argc, char **argv)
 				usage (E_SUCCESS);
 				/*@notreached@*/break;
 			case 'l':
-				if (!is_valid_user_name (optarg)) {
-					fprintf (stderr,
-					         _("%s: invalid user name '%s': use --badname to ignore\n"),
-					         Prog, optarg);
+				if (!is_valid_user_name(optarg)) {
+					if (errno == EINVAL) {
+						fprintf(stderr,
+						        _("%s: invalid user name '%s': use --badname to ignore\n"),
+						        Prog, optarg);
+					} else {
+						fprintf(stderr,
+						        _("%s: invalid user name '%s'\n"),
+						        Prog, optarg);
+					}
 					exit (E_BAD_ARG);
 				}
 				lflg = true;
@@ -1144,7 +1154,7 @@ static void process_flags (int argc, char **argv)
 				break;
 			case 's':
 				if (   ( !VALID (optarg) )
-				    || (   ('\0' != optarg[0])
+				    || (   !streq(optarg, "")
 				        && ('/'  != optarg[0])
 				        && ('*'  != optarg[0]) )) {
 					fprintf (stderr,
@@ -1152,9 +1162,9 @@ static void process_flags (int argc, char **argv)
 					         Prog, optarg);
 					exit (E_BAD_ARG);
 				}
-				if (    '\0' != optarg[0]
+				if (!streq(optarg, "")
 				     && '*'  != optarg[0]
-				     && strcmp(optarg, "/sbin/nologin") != 0
+				     && !streq(optarg, "/sbin/nologin")
 				     && (   stat(optarg, &st) != 0
 				         || S_ISDIR(st.st_mode)
 				         || access(optarg, X_OK) != 0)) {
@@ -1364,10 +1374,10 @@ static void process_flags (int argc, char **argv)
 		gflg = false;
 	}
 	if (   (NULL != user_newshell)
-	    && (strcmp (user_newshell, user_shell) == 0)) {
+	    && streq(user_newshell, user_shell)) {
 		sflg = false;
 	}
-	if (strcmp (user_newname, user_name) == 0) {
+	if (streq(user_newname, user_name)) {
 		lflg = false;
 	}
 	if (user_newinactive == user_inactive) {
@@ -1377,12 +1387,12 @@ static void process_flags (int argc, char **argv)
 		eflg = false;
 	}
 	if (   (NULL != user_newhome)
-	    && (strcmp (user_newhome, user_home) == 0)) {
+	    && streq(user_newhome, user_home)) {
 		dflg = false;
 		mflg = false;
 	}
 	if (   (NULL != user_newcomment)
-	    && (strcmp (user_newcomment, user_comment) == 0)) {
+	    && streq(user_newcomment, user_comment)) {
 		cflg = false;
 	}
 
@@ -1717,7 +1727,7 @@ static void usr_update (void)
 			spent = *spwd;
 			new_spent (&spent);
 		} else if (   (    pflg
-		               && (strcmp (pwent.pw_passwd, SHADOW_PASSWD_STRING) == 0))
+		               && streq(pwent.pw_passwd, SHADOW_PASSWD_STRING))
 		           || eflg || fflg) {
 			/* In some cases, we force the creation of a
 			 * shadow entry:
@@ -1794,7 +1804,7 @@ static void move_home (void)
 
 	if (access (prefix_user_newhome, F_OK) == 0) {
 		/*
-		 * If the new home directory already exist, the user
+		 * If the new home directory already exists, the user
 		 * should not use -m.
 		 */
 		fprintf (stderr,
@@ -2176,7 +2186,7 @@ int main (int argc, char **argv)
 	 * be changed while the user is logged in.
 	 * Note: no need to check if a prefix is specified...
 	 */
-	if ( (prefix[0] == '\0') &&  (uflg || lflg || dflg
+	if (streq(prefix, "") && (uflg || lflg || dflg
 #ifdef ENABLE_SUBIDS
 	        || Vflg || Wflg
 #endif				/* ENABLE_SUBIDS */
@@ -2241,53 +2251,69 @@ int main (int argc, char **argv)
 	}
 #ifdef ENABLE_SUBIDS
 	if (Vflg) {
-		struct ulong_range_list_entry *ptr;
+		struct id_range_list_entry  *ptr;
+
 		for (ptr = del_sub_uids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			id_t  count = ptr->range.last - ptr->range.first + 1;
+
 			if (sub_uid_remove(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to remove uid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last,
-					sub_uid_dbname ());
+				fprintf(stderr,
+				        _("%s: failed to remove uid range %ju-%ju from '%s'\n"),
+				        Prog,
+				        (uintmax_t) ptr->range.first,
+				        (uintmax_t) ptr->range.last,
+				        sub_uid_dbname());
 				fail_exit (E_SUB_UID_UPDATE);
 			}
 		}
 	}
 	if (vflg) {
-		struct ulong_range_list_entry *ptr;
+		struct id_range_list_entry  *ptr;
+
 		for (ptr = add_sub_uids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			id_t  count = ptr->range.last - ptr->range.first + 1;
+
 			if (sub_uid_add(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to add uid range %lu-%lu to '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last,
-					sub_uid_dbname ());
+				fprintf(stderr,
+				        _("%s: failed to add uid range %ju-%ju to '%s'\n"),
+				        Prog,
+				        (uintmax_t) ptr->range.first,
+				        (uintmax_t) ptr->range.last,
+				        sub_uid_dbname());
 				fail_exit (E_SUB_UID_UPDATE);
 			}
 		}
 	}
 	if (Wflg) {
-		struct ulong_range_list_entry *ptr;
+		struct id_range_list_entry  *ptr;
+
 		for (ptr = del_sub_gids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			id_t  count = ptr->range.last - ptr->range.first + 1;
+
 			if (sub_gid_remove(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to remove gid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last,
-					sub_gid_dbname ());
+				fprintf(stderr,
+				        _("%s: failed to remove gid range %ju-%ju from '%s'\n"),
+				        Prog,
+				        (uintmax_t) ptr->range.first,
+				        (uintmax_t) ptr->range.last,
+				        sub_gid_dbname());
 				fail_exit (E_SUB_GID_UPDATE);
 			}
 		}
 	}
 	if (wflg) {
-		struct ulong_range_list_entry *ptr;
+		struct id_range_list_entry  *ptr;
+
 		for (ptr = add_sub_gids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			id_t  count = ptr->range.last - ptr->range.first + 1;
+
 			if (sub_gid_add(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to add gid range %lu-%lu to '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last,
-					sub_gid_dbname ());
+				fprintf(stderr,
+				        _("%s: failed to add gid range %ju-%ju to '%s'\n"),
+				        Prog,
+				        (uintmax_t) ptr->range.first,
+				        (uintmax_t) ptr->range.last,
+				        sub_gid_dbname());
 				fail_exit (E_SUB_GID_UPDATE);
 			}
 		}
@@ -2308,7 +2334,7 @@ int main (int argc, char **argv)
 
 #ifdef WITH_SELINUX
 	if (Zflg) {
-		if ('\0' != *user_selinux) {
+		if (!streq(user_selinux, "")) {
 			if (set_seuser (user_name, user_selinux, user_selinux_range) != 0) {
 				fprintf (stderr,
 				         _("%s: warning: the user name %s to %s SELinux user mapping failed.\n"),

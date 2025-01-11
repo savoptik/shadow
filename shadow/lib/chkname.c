@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 1996-2000, Marek Michałkiewicz
 // SPDX-FileCopyrightText: 2001-2005, Tomasz Kłoczko
 // SPDX-FileCopyrightText: 2005-2008, Nicolas François
-// SPDX-FileCopyrightText: 2023-2024, Alejandro Colomar <alx@kernel.org>
+// SPDX-FileCopyrightText: 2023-2025, Alejandro Colomar <alx@kernel.org>
 // SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -12,6 +12,9 @@
  * return values:
  *   true  - OK
  *   false - bad name
+ * errors:
+ *   EINVAL	Invalid name characters or sequences
+ *   EOVERFLOW	Name longer than maximum size
  */
 
 
@@ -28,6 +31,12 @@
 
 #include "defines.h"
 #include "chkname.h"
+#include "string/strcmp/streq.h"
+
+
+#ifndef  LOGIN_NAME_MAX
+# define LOGIN_NAME_MAX  256
+#endif
 
 
 int allow_bad_names = false;
@@ -38,16 +47,16 @@ login_name_max_size(void)
 {
 	long  conf;
 
-	errno = 0;
 	conf = sysconf(_SC_LOGIN_NAME_MAX);
-	if (conf == -1 && errno != 0)
+	if (conf == -1)
 		return LOGIN_NAME_MAX;
 
 	return conf;
 }
 
 
-static bool is_valid_name (const char *name)
+static bool
+is_valid_name(const char *name)
 {
 	if (allow_bad_names) {
 		return true;
@@ -71,13 +80,15 @@ static bool is_valid_name (const char *name)
 	      (*name >= 'A' && *name <= 'Z') ||
 	      (*name >= '0' && *name <= '9') ||
 	      *name == '_' ||
-	      *name == '.')) {
+	      *name == '.'))
+	{
+		errno = EINVAL;
 		return false;
 	}
 
 	numeric = isdigit(*name);
 
-	while ('\0' != *++name) {
+	while (!streq(++name, "")) {
 		if (!((*name >= 'a' && *name <= 'z') ||
 		      (*name >= 'A' && *name <= 'Z') ||
 		      (*name >= '0' && *name <= '9') ||
@@ -85,34 +96,46 @@ static bool is_valid_name (const char *name)
 		      *name == '.' ||
 		      *name == '-' ||
 		      (*name == '$' && name[1] == '\0')
-		     )) {
+		     ))
+		{
+			errno = EINVAL;
 			return false;
 		}
 		numeric &= isdigit(*name);
 	}
 
-	return !numeric;
+	if (numeric) {
+		errno = EINVAL;
+		return false;
+	}
+
+	return true;
 }
 
 
 bool
 is_valid_user_name(const char *name)
 {
-	if (strlen(name) >= login_name_max_size())
+	if (strlen(name) >= login_name_max_size()) {
+		errno = EOVERFLOW;
 		return false;
+	}
 
 	return is_valid_name(name);
 }
 
 
-bool is_valid_group_name (const char *name)
+bool
+is_valid_group_name(const char *name)
 {
 	/*
 	 * Arbitrary limit for group names.
 	 * HP-UX 10 limits to 16 characters
 	 */
 	if (   (GROUP_NAME_MAX_LENGTH > 0)
-	    && (strlen (name) > GROUP_NAME_MAX_LENGTH)) {
+	    && (strlen (name) > GROUP_NAME_MAX_LENGTH))
+	{
+		errno = EOVERFLOW;
 		return false;
 	}
 

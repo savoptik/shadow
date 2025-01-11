@@ -29,16 +29,48 @@ libshadow_la_SOURCES = \
 	age.c \
 	agetpass.c \
 	agetpass.h \
-	alloc.c \
-	alloc.h \
-	atoi/a2i.c \
-	atoi/a2i.h \
-	atoi/str2i.c \
-	atoi/str2i.h \
-	atoi/strtoi.c \
-	atoi/strtoi.h \
-	atoi/strtou_noneg.c \
-	atoi/strtou_noneg.h \
+	alloc/calloc.c \
+	alloc/calloc.h \
+	alloc/malloc.c \
+	alloc/malloc.h \
+	alloc/realloc.c \
+	alloc/realloc.h \
+	alloc/reallocf.c \
+	alloc/reallocf.h \
+	alloc/x/xcalloc.c \
+	alloc/x/xcalloc.h \
+	alloc/x/xmalloc.c \
+	alloc/x/xmalloc.h \
+	alloc/x/xrealloc.c \
+	alloc/x/xrealloc.h \
+	atoi/a2i/a2i.c \
+	atoi/a2i/a2i.h \
+	atoi/a2i/a2s.c \
+	atoi/a2i/a2s.h \
+	atoi/a2i/a2s_c.c \
+	atoi/a2i/a2s_c.h \
+	atoi/a2i/a2s_nc.c \
+	atoi/a2i/a2s_nc.h \
+	atoi/a2i/a2u.c \
+	atoi/a2i/a2u.h \
+	atoi/a2i/a2u_c.c \
+	atoi/a2i/a2u_c.h \
+	atoi/a2i/a2u_nc.c \
+	atoi/a2i/a2u_nc.h \
+	atoi/getnum.c \
+	atoi/getnum.h \
+	atoi/str2i/str2i.c \
+	atoi/str2i/str2i.h \
+	atoi/str2i/str2s.c \
+	atoi/str2i/str2s.h \
+	atoi/str2i/str2u.c \
+	atoi/str2i/str2u.h \
+	atoi/strtoi/strtoi.c \
+	atoi/strtoi/strtoi.h \
+	atoi/strtoi/strtou.c \
+	atoi/strtoi/strtou.h \
+	atoi/strtoi/strtou_noneg.c \
+	atoi/strtoi/strtou_noneg.h \
 	attr.h \
 	audit_help.c \
 	basename.c \
@@ -71,9 +103,11 @@ libshadow_la_SOURCES = \
 	find_new_sub_gids.c \
 	find_new_sub_uids.c \
 	fputsx.c \
-	get_gid.c \
+	fs/readlink/areadlink.c \
+	fs/readlink/areadlink.h \
+	fs/readlink/readlinknul.c \
+	fs/readlink/readlinknul.h \
 	get_pid.c \
-	get_uid.c \
 	getdate.h \
 	getdate.y \
 	getdef.c \
@@ -94,8 +128,6 @@ libshadow_la_SOURCES = \
 	lockpw.c \
 	loginprompt.c \
 	mail.c \
-	memzero.c \
-	memzero.h \
 	motd.c \
 	must_be.h \
 	myname.c \
@@ -144,18 +176,42 @@ libshadow_la_SOURCES = \
 	spawn.c \
 	sssd.c \
 	sssd.h \
-	string/sprintf.c \
-	string/sprintf.h \
-	string/stpecpy.c \
-	string/stpecpy.h \
-	string/stpeprintf.c \
-	string/stpeprintf.h \
+	string/memset/memzero.c \
+	string/memset/memzero.h \
+	string/sprintf/snprintf.c \
+	string/sprintf/snprintf.h \
+	string/sprintf/stpeprintf.c \
+	string/sprintf/stpeprintf.h \
+	string/sprintf/xasprintf.c \
+	string/sprintf/xasprintf.h \
+	string/strchr/strchrcnt.c \
+	string/strchr/strchrcnt.h \
+	string/strchr/stpspn.c \
+	string/strchr/stpspn.h \
+	string/strchr/strnul.c \
+	string/strchr/strnul.h \
+	string/strchr/strrspn.c \
+	string/strchr/strrspn.h \
+	string/strcmp/streq.c \
+	string/strcmp/streq.h \
+	string/strcpy/stpecpy.c \
+	string/strcpy/stpecpy.h \
+	string/strcpy/strncat.c \
+	string/strcpy/strncat.h \
+	string/strcpy/strncpy.c \
+	string/strcpy/strncpy.h \
+	string/strcpy/strtcpy.c \
+	string/strcpy/strtcpy.h \
+	string/strdup/strndupa.c \
+	string/strdup/strndupa.h \
+	string/strdup/xstrdup.c \
+	string/strdup/xstrdup.h \
+	string/strdup/xstrndup.c \
+	string/strdup/xstrndup.h \
 	string/strftime.c \
 	string/strftime.h \
-	string/strncpy.h \
-	string/strtcpy.c \
-	string/strtcpy.h \
-	string/zustr2stp.h \
+	string/strtok/stpsep.c \
+	string/strtok/stpsep.h \
 	strtoday.c \
 	sub.c \
 	subordinateio.h \
@@ -164,6 +220,7 @@ libshadow_la_SOURCES = \
 	time/day_to_str.c \
 	time/day_to_str.h \
 	ttytype.c \
+	typetraits.h \
 	tz.c \
 	ulimit.c \
 	user_busy.c \

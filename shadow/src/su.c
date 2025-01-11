@@ -46,21 +46,24 @@
 #include <fcntl.h>
 #endif				/* !USE_PAM */
 
-#include "alloc.h"
+#include "alloc/x/xmalloc.h"
 #include "attr.h"
 #include "cast.h"
-#include "prototypes.h"
 #include "defines.h"
-#include "pwauth.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "getdef.h"
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
-/*@-exitarg@*/
-#include "exitcodes.h"
+#include "pwauth.h"
+#include "prototypes.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
-#include "string/strtcpy.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
 
 
 /*
@@ -126,7 +129,7 @@ static void check_perms_pam (const struct passwd *pw);
 #else				/* !USE_PAM */
 static void check_perms_nopam (const struct passwd *pw);
 #endif				/* !USE_PAM */
-static void save_caller_context (char **argv);
+static void save_caller_context(void);
 static void process_flags (int argc, char **argv);
 static void set_environment (struct passwd *pw);
 
@@ -184,7 +187,7 @@ static bool restricted_shell (const char *shellname)
 
 	setusershell ();
 	while ((line = getusershell ()) != NULL) {
-		if (('#' != *line) && (strcmp (line, shellname) == 0)) {
+		if (('#' != *line) && streq(line, shellname)) {
 			endusershell ();
 			return false;
 		}
@@ -509,17 +512,17 @@ static void check_perms_nopam (const struct passwd *pw)
 		return;
 	}
 
-	if (strcmp (pw->pw_passwd, "") == 0) {
+	if (streq(pw->pw_passwd, "")) {
 		const char  *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
 
 		if (prevent_no_auth == NULL) {
 			prevent_no_auth = "superuser";
 		}
-		if (strcmp(prevent_no_auth, "yes") == 0) {
+		if (streq(prevent_no_auth, "yes")) {
 			fprintf(stderr, _("Password field is empty, this is forbidden for all accounts.\n"));
 			exit(1);
 		} else if ((pw->pw_uid == 0)
-				&& (strcmp(prevent_no_auth, "superuser") == 0)) {
+				&& streq(prevent_no_auth, "superuser")) {
 			fprintf(stderr, _("Password field is empty, this is forbidden for super-user.\n"));
 			exit(1);
 		}
@@ -553,7 +556,7 @@ static void check_perms_nopam (const struct passwd *pw)
 	}
 	spwd = getspnam (name); /* !USE_PAM, no need for xgetspnam */
 #ifdef SU_ACCESS
-	if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
+	if (streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 		if (NULL != spwd) {
 			password = spwd->sp_pwdp;
 		}
@@ -678,7 +681,7 @@ static /*@only@*/struct passwd * do_check_perms (void)
 		su_failure (caller_tty, 0 == pw->pw_uid);
 	}
 	tmp_name = item;
-	if (strcmp (name, tmp_name) != 0) {
+	if (!streq(name, tmp_name)) {
 		SYSLOG ((LOG_INFO,
 		         "Change user from '%s' to '%s' as requested by PAM",
 		         name, tmp_name));
@@ -722,6 +725,7 @@ static /*@only@*/struct passwd * do_check_perms (void)
 	return pw;
 }
 
+
 /*
  * save_caller_context - save information from the call context
  *
@@ -730,7 +734,8 @@ static /*@only@*/struct passwd * do_check_perms (void)
  *	the TTY (ttyp), and whether su was called from a console
  *	(is_console) for further processing and before they might change.
  */
-static void save_caller_context (char **argv)
+static void
+save_caller_context(void)
 {
 	struct passwd *pw = NULL;
 #ifndef USE_PAM
@@ -788,7 +793,7 @@ static void save_caller_context (char **argv)
 	 * -- chris
 	 */
 	password = pw->pw_passwd;
-	if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
+	if (streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 		const struct spwd *spwd = getspnam (caller_name);
 		if (NULL != spwd) {
 			password = spwd->sp_pwdp;
@@ -800,6 +805,7 @@ static void save_caller_context (char **argv)
 #endif				/* !USE_PAM */
 	pw_free (pw);
 }
+
 
 /*
  * process_flags - Process the command line arguments
@@ -848,7 +854,7 @@ static void process_flags (int argc, char **argv)
 		}
 	}
 
-	if ((optind < argc) && (strcmp (argv[optind], "-") == 0)) {
+	if ((optind < argc) && streq(argv[optind], "-")) {
 		fakelogin = true;
 		optind++;
 	}
@@ -856,7 +862,7 @@ static void process_flags (int argc, char **argv)
 	if (optind < argc) {
 		STRTCPY(name, argv[optind++]);	/* use this login id */
 	}
-	if ('\0' == name[0]) {		/* use default user */
+	if (streq(name, "")) {		/* use default user */
 		struct passwd *root_pw = getpwnam ("root");
 		if ((NULL != root_pw) && (0 == root_pw->pw_uid)) {
 			(void) strcpy (name, "root");
@@ -1013,7 +1019,7 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
-	save_caller_context (argv);
+	save_caller_context();
 
 	OPENLOG (Prog);
 
@@ -1074,15 +1080,15 @@ int main (int argc, char **argv)
 	/*
 	 * Set the default shell.
 	 */
-	if ((NULL == shellstr) || ('\0' == shellstr[0])) {
+	if ((NULL == shellstr) || streq(shellstr, "")) {
 		shellstr = SHELL;
 	}
 
 	sulog (caller_tty, true, caller_name, name);	/* save SU information */
 	if (getdef_bool ("SYSLOG_SU_ENAB")) {
 		SYSLOG ((LOG_INFO, "+ %s %s:%s", caller_tty,
-		         ('\0' != caller_name[0]) ? caller_name : "???",
-		         ('\0' != name[0]) ? name : "???"));
+		         (!streq(caller_name, "")) ? caller_name : "???",
+		         (!streq(name, "")) ? name : "???"));
 	}
 
 #ifdef USE_PAM
@@ -1137,7 +1143,7 @@ int main (int argc, char **argv)
 				AUDIT_USER_ROLE_CHANGE,
 				NULL,    /* Prog. name */
 				"su",
-				('\0' != caller_name[0]) ? caller_name : "???",
+				(!streq(caller_name, "")) ? caller_name : "???",
 				AUDIT_NO_ID,
 				"localhost",
 				NULL,    /* addr */
@@ -1198,16 +1204,14 @@ int main (int argc, char **argv)
 	 * case they will be provided to the new user's shell as arguments.
 	 */
 	if (fakelogin) {
-		char *arg0;
+		char  *arg0;
 
 		cp = getdef_str ("SU_NAME");
 		if (NULL == cp) {
 			cp = Basename (shellstr);
 		}
 
-		arg0 = XMALLOC(strlen(cp) + 2, char);
-		arg0[0] = '-';
-		strcpy (arg0 + 1, cp);
+		xasprintf(&arg0, "-%s", cp);
 		cp = arg0;
 	} else {
 		cp = Basename (shellstr);

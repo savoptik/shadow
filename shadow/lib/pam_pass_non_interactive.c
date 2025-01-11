@@ -17,11 +17,11 @@
 
 #include <security/pam_appl.h>
 
-#include "alloc.h"
+#include "alloc/calloc.h"
 #include "attr.h"
-#include "memzero.h"
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "string/memset/memzero.h"
 
 /*@null@*/ /*@only@*/static const char *non_interactive_password = NULL;
 static int ni_conv (int num_msg,
@@ -98,8 +98,7 @@ static int ni_conv (int num_msg,
 failed_conversation:
 	for (count=0; count < num_msg; count++) {
 		if (NULL != responses[count].resp) {
-			strzero(responses[count].resp);
-			free(responses[count].resp);
+			free(strzero(responses[count].resp));
 			responses[count].resp = NULL;
 		}
 	}

@@ -15,12 +15,15 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include "alloc.h"
 #include "attr.h"
-#include "memzero.h"
-#include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
+#include "prototypes.h"
+#include "string/memset/memzero.h"
+#include "string/strchr/stpspn.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strtok/stpsep.h"
+
 
 static void login_exit (MAYBE_UNUSED int sig)
 {
@@ -33,8 +36,8 @@ static void login_exit (MAYBE_UNUSED int sig)
  * login_prompt() displays the standard login prompt.  If ISSUE_FILE
  * is set in login.defs, this file is displayed before the prompt.
  */
-
-void login_prompt (char *name, int namesize)
+void
+login_prompt(char *name, int namesize)
 {
 	char buf[1024];
 
@@ -84,22 +87,16 @@ void login_prompt (char *name, int namesize)
 		exit (EXIT_FAILURE);
 	}
 
-	cp = strchr (buf, '\n');
-	if (NULL == cp) {
-		exit (EXIT_FAILURE);
-	}
-	*cp = '\0';		/* remove \n [ must be there ] */
+	if (stpsep(buf, "\n") == NULL)
+		exit(EXIT_FAILURE);
 
 	/*
 	 * Skip leading whitespace.  This makes "  username" work right.
 	 * Then copy the rest (up to the end) into the username.
 	 */
 
-	for (cp = buf; *cp == ' ' || *cp == '\t'; cp++);
-
-	for (i = 0; i < namesize - 1 && *cp != '\0'; name[i++] = *cp++);
-
-	name[i] = '\0';
+	cp = stpspn(buf, " \t");
+	strtcpy(name, cp, namesize);
 
 	/*
 	 * Set the SIGQUIT handler back to its original value

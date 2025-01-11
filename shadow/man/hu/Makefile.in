@@ -339,8 +339,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-man_MANS = man1/chsh.1 man1/gpasswd.1 man1/groups.1 man1/login.1 \
-	man1/newgrp.1 man1/passwd.1 man5/passwd.5 man1/sg.1 man1/su.1 \
+man_MANS = man1/chsh.1 man1/gpasswd.1 man1/login.1 man1/newgrp.1 \
+	man1/passwd.1 man5/passwd.5 man1/sg.1 man1/su.1 \
 	$(am__append_1)
 EXTRA_DIST = $(man_MANS)
 all: all-am

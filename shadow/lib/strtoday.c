@@ -11,11 +11,11 @@
 
 #include <ctype.h>
 
-#ident "$Id$"
-
-#include "atoi/str2i.h"
-#include "prototypes.h"
+#include "atoi/str2i/str2s.h"
 #include "getdate.h"
+#include "prototypes.h"
+#include "string/strchr/stpspn.h"
+#include "string/strcmp/streq.h"
 
 
 /*
@@ -43,7 +43,7 @@ long strtoday (const char *str)
 	 * which is not what we expect, unless you're a BOFH :-).
 	 * (useradd sets sp_expire = current date for new lusers)
 	 */
-	if ((NULL == str) || ('\0' == *str)) {
+	if ((NULL == str) || streq(str, "")) {
 		return -1;
 	}
 
@@ -53,10 +53,8 @@ long strtoday (const char *str)
 	if ('-' == *s) {
 		s++;
 	}
-	while (' ' == *s) {
-		s++;
-	}
-	while (isnum && ('\0' != *s)) {
+	s = stpspn(s, " ");
+	while (isnum && !streq(s, "")) {
 		if (!isdigit (*s)) {
 			isnum = false;
 		}

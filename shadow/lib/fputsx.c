@@ -10,10 +10,11 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <string.h>
+
 #include "defines.h"
 #include "prototypes.h"
-
-#ident "$Id$"
+#include "string/strcmp/streq.h"
 
 
 /*@null@*/char *
@@ -25,7 +26,7 @@ fgetsx(/*@returned@*/char *restrict buf, int cnt, FILE *restrict f)
 	while (cnt > 0) {
 		if (fgets (cp, cnt, f) != cp) {
 			if (cp == buf) {
-				return 0;
+				return NULL;
 			} else {
 				break;
 			}
@@ -33,10 +34,8 @@ fgetsx(/*@returned@*/char *restrict buf, int cnt, FILE *restrict f)
 		ep = strrchr (cp, '\\');
 		if ((NULL != ep) && (*(ep + 1) == '\n')) {
 			cnt -= ep - cp;
-			if (cnt > 0) {
-				cp = ep;
-				*cp = '\0';
-			}
+			if (cnt > 0)
+				cp = stpcpy(ep, "");
 		} else {
 			break;
 		}
@@ -48,7 +47,7 @@ int fputsx (const char *s, FILE * stream)
 {
 	int i;
 
-	for (i = 0; '\0' != *s; i++, s++) {
+	for (i = 0; !streq(s, ""); i++, s++) {
 		if (putc (*s, stream) == EOF) {
 			return EOF;
 		}

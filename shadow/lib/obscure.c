@@ -15,12 +15,15 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#include "alloc.h"
 #include "attr.h"
-#include "memzero.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "getdef.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+
 
 #if WITH_LIBBSD == 0
 #include "freezero.h"
@@ -79,7 +82,7 @@ static char *str_lower (/*@returned@*/char *string)
 {
 	char *cp;
 
-	for (cp = string; '\0' != *cp; cp++) {
+	for (cp = string; !streq(cp, ""); cp++) {
 		*cp = tolower (*cp);
 	}
 	return string;
@@ -93,31 +96,26 @@ static /*@observer@*//*@null@*/const char *password_check (
 	const char *msg = NULL;
 	char *oldmono, *newmono, *wrapped;
 
-	if (strcmp (new, old) == 0) {
+	if (streq(new, old)) {
 		return _("no change");
 	}
 
 	newmono = str_lower (xstrdup (new));
 	oldmono = str_lower (xstrdup (old));
-	wrapped = XMALLOC(strlen(oldmono) * 2 + 1, char);
-	strcpy (wrapped, oldmono);
-	strcat (wrapped, oldmono);
+	xasprintf(&wrapped, "%s%s", oldmono, oldmono);
 
 	if (palindrome (oldmono, newmono)) {
 		msg = _("a palindrome");
-	} else if (strcmp (oldmono, newmono) == 0) {
+	} else if (streq(oldmono, newmono)) {
 		msg = _("case changes only");
 	} else if (similar (oldmono, newmono)) {
 		msg = _("too similar");
 	} else if (strstr (wrapped, newmono) != NULL) {
 		msg = _("rotated");
 	}
-	strzero (newmono);
-	strzero (oldmono);
-	strzero (wrapped);
-	free (newmono);
-	free (oldmono);
-	free (wrapped);
+	free(strzero(newmono));
+	free(strzero(oldmono));
+	free(strzero(wrapped));
 
 	return msg;
 }
@@ -165,16 +163,16 @@ static /*@observer@*//*@null@*/const char *obscure_msg (
 
 	} else {
 
-		if (   (strcmp (result, "MD5")    == 0)
+		if (   streq(result, "MD5")
 #ifdef USE_SHA_CRYPT
-		    || (strcmp (result, "SHA256") == 0)
-		    || (strcmp (result, "SHA512") == 0)
+		    || streq(result, "SHA256")
+		    || streq(result, "SHA512")
 #endif
 #ifdef USE_BCRYPT
-		    || (strcmp (result, "BCRYPT") == 0)
+		    || streq(result, "BCRYPT")
 #endif
 #ifdef USE_YESCRYPT
-		    || (strcmp (result, "YESCRYPT") == 0)
+		    || streq(result, "YESCRYPT")
 #endif
 		    ) {
 			return NULL;
@@ -189,12 +187,10 @@ static /*@observer@*//*@null@*/const char *obscure_msg (
 
 	new1 = xstrdup (new);
 	old1 = xstrdup (old);
-	if (newlen > maxlen) {
-		new1[maxlen] = '\0';
-	}
-	if (oldlen > maxlen) {
-		old1[maxlen] = '\0';
-	}
+	if (newlen > maxlen)
+		stpcpy(&new1[maxlen], "");
+	if (oldlen > maxlen)
+		stpcpy(&old1[maxlen], "");
 
 	msg = password_check (old1, new1, pwdp);
 

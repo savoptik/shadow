@@ -20,7 +20,7 @@
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
-#include "atoi/str2i.h"
+#include "atoi/str2i/str2s.h"
 #include "defines.h"
 #include "nscd.h"
 #include "sssd.h"
@@ -31,9 +31,11 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
 
 
-#define IS_CRYPT_METHOD(str) ((crypt_method != NULL && strcmp(crypt_method, str) == 0) ? true : false)
+#define IS_CRYPT_METHOD(str) ((crypt_method != NULL && streq(crypt_method, str)) ? true : false)
 
 /*
  * Global variables
@@ -501,12 +503,8 @@ int main (int argc, char **argv)
 	 */
 	while (fgets (buf, sizeof buf, stdin) != NULL) {
 		line++;
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		} else {
+		if (stpsep(buf, "\n") == NULL) {
 			if (feof (stdin) == 0) {
-
 				// Drop all remaining characters on this line.
 				while (fgets (buf, sizeof buf, stdin) != NULL) {
 					cp = strchr (buf, '\n');
@@ -533,11 +531,8 @@ int main (int argc, char **argv)
 		 */
 
 		name = buf;
-		cp = strchr (name, ':');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		} else {
+		cp = stpsep(name, ":");
+		if (cp == NULL) {
 			fprintf (stderr,
 			         _("%s: line %d: missing new password\n"),
 			         Prog, line);
@@ -594,8 +589,8 @@ int main (int argc, char **argv)
 			sp = spw_locate (name);
 
 			if (   (NULL == sp)
-			    && (strcmp (pw->pw_passwd,
-			                SHADOW_PASSWD_STRING) == 0)) {
+			    && streq(pw->pw_passwd, SHADOW_PASSWD_STRING))
+			{
 				/* If the password is set to 'x' in
 				 * passwd, but there are no entries in
 				 * shadow, create one.
@@ -632,7 +627,7 @@ int main (int argc, char **argv)
 		}
 
 		if (   (NULL == sp)
-		    || (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) != 0)) {
+		    || !streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 			newpw = *pw;
 			newpw.pw_passwd = cp;
 		}
@@ -652,7 +647,7 @@ int main (int argc, char **argv)
 			}
 		}
 		if (   (NULL == sp)
-		    || (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) != 0)) {
+		    || !streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 			if (pw_update (&newpw) == 0) {
 				fprintf (stderr,
 				         _("%s: line %d: failed to prepare the new %s entry '%s'\n"),

@@ -20,13 +20,17 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <string.h>
 #include <fcntl.h>
 
-#include "alloc.h"
+#include "alloc/x/xcalloc.h"
+#include "alloc/x/xmalloc.h"
 #include "sizeof.h"
-#include "string/strncpy.h"
-#include "string/strtcpy.h"
-#include "string/zustr2stp.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strncpy.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
+#include "string/strdup/xstrndup.h"
 
 #ident "$Id$"
 
@@ -44,23 +48,23 @@ is_my_tty(const char tty[UTX_LINESIZE])
 	/* tmptty shall be bigger than full_tty */
 	static char  tmptty[sizeof(full_tty) + 1];
 
-	full_tty[0] = '\0';
+	stpcpy(full_tty, "");
 	if (tty[0] != '/')
 		strcpy (full_tty, "/dev/");
 	strncat(full_tty, tty, UTX_LINESIZE);
 
-	if ('\0' == tmptty[0]) {
+	if (streq(tmptty, "")) {
 		const char *tname = ttyname (STDIN_FILENO);
 		if (NULL != tname)
 			STRTCPY(tmptty, tname);
 	}
 
-	if ('\0' == tmptty[0]) {
+	if (streq(tmptty, "")) {
 		(void) puts (_("Unable to determine your tty name."));
 		exit (EXIT_FAILURE);
 	}
 
-	return strcmp (full_tty, tmptty) == 0;
+	return streq(full_tty, tmptty);
 }
 
 
@@ -185,11 +189,7 @@ get_session_host(char **out)
 
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
 	if ((ut != NULL) && (ut->ut_host[0] != '\0')) {
-		char  *hostname;
-
-		hostname = XMALLOC(sizeof(ut->ut_host) + 1, char);
-		ZUSTR2STP(hostname, ut->ut_host);
-		*out = hostname;
+		*out = XSTRNDUP(ut->ut_host);
 		free (ut);
 	} else {
 		*out = NULL;
@@ -254,17 +254,12 @@ prepare_utmp(const char *name, const char *line, const char *host,
 
 
 
-	if (   (NULL != host)
-	    && ('\0' != host[0])) {
-		hostname = XMALLOC(strlen(host) + 1, char);
-		strcpy (hostname, host);
+	if (NULL != host && !streq(host, ""))
+		hostname = xstrdup(host);
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
-	} else if (   (NULL != ut)
-	           && ('\0' != ut->ut_host[0])) {
-		hostname = XMALLOC(NITEMS(ut->ut_host) + 1, char);
-		ZUSTR2STP(hostname, ut->ut_host);
+	else if (NULL != ut && '\0' != ut->ut_host[0])
+		hostname = XSTRNDUP(ut->ut_host);
 #endif
-	}
 
 	if (strncmp(line, "/dev/", 5) == 0) {
 		line += 5;

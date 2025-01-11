@@ -18,9 +18,12 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include "alloc.h"
-#include "atoi/str2i.h"
-#include "string/sprintf.h"
+#include "alloc/malloc.h"
+#include "alloc/realloc.h"
+#include "alloc/reallocf.h"
+#include "atoi/str2i/str2u.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
 
 
 #define ID_SIZE 31
@@ -105,7 +108,13 @@ subordinate_parse(const char *line)
 	 * There must be exactly SUBID_NFIELDS colon separated fields or
 	 * the entry is invalid.  Also, fields must be non-blank.
 	 */
-	if (i != SUBID_NFIELDS || *fields[0] == '\0' || *fields[1] == '\0' || *fields[2] == '\0')
+	if (i != SUBID_NFIELDS)
+		return NULL;
+	if (streq(fields[0], ""))
+		return NULL;
+	if (streq(fields[1], ""))
+		return NULL;
+	if (streq(fields[2], ""))
 		return NULL;
 	range.owner = fields[0];
 	if (str2ul(&range.start, fields[1]) == -1)
@@ -159,7 +168,7 @@ static bool range_exists(struct commonio_db *db, const char *owner)
 	const struct subordinate_range *range;
 	commonio_rewind(db);
 	while ((range = commonio_next(db)) != NULL) {
-		if (0 == strcmp(range->owner, owner))
+		if (streq(range->owner, owner))
 			return true;
 	}
 	return false;
@@ -194,7 +203,7 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
 		unsigned long first = range->start;
 		unsigned long last = first + range->count - 1;
 
-		if (0 != strcmp(range->owner, owner))
+		if (!streq(range->owner, owner))
 			continue;
 
 		if ((val >= first) && (val <= last))
@@ -205,7 +214,7 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
         /*
          * We only do special handling for these two files
          */
-        if ((0 != strcmp(db->filename, SUBUID_FILE)) && (0 != strcmp(db->filename, SUBGID_FILE)))
+        if (!streq(db->filename, SUBUID_FILE) && !streq(db->filename, SUBGID_FILE))
                 return NULL;
 
         /*
@@ -244,7 +253,7 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
                  * Range matches. Check if range owner is specified
                  * as numeric UID and if it matches.
                  */
-                if (0 == strcmp(range->owner, owner_uid_string)) {
+                if (streq(range->owner, owner_uid_string)) {
                         return range;
                 }
 
@@ -274,40 +283,8 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
 	return NULL;
 }
 
-/*
- * have_range: check whether @owner is authorized to use the range
- *             (@start .. @start+@count-1).
- * @db: database to check
- * @owner: owning uid being queried
- * @start: start of range
- * @count: number of uids in range
- *
- * Returns true if @owner is authorized to use the range, false otherwise.
- */
 static bool have_range(struct commonio_db *db,
-		       const char *owner, unsigned long start, unsigned long count)
-{
-	const struct subordinate_range *range;
-	unsigned long end;
-
-	if (count == 0)
-		return false;
-
-	end = start + count - 1;
-	range = find_range (db, owner, start);
-	while (range) {
-		unsigned long last;
-
-		last = range->start + range->count - 1;
-		if (last >= (start + count - 1))
-			return true;
-
-		count = end - last;
-		start = last + 1;
-		range = find_range(db, owner, start);
-	}
-	return false;
-}
+		       const char *owner, unsigned long start, unsigned long count);
 
 static bool append_range(struct subid_range **ranges, const struct subordinate_range *new, int n)
 {
@@ -494,7 +471,7 @@ static int remove_range (struct commonio_db *db,
 		last = first + range->count - 1;
 
 		/* Skip entries with a different owner */
-		if (0 != strcmp (range->owner, owner)) {
+		if (!streq(range->owner, owner)) {
 			continue;
 		}
 
@@ -573,6 +550,64 @@ static struct commonio_db subordinate_uid_db = {
 	false,			/* readonly */
 	false			/* setname */
 };
+
+/*
+ * have_range: check whether @owner is authorized to use the range
+ *             (@start .. @start+@count-1).
+ * @db: database to check
+ * @owner: owning uid being queried
+ * @start: start of range
+ * @count: number of uids in range
+ *
+ * Returns true if @owner is authorized to use the range, false otherwise.
+ */
+static bool have_range(struct commonio_db *db,
+		       const char *owner, unsigned long start, unsigned long count)
+{
+	const struct subordinate_range *range;
+	unsigned long end;
+	bool doclose = false;
+	bool ret = false;
+	int rc;
+
+	if (count == 0)
+		return false;
+
+	if (!db->isopen) {
+		doclose = true;
+		if (db == &subordinate_uid_db)
+			rc = sub_uid_open(O_RDONLY);
+		else
+			rc = sub_gid_open(O_RDONLY);
+		if (rc < 0)
+			return false;
+	}
+
+	end = start + count - 1;
+	range = find_range (db, owner, start);
+	while (range) {
+		unsigned long last;
+
+		last = range->start + range->count - 1;
+		if (last >= (start + count - 1)) {
+			ret = true;
+			break;
+		}
+
+		count = end - last;
+		start = last + 1;
+		range = find_range(db, owner, start);
+	}
+
+	if (doclose) {
+		if (db == &subordinate_uid_db)
+			sub_uid_close();
+		else
+			sub_gid_close();
+	}
+
+	return ret;
+}
 
 int sub_uid_setdbname (const char *filename)
 {
@@ -861,7 +896,7 @@ int list_owner_ranges(const char *owner, enum subid_type id_type, struct subid_r
 
 	commonio_rewind(db);
 	while ((range = commonio_next(db)) != NULL) {
-		if (0 == strcmp(range->owner, owner)) {
+		if (streq(range->owner, owner)) {
 			if (!append_range(&ranges, range, count++)) {
 				free(ranges);
 				ranges = NULL;
@@ -871,7 +906,7 @@ int list_owner_ranges(const char *owner, enum subid_type id_type, struct subid_r
 		}
 
 		// Let's also compare with the ID
-		if (have_owner_id == true && 0 == strcmp(range->owner, id)) {
+		if (have_owner_id == true && streq(range->owner, id)) {
 			if (!append_range(&ranges, range, count++)) {
 				free(ranges);
 				ranges = NULL;
@@ -903,9 +938,8 @@ static bool all_digits(const char *str)
 
 static int append_uids(uid_t **uids, const char *owner, int n)
 {
-	uid_t owner_uid;
-	uid_t *ret;
-	int i;
+	int    i;
+	uid_t  owner_uid;
 
 	if (all_digits(owner)) {
 		i = sscanf(owner, "%d", &owner_uid);
@@ -931,13 +965,11 @@ static int append_uids(uid_t **uids, const char *owner, int n)
 			return n;
 	}
 
-	ret = REALLOC(*uids, n + 1, uid_t);
-	if (!ret) {
-		free(*uids);
+	*uids = REALLOCF(*uids, n + 1, uid_t);
+	if (!*uids)
 		return -1;
-	}
-	ret[n] = owner_uid;
-	*uids = ret;
+
+	(*uids)[n] = owner_uid;
 	return n+1;
 }
 
@@ -1036,7 +1068,7 @@ bool new_subid_range(struct subordinate_range *range, enum subid_type id_type, b
 	if (reuse) {
 		while ((r = commonio_next(db)) != NULL) {
 			// TODO account for username vs uid_t
-			if (0 != strcmp(r->owner, range->owner))
+			if (!streq(r->owner, range->owner))
 				continue;
 			if (r->count >= range->count) {
 				range->count = r->count;

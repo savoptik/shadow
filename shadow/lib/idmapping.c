@@ -12,24 +12,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
-
-#include "alloc.h"
-#include "atoi/str2i.h"
-#include "prototypes.h"
-#include "string/stpeprintf.h"
-#include "idmapping.h"
 #if HAVE_SYS_CAPABILITY_H
 #include <sys/prctl.h>
 #include <sys/capability.h>
 #endif
+
+#include "alloc/calloc.h"
+#include "alloc/x/xmalloc.h"
+#include "atoi/a2i/a2u.h"
+#include "idmapping.h"
+#include "prototypes.h"
 #include "shadowlog.h"
 #include "sizeof.h"
+#include "string/sprintf/stpeprintf.h"
+#include "string/strcmp/streq.h"
 
 
-struct map_range *get_map_ranges(int ranges, int argc, char **argv)
+struct map_range *
+get_map_ranges(int ranges, int argc, char **argv)
 {
-	struct map_range *mappings, *mapping;
-	int idx, argidx;
+	struct map_range  *mappings, *m;
 
 	if (ranges < 0 || argc < 0) {
 		fprintf(log_get_logfd(), "%s: error calculating number of arguments\n", log_get_progname());
@@ -45,44 +47,29 @@ struct map_range *get_map_ranges(int ranges, int argc, char **argv)
 	if (!mappings) {
 		fprintf(log_get_logfd(), _( "%s: Memory allocation failure\n"),
 			log_get_progname());
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
 
 	/* Gather up the ranges from the command line */
-	mapping = mappings;
-	for (idx = 0, argidx = 0; idx < ranges; idx++, argidx += 3, mapping++) {
-		if (str2ul(&mapping->upper, argv[argidx + 0]) == -1) {
+	m = mappings;
+	for (int i = 0; i < ranges * 3; i+=3, m++) {
+		if (a2ul(&m->upper, argv[i + 0], NULL, 0, 0, UINT_MAX - 1) == -1) {
+			if (errno == ERANGE)
+				fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
 			free(mappings);
 			return NULL;
 		}
-		if (str2ul(&mapping->lower, argv[argidx + 1]) == -1) {
+		if (a2ul(&m->lower, argv[i + 1], NULL, 0, 0, UINT_MAX - 1) == -1) {
+			if (errno == ERANGE)
+				fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
 			free(mappings);
 			return NULL;
 		}
-		if (str2ul(&mapping->count, argv[argidx + 2]) == -1) {
+		if (a2ul(&m->count, argv[i + 2], NULL, 0, 1, UINT_MAX - MAX(m->lower, m->upper)) == -1) {
+			if (errno == ERANGE)
+				fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
 			free(mappings);
 			return NULL;
-		}
-		if (ULONG_MAX - mapping->upper <= mapping->count || ULONG_MAX - mapping->lower <= mapping->count) {
-			fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
-			exit(EXIT_FAILURE);
-		}
-		if (mapping->upper > UINT_MAX ||
-			mapping->lower > UINT_MAX ||
-			mapping->count > UINT_MAX)  {
-			fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
-			exit(EXIT_FAILURE);
-		}
-		if (mapping->lower + mapping->count > UINT_MAX ||
-				mapping->upper + mapping->count > UINT_MAX) {
-			fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
-			exit(EXIT_FAILURE);
-		}
-		if (mapping->lower + mapping->count < mapping->lower ||
-				mapping->upper + mapping->count < mapping->upper) {
-			/* this one really shouldn't be possible given previous checks */
-			fprintf(log_get_logfd(), _( "%s: subuid overflow detected.\n"), log_get_progname());
-			exit(EXIT_FAILURE);
 		}
 	}
 	return mappings;
@@ -147,9 +134,9 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 	struct __user_cap_header_struct hdr = {_LINUX_CAPABILITY_VERSION_3, 0};
 	struct __user_cap_data_struct data[2] = {{0}};
 
-	if (strcmp(map_file, "uid_map") == 0) {
+	if (streq(map_file, "uid_map")) {
 		cap = CAP_SETUID;
-	} else if (strcmp(map_file, "gid_map") == 0) {
+	} else if (streq(map_file, "gid_map")) {
 		cap = CAP_SETGID;
 	} else {
 		fprintf(log_get_logfd(), _("%s: Invalid map file %s specified\n"), log_get_progname(), map_file);
@@ -158,7 +145,7 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 
 	/* Align setuid- and fscaps-based new{g,u}idmap behavior. */
 	if (geteuid() == 0 && geteuid() != ruid) {
-		if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) < 0) {
+		if (prctl(PR_SET_KEEPCAPS, 1L) == -1) {
 			fprintf(log_get_logfd(), _("%s: Could not prctl(PR_SET_KEEPCAPS)\n"), log_get_progname());
 			exit(EXIT_FAILURE);
 		}

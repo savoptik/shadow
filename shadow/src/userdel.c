@@ -20,7 +20,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "alloc.h"
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -52,7 +51,9 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
 
 
 /*
@@ -319,7 +320,7 @@ static void remove_usergroup (void)
 		 */
 		prefix_setpwent ();
 		while ((pwd = prefix_getpwent ()) != NULL) {
-			if (strcmp (pwd->pw_name, user_name) == 0) {
+			if (streq(pwd->pw_name, user_name)) {
 				continue;
 			}
 			if (pwd->pw_gid == grp->gr_gid) {
@@ -1130,7 +1131,7 @@ int main (int argc, char **argv)
 	 * Note: This is a best effort basis. The user may log in between,
 	 * a cron job may be started on her behalf, etc.
 	 */
-	if ((prefix[0] == '\0') && !Rflg && user_busy (user_name, user_id) != 0) {
+	if (streq(prefix, "") && !Rflg && user_busy(user_name, user_id) != 0) {
 		if (!fflg) {
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_DEL_USER, Prog,
@@ -1183,7 +1184,7 @@ int main (int argc, char **argv)
 		 */
 		prefix_setpwent ();
 		while ((pwd = prefix_getpwent ())) {
-			if (strcmp (pwd->pw_name, user_name) == 0) {
+			if (streq(pwd->pw_name, user_name)) {
 				continue;
 			}
 			if (path_prefix (user_home, pwd->pw_dir)) {
@@ -1263,7 +1264,7 @@ int main (int argc, char **argv)
 	 * Cancel any crontabs or at jobs. Have to do this before we remove
 	 * the entry from /etc/passwd.
 	 */
-	if (prefix[0] == '\0')
+	if (streq(prefix, ""))
 		user_cancel (user_name);
 	close_files ();
 

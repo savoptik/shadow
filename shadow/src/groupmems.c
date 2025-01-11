@@ -19,14 +19,17 @@
 #endif				/* USE_PAM */
 #include <pwd.h>
 
-#include "alloc.h"
+#include "alloc/x/xmalloc.h"
 #include "defines.h"
-#include "prototypes.h"
 #include "groupio.h"
+#include "prototypes.h"
 #ifdef SHADOWGRP
 #include "sgroupio.h"
 #endif
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+
 
 /* Exit Status Values */
 /*@-exitarg@*/
@@ -83,7 +86,7 @@ static char *whoami (void)
 
 	if (   (NULL != usr)
 	    && (NULL != grp)
-	    && (0 == strcmp (usr->pw_name, grp->gr_name))) {
+	    && streq(usr->pw_name, grp->gr_name)) {
 		return xstrdup (usr->pw_name);
 	} else {
 		return NULL;
@@ -128,15 +131,7 @@ static void add_user (const char *user,
 			sgrent.sg_name = xstrdup (newgrp->gr_name);
 			sgrent.sg_mem = dup_list (newgrp->gr_mem);
 			sgrent.sg_adm = XMALLOC(1, char *);
-#ifdef FIRST_MEMBER_IS_ADMIN
-			if (sgrent.sg_mem[0]) {
-				sgrent.sg_adm[0] = xstrdup (sgrent.sg_mem[0]);
-				sgrent.sg_adm[1] = NULL;
-			} else
-#endif
-			{
-				sgrent.sg_adm[0] = NULL;
-			}
+			sgrent.sg_adm[0] = NULL;
 
 			/* Move any password to gshadow */
 			sgrent.sg_passwd = newgrp->gr_passwd;
@@ -211,15 +206,7 @@ static void remove_user (const char *user,
 			sgrent.sg_name = xstrdup (newgrp->gr_name);
 			sgrent.sg_mem = dup_list (newgrp->gr_mem);
 			sgrent.sg_adm = XMALLOC(1, char *);
-#ifdef FIRST_MEMBER_IS_ADMIN
-			if (sgrent.sg_mem[0]) {
-				sgrent.sg_adm[0] = xstrdup (sgrent.sg_mem[0]);
-				sgrent.sg_adm[1] = NULL;
-			} else
-#endif
-			{
-				sgrent.sg_adm[0] = NULL;
-			}
+			sgrent.sg_adm[0] = NULL;
 
 			/* Move any password to gshadow */
 			sgrent.sg_passwd = newgrp->gr_passwd;

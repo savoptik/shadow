@@ -16,9 +16,12 @@
 #include <pwd.h>
 #include <string.h>
 
+#include "atoi/getnum.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
+#include "string/strcmp/streq.h"
+
 
 #define	NFIELDS	7
 
@@ -52,7 +55,7 @@ sgetpwent(const char *buf)
 		fprintf (shadow_logfd,
 		         "%s: Too long passwd entry encountered, file corruption?\n",
 		         shadow_progname);
-		return 0;	/* fail if too long */
+		return NULL;	/* fail if too long */
 	}
 	strcpy (pwdbuf, buf);
 
@@ -74,11 +77,15 @@ sgetpwent(const char *buf)
 	 * the entry is invalid.  Also, the UID and GID must be non-blank.
 	 */
 
-	if (i != NFIELDS || *fields[2] == '\0' || *fields[3] == '\0')
+	if (i != NFIELDS)
+		return NULL;
+	if (streq(fields[2], ""))
+		return NULL;
+	if (streq(fields[3], ""))
 		return NULL;
 
 	/*
-	 * Each of the fields is converted the appropriate data type
+	 * Each of the fields is converted to the appropriate data type
 	 * and the result assigned to the password structure.  If the
 	 * UID or GID does not convert to an integer value, a NULL
 	 * pointer is returned.

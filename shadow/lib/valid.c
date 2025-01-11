@@ -11,11 +11,15 @@
 
 #ident "$Id$"
 
-#include <sys/types.h>
-#include <stdio.h>
-#include "prototypes.h"
-#include "defines.h"
 #include <pwd.h>
+#include <stdio.h>
+#include <sys/types.h>
+
+#include "defines.h"
+#include "prototypes.h"
+#include "string/strcmp/streq.h"
+
+
 /*
  * valid - compare encrypted passwords
  *
@@ -38,8 +42,8 @@ bool valid (const char *password, const struct passwd *ent)
 	 * routine is meant to waste CPU time.
 	 */
 
-	if ((NULL != ent->pw_name) && ('\0' == ent->pw_passwd[0])) {
-		if ('\0' == password[0]) {
+	if ((NULL != ent->pw_name) && streq(ent->pw_passwd, "")) {
+		if (streq(password, "")) {
 			return true;	/* user entered nothing */
 		} else {
 			return false;	/* user entered something! */
@@ -50,7 +54,7 @@ bool valid (const char *password, const struct passwd *ent)
 	 * If there is no entry then we need a salt to use.
 	 */
 
-	if ((NULL == ent->pw_name) || ('\0' == ent->pw_passwd[0])) {
+	if ((NULL == ent->pw_name) || streq(ent->pw_passwd, "")) {
 		salt = "xx";
 	} else {
 		salt = ent->pw_passwd;
@@ -73,7 +77,7 @@ bool valid (const char *password, const struct passwd *ent)
 
 	if (   (NULL != ent->pw_name)
 	    && (NULL != encrypted)
-	    && (strcmp (encrypted, ent->pw_passwd) == 0)) {
+	    && streq(encrypted, ent->pw_passwd)) {
 		return true;
 	} else {
 		return false;

@@ -9,10 +9,11 @@
 #include <config.h>
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 
-#include "alloc.h"
+#include "alloc/calloc.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "getdef.h"
@@ -304,7 +305,7 @@ int find_new_uid(bool sys_user,
 				return 0;
 			} else if (result == EEXIST || result == EINVAL) {
 				/*
-				 * This GID is in use or unusable, we'll
+				 * This UID is in use or unusable, we'll
 				 * continue to the next.
 				 */
 			} else {
@@ -350,7 +351,7 @@ int find_new_uid(bool sys_user,
 					return 0;
 				} else if (result == EEXIST || result == EINVAL) {
 					/*
-					 * This GID is in use or unusable, we'll
+					 * This UID is in use or unusable, we'll
 					 * continue to the next.
 					 */
 				} else {
@@ -413,7 +414,7 @@ int find_new_uid(bool sys_user,
 				return 0;
 			} else if (result == EEXIST || result == EINVAL) {
 				/*
-				 * This GID is in use or unusable, we'll
+				 * This UID is in use or unusable, we'll
 				 * continue to the next.
 				 */
 			} else {
@@ -459,7 +460,7 @@ int find_new_uid(bool sys_user,
 					return 0;
 				} else if (result == EEXIST || result == EINVAL) {
 					/*
-					 * This GID is in use or unusable, we'll
+					 * This UID is in use or unusable, we'll
 					 * continue to the next.
 					 */
 				} else {

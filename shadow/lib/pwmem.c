@@ -14,11 +14,12 @@
 
 #include <stdio.h>
 
-#include "alloc.h"
+#include "alloc/calloc.h"
 #include "defines.h"
-#include "memzero.h"
 #include "prototypes.h"
 #include "pwio.h"
+#include "string/memset/memzero.h"
+
 
 /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent)
 {
@@ -75,10 +76,9 @@ pw_free(/*@only@*/struct passwd *pwent)
 {
 	if (pwent != NULL) {
 		free (pwent->pw_name);
-		if (pwent->pw_passwd) {
-			strzero (pwent->pw_passwd);
-			free (pwent->pw_passwd);
-		}
+		if (pwent->pw_passwd)
+			free(strzero(pwent->pw_passwd));
+
 		free (pwent->pw_gecos);
 		free (pwent->pw_dir);
 		free (pwent->pw_shell);

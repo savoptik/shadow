@@ -13,7 +13,7 @@
 
 #include "defines.h"
 #include "sizeof.h"
-#include "string/strtcpy.h"
+#include "string/strcpy/strtcpy.h"
 
 
 #define DAY_TO_STR(str, day)   day_to_str(NITEMS(str), str, day)
@@ -38,12 +38,12 @@ day_to_str(size_t size, char buf[size], long day)
 		return;
 	}
 
-	if (gmtime_r(&date, &tm) == NULL) {
+	if (localtime_r(&date, &tm) == NULL) {
 		strtcpy(buf, "future", size);
 		return;
 	}
 
-	if (strftime(buf, size, "%Y-%m-%d", &tm) == 0)
+	if (strftime(buf, size, "%F", &tm) == 0)
 		strtcpy(buf, "future", size);
 }
 

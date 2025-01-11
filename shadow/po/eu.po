@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-06-18 16:40-0500\n"
+"POT-Creation-Date: 2025-01-11 09:35-0600\n"
 "PO-Revision-Date: 2011-11-26 19:42+0100\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <debian-l10n-eu@lists.debian.org>\n"
@@ -521,10 +521,6 @@ msgstr "%s: %s etxe-direktorioa (%s) ez dago\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: ezin da '%s' sarrera %s-tik kendu\n"
 
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr ""
-
 #, fuzzy, c-format
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: ezin da %s direktorioa sortu\n"
@@ -863,6 +859,11 @@ msgstr "%s: '%s'(e)k ASCII ez diren karaktereak ditu\n"
 #, c-format
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: '%s'(e)k karaktere baliogabeak ditu\n"
+
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: '%s' ez da baliozko talde-izena\n"
 
 #, c-format
 msgid "%s: user '%s' does not exist\n"
@@ -1389,10 +1390,6 @@ msgid "%s: invalid group name '%s'\n"
 msgstr "%s: '%s' talde izen baliogabea\n"
 
 #, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s: %s erabiltzaile ezezaguna\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options] [group [gshadow]]\n"
 "\n"
@@ -1499,12 +1496,6 @@ msgstr "%s: aldaketarik gabe\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: ezin da %s ezabatu\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Erabilera: id [-a]\n"
-
-msgid " groups="
-msgstr " taldeak="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1539,6 +1530,16 @@ msgid ""
 msgstr ""
 "  -u, --user IZENA              IZENA duen erabiltzailearen lastlog\n"
 "                                erregistroa bistaratzen du\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
+msgstr ""
+"  -a, --all                     erabiltzaile guztien faillog-en\n"
+"                                erregistroak bistaratzen ditu\n"
 
 #, fuzzy, c-format
 #| msgid "Username                Port     Latest"
@@ -1735,6 +1736,11 @@ msgstr "Pasahitz baliogabea.\n"
 msgid "%s: failure forking: %s\n"
 msgstr "%s: huts zatitzerakoan: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: '%s' ez da baliozko talde-izena\n"
+
 #, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: `%lu' GIDa ez da existitzen\n"
@@ -1775,6 +1781,10 @@ msgstr "%s: '%s' erabiltzaile ID baliogabea\n"
 #, fuzzy, c-format
 #| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: '%s' erabiltzaile-izen baliogabea\n"
+
+#, c-format
+msgid "%s: invalid user name '%s'\n"
 msgstr "%s: '%s' erabiltzaile-izen baliogabea\n"
 
 #, c-format
@@ -2048,6 +2058,11 @@ msgstr "bikoiztutako pasahitz sarrera"
 msgid "invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: '%s' erabiltzaile-izen baliogabea\n"
 
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s'\n"
+msgstr "%s: '%s' erabiltzaile-izen baliogabea\n"
+
 #, c-format
 msgid "invalid user ID '%lu'\n"
 msgstr "'%lu' erabiltzaile ID baliogabea\n"
@@ -2276,14 +2291,15 @@ msgstr "Sistemaren mantentze-lanetako moduan sartzen"
 msgid "%s: %s was created, but could not be removed\n"
 msgstr ""
 
-#, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
 msgstr "%s: %s konfigurazioa %s-n dagoena alde batetara utziko da\n"
 
 #, fuzzy, c-format
 #| msgid "%s: the %s configuration in %s will be ignored\n"
 msgid ""
-"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
 "group\n"
 msgstr "%s: %s konfigurazioa %s-n dagoena alde batetara utziko da\n"
 
@@ -2983,19 +2999,19 @@ msgid "failed to rename mailbox"
 msgstr "huts egin du postontzia izenez aldatzean"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: huts %s sarrera  berria prestatzean '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: huts %s sarrera  berria prestatzean '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: huts %s sarrera  berria prestatzean '%s'\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: huts %s sarrera  berria prestatzean '%s'\n"
 
 #, c-format
@@ -3114,6 +3130,16 @@ msgstr "%s: oinarrizko '%s' direktorio baliogabea\n"
 #~ msgstr "%s: %s taldea NIS talde bat da\n"
 
 #, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s: %s erabiltzaile ezezaguna\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Erabilera: id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " taldeak="
+
+#, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r ostalaria\n"
 
@@ -3151,10 +3177,6 @@ msgstr "%s: oinarrizko '%s' direktorio baliogabea\n"
 #, c-format
 #~ msgid "Last login: %.19s on %s"
 #~ msgstr "Azken saio-hasiera: %.19s  %s(e)n"
-
-#, c-format
-#~ msgid "%s: invalid user name '%s'\n"
-#~ msgstr "%s: '%s' erabiltzaile-izen baliogabea\n"
 
 #, c-format
 #~ msgid "%s: password expiry information changed.\n"
