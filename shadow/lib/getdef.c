@@ -11,22 +11,29 @@
 
 #ident "$Id$"
 
-#include "prototypes.h"
-#include "defines.h"
+#include <ctype.h>
+#include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <errno.h>
+#include <string.h>
+
 #ifdef USE_ECONF
 #include <libeconf.h>
 #endif
 
-#include "alloc.h"
-#include "atoi/str2i.h"
+#include "atoi/a2i/a2s.h"
+#include "atoi/a2i/a2u.h"
+#include "atoi/str2i/str2u.h"
+#include "defines.h"
 #include "getdef.h"
+#include "prototypes.h"
 #include "shadowlog_internal.h"
-#include "string/sprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strchr/stpspn.h"
+#include "string/strchr/strrspn.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
 
 
 /*
@@ -156,7 +163,6 @@ static struct itemdef def_table[] = {
 	{NULL, NULL}
 };
 
-#define NUMKNOWNDEFS	(sizeof(knowndef_table)/sizeof(knowndef_table[0]))
 static struct itemdef knowndef_table[] = {
 #ifdef USE_PAM
 	PAMDEFS
@@ -237,10 +243,11 @@ bool getdef_bool (const char *item)
  * values are handled.
  */
 
-int getdef_num (const char *item, int dflt)
+int
+getdef_num(const char *item, int dflt)
 {
-	struct itemdef *d;
-	long val;
+	int             val;
+	struct itemdef  *d;
 
 	if (!def_loaded) {
 		def_load ();
@@ -251,9 +258,7 @@ int getdef_num (const char *item, int dflt)
 		return dflt;
 	}
 
-	if (   (str2sl(&val, d->value) == -1)
-	    || (val > INT_MAX)
-	    || (val < -1)) {
+	if (a2si(&val, d->value, NULL, 0, -1, INT_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -272,10 +277,11 @@ int getdef_num (const char *item, int dflt)
  * values are handled.
  */
 
-unsigned int getdef_unum (const char *item, unsigned int dflt)
+unsigned int
+getdef_unum(const char *item, unsigned int dflt)
 {
-	struct itemdef *d;
-	long val;
+	unsigned int    val;
+	struct itemdef  *d;
 
 	if (!def_loaded) {
 		def_load ();
@@ -286,9 +292,7 @@ unsigned int getdef_unum (const char *item, unsigned int dflt)
 		return dflt;
 	}
 
-	if (   (str2sl(&val, d->value) == -1)
-	    || (val < 0)
-	    || (val > INT_MAX)) {
+	if (a2ui(&val, d->value, NULL, 0, 0, UINT_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -321,7 +325,7 @@ long getdef_long (const char *item, long dflt)
 		return dflt;
 	}
 
-	if (str2sl(&val, d->value) == -1 || val < -1) {
+	if (a2sl(&val, d->value, NULL, 0, -1, LONG_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -421,7 +425,7 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name, cons
 	 */
 
 	for (ptr = def_table; NULL != ptr->name; ptr++) {
-		if (strcmp (ptr->name, name) == 0) {
+		if (streq(ptr->name, name)) {
 			return ptr;
 		}
 	}
@@ -431,7 +435,7 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name, cons
 	 */
 
 	for (ptr = knowndef_table; NULL != ptr->name; ptr++) {
-		if (strcmp (ptr->name, name) == 0) {
+		if (streq(ptr->name, name)) {
 			goto out;
 		}
 	}
@@ -531,7 +535,6 @@ static void def_load (void)
 #else /* USE_ECONF */
 static void def_load (void)
 {
-	int i;
 	FILE *fp;
 	char buf[1024], *name, *value, *s;
 
@@ -563,28 +566,21 @@ static void def_load (void)
 		/*
 		 * Trim trailing whitespace.
 		 */
-		for (i = (ptrdiff_t) strlen (buf) - 1; i >= 0; --i) {
-			if (!isspace (buf[i])) {
-				break;
-			}
-		}
-		i++;
-		buf[i] = '\0';
+		stpcpy(strrspn(buf, " \t\n"), "");
 
 		/*
 		 * Break the line into two fields.
 		 */
-		name = buf + strspn (buf, " \t");	/* first nonwhite */
-		if (*name == '\0' || *name == '#')
+		name = stpspn(buf, " \t");	/* first nonwhite */
+		if (streq(name, "") || *name == '#')
 			continue;	/* comment or empty */
 
-		s = name + strcspn (name, " \t");	/* end of field */
-		if (*s == '\0')
+		s = stpsep(name, " \t");  /* next field */
+		if (s == NULL)
 			continue;	/* only 1 field?? */
 
-		*s++ = '\0';
-		value = s + strspn (s, " \"\t");	/* next nonwhite */
-		*(value + strcspn (value, "\"")) = '\0';
+		value = stpspn(s, " \"\t");	/* next nonwhite */
+		stpsep(value, "\"");
 
 		/*
 		 * Store the value in def_table.

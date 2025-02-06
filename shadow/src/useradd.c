@@ -36,16 +36,15 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "alloc.h"
-#include "atoi/str2i.h"
+#include "alloc/x/xmalloc.h"
+#include "atoi/a2i/a2s.h"
+#include "atoi/getnum.h"
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
 #include "getdef.h"
 #include "groupio.h"
-#include "memzero.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
@@ -65,7 +64,13 @@
 #include "tcbfuncs.h"
 #endif
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "sssd.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+#include "string/strtok/stpsep.h"
 
 
 #ifndef SKEL_DIR
@@ -171,7 +176,7 @@ static bool
     Uflg = false;		/* create a group having the same name as the user */
 
 #ifdef WITH_SELINUX
-#define Zflg ('\0' != *user_selinux)
+#define Zflg  (!streq(user_selinux, ""))
 #endif				/* WITH_SELINUX */
 
 static bool home_added = false;
@@ -199,16 +204,16 @@ static bool tcb_added = false;
 #define E_SUB_GID_UPDATE 18	/* can't update the subordinate gid file */
 #endif				/* ENABLE_SUBIDS */
 
-#define DGROUP			"GROUP="
-#define DGROUPS			"GROUPS="
-#define DHOME			"HOME="
-#define DSHELL			"SHELL="
-#define DINACT			"INACTIVE="
-#define DEXPIRE			"EXPIRE="
-#define DSKEL			"SKEL="
-#define DUSRSKEL		"USRSKEL="
-#define DCREATE_MAIL_SPOOL	"CREATE_MAIL_SPOOL="
-#define DLOG_INIT	"LOG_INIT="
+#define DGROUP			"GROUP"
+#define DGROUPS			"GROUPS"
+#define DHOME			"HOME"
+#define DSHELL			"SHELL"
+#define DINACT			"INACTIVE"
+#define DEXPIRE			"EXPIRE"
+#define DSKEL			"SKEL"
+#define DUSRSKEL		"USRSKEL"
+#define DCREATE_MAIL_SPOOL	"CREATE_MAIL_SPOOL"
+#define DLOG_INIT		"LOG_INIT"
 
 /* local function prototypes */
 NORETURN static void fail_exit (int);
@@ -240,7 +245,7 @@ static void create_home (void);
 static void create_mail (void);
 static void check_uid_range(int rflg, uid_t user_id);
 
-static FILE *fmkstemp(char *template);
+static FILE *fmkomstemp(char *template, unsigned int flags, mode_t m);
 
 
 /*
@@ -330,8 +335,6 @@ static void fail_exit (int code)
 	exit(code);
 }
 
-#define MATCH(x,y) (strncmp((x),(y),strlen(y)) == 0)
-
 /*
  * get_defaults - read the defaults file
  *
@@ -339,7 +342,8 @@ static void fail_exit (int code)
  *	various values from the file, or uses built-in default values if the
  *	file does not exist.
  */
-static void get_defaults (void)
+static void
+get_defaults(void)
 {
 	FILE        *fp;
 	char        *default_file = USER_DEFAULTS_FILE;
@@ -366,29 +370,23 @@ static void get_defaults (void)
 	 * values are used, everything else can be ignored.
 	 */
 	while (fgets (buf, sizeof buf, fp) == buf) {
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		}
+		stpsep(buf, "\n");
 
-		cp = strchr (buf, '=');
-		if (NULL == cp) {
+		cp = stpsep(buf, "=");
+		if (NULL == cp)
 			continue;
-		}
-
-		cp++;
 
 		/*
 		 * Primary GROUP identifier
 		 */
-		if (MATCH (buf, DGROUP)) {
+		if (streq(buf, DGROUP)) {
 			const struct group *grp = prefix_getgr_nam_gid (cp);
 			if (NULL == grp) {
 				fprintf (stderr,
 				         _("%s: group '%s' does not exist\n"),
 				         Prog, cp);
 				fprintf (stderr,
-				         _("%s: the %s configuration in %s will be ignored\n"),
+				         _("%s: the %s= configuration in %s will be ignored\n"),
 				         Prog, DGROUP, default_file);
 			} else {
 				def_group = grp->gr_gid;
@@ -398,10 +396,10 @@ static void get_defaults (void)
 
 		ccp = cp;
 
-		if (MATCH (buf, DGROUPS)) {
+		if (streq(buf, DGROUPS)) {
 			if (get_groups (cp) != 0) {
 				fprintf (stderr,
-				         _("%s: the '%s' configuration in %s has an invalid group, ignoring the bad group\n"),
+				         _("%s: the '%s=' configuration in %s has an invalid group, ignoring the bad group\n"),
 				         Prog, DGROUPS, default_file);
 			}
 			if (user_groups[0] != NULL) {
@@ -412,28 +410,27 @@ static void get_defaults (void)
 		/*
 		 * Default HOME filesystem
 		 */
-		else if (MATCH (buf, DHOME)) {
+		else if (streq(buf, DHOME)) {
 			def_home = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Login Shell command
 		 */
-		else if (MATCH (buf, DSHELL)) {
+		else if (streq(buf, DSHELL)) {
 			def_shell = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Password Inactive value
 		 */
-		else if (MATCH (buf, DINACT)) {
-			if (   (str2sl(&def_inactive, ccp) == -1)
-			    || (def_inactive < -1)) {
+		else if (streq(buf, DINACT)) {
+			if (a2sl(&def_inactive, ccp, NULL, 0, -1, LONG_MAX) == -1) {
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
 				         Prog, ccp);
 				fprintf (stderr,
-				         _("%s: the %s configuration in %s will be ignored\n"),
+				         _("%s: the %s= configuration in %s will be ignored\n"),
 				         Prog, DINACT, default_file);
 				def_inactive = -1;
 			}
@@ -442,15 +439,15 @@ static void get_defaults (void)
 		/*
 		 * Default account expiration date
 		 */
-		else if (MATCH (buf, DEXPIRE)) {
+		else if (streq(buf, DEXPIRE)) {
 			def_expire = xstrdup(ccp);
 		}
 
 		/*
 		 * Default Skeleton information
 		 */
-		else if (MATCH (buf, DSKEL)) {
-			if ('\0' == *ccp)
+		else if (streq(buf, DSKEL)) {
+			if (streq(ccp, ""))
 				ccp = SKEL_DIR;
 
 			if (prefix[0]) {
@@ -466,8 +463,8 @@ static void get_defaults (void)
 		/*
 		 * Default Usr Skeleton information
 		 */
-		else if (MATCH (buf, DUSRSKEL)) {
-			if ('\0' == *ccp)
+		else if (streq(buf, DUSRSKEL)) {
+			if (streq(ccp, ""))
 				ccp = USRSKELDIR;
 
 			if (prefix[0]) {
@@ -482,8 +479,8 @@ static void get_defaults (void)
 		/*
 		 * Create by default user mail spool or not ?
 		 */
-		else if (MATCH (buf, DCREATE_MAIL_SPOOL)) {
-			if (*ccp == '\0')
+		else if (streq(buf, DCREATE_MAIL_SPOOL)) {
+			if (streq(ccp, ""))
 				ccp = "no";
 
 			def_create_mail_spool = xstrdup(ccp);
@@ -492,8 +489,8 @@ static void get_defaults (void)
 		/*
 		 * By default do we add the user to the lastlog and faillog databases ?
 		 */
-		else if (MATCH (buf, DLOG_INIT)) {
-			if (*ccp == '\0')
+		else if (streq(buf, DLOG_INIT)) {
+			if (streq(ccp, ""))
 				ccp = def_log_init;
 
 			def_log_init = xstrdup(ccp);
@@ -533,7 +530,8 @@ static void show_defaults (void)
  *	are currently set. Duplicated lines are pruned, missing lines are
  *	added, and unrecognized lines are copied as is.
  */
-static int set_defaults (void)
+static int
+set_defaults(void)
 {
 	int   ret = -1;
 	bool  out_group = false;
@@ -592,7 +590,7 @@ static int set_defaults (void)
 	/*
 	 * Create a temporary file to copy the new output to.
 	 */
-	ofp = fmkstemp(new_file);
+	ofp = fmkomstemp(new_file, 0, 0644);
 	if (NULL == ofp) {
 		fprintf (stderr,
 		         _("%s: cannot open new defaults file\n"),
@@ -612,10 +610,9 @@ static int set_defaults (void)
 	}
 
 	while (fgets (buf, sizeof buf, ifp) == buf) {
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		} else {
+		char  *val;
+
+		if (stpsep(buf, "\n") == NULL) {
 			/* A line which does not end with \n is only valid
 			 * at the end of the file.
 			 */
@@ -629,44 +626,46 @@ static int set_defaults (void)
 			}
 		}
 
-		if (!out_group && MATCH (buf, DGROUP)) {
-			fprintf (ofp, DGROUP "%u\n", (unsigned int) def_group);
+		val = stpsep(buf, "=");
+		if (val == NULL) {
+			fprintf(ofp, "%s\n", buf);
+		} else if (!out_group && streq(buf, DGROUP)) {
+			fprintf(ofp, DGROUP "=%u\n", (unsigned int) def_group);
 			out_group = true;
-		} else if (!out_groups && MATCH (buf, DGROUPS)) {
-			fprintf (ofp, DGROUPS "%s\n", def_groups);
+		} else if (!out_groups && streq(buf, DGROUPS)) {
+			fprintf(ofp, DGROUPS "=%s\n", def_groups);
 			out_groups = true;
-		} else if (!out_home && MATCH (buf, DHOME)) {
-			fprintf (ofp, DHOME "%s\n", def_home);
+		} else if (!out_home && streq(buf, DHOME)) {
+			fprintf(ofp, DHOME "=%s\n", def_home);
 			out_home = true;
-		} else if (!out_inactive && MATCH (buf, DINACT)) {
-			fprintf (ofp, DINACT "%ld\n", def_inactive);
+		} else if (!out_inactive && streq(buf, DINACT)) {
+			fprintf(ofp, DINACT "=%ld\n", def_inactive);
 			out_inactive = true;
-		} else if (!out_expire && MATCH (buf, DEXPIRE)) {
-			fprintf (ofp, DEXPIRE "%s\n", def_expire);
+		} else if (!out_expire && streq(buf, DEXPIRE)) {
+			fprintf(ofp, DEXPIRE "=%s\n", def_expire);
 			out_expire = true;
-		} else if (!out_shell && MATCH (buf, DSHELL)) {
-			fprintf (ofp, DSHELL "%s\n", def_shell);
+		} else if (!out_shell && streq(buf, DSHELL)) {
+			fprintf(ofp, DSHELL "=%s\n", def_shell);
 			out_shell = true;
-		} else if (!out_skel && MATCH (buf, DSKEL)) {
-			fprintf (ofp, DSKEL "%s\n", def_template);
+		} else if (!out_skel && streq(buf, DSKEL)) {
+			fprintf(ofp, DSKEL "=%s\n", def_template);
 			out_skel = true;
-		} else if (!out_usrskel && MATCH (buf, DUSRSKEL)) {
-			fprintf (ofp, DUSRSKEL "%s\n", def_usrtemplate);
+		} else if (!out_usrskel && streq(buf, DUSRSKEL)) {
+			fprintf(ofp, DUSRSKEL "=%s\n", def_usrtemplate);
 			out_usrskel = true;
 		} else if (!out_create_mail_spool
-			   && MATCH (buf, DCREATE_MAIL_SPOOL)) {
-			fprintf (ofp,
-			         DCREATE_MAIL_SPOOL "%s\n",
-			         def_create_mail_spool);
+			   && streq(buf, DCREATE_MAIL_SPOOL))
+		{
+			fprintf(ofp,
+			        DCREATE_MAIL_SPOOL "=%s\n",
+			        def_create_mail_spool);
 			out_create_mail_spool = true;
-		} else if (!out_log_init
-			   && MATCH (buf, DLOG_INIT)) {
-			fprintf (ofp,
-			         DLOG_INIT "%s\n",
-			         def_log_init);
+		} else if (!out_log_init && streq(buf, DLOG_INIT)) {
+			fprintf(ofp, DLOG_INIT "=%s\n", def_log_init);
 			out_log_init = true;
-		} else
-			fprintf (ofp, "%s\n", buf);
+		} else {
+			fprintf(ofp, "%s=%s\n", buf, val);
+		}
 	}
 	(void) fclose (ifp);
 
@@ -677,26 +676,26 @@ static int set_defaults (void)
 	 * have an entry for that value.
 	 */
 	if (!out_group)
-		fprintf (ofp, DGROUP "%u\n", (unsigned int) def_group);
+		fprintf (ofp, DGROUP "=%u\n", (unsigned int) def_group);
 	if (!out_groups)
-		fprintf (ofp, DGROUPS "%s\n", def_groups);
+		fprintf (ofp, DGROUPS "=%s\n", def_groups);
 	if (!out_home)
-		fprintf (ofp, DHOME "%s\n", def_home);
+		fprintf (ofp, DHOME "=%s\n", def_home);
 	if (!out_inactive)
-		fprintf (ofp, DINACT "%ld\n", def_inactive);
+		fprintf (ofp, DINACT "=%ld\n", def_inactive);
 	if (!out_expire)
-		fprintf (ofp, DEXPIRE "%s\n", def_expire);
+		fprintf (ofp, DEXPIRE "=%s\n", def_expire);
 	if (!out_shell)
-		fprintf (ofp, DSHELL "%s\n", def_shell);
+		fprintf (ofp, DSHELL "=%s\n", def_shell);
 	if (!out_skel)
-		fprintf (ofp, DSKEL "%s\n", def_template);
+		fprintf (ofp, DSKEL "=%s\n", def_template);
 	if (!out_usrskel)
-		fprintf (ofp, DUSRSKEL "%s\n", def_usrtemplate);
+		fprintf (ofp, DUSRSKEL "=%s\n", def_usrtemplate);
 
 	if (!out_create_mail_spool)
-		fprintf (ofp, DCREATE_MAIL_SPOOL "%s\n", def_create_mail_spool);
+		fprintf (ofp, DCREATE_MAIL_SPOOL "=%s\n", def_create_mail_spool);
 	if (!out_log_init)
-		fprintf (ofp, DLOG_INIT "%s\n", def_log_init);
+		fprintf (ofp, DLOG_INIT "=%s\n", def_log_init);
 	/*
 	 * Flush and close the file. Check for errors to make certain
 	 * the new file is intact.
@@ -766,12 +765,20 @@ err_free_new:
  */
 static int get_groups (char *list)
 {
-	char *cp;
 	struct group *grp;
 	int errors = 0;
 	int ngroups = 0;
 
-	if ('\0' == *list) {
+	/*
+	 * Free previous group list before creating a new one.
+	 */
+	int i = 0;
+	while (NULL != user_groups[i]) {
+		free(user_groups[i]);
+		user_groups[i++] = NULL;
+	}
+
+	if (streq(list, "")) {
 		return 0;
 	}
 
@@ -785,20 +792,19 @@ static int get_groups (char *list)
 	 * each name and look it up. A mix of numerical and string
 	 * values for group identifiers is permitted.
 	 */
-	do {
+	while (NULL != list) {
+		char  *g;
+
 		/*
 		 * Strip off a single name from the list
 		 */
-		cp = strchr (list, ',');
-		if (NULL != cp) {
-			*cp++ = '\0';
-		}
+		g = strsep(&list, ",");
 
 		/*
 		 * Names starting with digits are treated as numerical
 		 * GID values, otherwise the string is looked up as is.
 		 */
-		grp = get_local_group (list);
+		grp = get_local_group(g);
 
 		/*
 		 * There must be a match, either by GID value or by
@@ -809,10 +815,9 @@ static int get_groups (char *list)
 		if (NULL == grp) {
 			fprintf (stderr,
 			         _("%s: group '%s' does not exist\n"),
-			         Prog, list);
+			         Prog, g);
 			errors++;
 		}
-		list = cp;
 
 		/*
 		 * If the group doesn't exist, don't dump core...
@@ -835,7 +840,7 @@ static int get_groups (char *list)
 		 */
 		user_groups[ngroups++] = xstrdup (grp->gr_name);
 		gr_free (grp);
-	} while (NULL != list);
+	}
 
 	close_group_files ();
 	unlock_group_files ();
@@ -861,21 +866,14 @@ static int get_groups (char *list)
  */
 static struct group * get_local_group(char * grp_name)
 {
-	char  *end;
-	const struct group *grp;
-	struct group *result_grp = NULL;
-	long long  gid;
+	gid_t               gid;
+	struct group        *result_grp = NULL;
+	const struct group  *grp;
 
-	gid = strtoll(grp_name, &end, 10);
-	if (   ('\0' != *grp_name)
-		&& ('\0' == *end)
-		&& (ERANGE != errno)
-		&& (gid == (gid_t)gid)) {
-		grp = gr_locate_gid (gid);
-	}
-	else {
+	if (get_gid(grp_name, &gid) == 0)
+		grp = gr_locate_gid(gid);
+	else
 		grp = gr_locate(grp_name);
-	}
 
 	if (grp != NULL) {
 		result_grp = __gr_dup (grp);
@@ -1273,7 +1271,7 @@ static void process_flags (int argc, char **argv)
 				Dflg = true;
 				break;
 			case 'e':
-				if ('\0' != *optarg) {
+				if (!streq(optarg, "")) {
 					user_expire = strtoday (optarg);
 					if (user_expire < -1) {
 						fprintf (stderr,
@@ -1301,8 +1299,9 @@ static void process_flags (int argc, char **argv)
 				eflg = true;
 				break;
 			case 'f':
-				if (   (str2sl(&def_inactive, optarg) == -1)
-				    || (def_inactive < -1)) {
+				if (a2sl(&def_inactive, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -1369,16 +1368,13 @@ static void process_flags (int argc, char **argv)
 				 * example: -K UID_MIN=100 -K UID_MAX=499
 				 * note: -K UID_MIN=10,UID_MAX=499 doesn't work yet
 				 */
-				cp = strchr (optarg, '=');
+				cp = stpsep(optarg, "=");
 				if (NULL == cp) {
 					fprintf (stderr,
 					         _("%s: -K requires KEY=VALUE\n"),
 					         Prog);
 					exit (E_BAD_ARG);
 				}
-				/* terminate name, point to value */
-				*cp = '\0';
-				cp++;
 				if (putdef_str (optarg, cp, NULL) < 0) {
 					exit (E_BAD_ARG);
 				}
@@ -1417,7 +1413,7 @@ static void process_flags (int argc, char **argv)
 				break;
 			case 's':
 				if (   ( !VALID (optarg) )
-				    || (   ('\0' != optarg[0])
+				    || (   !streq(optarg, "")
 				        && ('/'  != optarg[0])
 				        && ('*'  != optarg[0]) )) {
 					fprintf (stderr,
@@ -1425,9 +1421,9 @@ static void process_flags (int argc, char **argv)
 					         Prog, optarg);
 					exit (E_BAD_ARG);
 				}
-				if (    '\0' != optarg[0]
+				if (!streq(optarg, "")
 				     && '*'  != optarg[0]
-				     && strcmp(optarg, "/sbin/nologin") != 0
+				     && !streq(optarg, "/sbin/nologin")
 				     && (   stat(optarg, &st) != 0
 				         || S_ISDIR(st.st_mode)
 				         || access(optarg, X_OK) != 0)) {
@@ -1547,10 +1543,16 @@ static void process_flags (int argc, char **argv)
 		}
 
 		user_name = argv[optind];
-		if (!is_valid_user_name (user_name)) {
-			fprintf (stderr,
-			         _("%s: invalid user name '%s'\n"),
-			         Prog, user_name);
+		if (!is_valid_user_name(user_name)) {
+			if (errno == EINVAL) {
+				fprintf(stderr,
+				        _("%s: invalid user name '%s': use REGEXP_NAME in /etc/login.defs to set allowed names\n"),
+				        Prog, user_name);
+			} else {
+				fprintf(stderr,
+				        _("%s: invalid user name '%s'\n"),
+				        Prog, user_name);
+			}
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_ADD_USER, Prog,
 			              "adding user",
@@ -1592,7 +1594,7 @@ static void process_flags (int argc, char **argv)
 	if (!lflg) {
 		/* If we are missing the flag lflg aka -l, check the defaults
 		* file to see if we need to disable it as a default*/
-		if (strcmp (def_log_init, "no") == 0) {
+		if (streq(def_log_init, "no")) {
 			lflg = true;
 		}
 	}
@@ -2060,7 +2062,7 @@ static void lastlog_reset (uid_t uid)
 		return;
 	}
 	if (   (lseek (fd, offset_uid, SEEK_SET) != offset_uid)
-	    || (write_full (fd, &ll, sizeof (ll)) != (ssize_t) sizeof (ll))
+	    || (write_full (fd, &ll, sizeof (ll)) == -1)
 	    || (fsync (fd) != 0)) {
 		fprintf (stderr,
 		         _("%s: failed to reset the lastlog entry of UID %lu: %s\n"),
@@ -2099,11 +2101,7 @@ static void tallylog_reset (const char *user_name)
 		failed = 1;
 		break;
 	case 0: /* child */
-		pname = strrchr(pam_tally2, '/');
-		if (pname == NULL)
-			pname = pam_tally2;
-		else
-			pname++;        /* Skip the '/' */
+		pname = Basename(pam_tally2);
 		execl(pam_tally2, pname, "--user", user_name, "--reset", "--quiet", NULL);
 		/* If we come here, something has gone terribly wrong */
 		perror(pam_tally2);
@@ -2247,7 +2245,7 @@ static void create_home (void)
 	if (access (prefix_user_home, F_OK) == 0)
 		return;
 
-	path[0] = '\0';
+	strcpy(path, "");
 	bhome = strdup(prefix_user_home);
 	if (!bhome) {
 		fprintf(stderr,
@@ -2293,7 +2291,7 @@ static void create_home (void)
 					Prog, path);
 				fail_exit(E_HOMEDIR);
 			}
-			btrfs_check[strlen(path) - strlen(cp) - 1] = '\0';
+			stpcpy(&btrfs_check[strlen(path) - strlen(cp) - 1], "");
 			if (is_btrfs(btrfs_check) <= 0) {
 				fprintf(stderr,
 					_("%s: home directory \"%s\" must be mounted on BTRFS\n"),
@@ -2810,21 +2808,25 @@ int main (int argc, char **argv)
 
 
 static FILE *
-fmkstemp(char *template)
+fmkomstemp(char *template, unsigned int flags, mode_t m)
 {
 	int   fd;
 	FILE  *fp;
 
-	fd = mkstemp(template);
+	fd = mkostemp(template, flags);
 	if (fd == -1)
 		return NULL;
 
+	if (fchmod(fd, m) == -1)
+		goto fail;
+
 	fp = fdopen(fd, "w");
-	if (fp == NULL) {
-		close(fd);
-		unlink(template);
-		return NULL;
-	}
+	if (fp == NULL)
+		goto fail;
 
 	return fp;
+fail:
+	close(fd);
+	unlink(template);
+	return NULL;
 }

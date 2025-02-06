@@ -22,8 +22,6 @@ lib/find_new_sub_gids.c
 lib/find_new_sub_uids.c
 lib/find_new_uid.c
 lib/fputsx.c
-lib/get_gid.c
-lib/get_uid.c
 lib/getdef.c
 lib/getgr_nam_gid.c
 lib/getrange.c
@@ -92,11 +90,9 @@ src/groupadd.c
 src/groupdel.c
 src/groupmems.c
 src/groupmod.c
-src/groups.c
 src/grpck.c
 src/grpconv.c
 src/grpunconv.c
-src/id.c
 src/lastlog.c
 src/login.c
 src/login_nopam.c

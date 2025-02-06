@@ -21,21 +21,23 @@
 #include <time.h>
 
 #include "agetpass.h"
-#include "alloc.h"
-#include "atoi/str2i.h"
+#include "atoi/a2i/a2s.h"
+#include "chkname.h"
 #include "defines.h"
 #include "getdef.h"
-#include "memzero.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
 #include "shadowio.h"
 #include "shadowlog.h"
-#include "string/strtcpy.h"
+#include "sssd.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
 #include "time/day_to_str.h"
-
 
 
 /*
@@ -192,7 +194,7 @@ static int new_password (const struct passwd *pw)
 	 * password.
 	 */
 
-	if (!amroot && ('\0' != crypt_passwd[0])) {
+	if (!amroot && !streq(crypt_passwd, "")) {
 		clear = agetpass (_("Old password: "));
 		if (NULL == clear) {
 			return -1;
@@ -211,7 +213,7 @@ static int new_password (const struct passwd *pw)
 			return -1;
 		}
 
-		if (strcmp (cipher, crypt_passwd) != 0) {
+		if (!streq(cipher, crypt_passwd)) {
 			erase_pass (clear);
 			strzero (cipher);
 			SYSLOG ((LOG_WARN, "incorrect password for %s",
@@ -226,7 +228,7 @@ static int new_password (const struct passwd *pw)
 		erase_pass (clear);
 		strzero (cipher);
 	} else {
-		orig[0] = '\0';
+		strcpy(orig, "");
 	}
 
 	/*
@@ -241,16 +243,16 @@ static int new_password (const struct passwd *pw)
 			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
 		}
 	} else {
-		if (   (strcmp (method, "MD5")    == 0)
+		if (   streq(method, "MD5")
 #ifdef USE_SHA_CRYPT
-		    || (strcmp (method, "SHA256") == 0)
-		    || (strcmp (method, "SHA512") == 0)
+		    || streq(method, "SHA256")
+		    || streq(method, "SHA512")
 #endif /* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
-		    || (strcmp (method, "BCRYPT") == 0)
+		    || streq(method, "BCRYPT")
 #endif /* USE_BCRYPT*/
 #ifdef USE_YESCRYPT
-		    || (strcmp (method, "YESCRYPT") == 0)
+		    || streq(method, "YESCRYPT")
 #endif /* USE_YESCRYPT*/
 
 		    ) {
@@ -297,7 +299,7 @@ static int new_password (const struct passwd *pw)
 				MEMZERO(pass);
 				return -1;
 			}
-			if (warned && (strcmp (pass, cp) != 0)) {
+			if (warned && !streq(pass, cp)) {
 				warned = false;
 			}
 			ret = STRTCPY (pass, cp);
@@ -331,7 +333,7 @@ static int new_password (const struct passwd *pw)
 				MEMZERO(pass);
 				return -1;
 			}
-			if (strcmp (cp, pass) != 0) {
+			if (!streq(cp, pass)) {
 				erase_pass (cp);
 				(void) fputs (_("They don't match; try again.\n"), stderr);
 			} else {
@@ -439,7 +441,7 @@ static /*@observer@*/const char *pw_status (const char *pass)
 	if (*pass == '*' || *pass == '!') {
 		return "L";
 	}
-	if (*pass == '\0') {
+	if (streq(pass, "")) {
 		return "NP";
 	}
 	return "P";
@@ -514,9 +516,8 @@ static char *update_crypt_pw (char *cp)
 		}
 	}
 
-	if (dflg) {
-		*cp = '\0';
-	}
+	if (dflg)
+		strcpy(cp, "");
 
 	if (uflg && *cp == '!') {
 		if (cp[1] == '\0') {
@@ -531,10 +532,9 @@ static char *update_crypt_pw (char *cp)
 	}
 
 	if (lflg && *cp != '!') {
-		char *newpw = XMALLOC(strlen(cp) + 2, char);
+		char  *newpw;
 
-		strcpy (newpw, "!");
-		strcat (newpw, cp);
+		xasprintf(&newpw, "!%s", cp);
 		if (!use_pam)
 		{
 			if (do_update_pwd) {
@@ -723,7 +723,8 @@ static void update_shadow (void)
  * 	appropriate internal format. For finer resolute the chage
  *	command must be used.
  */
-int main (int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	const struct passwd *pw;	/* Password file entry for user      */
 
@@ -803,8 +804,9 @@ int main (int argc, char **argv)
 				usage (E_SUCCESS);
 				/*@notreached@*/break;
 			case 'i':
-				if (   (str2sl(&inact, optarg) == -1)
-				    || (inact < -1)) {
+				if (a2sl(&inact, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -822,8 +824,9 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'n':
-				if (   (str2sl(&age_min, optarg) == -1)
-				    || (age_min < -1)) {
+				if (a2sl(&age_min, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -838,7 +841,7 @@ int main (int argc, char **argv)
 			case 'r':
 				/* -r repository (files|nis|nisplus) */
 				/* only "files" supported for now */
-				if (strcmp (optarg, "files") != 0) {
+				if (!streq(optarg, "files")) {
 					fprintf (stderr,
 					         _("%s: repository %s not supported\n"),
 						 Prog, optarg);
@@ -857,8 +860,9 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'w':
-				if (   (str2sl(&warn, optarg) == -1)
-				    || (warn < -1)) {
+				if (a2sl(&warn, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					(void) fprintf (stderr,
 					                _("%s: invalid numeric argument '%s'\n"),
 					                Prog, optarg);
@@ -868,8 +872,9 @@ int main (int argc, char **argv)
 				anyflag = true;
 				break;
 			case 'x':
-				if (   (str2sl(&age_max, optarg) == -1)
-				    || (age_max < -1)) {
+				if (a2sl(&age_max, optarg, NULL, 0, -1, LONG_MAX)
+				    == -1)
+				{
 					(void) fprintf (stderr,
 					                _("%s: invalid numeric argument '%s'\n"),
 					                Prog, optarg);
@@ -909,6 +914,10 @@ int main (int argc, char **argv)
 	}
 	myname = xstrdup (pw->pw_name);
 	if (optind < argc) {
+		if (!is_valid_user_name (argv[optind])) {
+			fprintf (stderr, _("%s: Provided user name is not a valid name\n"), Prog);
+			fail_exit (E_NOPERM);
+		}
 		name = argv[optind];
 	} else {
 		name = myname;

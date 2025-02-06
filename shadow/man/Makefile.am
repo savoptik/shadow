@@ -45,7 +45,6 @@ man_MANS += man8/lastlog.8
 endif
 
 man_nopam = \
-	man1/groups.1 \
 	man1/login.1 \
 	man1/passwd.1 \
 	man1/su.1 \
@@ -193,16 +192,6 @@ EXTRA_DIST = \
 	$(man_XMANS) \
 	config.xml \
 	$(addprefix login.defs.d/,$(login_defs_v)) \
-	man1/id.1 \
-	id.1.xml \
-	man1/groups.1 \
-	groups.1.xml \
-	man1/login.1 \
-	login.1.xml \
-	man1/passwd.1 \
-	passwd.1.xml \
-	man1/su.1 \
-	su.1.xml \
 	man8/sulogin.8 \
 	sulogin.8.xml \
 	generate_mans.mak \
@@ -228,7 +217,7 @@ if ENABLE_REGENERATE_MAN
 
 include generate_mans.mak
 
-CLEANFILES = $(man_MANS) man1/id.1 man8/sulogin.8
+CLEANFILES = $(man_MANS) man8/sulogin.8
 
 else
 $(man_MANS):

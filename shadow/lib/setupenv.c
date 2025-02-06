@@ -21,13 +21,16 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "alloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include <pwd.h>
 #include "getdef.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strchr/stpspn.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+#include "string/strtok/stpsep.h"
 
 
 #ifndef USE_PAM
@@ -52,18 +55,13 @@ static void read_env_file (const char *filename)
 		return;
 	}
 	while (fgets (buf, (int)(sizeof buf), fp) == buf) {
-		cp = strrchr (buf, '\n');
-		if (NULL == cp) {
+		if (stpsep(buf, "\n") == NULL)
 			break;
-		}
-		*cp = '\0';
 
 		cp = buf;
 		/* ignore whitespace and comments */
-		while (isspace (*cp)) {
-			cp++;
-		}
-		if (('\0' == *cp) || ('#' == *cp)) {
+		cp = stpspn(cp, " \t");
+		if (streq(cp, "") || ('#' == *cp)) {
 			continue;
 		}
 		/*
@@ -71,16 +69,11 @@ static void read_env_file (const char *filename)
 		 * (for example, the "export NAME" shell commands)
 		 */
 		name = cp;
-		while (('\0' != *cp) && !isspace (*cp) && ('=' != *cp)) {
-			cp++;
-		}
-		if ('=' != *cp) {
+		val = stpsep(cp, "=");
+		if (val == NULL)
 			continue;
-		}
-		/* NUL-terminate the name */
-		*cp = '\0';
-		cp++;
-		val = cp;
+		if (strpbrk(name, " \t") != NULL)
+			continue;
 #if 0				/* XXX untested, and needs rewrite with fewer goto's :-) */
 /*
  (state, char_type) -> (state, action)
@@ -112,7 +105,7 @@ static void read_env_file (const char *filename)
 			goto finished;
 		} else if (isspace (*cp)) {
 			/* unescaped whitespace - end of string */
-			*cp = '\0';
+			stpcpy(cp, "");
 			goto finished;
 		} else {
 			cp++;
@@ -217,7 +210,7 @@ void setup_env (struct passwd *info)
 	 * Create the SHELL environmental variable and export it.
 	 */
 
-	if ((NULL == info->pw_shell) || ('\0' == *info->pw_shell)) {
+	if ((NULL == info->pw_shell) || streq(info->pw_shell, "")) {
 		free (info->pw_shell);
 		info->pw_shell = xstrdup (SHELL);
 	}

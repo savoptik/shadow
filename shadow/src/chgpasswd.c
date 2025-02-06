@@ -22,7 +22,7 @@
 #include "pam_defs.h"
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
-#include "atoi/str2i.h"
+#include "atoi/str2i/str2s.h"
 #include "defines.h"
 #include "nscd.h"
 #include "sssd.h"
@@ -34,6 +34,8 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
 
 
 /*
@@ -197,19 +199,19 @@ static void process_flags (int argc, char **argv)
 				usage (E_USAGE);
 			}
 #if defined(USE_SHA_CRYPT)
-			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
+			if (  (   (streq(crypt_method, "SHA256") || streq(crypt_method, "SHA512"))
 			       && (-1 == str2sl(&sha_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "BCRYPT"))
+                        if ((   streq(crypt_method, "BCRYPT")
 			       && (-1 == str2sl(&bcrypt_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
+                        if ((   streq(crypt_method, "YESCRYPT")
 			       && (-1 == str2sl(&yescrypt_cost, optarg)))) {
                             bad_s = 1;
                         }
@@ -258,18 +260,18 @@ static void check_flags (void)
 	}
 
 	if (cflg) {
-		if (   (0 != strcmp (crypt_method, "DES"))
-		    && (0 != strcmp (crypt_method, "MD5"))
-		    && (0 != strcmp (crypt_method, "NONE"))
+		if (   !streq(crypt_method, "DES")
+		    && !streq(crypt_method, "MD5")
+		    && !streq(crypt_method, "NONE")
 #ifdef USE_SHA_CRYPT
-		    && (0 != strcmp (crypt_method, "SHA256"))
-		    && (0 != strcmp (crypt_method, "SHA512"))
+		    && !streq(crypt_method, "SHA256")
+		    && !streq(crypt_method, "SHA512")
 #endif				/* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
-		    && (0 != strcmp (crypt_method, "BCRYPT"))
+		    && !streq(crypt_method, "BCRYPT")
 #endif				/* USE_BCRYPT */
 #ifdef USE_YESCRYPT
-		    && (0 != strcmp (crypt_method, "YESCRYPT"))
+		    && !streq(crypt_method, "YESCRYPT")
 #endif				/* USE_YESCRYPT */
 		    ) {
 			fprintf (stderr,
@@ -460,10 +462,7 @@ int main (int argc, char **argv)
 	 */
 	while (fgets (buf, (int) sizeof buf, stdin) != NULL) {
 		line++;
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		} else {
+		if (stpsep(buf, "\n") == NULL) {
 			fprintf (stderr, _("%s: line %d: line too long\n"),
 			         Prog, line);
 			errors++;
@@ -480,11 +479,8 @@ int main (int argc, char **argv)
 		 */
 
 		name = buf;
-		cp = strchr (name, ':');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		} else {
+		cp = stpsep(name, ":");
+		if (cp == NULL) {
 			fprintf (stderr,
 			         _("%s: line %d: missing new password\n"),
 			         Prog, line);
@@ -494,7 +490,7 @@ int main (int argc, char **argv)
 		newpwd = cp;
 		if (   (!eflg)
 		    && (   (NULL == crypt_method)
-		        || (0 != strcmp (crypt_method, "NONE")))) {
+		        || !streq(crypt_method, "NONE"))) {
 			void *arg = NULL;
 			const char *salt;
 			if (md5flg) {
@@ -503,18 +499,18 @@ int main (int argc, char **argv)
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 			if (sflg) {
 #if defined(USE_SHA_CRYPT)
-				if (   (0 == strcmp (crypt_method, "SHA256"))
-					|| (0 == strcmp (crypt_method, "SHA512"))) {
+				if (   streq(crypt_method, "SHA256")
+					|| streq(crypt_method, "SHA512")) {
 					arg = &sha_rounds;
 				}
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
-				if (0 == strcmp (crypt_method, "BCRYPT")) {
+				if (streq(crypt_method, "BCRYPT")) {
 					arg = &bcrypt_rounds;
 				}
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
-				if (0 == strcmp (crypt_method, "YESCRYPT")) {
+				if (streq(crypt_method, "YESCRYPT")) {
 					arg = &yescrypt_cost;
 				}
 #endif				/* USE_YESCRYPT */
@@ -553,8 +549,8 @@ int main (int argc, char **argv)
 			sg = sgr_locate (name);
 
 			if (   (NULL == sg)
-			    && (strcmp (gr->gr_passwd,
-			                SHADOW_PASSWD_STRING) == 0)) {
+			    && streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
+			{
 				static char *empty = NULL;
 				/* If the password is set to 'x' in
 				 * group, but there are no entries in
@@ -581,7 +577,7 @@ int main (int argc, char **argv)
 			newsg.sg_passwd = cp;
 		}
 		if (   (NULL == sg)
-		    || (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) != 0))
+		    || !streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
 #endif
 		{
 			newgr = *gr;
@@ -604,7 +600,7 @@ int main (int argc, char **argv)
 			}
 		}
 		if (   (NULL == sg)
-		    || (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) != 0))
+		    || !streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
 #endif
 		{
 			if (gr_update (&newgr) == 0) {

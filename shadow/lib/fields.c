@@ -14,7 +14,12 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "prototypes.h"
+#include "string/strchr/stpspn.h"
+#include "string/strchr/strrspn.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
 #include "getdef.h"
 
 
@@ -50,7 +55,7 @@ int valid_field (const char *field, const char *illegal)
 	}
 
 	/* Search if there are some control characters */
-	for (cp = field; '\0' != *cp; cp++) {
+	for (cp = field; !streq(cp, ""); cp++) {
 		if (iscntrl (*cp)) {
 			err = -1;
 			break;
@@ -70,7 +75,8 @@ int valid_field (const char *field, const char *illegal)
  * prompt the user with the name of the field being changed and the
  * current value.
  */
-void change_field (char *buf, size_t maxsize, const char *prompt)
+void
+change_field(char *buf, size_t maxsize, const char *prompt)
 {
 	char newf[200];
 	char *cp;
@@ -85,30 +91,17 @@ void change_field (char *buf, size_t maxsize, const char *prompt)
 		return;
 	}
 
-	cp = strchr (newf, '\n');
-	if (NULL == cp) {
+	if (stpsep(newf, "\n") == NULL)
 		return;
-	}
-	*cp = '\0';
 
-	if ('\0' != newf[0]) {
+	if (!streq(newf, "")) {
 		/*
 		 * Remove leading and trailing whitespace.  This also
 		 * makes it possible to change the field to empty, by
 		 * entering a space.  --marekm
 		 */
-
-		while (newf < cp && isspace (cp[-1])) {
-			cp--;
-		}
-		*cp = '\0';
-
-		cp = newf;
-		while (isspace (*cp)) {
-			cp++;
-			maxsize--;
-		}
-
+		stpcpy(strrspn(newf, " \t"), "");
+		cp = stpspn(newf, " \t");
 		strcpy (buf, cp);
 	}
 }

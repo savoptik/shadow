@@ -17,13 +17,18 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <utmpx.h>
+
+#include "atoi/getnum.h"
 #include "defines.h"
+#include "fs/readlink/readlinknul.h"
 #include "prototypes.h"
 #ifdef ENABLE_SUBIDS
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
 
 
 #ifdef __linux__
@@ -90,17 +95,16 @@ static int different_namespace (const char *sname)
 	/* 41: /proc/xxxxxxxxxx/task/xxxxxxxxxx/ns/user + \0 */
 	char     path[41];
 	char     buf[512], buf2[512];
-	ssize_t  llen1, llen2;
 
 	SNPRINTF(path, "/proc/%s/ns/user", sname);
 
-	if ((llen1 = readlink (path, buf, sizeof(buf))) == -1)
+	if (READLINKNUL(path, buf) == -1)
 		return 0;
 
-	if ((llen2 = readlink ("/proc/self/ns/user", buf2, sizeof(buf2))) == -1)
+	if (READLINKNUL("/proc/self/ns/user", buf2) == -1)
 		return 0;
 
-	if (llen1 == llen2 && memcmp (buf, buf2, llen1) == 0)
+	if (streq(buf, buf2))
 		return 0; /* same namespace */
 
 	return 1;
@@ -196,8 +200,8 @@ static int user_busy_processes (const char *name, uid_t uid)
 		 * This patch is applied by default in some RedHat
 		 * kernels.
 		 */
-		if (   (strcmp (tmp_d_name, ".") == 0)
-		    || (strcmp (tmp_d_name, "..") == 0)) {
+		if (   streq(tmp_d_name, ".")
+		    || streq(tmp_d_name, "..")) {
 			continue;
 		}
 		if (*tmp_d_name == '.') {

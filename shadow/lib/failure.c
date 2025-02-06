@@ -18,10 +18,10 @@
 #include "defines.h"
 #include "faillog.h"
 #include "failure.h"
-#include "memzero.h"
 #include "prototypes.h"
+#include "string/memset/memzero.h"
 #include "string/strftime.h"
-#include "string/strtcpy.h"
+#include "string/strcpy/strtcpy.h"
 
 
 #define	YEAR	(365L*DAY)
@@ -82,7 +82,7 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 	}
 
 	STRTCPY(fl->fail_line, tty);
-	(void) time (&fl->fail_time);
+	fl->fail_time = time(NULL);
 
 	/*
 	 * Seek back to the correct position in the file and write the
@@ -126,7 +126,7 @@ static bool too_many_failures (const struct faillog *fl)
 		return true;	/* locked until reset manually */
 	}
 
-	(void) time (&now);
+	now = time(NULL);
 	if ((fl->fail_time + fl->fail_locktime) < now) {
 		return false;	/* enough time since last failure */
 	}
@@ -242,14 +242,12 @@ void failprint (const struct faillog *fail)
 	struct tm *tp;
 	char lasttimeb[256];
 	char *lasttime = lasttimeb;
-	time_t NOW;
 
 	if (0 == fail->fail_cnt) {
 		return;
 	}
 
 	tp = localtime (&(fail->fail_time));
-	(void) time (&NOW);
 
 	/*
 	 * Print all information we have.

@@ -24,14 +24,16 @@
 # undef static
 #endif
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include "attr.h"
 #include "getdate.h"
+#include "string/strchr/stpspn.h"
+#include "string/strcmp/streq.h"
 
-#include <string.h>
 
 /* Some old versions of bison generate parsers that use bcopy.
    That loses on systems that don't provide the function, so we have
@@ -625,16 +627,16 @@ static int LookupWord (char *buff)
   bool abbrev;
 
   /* Make it lowercase. */
-  for (p = buff; '\0' != *p; p++)
+  for (p = buff; !streq(p, ""); p++)
     if (isupper (*p))
       *p = tolower (*p);
 
-  if (strcmp (buff, "am") == 0 || strcmp (buff, "a.m.") == 0)
+  if (streq(buff, "am") || streq(buff, "a.m."))
     {
       yylval.Meridian = MERam;
       return tMERIDIAN;
     }
-  if (strcmp (buff, "pm") == 0 || strcmp (buff, "p.m.") == 0)
+  if (streq(buff, "pm") || streq(buff, "p.m."))
     {
       yylval.Meridian = MERpm;
       return tMERIDIAN;
@@ -646,7 +648,7 @@ static int LookupWord (char *buff)
   else if (strlen (buff) == 4 && buff[3] == '.')
     {
       abbrev = true;
-      buff[3] = '\0';
+      stpcpy(&buff[3], "");
     }
   else
     abbrev = false;
@@ -661,7 +663,7 @@ static int LookupWord (char *buff)
 	      return tp->type;
 	    }
 	}
-      else if (strcmp (buff, tp->name) == 0)
+      else if (streq(buff, tp->name))
 	{
 	  yylval.Number = tp->value;
 	  return tp->type;
@@ -669,17 +671,17 @@ static int LookupWord (char *buff)
     }
 
   for (tp = TimezoneTable; tp->name; tp++)
-    if (strcmp (buff, tp->name) == 0)
+    if (streq(buff, tp->name))
       {
 	yylval.Number = tp->value;
 	return tp->type;
       }
 
-  if (strcmp (buff, "dst") == 0)
+  if (streq(buff, "dst"))
     return tDST;
 
   for (tp = UnitsTable; tp->name; tp++)
-    if (strcmp (buff, tp->name) == 0)
+    if (streq(buff, tp->name))
       {
 	yylval.Number = tp->value;
 	return tp->type;
@@ -689,9 +691,9 @@ static int LookupWord (char *buff)
   i = strlen (buff) - 1;
   if (buff[i] == 's')
     {
-      buff[i] = '\0';
+      stpcpy(&buff[i], "");
       for (tp = UnitsTable; tp->name; tp++)
-	if (strcmp (buff, tp->name) == 0)
+	if (streq(buff, tp->name))
 	  {
 	    yylval.Number = tp->value;
 	    return tp->type;
@@ -700,7 +702,7 @@ static int LookupWord (char *buff)
     }
 
   for (tp = OtherTable; tp->name; tp++)
-    if (strcmp (buff, tp->name) == 0)
+    if (streq(buff, tp->name))
       {
 	yylval.Number = tp->value;
 	return tp->type;
@@ -710,7 +712,7 @@ static int LookupWord (char *buff)
   if (buff[1] == '\0' && isalpha (*buff))
     {
       for (tp = MilitaryTable; tp->name; tp++)
-	if (strcmp (buff, tp->name) == 0)
+	if (streq(buff, tp->name))
 	  {
 	    yylval.Number = tp->value;
 	    return tp->type;
@@ -718,15 +720,15 @@ static int LookupWord (char *buff)
     }
 
   /* Drop out any periods and try the timezone table again. */
-  for (i = 0, p = q = buff; '\0' != *q; q++)
+  for (i = 0, p = q = buff; !streq(q, ""); q++)
     if (*q != '.')
       *p++ = *q;
     else
       i++;
-  *p = '\0';
+  stpcpy(p, "");
   if (0 != i)
     for (tp = TimezoneTable; NULL != tp->name; tp++)
-      if (strcmp (buff, tp->name) == 0)
+      if (streq(buff, tp->name))
 	{
 	  yylval.Number = tp->value;
 	  return tp->type;
@@ -746,8 +748,7 @@ yylex (void)
 
   for (;;)
     {
-      while (isspace (*yyInput))
-	yyInput++;
+      yyInput = stpspn(yyInput, " \t");
 
       if (isdigit (c = *yyInput) || c == '-' || c == '+')
 	{
@@ -772,7 +773,7 @@ yylex (void)
 	  for (p = buff; (c = *yyInput++, isalpha (c)) || c == '.';)
 	    if (p < &buff[sizeof buff - 1])
 	      *p++ = c;
-	  *p = '\0';
+          stpcpy(p, "");
 	  yyInput--;
 	  return LookupWord (buff);
 	}
@@ -827,7 +828,7 @@ time_t get_date (const char *p, const time_t *now)
   time_t Start;
 
   yyInput = p;
-  Start = now ? *now : time ((time_t *) NULL);
+  Start = now ? *now : time(NULL);
   tmp = localtime (&Start);
   yyYear = tmp->tm_year + TM_YEAR_ORIGIN;
   yyMonth = tmp->tm_mon + 1;
@@ -941,7 +942,7 @@ main(void)
   buff[MAX_BUFF_LEN] = 0;
   while (fgets (buff, MAX_BUFF_LEN, stdin) && buff[0])
     {
-      d = get_date (buff, (time_t *) NULL);
+      d = get_date(buff, NULL);
       if (d == -1)
 	(void) printf ("Bad format - couldn't convert.\n");
       else

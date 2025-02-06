@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 1996-2000, Marek Michałkiewicz
 // SPDX-FileCopyrightText: 2001-2005, Tomasz Kłoczko
 // SPDX-FileCopyrightText: 2005-2008, Nicolas François
-// SPDX-FileCopyrightText: 2023-2024, Alejandro Colomar <alx@kernel.org>
+// SPDX-FileCopyrightText: 2023-2025, Alejandro Colomar <alx@kernel.org>
 // SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -12,6 +12,9 @@
  * return values:
  *   true  - OK
  *   false - bad name
+ * errors:
+ *   EINVAL	Invalid name characters or sequences
+ *   EOVERFLOW	Name longer than maximum size
  */
 
 
@@ -31,9 +34,15 @@
 #include "defines.h"
 #include "getdef.h"
 #include "chkname.h"
+#include "string/strcmp/streq.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "groupio.h"
+
+
+#ifndef  LOGIN_NAME_MAX
+# define LOGIN_NAME_MAX  256
+#endif
 
 #define IS_UNIQ_NAME(db_type, db_pref, name) \
        const struct db_type *db_pref; \
@@ -67,10 +76,9 @@ login_name_max_size(void)
 	long  conf;
 	size_t  maxsize;
 
-	errno = 0;
 	conf = sysconf(_SC_LOGIN_NAME_MAX);
 
-	if (conf == -1 && errno != 0)
+	if (conf == -1)
 		maxsize = LOGIN_NAME_MAX;
 	else
 		maxsize = conf;
@@ -103,13 +111,16 @@ static bool is_valid_name_regexp (const char *name, const char *regexp)
 	int errcode;
 	bool result = false;
 
-	if (valid_field (name, ":\n") != 0)
+	if (valid_field (name, ":\n") != 0) {
+		errno = EINVAL;
 		return false;
+	}
 
 	/*
 	 * Don't allow digit at the begining of user/group names.
 	 */
 	if (('\0' == *name) || (('0' <= *name) && ('9' >= *name))) {
+		errno = EINVAL;
 		return false;
 	}
 
@@ -126,11 +137,14 @@ static bool is_valid_name_regexp (const char *name, const char *regexp)
 
 out:
 	regfree (&preg);
+	if (!result)
+		errno = EINVAL;
 
 	return result;
 }
 
-static bool is_valid_name (const char *name)
+static bool
+is_valid_name(const char *name)
 {
 
 	const char *name_re = get_name_regexp ();
@@ -144,6 +158,7 @@ static bool is_valid_name (const char *name)
 
 	if (('\0' == *name) ||
 	    !((('a' <= *name) && ('z' >= *name)) || ('_' == *name))) {
+		errno = EINVAL;
 		return false;
 	}
 
@@ -153,7 +168,9 @@ static bool is_valid_name (const char *name)
 		      ('_' == *name) ||
 		      ('-' == *name) ||
 		      ( ('$' == *name) && ('\0' == *(name + 1)) )
-		     )) {
+		     ))
+		{
+			errno = EINVAL;
 			return false;
 		}
 	}
@@ -165,26 +182,32 @@ static bool is_valid_name (const char *name)
 bool
 is_valid_user_name(const char *name)
 {
-	if (strlen(name) > login_name_max_size())
+	if (strlen(name) > login_name_max_size()) {
+		errno = EOVERFLOW;
 		return false;
+	}
 
 	return is_valid_name(name);
 }
 
 
-bool is_valid_group_name (const char *name)
+bool
+is_valid_group_name(const char *name)
 {
 	size_t max_len;
 	/*
 	 * Arbitrary limit for group names.
 	 */
-	if (GROUP_NAME_MAX_LENGTH <= 0)
+	if (GROUP_NAME_MAX_LENGTH <= 0) {
+		errno = EINVAL;
 		return false;
+	}
 
 	max_len = min (getdef_unum ("GROUPNAME_MAX", GROUP_NAME_MAX_LENGTH),
 					GROUP_NAME_MAX_LENGTH);
 
 	if (strlen (name) > max_len) {
+		errno = EOVERFLOW;
 		return false;
 	}
 

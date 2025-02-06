@@ -339,7 +339,6 @@
 	  <para>MAX_MEMBERS_PER_GROUP GROUPNAME_MAX REGEXP_NAME</para>
 	</listitem>
       </varlistentry>
-      <!-- groups: no variables -->
       <varlistentry>
 	<term>grpck</term>
 	<listitem>

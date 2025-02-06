@@ -17,9 +17,10 @@
 #include <shadow.h>
 #include <stdio.h>
 
-#include "alloc.h"
-#include "memzero.h"
+#include "alloc/calloc.h"
 #include "shadowio.h"
+#include "string/memset/memzero.h"
+
 
 /*@null@*/ /*@only@*/struct spwd *__spw_dup (const struct spwd *spent)
 {
@@ -61,10 +62,9 @@ spw_free(/*@only@*/struct spwd *spent)
 {
 	if (spent != NULL) {
 		free (spent->sp_namp);
-		if (NULL != spent->sp_pwdp) {
-			strzero (spent->sp_pwdp);
-			free (spent->sp_pwdp);
-		}
+		if (NULL != spent->sp_pwdp)
+			free(strzero(spent->sp_pwdp));
+
 		free (spent);
 	}
 }

@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "atoi/getnum.h"
 #include "defines.h"
-#include "alloc.h"
 #include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
@@ -28,7 +28,8 @@
 #endif				/* ENABLE_SUBIDS */
 #include "getdef.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
 
 
 static char *passwd_db_file = NULL;
@@ -60,10 +61,11 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 
 	for (i = 0; i < argc; i++) {
 		val = NULL;
-		if (   (strcmp (argv[i], "--prefix") == 0)
+		if (   streq(argv[i], "--prefix")
 		    || ((strncmp (argv[i], "--prefix=", 9) == 0)
 			&& (val = argv[i] + 9))
-		    || (strcmp (argv[i], short_opt) == 0)) {
+		    || streq(argv[i], short_opt))
+		{
 			if (NULL != prefix) {
 				fprintf (log_get_logfd(),
 				         _("%s: multiple --prefix options\n"),
@@ -114,7 +116,7 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 				 log_get_progname(), strerror (errno));
 			exit (E_BAD_ARG);
 		}
-		if (strcmp(rp, "/") == 0) {
+		if (streq(rp, "/")) {
 			fprintf (log_get_logfd(),
 				 "%s: prefix can't be root directory\n",
 				 log_get_progname());
@@ -177,7 +179,7 @@ extern struct group *prefix_getgrnam(const char *name)
 		if (!fg)
 			return NULL;
 		while ((grp = fgetgrent(fg)) != NULL) {
-			if (!strcmp(name, grp->gr_name))
+			if (streq(name, grp->gr_name))
 				break;
 		}
 		fclose(fg);
@@ -237,7 +239,7 @@ extern struct passwd *prefix_getpwnam(const char* name)
 		if (!fg)
 			return NULL;
 		while ((pwd = fgetpwent(fg)) != NULL) {
-			if (!strcmp(name, pwd->pw_name))
+			if (streq(name, pwd->pw_name))
 				break;
 		}
 		fclose(fg);
@@ -259,7 +261,7 @@ extern int prefix_getpwnam_r(const char* name, struct passwd* pwd,
 		if (!fg)
 			return errno;
 		while ((ret = fgetpwent_r(fg, pwd, buf, buflen, result)) == 0) {
-			if (!strcmp(name, pwd->pw_name))
+			if (streq(name, pwd->pw_name))
 				break;
 		}
 		fclose(fg);
@@ -280,7 +282,7 @@ extern struct spwd *prefix_getspnam(const char* name)
 		if (!fg)
 			return NULL;
 		while ((sp = fgetspent(fg)) != NULL) {
-			if (!strcmp(name, sp->sp_namp))
+			if (streq(name, sp->sp_namp))
 				break;
 		}
 		fclose(fg);
@@ -358,8 +360,7 @@ extern void prefix_endgrent(void)
 
 extern struct group *prefix_getgr_nam_gid(const char *grname)
 {
-	char          *end;
-	long long     gid;
+	gid_t         gid;
 	struct group  *g;
 
 	if (NULL == grname) {
@@ -369,15 +370,8 @@ extern struct group *prefix_getgr_nam_gid(const char *grname)
 	if (!group_db_file)
 		return getgr_nam_gid(grname);
 
-	errno = 0;
-	gid = strtoll(grname, &end, 10);
-	if (   ('\0' != *grname)
-	    && ('\0' == *end)
-	    && (0 == errno)
-	    && (gid == (gid_t)gid))
-	{
+	if (get_gid(grname, &gid) == 0)
 		return prefix_getgrgid(gid);
-	}
 
 	g = prefix_getgrnam(grname);
 	return g ? __gr_dup(g) : NULL;

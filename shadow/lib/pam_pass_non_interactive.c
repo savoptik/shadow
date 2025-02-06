@@ -18,11 +18,11 @@
 #include <security/pam_appl.h>
 #include <security/pam_userpass.h>
 
-#include "alloc.h"
+#include "alloc/calloc.h"
 #include "attr.h"
-#include "memzero.h"
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "string/memset/memzero.h"
 
 /*
  * Change non interactively the user's password using PAM.

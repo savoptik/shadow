@@ -22,14 +22,17 @@
 #include <assert.h>
 
 #include "agetpass.h"
-#include "alloc.h"
+#include "alloc/x/xmalloc.h"
+#include "chkname.h"
 #include "defines.h"
-#include "getdef.h"
-#include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "getdef.h"
+#include "prototypes.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
 
 
 /*
@@ -76,7 +79,7 @@ static bool ingroup(const char *name, struct group *gr)
 
 	look = gr->gr_mem;
 	while (*look && notfound)
-		notfound = strcmp (*look++, name);
+		notfound = !streq(*look++, name);
 
 	return !notfound;
 }
@@ -151,7 +154,7 @@ static void check_perms (const struct group *grp,
 		spw_free (spwd);
 	}
 
-	if ((pwd->pw_passwd[0] == '\0') && (grp->gr_passwd[0] != '\0')) {
+	if (streq(pwd->pw_passwd, "") && !streq(grp->gr_passwd, "")) {
 		needspasswd = true;
 	}
 
@@ -189,8 +192,8 @@ static void check_perms (const struct group *grp,
 			goto failure;
 		}
 
-		if (grp->gr_passwd[0] == '\0' ||
-		    strcmp (cpasswd, grp->gr_passwd) != 0) {
+		if (streq(grp->gr_passwd, "") ||
+		    !streq(grp->gr_passwd, cpasswd)) {
 #ifdef WITH_AUDIT
 			SNPRINTF(audit_buf, "authentication new-gid=%lu",
 			         (unsigned long) grp->gr_gid);
@@ -405,7 +408,7 @@ int main (int argc, char **argv)
 
 	/*
 	 * Save my name for error messages and save my real gid in case of
-	 * errors. If there is an error i have to exec a new login shell for
+	 * errors. If there is an error, I have to exec a new login shell for
 	 * the user since her old shell won't have fork'd to create the
 	 * process. Skip over the program name to the next command line
 	 * argument.
@@ -433,8 +436,8 @@ int main (int argc, char **argv)
 	 * be an exploit vector.
 	 */
 	Prog = program_invocation_short_name;
-	is_newgrp = (strcmp (Prog, "newgrp") == 0);
-	if (!is_newgrp && (strcmp (Prog, "sg") != 0)) {
+	is_newgrp = streq(Prog, "newgrp");
+	if (!is_newgrp && !streq (Prog, "sg")) {
 		fputs ("Bad programm name.\n", stderr);
 		exit (EXIT_FAILURE);
 	}
@@ -469,7 +472,7 @@ int main (int argc, char **argv)
 	 * for sg causes a command string to be executed.
 	 *
 	 * The next argument, if present, must be the new group name. Any
-	 * remaining remaining arguments will be used to execute a command
+	 * remaining arguments will be used to execute a command
 	 * as the named group. If the group name isn't present, I just use
 	 * the login group ID of the current user.
 	 *
@@ -480,8 +483,8 @@ int main (int argc, char **argv)
 	 *      sg [-] groupid [[-c command]
 	 */
 	if (   (argc > 0)
-	    && (   (strcmp (argv[0], "-")  == 0)
-	        || (strcmp (argv[0], "-l") == 0))) {
+	    && (   streq(argv[0], "-")
+	        || streq(argv[0], "-l"))) {
 		argc--;
 		argv++;
 		initflag = true;
@@ -492,6 +495,12 @@ int main (int argc, char **argv)
 		 * not "newgrp".
 		 */
 		if ((argc > 0) && (argv[0][0] != '-')) {
+			if (!is_valid_group_name (argv[0])) {
+				fprintf (
+					stderr, _("%s: provided group is not a valid group name\n"),
+					Prog);
+				goto failure;
+			}
 			group = argv[0];
 			argc--;
 			argv++;
@@ -507,7 +516,7 @@ int main (int argc, char **argv)
 			 * "sg group -c command" (as in the man page) or
 			 * "sg group command" (as in the usage message).
 			 */
-			if ((argc > 1) && (strcmp (argv[0], "-c") == 0)) {
+			if ((argc > 1) && streq(argv[0], "-c")) {
 				command = argv[1];
 			} else {
 				command = argv[0];
@@ -523,6 +532,12 @@ int main (int argc, char **argv)
 			usage ();
 			goto failure;
 		} else if (argv[0] != NULL) {
+			if (!is_valid_group_name (argv[0])) {
+				fprintf (
+					stderr, _("%s: provided group is not a valid group name\n"),
+					Prog);
+				goto failure;
+			}
 			group = argv[0];
 		} else {
 			/*
@@ -548,9 +563,9 @@ int main (int argc, char **argv)
 
 #ifdef HAVE_SETGROUPS
 	/*
-	 * get the current users groupset. The new group will be added to
+	 * get the current user's groupset. The new group will be added to
 	 * the concurrent groupset if there is room, otherwise you get a
-	 * nasty message but at least your real and effective group id's are
+	 * nasty message but at least your real and effective group ids are
 	 * set.
 	 */
 	/* don't use getgroups(0, 0) - it doesn't work on some systems */
@@ -585,7 +600,7 @@ int main (int argc, char **argv)
 	 * now we put her in the new group. The password file entry for her
 	 * current user id has been gotten. If there was no optional group
 	 * argument she will have her real and effective group id set to the
-	 * set to the value from her password file entry.
+	 * value from her password file entry.
 	 *
 	 * If run as newgrp, or as sg with no command, this process exec's
 	 * an interactive subshell with the effective GID of the new group.
@@ -686,8 +701,8 @@ int main (int argc, char **argv)
 #ifdef HAVE_SETGROUPS
 	/*
 	 * I am going to try to add her new group id to her concurrent group
-	 * set. If the group id is already present i'll just skip this part.
-	 * If the group doesn't fit, i'll complain loudly and skip this
+	 * set. If the group id is already present I'll just skip this part.
+	 * If the group doesn't fit, I'll complain loudly and skip this
 	 * part.
 	 */
 	for (i = 0; i < ngroups; i++) {
@@ -746,7 +761,7 @@ int main (int argc, char **argv)
 	}
 
 	/*
-	 * See if the "-c" flag was used. If it was, i just create a shell
+	 * See if the "-c" flag was used. If it was, I just create a shell
 	 * command for her using the argument that followed the "-c" flag.
 	 */
 	if (cflag) {
@@ -762,7 +777,7 @@ int main (int argc, char **argv)
 	}
 
 	/*
-	 * I have to get the pathname of her login shell. As a favor, i'll
+	 * I have to get the pathname of her login shell. As a favor, I'll
 	 * try her environment for a $SHELL value first, and then try the
 	 * password file entry. Obviously this shouldn't be in the
 	 * restricted command directory since it could be used to leave the
@@ -781,7 +796,7 @@ int main (int argc, char **argv)
 	cp = getenv ("SHELL");
 	if (!initflag && (NULL != cp)) {
 		prog = cp;
-	} else if ((NULL != pwd->pw_shell) && ('\0' != pwd->pw_shell[0])) {
+	} else if ((NULL != pwd->pw_shell) && !streq(pwd->pw_shell, "")) {
 		prog = pwd->pw_shell;
 	} else {
 		prog = SHELL;
@@ -794,7 +809,7 @@ int main (int argc, char **argv)
 	progbase = Basename (prog);
 
 	/*
-	 * Switch back to her home directory if i am doing login
+	 * Switch back to her home directory if I am doing login
 	 * initialization.
 	 */
 	if (initflag) {

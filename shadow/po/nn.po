@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-06-18 16:40-0500\n"
+"POT-Creation-Date: 2025-01-11 09:35-0600\n"
 "PO-Revision-Date: 2004-06-03 21:41+0200\n"
 "Last-Translator: Håvard Korsvoll <korsvoll@skulelinux.no>\n"
 "Language-Team: Norwegian (Nynorsk) <i18n-nn@lister.ping.uio.no>\n"
@@ -502,10 +502,6 @@ msgstr "%s: ugyldig heimemappe «%s»\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr ""
-
 #, fuzzy, c-format
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
@@ -828,6 +824,10 @@ msgstr "%s: «%s» inneheld ulovlege teikn\n"
 #, fuzzy, c-format
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: «%s» inneheld ulovlege teikn\n"
+
+#, fuzzy, c-format
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: %s er ikkje eit gyldig gruppenamn\n"
 
 #, fuzzy, c-format
 msgid "%s: user '%s' does not exist\n"
@@ -1283,10 +1283,6 @@ msgstr ""
 msgid "%s: invalid group name '%s'\n"
 msgstr "ugyldig gruppenamn «%s»\n"
 
-#, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s: ukjend brukar %s\n"
-
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [group [gshadow]]\n"
@@ -1386,12 +1382,6 @@ msgstr "%s: ingen endringar\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: klarer ikkje oppdatere fila %s\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Bruk: id [-a]\n"
-
-msgid " groups="
-msgstr " grupper="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1413,6 +1403,11 @@ msgstr ""
 
 msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
+msgstr ""
+
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1613,6 +1608,10 @@ msgid "%s: failure forking: %s\n"
 msgstr "%s: ugyldig telefonnummer, arbeid: «%s»\n"
 
 #, fuzzy, c-format
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: %s er ikkje eit gyldig gruppenamn\n"
+
+#, fuzzy, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: brukar %s finst ikkje\n"
 
@@ -1650,6 +1649,10 @@ msgstr "%s: ugyldig brukarnamn «%s»\n"
 #, fuzzy, c-format
 #| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: ugyldig brukarnamn «%s»\n"
+
+#, c-format
+msgid "%s: invalid user name '%s'\n"
 msgstr "%s: ugyldig brukarnamn «%s»\n"
 
 #, c-format
@@ -1890,6 +1893,11 @@ msgid "invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: ugyldig brukarnamn «%s»\n"
 
 #, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s'\n"
+msgstr "%s: ugyldig brukarnamn «%s»\n"
+
+#, fuzzy, c-format
 msgid "invalid user ID '%lu'\n"
 msgstr "ugyldig brukarnamn «%s»\n"
 
@@ -2090,12 +2098,12 @@ msgid "%s: %s was created, but could not be removed\n"
 msgstr ""
 
 #, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
 "group\n"
 msgstr ""
 
@@ -2696,19 +2704,19 @@ msgid "failed to rename mailbox"
 msgstr "klarte ikkje endra namn på mailbox"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: ugyldig telefonnummer, arbeid: «%s»\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: felta er for lange\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: ugyldig telefonnummer, arbeid: «%s»\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: ugyldig startmappe «%s»\n"
 
 #, c-format
@@ -2829,6 +2837,16 @@ msgstr "%s: ugyldig startmappe «%s»\n"
 #~ msgstr "%s: gruppe %s er ei NIS-gruppe\n"
 
 #, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s: ukjend brukar %s\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Bruk: id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " grupper="
+
+#, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "      %s [-p] -r vert\n"
 
@@ -2858,10 +2876,6 @@ msgstr "%s: ugyldig startmappe «%s»\n"
 #, c-format
 #~ msgid "Last login: %.19s on %s"
 #~ msgstr "Førre inlogging: %.19s på %s"
-
-#, c-format
-#~ msgid "%s: invalid user name '%s'\n"
-#~ msgstr "%s: ugyldig brukarnamn «%s»\n"
 
 #, fuzzy, c-format
 #~ msgid "%s: password expiry information changed.\n"

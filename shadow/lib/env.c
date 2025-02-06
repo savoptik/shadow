@@ -16,11 +16,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "alloc.h"
+#include "alloc/x/xmalloc.h"
+#include "alloc/x/xrealloc.h"
 #include "prototypes.h"
 #include "defines.h"
 #include "shadowlog.h"
-#include "string/sprintf.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strdup/xstrdup.h"
 
 
 /*

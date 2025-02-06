@@ -1,21 +1,19 @@
-/*
- * SPDX-FileCopyrightText:  Alejandro Colomar <alx@kernel.org>
- *
- * SPDX-License-Identifier:  BSD-3-Clause
- */
+// SPDX-FileCopyrightText: 2022-2024, Alejandro Colomar <alx@kernel.org>
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include <config.h>
 
 #ident "$Id$"
 
+#include <fcntl.h>
 #include <limits.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #if HAVE_SYS_RANDOM_H
 #include <sys/random.h>
 #endif
+
 #include "bit.h"
 #include "defines.h"
 #include "prototypes.h"
@@ -23,6 +21,7 @@
 #include "sizeof.h"
 
 
+static uint32_t csrand32(void);
 static uint32_t csrand_uniform32(uint32_t n);
 static unsigned long csrand_uniform_slow(unsigned long n);
 
@@ -33,7 +32,7 @@ static unsigned long csrand_uniform_slow(unsigned long n);
 unsigned long
 csrand(void)
 {
-	FILE           *fp;
+	int            fd;
 	unsigned long  r;
 
 #ifdef HAVE_GETENTROPY
@@ -55,17 +54,16 @@ csrand(void)
 #endif
 
 	/* Use /dev/urandom as a last resort.  */
-	fp = fopen("/dev/urandom", "r");
-	if (NULL == fp) {
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd == -1)
+		goto fail;
+
+	if (read(fd, &r, sizeof(r)) != sizeof(r)) {
+		close(fd);
 		goto fail;
 	}
 
-	if (fread(&r, sizeof(r), 1, fp) != 1) {
-		fclose(fp);
-		goto fail;
-	}
-
-	fclose(fp);
+	close(fd);
 	return r;
 
 fail:
@@ -97,6 +95,13 @@ csrand_interval(unsigned long min, unsigned long max)
 }
 
 
+static uint32_t
+csrand32(void)
+{
+	return csrand();
+}
+
+
 /*
  * Fast Random Integer Generation in an Interval
  * ACM Transactions on Modeling and Computer Simulation 29 (1), 2019
@@ -109,12 +114,12 @@ csrand_uniform32(uint32_t n)
 	uint64_t  r, mult;
 
 	if (n == 0)
-		return csrand();
+		return csrand32();
 
 	bound = -n % n;  // analogous to `2^32 % n`, since `x % y == (x-y) % y`
 
 	do {
-		r = csrand();
+		r = csrand32();
 		mult = r * n;
 		rem = mult;  // analogous to `mult % 2^32`
 	} while (rem < bound);  // p = (2^32 % n) / 2^32;  W.C.: n=2^31+1, p=0.5

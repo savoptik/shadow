@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2024-06-18
+.\"      Date: 2025-01-11
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.16.0
+.\"    Source: shadow-utils 4.17.2
 .\"  Language: Chinese Simplified
 .\"
-.TH "PASSWD" "1" "2024-06-18" "shadow\-utils 4\&.16\&.0" "User Commands"
+.TH "PASSWD" "1" "2025-01-11" "shadow\-utils 4\&.17\&.2" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,7 +63,7 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
 .PP
-You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "选项"
 .PP
 The options which apply to the
@@ -110,7 +110,7 @@ days, the user may no longer sign on to the account\&.
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 被锁定了密码的用户不允许更改密码。
 .RE

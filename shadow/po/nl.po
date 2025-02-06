@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.15.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-06-18 16:40-0500\n"
+"POT-Creation-Date: 2025-01-11 09:35-0600\n"
 "PO-Revision-Date: 2024-05-09 12:30+0200\n"
 "Last-Translator: Frans Spiesschaert <Frans.Spiesschaert@yucom.be>\n"
 "Language-Team: Debian Dutch l10n Team <debian-l10n-dutch@lists.debian.org>\n"
@@ -537,10 +537,6 @@ msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: kan symbolische koppeling %s niet lezen: %s\n"
 
 #, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: verdacht lange symbolische koppeling: %s\n"
-
-#, c-format
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: kan map %s niet aanmaken: %s\n"
 
@@ -885,6 +881,11 @@ msgstr "%s: '%s' bevat niet-ASCII tekens\n"
 #, c-format
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: '%s' bevat ongeldige tekens\n"
+
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: '%s' is geen geldige groepsnaam\n"
 
 #, c-format
 msgid "%s: user '%s' does not exist\n"
@@ -1406,10 +1407,6 @@ msgid "%s: invalid group name '%s'\n"
 msgstr "%s: ongeldige groepsnaam '%s'\n"
 
 #, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s: onbekende gebruiker %s\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options] [group [gshadow]]\n"
 "\n"
@@ -1521,12 +1518,6 @@ msgstr "%s: geen aanpassingen\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: kan %s niet verwijderen\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Gebruik: id [-a]\n"
-
-msgid " groups="
-msgstr " groepen="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1557,6 +1548,15 @@ msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
 msgstr ""
 "  -u, --user GEBRUIKER          lastlog-informatie over GEBRUIKER tonen\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
+msgstr ""
+"  -a, --all                     aanmeldingsfouten van alle gebruikers tonen\n"
 
 #, c-format
 msgid "Username         Port     From%*sLatest\n"
@@ -1759,6 +1759,11 @@ msgstr "Ongeldig wachtwoord.\n"
 msgid "%s: failure forking: %s\n"
 msgstr "%s: nieuw proces beginnen is mislukt: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: '%s' is geen geldige groepsnaam\n"
+
 #, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: GID '%lu' bestaat niet\n"
@@ -1799,6 +1804,11 @@ msgstr "%s: ongeldig gebruikers-ID '%s'\n"
 #, c-format
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: ongeldige gebruikersnaam '%s': gebruik --badname om te negeren\n"
+
+#, fuzzy, c-format
+#| msgid "%s: invalid user ID '%s'\n"
+msgid "%s: invalid user name '%s'\n"
+msgstr "%s: ongeldig gebruikers-ID '%s'\n"
 
 #, c-format
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
@@ -2072,6 +2082,11 @@ msgstr "identieke regel in wachtwoordbestand"
 msgid "invalid user name '%s': use --badname to ignore\n"
 msgstr "ongeldige gebruikersnaam '%s': gebruik --badname om te negeren\n"
 
+#, fuzzy, c-format
+#| msgid "invalid group name '%s'\n"
+msgid "invalid user name '%s'\n"
+msgstr "ongeldige groepsnaam '%s'\n"
+
 #, c-format
 msgid "invalid user ID '%lu'\n"
 msgstr "ongeldig gebruikers-ID '%lu'\n"
@@ -2286,13 +2301,17 @@ msgstr "Systeemonderhoudsmodus wordt opgestart"
 msgid "%s: %s was created, but could not be removed\n"
 msgstr "%s: %s was aangemaakt, maar kon niet verwijderd worden\n"
 
-#, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
 msgstr "%s: de %s-instellingen in %s zullen genegeerd worden\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+#| "group\n"
 msgid ""
-"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
 "group\n"
 msgstr ""
 "%s: de configuratie van '%s' in %s heeft een ongeldige groep, deze groep "
@@ -3005,20 +3024,24 @@ msgstr "aanpassen van de postvak-eigenaar is mislukt"
 msgid "failed to rename mailbox"
 msgstr "hernoemen van het postvak is mislukt"
 
-#, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: verwijderen van UID-bereik %lu-%lu van '%s' is mislukt\n"
 
-#, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: toevoegen van UID-bereik %lu-%lu aan '%s' is mislukt\n"
 
-#, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: verwijderen van GID-bereik %lu-%lu van '%s' is mislukt\n"
 
-#, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: toevoegen van GID-bereik %lu-%lu aan '%s' is mislukt\n"
 
 #, c-format
@@ -3114,6 +3137,10 @@ msgstr "%s: tcb-map van %s vinden is mislukt\n"
 #~ msgstr "Omgeving wordt te groot\n"
 
 #, c-format
+#~ msgid "%s: Suspiciously long symlink: %s\n"
+#~ msgstr "%s: verdacht lange symbolische koppeling: %s\n"
+
+#, c-format
 #~ msgid "%s: cannot change user '%s' on NIS client.\n"
 #~ msgstr "%s: kan gebruiker '%s' niet veranderen op NIS-client.\n"
 
@@ -3132,6 +3159,16 @@ msgstr "%s: tcb-map van %s vinden is mislukt\n"
 #, c-format
 #~ msgid "%s: group %s is a NIS group\n"
 #~ msgstr "%s: groep %s is een NIS-groep\n"
+
+#, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s: onbekende gebruiker %s\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Gebruik: id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " groepen="
 
 #, c-format
 #~ msgid "       %s [-p] -r host\n"

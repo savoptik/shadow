@@ -16,6 +16,7 @@
 #include <getopt.h>
 #include <grp.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
@@ -23,19 +24,23 @@
 #include <pwd.h>
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
+
+#include "atoi/getnum.h"
 #include "chkname.h"
 #include "defines.h"
 #include "getdef.h"
 #include "groupio.h"
-#include "memzero.h"
 #include "nscd.h"
 #include "sssd.h"
 #include "prototypes.h"
+#include "run_part.h"
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif
 #include "shadowlog.h"
-#include "run_part.h"
+#include "string/memset/memzero.h"
+#include "string/strtok/stpsep.h"
+
 
 /*
  * exit status values
@@ -160,7 +165,8 @@ static void new_sgent (struct sgrp *sgent)
  *
  *	grp_update() writes the new records to the group files.
  */
-static void grp_update (void)
+static void
+grp_update(void)
 {
 	struct group grp;
 
@@ -192,15 +198,20 @@ static void grp_update (void)
 #endif				/* SHADOWGRP */
 
 	if (user_list) {
-		char *token;
-		token = strtok(user_list, ",");
-		while (token) {
-			if (prefix_getpwnam (token) == NULL) {
-				fprintf (stderr, _("Invalid member username %s\n"), token);
+		char  *u, *ul;
+
+		ul = user_list;
+		while (NULL != (u = strsep(&ul, ","))) {
+			if (prefix_getpwnam(u) == NULL) {
+				fprintf(stderr, _("Invalid member username %s\n"), u);
 				exit (E_GRP_UPDATE);
 			}
-			grp.gr_mem = add_list(grp.gr_mem, token);
-			token = strtok(NULL, ",");
+
+			grp.gr_mem = add_list(grp.gr_mem, u);
+#ifdef  SHADOWGRP
+			if (is_shadow_grp)
+				sgrp.sg_mem = add_list(sgrp.sg_mem, u);
+#endif
 		}
 	}
 
@@ -232,20 +243,17 @@ static void grp_update (void)
  *	check_new_name() insures that the new name doesn't contain any
  *	illegal characters.
  */
-static void check_new_name (void)
+static void
+check_new_name(void)
 {
-	if (is_valid_group_name (group_name)) {
-		return;
+	if (!is_valid_group_name(group_name)) {
+		fprintf(stderr, _("%s: '%s' is not a valid group name\n"),
+			Prog, group_name);
+
+		exit(E_BAD_ARG);
 	}
 
-	/*
-	 * All invalid group names land here.
-	 */
-
-	fprintf (stderr, _("%s: '%s' is not a valid group name\n"),
-	         Prog, group_name);
-
-	exit (E_BAD_ARG);
+	return;
 }
 
 /*
@@ -420,15 +428,13 @@ static void process_flags (int argc, char **argv)
 			 * example: -K GID_MIN=100 -K GID_MAX=499
 			 * note: -K GID_MIN=10,GID_MAX=499 doesn't work yet
 			 */
-			cp = strchr (optarg, '=');
+			cp = stpsep(optarg, "=");
 			if (NULL == cp) {
 				fprintf (stderr,
 				         _("%s: -K requires KEY=VALUE\n"),
 				         Prog);
 				exit (E_BAD_ARG);
 			}
-			/* terminate name, point to value */
-			*cp++ = '\0';
 			if (putdef_str (optarg, cp, NULL) < 0) {
 				exit (E_BAD_ARG);
 			}
@@ -481,11 +487,11 @@ static void check_flags (void)
 	check_new_name ();
 
 	/*
-	 * Check if the group already exist.
+	 * Check if the group already exists.
 	 */
 	/* local, no need for xgetgrnam */
 	if (prefix_getgrnam (group_name) != NULL) {
-		/* The group already exist */
+		/* The group already exists */
 		if (fflg) {
 			/* OK, no need to do anything */
 			exit (E_SUCCESS);
@@ -497,7 +503,7 @@ static void check_flags (void)
 	}
 
 	if (gflg && (prefix_getgrgid (group_id) != NULL)) {
-		/* A GID was specified, and a group already exist with that GID
+		/* A GID was specified, and a group already exists with that GID
 		 *  - either we will use this GID anyway (-o)
 		 *  - either we ignore the specified GID and
 		 *    we will use another one (-f)

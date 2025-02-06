@@ -88,8 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = groups$(EXEEXT) login$(EXEEXT) $(am__EXEEXT_1) \
-	$(am__EXEEXT_2)
+bin_PROGRAMS = login$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
 sbin_PROGRAMS = nologin$(EXEEXT)
 ubin_PROGRAMS = faillog$(EXEEXT) chage$(EXEEXT) chfn$(EXEEXT) \
 	chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) newgrp$(EXEEXT) \
@@ -104,7 +103,7 @@ usbin_PROGRAMS = chgpasswd$(EXEEXT) chpasswd$(EXEEXT) \
 	pwck$(EXEEXT) pwconv$(EXEEXT) pwunconv$(EXEEXT) \
 	useradd$(EXEEXT) userdel$(EXEEXT) usermod$(EXEEXT) \
 	vipw$(EXEEXT)
-noinst_PROGRAMS = id$(EXEEXT) sulogin$(EXEEXT) $(am__EXEEXT_3)
+noinst_PROGRAMS = sulogin$(EXEEXT) $(am__EXEEXT_3)
 @WITH_SU_TRUE@am__append_4 = su
 @WITH_TCB_FALSE@am__append_5 = passwd
 @ACCT_TOOLS_SETUID_TRUE@am__append_6 = chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
@@ -250,11 +249,6 @@ groupmod_OBJECTS = groupmod.$(OBJEXT)
 groupmod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-groups_SOURCES = groups.c
-groups_OBJECTS = groups.$(OBJEXT)
-groups_LDADD = $(LDADD)
-groups_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 grpck_SOURCES = grpck.c
 grpck_OBJECTS = grpck.$(OBJEXT)
 grpck_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -267,11 +261,6 @@ grpunconv_SOURCES = grpunconv.c
 grpunconv_OBJECTS = grpunconv.$(OBJEXT)
 grpunconv_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-id_SOURCES = id.c
-id_OBJECTS = id.$(OBJEXT)
-id_LDADD = $(LDADD)
-id_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 lastlog_SOURCES = lastlog.c
 lastlog_OBJECTS = lastlog.$(OBJEXT)
 lastlog_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -386,10 +375,10 @@ am__depfiles_remade = ./$(DEPDIR)/chage.Po \
 	./$(DEPDIR)/getsubids-getsubids.Po ./$(DEPDIR)/gpasswd.Po \
 	./$(DEPDIR)/groupadd.Po ./$(DEPDIR)/groupdel.Po \
 	./$(DEPDIR)/groupmems.Po ./$(DEPDIR)/groupmod.Po \
-	./$(DEPDIR)/groups.Po ./$(DEPDIR)/grpck.Po \
-	./$(DEPDIR)/grpconv.Po ./$(DEPDIR)/grpunconv.Po \
-	./$(DEPDIR)/id.Po ./$(DEPDIR)/lastlog.Po ./$(DEPDIR)/login.Po \
-	./$(DEPDIR)/login_nopam.Po ./$(DEPDIR)/logoutd.Po \
+	./$(DEPDIR)/grpck.Po ./$(DEPDIR)/grpconv.Po \
+	./$(DEPDIR)/grpunconv.Po ./$(DEPDIR)/lastlog.Po \
+	./$(DEPDIR)/login.Po ./$(DEPDIR)/login_nopam.Po \
+	./$(DEPDIR)/logoutd.Po \
 	./$(DEPDIR)/new_subid_range-new_subid_range.Po \
 	./$(DEPDIR)/newgidmap.Po ./$(DEPDIR)/newgrp.Po \
 	./$(DEPDIR)/newuidmap.Po ./$(DEPDIR)/newusers.Po \
@@ -421,18 +410,18 @@ am__v_CCLD_1 =
 SOURCES = chage.c check_subid_range.c chfn.c chgpasswd.c chpasswd.c \
 	chsh.c expiry.c faillog.c free_subid_range.c \
 	get_subid_owners.c getsubids.c gpasswd.c groupadd.c groupdel.c \
-	groupmems.c groupmod.c groups.c grpck.c grpconv.c grpunconv.c \
-	id.c lastlog.c $(login_SOURCES) logoutd.c new_subid_range.c \
-	newgidmap.c newgrp.c newuidmap.c newusers.c nologin.c passwd.c \
-	pwck.c pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
+	groupmems.c groupmod.c grpck.c grpconv.c grpunconv.c lastlog.c \
+	$(login_SOURCES) logoutd.c new_subid_range.c newgidmap.c \
+	newgrp.c newuidmap.c newusers.c nologin.c passwd.c pwck.c \
+	pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
 	userdel.c usermod.c vipw.c
 DIST_SOURCES = chage.c check_subid_range.c chfn.c chgpasswd.c \
 	chpasswd.c chsh.c expiry.c faillog.c free_subid_range.c \
 	get_subid_owners.c getsubids.c gpasswd.c groupadd.c groupdel.c \
-	groupmems.c groupmod.c groups.c grpck.c grpconv.c grpunconv.c \
-	id.c lastlog.c $(login_SOURCES) logoutd.c new_subid_range.c \
-	newgidmap.c newgrp.c newuidmap.c newusers.c nologin.c passwd.c \
-	pwck.c pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
+	groupmems.c groupmod.c grpck.c grpconv.c grpunconv.c lastlog.c \
+	$(login_SOURCES) logoutd.c new_subid_range.c newgidmap.c \
+	newgrp.c newuidmap.c newusers.c nologin.c passwd.c pwck.c \
+	pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
 	userdel.c usermod.c vipw.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -1063,10 +1052,6 @@ groupmod$(EXEEXT): $(groupmod_OBJECTS) $(groupmod_DEPENDENCIES) $(EXTRA_groupmod
 	@rm -f groupmod$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(groupmod_OBJECTS) $(groupmod_LDADD) $(LIBS)
 
-groups$(EXEEXT): $(groups_OBJECTS) $(groups_DEPENDENCIES) $(EXTRA_groups_DEPENDENCIES) 
-	@rm -f groups$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(groups_OBJECTS) $(groups_LDADD) $(LIBS)
-
 grpck$(EXEEXT): $(grpck_OBJECTS) $(grpck_DEPENDENCIES) $(EXTRA_grpck_DEPENDENCIES) 
 	@rm -f grpck$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(grpck_OBJECTS) $(grpck_LDADD) $(LIBS)
@@ -1078,10 +1063,6 @@ grpconv$(EXEEXT): $(grpconv_OBJECTS) $(grpconv_DEPENDENCIES) $(EXTRA_grpconv_DEP
 grpunconv$(EXEEXT): $(grpunconv_OBJECTS) $(grpunconv_DEPENDENCIES) $(EXTRA_grpunconv_DEPENDENCIES) 
 	@rm -f grpunconv$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(grpunconv_OBJECTS) $(grpunconv_LDADD) $(LIBS)
-
-id$(EXEEXT): $(id_OBJECTS) $(id_DEPENDENCIES) $(EXTRA_id_DEPENDENCIES) 
-	@rm -f id$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(id_OBJECTS) $(id_LDADD) $(LIBS)
 
 lastlog$(EXEEXT): $(lastlog_OBJECTS) $(lastlog_DEPENDENCIES) $(EXTRA_lastlog_DEPENDENCIES) 
 	@rm -f lastlog$(EXEEXT)
@@ -1181,11 +1162,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupdel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupmems.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupmod.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groups.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpck.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpconv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpunconv.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/id.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lastlog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/login.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/login_nopam.Po@am__quote@ # am--include-marker
@@ -1455,11 +1434,9 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/groupdel.Po
 	-rm -f ./$(DEPDIR)/groupmems.Po
 	-rm -f ./$(DEPDIR)/groupmod.Po
-	-rm -f ./$(DEPDIR)/groups.Po
 	-rm -f ./$(DEPDIR)/grpck.Po
 	-rm -f ./$(DEPDIR)/grpconv.Po
 	-rm -f ./$(DEPDIR)/grpunconv.Po
-	-rm -f ./$(DEPDIR)/id.Po
 	-rm -f ./$(DEPDIR)/lastlog.Po
 	-rm -f ./$(DEPDIR)/login.Po
 	-rm -f ./$(DEPDIR)/login_nopam.Po
@@ -1542,11 +1519,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/groupdel.Po
 	-rm -f ./$(DEPDIR)/groupmems.Po
 	-rm -f ./$(DEPDIR)/groupmod.Po
-	-rm -f ./$(DEPDIR)/groups.Po
 	-rm -f ./$(DEPDIR)/grpck.Po
 	-rm -f ./$(DEPDIR)/grpconv.Po
 	-rm -f ./$(DEPDIR)/grpunconv.Po
-	-rm -f ./$(DEPDIR)/id.Po
 	-rm -f ./$(DEPDIR)/lastlog.Po
 	-rm -f ./$(DEPDIR)/login.Po
 	-rm -f ./$(DEPDIR)/login_nopam.Po

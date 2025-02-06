@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2024-06-18 16:40-0500\n"
+"POT-Creation-Date: 2025-01-11 09:35-0600\n"
 "PO-Revision-Date: 2008-03-27 14:40+0100\n"
 "Last-Translator: Danilo Piazzalunga <danilopiazza@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -531,10 +531,6 @@ msgstr "%s: directory home «%s» non valida\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: impossibile rinominare la directory %s in %s\n"
 
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr ""
-
 #, fuzzy, c-format
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: impossibile creare la directory %s\n"
@@ -860,6 +856,10 @@ msgstr "%s: «%s» contiene caratteri non ammessi\n"
 #, c-format
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: «%s» contiene caratteri non ammessi\n"
+
+#, fuzzy, c-format
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: %s non è un nome di gruppo valido\n"
 
 #, fuzzy, c-format
 msgid "%s: user '%s' does not exist\n"
@@ -1346,10 +1346,6 @@ msgstr ""
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s: nome di gruppo «%s» non valido\n"
 
-#, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s: utente «%s» sconosciuto\n"
-
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [group [gshadow]]\n"
@@ -1452,12 +1448,6 @@ msgstr "%s: nessuna modifica\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: impossibile aggiornare il file %s\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Uso: id [-a]\n"
-
-msgid " groups="
-msgstr " gruppi="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1479,6 +1469,11 @@ msgstr ""
 
 msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
+msgstr ""
+
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1677,6 +1672,10 @@ msgid "%s: failure forking: %s\n"
 msgstr "%s: impossibile eseguire fork(): %s\n"
 
 #, fuzzy, c-format
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: %s non è un nome di gruppo valido\n"
+
+#, fuzzy, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: l'utente «%s» non esiste\n"
 
@@ -1714,6 +1713,10 @@ msgstr "%s: nome utente «%s» non valido\n"
 #, fuzzy, c-format
 #| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: nome utente «%s» non valido\n"
+
+#, c-format
+msgid "%s: invalid user name '%s'\n"
 msgstr "%s: nome utente «%s» non valido\n"
 
 #, c-format
@@ -1969,6 +1972,11 @@ msgid "invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: nome utente «%s» non valido\n"
 
 #, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s'\n"
+msgstr "%s: nome utente «%s» non valido\n"
+
+#, fuzzy, c-format
 msgid "invalid user ID '%lu'\n"
 msgstr "nome utente «%s» non valido\n"
 
@@ -2195,12 +2203,12 @@ msgid "%s: %s was created, but could not be removed\n"
 msgstr ""
 
 #, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"%s: the '%s' configuration in %s has an invalid group, ignoring the bad "
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
 "group\n"
 msgstr ""
 
@@ -2858,19 +2866,19 @@ msgid "failed to rename mailbox"
 msgstr "impossibile rinominare la casella di posta"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: impossibile abbandonare i privilegi (%s)\n"
 
 #, fuzzy, c-format
@@ -2996,6 +3004,16 @@ msgstr "%s: directory di base «%s» non valida\n"
 #~ msgstr "%s: il gruppo «%s» è un gruppo NIS\n"
 
 #, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s: utente «%s» sconosciuto\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Uso: id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " gruppi="
+
+#, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "     %s [-p] -r HOST\n"
 
@@ -3032,10 +3050,6 @@ msgstr "%s: directory di base «%s» non valida\n"
 #, c-format
 #~ msgid "Last login: %.19s on %s"
 #~ msgstr "Ultimo accesso: %.19s su %s"
-
-#, c-format
-#~ msgid "%s: invalid user name '%s'\n"
-#~ msgstr "%s: nome utente «%s» non valido\n"
 
 #, fuzzy, c-format
 #~ msgid "%s: password expiry information changed.\n"

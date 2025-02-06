@@ -5,6 +5,7 @@
 
 
 #include <setjmp.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,7 @@
 #include <stdint.h>  // Required by <cmocka.h>
 #include <cmocka.h>
 
-#include "string/sprintf.h"
+#include "string/sprintf/xasprintf.h"
 
 
 #define assert_unreachable()  assert_true(0)
@@ -28,12 +29,28 @@
 static jmp_buf  jmpb;
 
 
-/**********************
- * WRAPPERS
- **********************/
 int __real_vasprintf(char **restrict p, const char *restrict fmt, va_list ap);
 int __wrap_vasprintf(char **restrict p, const char *restrict fmt, va_list ap);
 void __wrap_exit(int status);
+
+[[gnu::noipa]]
+static int xasprintf_volatile(char *volatile *restrict s,
+    const char *restrict fmt, ...);
+
+static void test_xasprintf_exit(void **state);
+static void test_xasprintf_ok(void **state);
+
+
+int
+main(void)
+{
+	const struct CMUnitTest  tests[] = {
+		cmocka_unit_test(test_xasprintf_exit),
+		cmocka_unit_test(test_xasprintf_ok),
+	};
+
+	return cmocka_run_group_tests(tests, NULL, NULL);
+}
 
 
 int
@@ -50,11 +67,16 @@ __wrap_exit(int status)
 }
 
 
-/**********************
- * TEST
- **********************/
-static void test_xasprintf_exit(void **state);
-static void test_xasprintf_ok(void **state);
+static int
+xasprintf_volatile(char *volatile *restrict s, const char *restrict fmt, ...)
+{
+	int      len;
+	va_list  ap;
+
+	va_start(ap, fmt);
+	len = xvasprintf((char **) s, fmt, ap);
+	va_end(ap);
+}
 
 
 static void
@@ -70,7 +92,7 @@ test_xasprintf_exit(void **state)
 	switch (setjmp(jmpb)) {
 	case 0:
 		len = XASPRINTF_CALLED;
-		len = xasprintf(&p, "foo%s", "bar");
+		len = xasprintf_volatile(&p, "foo%s", "bar");
 		assert_unreachable();
 		break;
 	case EXIT_CALLED:
@@ -99,16 +121,4 @@ test_xasprintf_ok(void **state)
 	assert_int_equal(len, strlen("foo1bar"));
 	assert_string_equal(p, "foo1bar");
 	free(p);
-}
-
-
-int
-main(void)
-{
-    const struct CMUnitTest  tests[] = {
-        cmocka_unit_test(test_xasprintf_exit),
-        cmocka_unit_test(test_xasprintf_ok),
-    };
-
-    return cmocka_run_group_tests(tests, NULL, NULL);
 }

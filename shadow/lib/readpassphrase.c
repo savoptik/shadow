@@ -145,7 +145,7 @@ restart:
 			*p++ = ch;
 		}
 	}
-	*p = '\0';
+	stpcpy(p, "");
 	save_errno = errno;
 /* We don't care if write() returns an error here */
 #pragma GCC diagnostic push
