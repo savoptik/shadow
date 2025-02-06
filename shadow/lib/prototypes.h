@@ -21,7 +21,6 @@
 
 #include <config.h>
 
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -56,7 +55,9 @@ extern int btrfs_is_subvolume(const char *path);
 extern int is_btrfs(const char *path);
 #endif
 
-#define Basename basename
+/* basename() renamed to Basename() to avoid libc name space confusion */
+/* basename.c */
+extern /*@observer@*/const char *Basename (const char *str);
 
 /* chowndir.c */
 extern int chown_tree (const char *root,

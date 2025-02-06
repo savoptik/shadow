@@ -73,6 +73,7 @@ libshadow_la_SOURCES = \
 	atoi/strtoi/strtou_noneg.h \
 	attr.h \
 	audit_help.c \
+	basename.c \
 	bit.c \
 	bit.h \
 	cast.h \
