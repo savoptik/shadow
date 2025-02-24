@@ -116,10 +116,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @ENABLE_LOGIND_TRUE@@HAVE_CMOCKA_TRUE@am__EXEEXT_1 =  \
 @ENABLE_LOGIND_TRUE@@HAVE_CMOCKA_TRUE@	test_logind$(EXEEXT)
-am__test_adds_SOURCES_DIST = ../../lib/adds.c test_adds.c
+am__test_adds_SOURCES_DIST = ../../lib/adds.c \
+	../../lib/search/cmp/cmp.c test_adds.c
 am__dirstamp = $(am__leading_dot)dirstamp
 @HAVE_CMOCKA_TRUE@am_test_adds_OBJECTS =  \
 @HAVE_CMOCKA_TRUE@	../../lib/test_adds-adds.$(OBJEXT) \
+@HAVE_CMOCKA_TRUE@	../../lib/search/cmp/test_adds-cmp.$(OBJEXT) \
 @HAVE_CMOCKA_TRUE@	test_adds-test_adds.$(OBJEXT)
 test_adds_OBJECTS = $(am_test_adds_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -228,6 +230,7 @@ am__depfiles_remade = ../../lib/$(DEPDIR)/test_adds-adds.Po \
 	../../lib/$(DEPDIR)/test_logind-logind.Po \
 	../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po \
 	../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po \
+	../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po \
 	../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po \
 	../../lib/string/sprintf/$(DEPDIR)/test_xasprintf-xasprintf.Po \
 	../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po \
@@ -684,6 +687,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)
 @HAVE_CMOCKA_TRUE@TESTS = $(check_PROGRAMS)
 @HAVE_CMOCKA_TRUE@test_adds_SOURCES = \
 @HAVE_CMOCKA_TRUE@    ../../lib/adds.c \
+@HAVE_CMOCKA_TRUE@    ../../lib/search/cmp/cmp.c \
 @HAVE_CMOCKA_TRUE@    test_adds.c \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
@@ -881,6 +885,15 @@ clean-checkPROGRAMS:
 	@: > ../../lib/$(DEPDIR)/$(am__dirstamp)
 ../../lib/test_adds-adds.$(OBJEXT): ../../lib/$(am__dirstamp) \
 	../../lib/$(DEPDIR)/$(am__dirstamp)
+../../lib/search/cmp/$(am__dirstamp):
+	@$(MKDIR_P) ../../lib/search/cmp
+	@: > ../../lib/search/cmp/$(am__dirstamp)
+../../lib/search/cmp/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../../lib/search/cmp/$(DEPDIR)
+	@: > ../../lib/search/cmp/$(DEPDIR)/$(am__dirstamp)
+../../lib/search/cmp/test_adds-cmp.$(OBJEXT):  \
+	../../lib/search/cmp/$(am__dirstamp) \
+	../../lib/search/cmp/$(DEPDIR)/$(am__dirstamp)
 
 test_adds$(EXEEXT): $(test_adds_OBJECTS) $(test_adds_DEPENDENCIES) $(EXTRA_test_adds_DEPENDENCIES) 
 	@rm -f test_adds$(EXEEXT)
@@ -959,6 +972,7 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f ../../lib/*.$(OBJEXT)
 	-rm -f ../../lib/atoi/strtoi/*.$(OBJEXT)
+	-rm -f ../../lib/search/cmp/*.$(OBJEXT)
 	-rm -f ../../lib/string/sprintf/*.$(OBJEXT)
 	-rm -f ../../lib/string/strcpy/*.$(OBJEXT)
 
@@ -970,6 +984,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_logind-logind.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/sprintf/$(DEPDIR)/test_xasprintf-xasprintf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po@am__quote@ # am--include-marker
@@ -1026,6 +1041,20 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/adds.c' object='../../lib/test_adds-adds.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -c -o ../../lib/test_adds-adds.obj `if test -f '../../lib/adds.c'; then $(CYGPATH_W) '../../lib/adds.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/adds.c'; fi`
+
+../../lib/search/cmp/test_adds-cmp.o: ../../lib/search/cmp/cmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -MT ../../lib/search/cmp/test_adds-cmp.o -MD -MP -MF ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Tpo -c -o ../../lib/search/cmp/test_adds-cmp.o `test -f '../../lib/search/cmp/cmp.c' || echo '$(srcdir)/'`../../lib/search/cmp/cmp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Tpo ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/search/cmp/cmp.c' object='../../lib/search/cmp/test_adds-cmp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -c -o ../../lib/search/cmp/test_adds-cmp.o `test -f '../../lib/search/cmp/cmp.c' || echo '$(srcdir)/'`../../lib/search/cmp/cmp.c
+
+../../lib/search/cmp/test_adds-cmp.obj: ../../lib/search/cmp/cmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -MT ../../lib/search/cmp/test_adds-cmp.obj -MD -MP -MF ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Tpo -c -o ../../lib/search/cmp/test_adds-cmp.obj `if test -f '../../lib/search/cmp/cmp.c'; then $(CYGPATH_W) '../../lib/search/cmp/cmp.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/search/cmp/cmp.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Tpo ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/search/cmp/cmp.c' object='../../lib/search/cmp/test_adds-cmp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -c -o ../../lib/search/cmp/test_adds-cmp.obj `if test -f '../../lib/search/cmp/cmp.c'; then $(CYGPATH_W) '../../lib/search/cmp/cmp.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/search/cmp/cmp.c'; fi`
 
 test_adds-test_adds.o: test_adds.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_adds_CFLAGS) $(CFLAGS) -MT test_adds-test_adds.o -MD -MP -MF $(DEPDIR)/test_adds-test_adds.Tpo -c -o test_adds-test_adds.o `test -f 'test_adds.c' || echo '$(srcdir)/'`test_adds.c
@@ -1599,6 +1628,8 @@ distclean-generic:
 	-rm -f ../../lib/$(am__dirstamp)
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../../lib/atoi/strtoi/$(am__dirstamp)
+	-rm -f ../../lib/search/cmp/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../../lib/search/cmp/$(am__dirstamp)
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../../lib/string/sprintf/$(am__dirstamp)
 	-rm -f ../../lib/string/strcpy/$(DEPDIR)/$(am__dirstamp)
@@ -1618,6 +1649,7 @@ distclean: distclean-am
 	-rm -f ../../lib/$(DEPDIR)/test_logind-logind.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po
+	-rm -f ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xasprintf-xasprintf.Po
 	-rm -f ../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po
@@ -1680,6 +1712,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../../lib/$(DEPDIR)/test_logind-logind.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po
+	-rm -f ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xasprintf-xasprintf.Po
 	-rm -f ../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po

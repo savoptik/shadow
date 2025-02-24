@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -22,9 +22,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Cảnh báo: không biết nhóm %s.\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Cảnh báo: quá nhiều nhóm\n"
 
 msgid "Your password has expired."
 msgstr "Mật khẩu của bạn đã hết hạn dùng."
@@ -765,14 +762,6 @@ msgid "%s: Permission denied.\n"
 msgstr "%s: không đủ quyền.\n"
 
 #, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s: Không thể phân giải tên người dùng của bạn.\n"
-
-#, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s: PAM: %s\n"
-
-#, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: Không thể khóa %s; hãy thử lại sau.\n"
 
@@ -856,6 +845,14 @@ msgstr "Khác"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s: trường quá dài\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: Không thể phân giải tên người dùng của bạn.\n"
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s: PAM: %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "Không thể thay đổi mã số thành siêu quản trị (root).\n"
@@ -957,36 +954,42 @@ msgstr "%s: các cờ “-c”, “-e” và “-m” loại từ lẫn nhau\n"
 msgid "%s: unsupported crypt method: %s\n"
 msgstr "%s: phương pháp mã hóa không được hỗ trợ: %s\n"
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s: dòng %d: dòng quá dài\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s: dòng %d: thiếu mật khẩu mới\n"
 
 #, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s: gặp lỗi khi mã hóa mật khẩu với muối “%s”: %s\n"
 
-#, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s: dòng %d, nhóm “%s” không tồn tại\n"
 
-#, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: dòng %d: gặp lỗi khi chuẩn bị mục tin %s mới “%s”\n"
 
 #, c-format
 msgid "%s: error detected, changes ignored\n"
 msgstr "%s: gặp lỗi nên bỏ qua các thay đổi\n"
 
-#, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+#, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (dòng %d, người dùng %s) mật khẩu chưa thay đổi\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: dòng %d: người dùng “%s” không tồn tại\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1791,9 +1794,6 @@ msgstr "%s: “%s” không phải là tên nhóm hợp lệ\n"
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: GID “%lu” không tồn tại\n"
 
-msgid "too many groups\n"
-msgstr "quá nhiều nhóm\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr ""
@@ -1839,8 +1839,9 @@ msgstr "%s: tên dùng không hợp lệ “%s”\n"
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s: dòng %d: dòng không hợp lệ\n"
 
 #, c-format
@@ -1849,42 +1850,49 @@ msgstr ""
 "%s: không thể cập nhật mục tin của người dùng %s (không có trong cơ sở dữ "
 "liệu mật khẩu passwd)\n"
 
-#, c-format
-msgid "%s: line %d: can't create user\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s: dòng %d: không thể tạo người dùng\n"
 
-#, c-format
-msgid "%s: line %d: can't create group\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s: dòng %d: không thể tạo nhóm\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s: dòng %d: người dùng “%s” không tồn tại trong %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: unlink: %s: %s\n"
-msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s: unlink: %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s: dòng %d: không thể cập nhật mật khẩu\n"
 
 #, fuzzy, c-format
 #| msgid "%s: line %d: mkdir %s failed: %s\n"
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s: dòng %d: lỗi mkdir (tạo thư mục) %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s: dòng %d: lỗi mkdir (tạo thư mục) %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s: dòng %d: lỗi chown (thay đổi quyền sở hữu) %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s: dòng %d: không thể cập nhật mục tin\n"
 
 #, c-format
@@ -3181,6 +3189,9 @@ msgstr "%s: không thể phục hồi %s: %s (các thay đổi của bạn nằm
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Cảnh báo: quá nhiều nhóm\n"
+
 #~ msgid "Environment overflow\n"
 #~ msgstr "Tràn môi trường\n"
 
@@ -3221,6 +3232,9 @@ msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r máy\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "quá nhiều nhóm\n"
 
 #, c-format
 #~ msgid "%s: cannot create new defaults file\n"

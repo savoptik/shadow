@@ -20,10 +20,6 @@
 /* Path for faillog file. */
 #undef FAILLOG_FILE
 
-/* Define to the type of elements in the array set by `getgroups'. Usually
-   this is either `int' or `gid_t'. */
-#undef GETGROUPS_T
-
 /* max group name length */
 #undef GROUP_NAME_MAX_LENGTH
 
@@ -52,9 +48,6 @@
 /* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
-/* Define to 1 if you have the <crypt.h> header file. */
-#undef HAVE_CRYPT_H
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
@@ -119,23 +112,14 @@
 /* Define to 1 if you have the `getusershell' function. */
 #undef HAVE_GETUSERSHELL
 
-/* Define to 1 if you have the <gshadow.h> header file. */
-#undef HAVE_GSHADOW_H
-
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
-
-/* Define to 1 if you have the `initgroups' function. */
-#undef HAVE_INITGROUPS
 
 /* Define to 1 if you have the `innetgr' function. */
 #undef HAVE_INNETGR
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the <lastlog.h> header file. */
-#undef HAVE_LASTLOG_H
 
 /* Define to 1 if you have the `lckpwdf' function. */
 #undef HAVE_LCKPWDF
@@ -164,9 +148,6 @@
 /* Define to 1 if you have the <minix/config.h> header file. */
 #undef HAVE_MINIX_CONFIG_H
 
-/* Define to 1 if you have the <paths.h> header file. */
-#undef HAVE_PATHS_H
-
 /* Define to 1 if you have the `putgrent' function. */
 #undef HAVE_PUTGRENT
 
@@ -178,9 +159,6 @@
 
 /* Define to 1 if you have the <readpassphrase.h> header file. */
 #undef HAVE_READPASSPHRASE_H
-
-/* Define to 1 if you have the <rpc/key_prot.h> header file. */
-#undef HAVE_RPC_KEY_PROT_H
 
 /* Define to 1 if you have the `rpmatch' function. */
 #undef HAVE_RPMATCH
@@ -197,9 +175,6 @@
 /* Define to 1 if you have the <semanage/semanage.h> header file. */
 #undef HAVE_SEMANAGE_SEMANAGE_H
 
-/* Define to 1 if you have the `setgroups' function. */
-#undef HAVE_SETGROUPS
-
 /* Define to 1 if you have the `sgetgrent' function. */
 #undef HAVE_SGETGRENT
 
@@ -208,12 +183,6 @@
 
 /* Define to 1 if you have the `sgetspent' function. */
 #undef HAVE_SGETSPENT
-
-/* Define to 1 if you have the <sgtty.h> header file. */
-#undef HAVE_SGTTY_H
-
-/* Have working shadow group support in libc */
-#undef HAVE_SHADOWGRP
 
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
@@ -260,15 +229,6 @@
 /* Define to 1 if `ut_xtime' is a member of `struct utmpx'. */
 #undef HAVE_STRUCT_UTMPX_UT_XTIME
 
-/* Define to 1 if you have the <sys/capability.h> header file. */
-#undef HAVE_SYS_CAPABILITY_H
-
-/* Define to 1 if you have the <sys/ioctl.h> header file. */
-#undef HAVE_SYS_IOCTL_H
-
-/* Define to 1 if you have the <sys/random.h> header file. */
-#undef HAVE_SYS_RANDOM_H
-
 /* Define to 1 if you have the <sys/statfs.h> header file. */
 #undef HAVE_SYS_STATFS_H
 
@@ -281,9 +241,6 @@
 /* Define to 1 if you have the <tcb.h> header file. */
 #undef HAVE_TCB_H
 
-/* Define to 1 if you have the <termio.h> header file. */
-#undef HAVE_TERMIO_H
-
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -295,9 +252,6 @@
 
 /* Define to 1 if `utime(file, NULL)' sets file's timestamp to the present. */
 #undef HAVE_UTIME_NULL
-
-/* Define to 1 if you have the <utmp.h> header file. */
-#undef HAVE_UTMP_H
 
 /* Define to support vendor settings. */
 #undef HAVE_VENDORDIR
@@ -517,9 +471,3 @@
 
 /* Path for wtmp file. */
 #undef _WTMP_FILE
-
-/* Define to `int' if <sys/types.h> doesn't define. */
-#undef gid_t
-
-/* Define to `int' if <sys/types.h> doesn't define. */
-#undef uid_t

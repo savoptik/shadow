@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/01/2025
+.\"      Date: 24/02/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.17.2
+.\"    Source: shadow-utils 4.17.3
 .\"  Language: French
 .\"
-.TH "USERADD" "8" "11/01/2025" "shadow\-utils 4\&.17\&.2" "System Management Commands"
+.TH "USERADD" "8" "24/02/2025" "shadow\-utils 4\&.17\&.3" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -155,7 +155,7 @@ variable in
 \fIyes\fR
 (or
 \fB\-U/\-\-user\-group\fR
-is specified on the command line), a group will be created for the user, with the same name as her loginname\&. If the variable is set to
+is specified on the command line), a group will be created for the user, with the same name as the loginname\&. If the variable is set to
 \fIno\fR
 (or
 \fB\-N/\-\-no\-user\-group\fR
@@ -610,6 +610,11 @@ can\*(Aqt create home directory
 \fI14\fR
 .RS 4
 can\*(Aqt update SELinux user mapping
+.RE
+.PP
+\fI19\fR
+.RS 4
+invalid user or group name
 .RE
 .SH "VOIR AUSSI"
 .PP

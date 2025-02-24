@@ -89,11 +89,12 @@ build_triplet = @build@
 host_triplet = @host@
 @ENABLE_LASTLOG_TRUE@am__append_1 = man8/lastlog.8
 @WITH_SU_TRUE@am__append_2 = man1/su.1
-@USE_PAM_FALSE@am__append_3 = $(man_nopam)
-@ENABLE_SUBIDS_TRUE@am__append_4 = $(man_subids)
-@ENABLE_LASTLOG_TRUE@am__append_5 = lastlog.8.xml
-@USE_PAM_TRUE@am__append_6 = $(man_nopam)
-@ENABLE_SUBIDS_FALSE@am__append_7 = $(man_subids)
+@WITH_SU_TRUE@am__append_3 = man5/suauth.5
+@USE_PAM_FALSE@am__append_4 = $(man_nopam)
+@ENABLE_SUBIDS_TRUE@am__append_5 = $(man_subids)
+@ENABLE_LASTLOG_TRUE@am__append_6 = lastlog.8.xml
+@USE_PAM_TRUE@am__append_7 = $(man_nopam)
+@ENABLE_SUBIDS_FALSE@am__append_8 = $(man_subids)
 subdir = man
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -418,14 +419,11 @@ man_MANS = man1/chage.1 man1/chfn.1 man8/chgpasswd.8 man8/chpasswd.8 \
 	man8/logoutd.8 man1/newgrp.1 man8/newusers.8 man8/nologin.8 \
 	man1/passwd.1 man5/passwd.5 man8/pwck.8 man8/pwconv.8 \
 	man8/pwunconv.8 man1/sg.1 man3/shadow.3 man5/shadow.5 \
-	man5/suauth.5 man8/useradd.8 man8/userdel.8 man8/usermod.8 \
-	man8/vigr.8 man8/vipw.8 $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4)
-man_nopam = \
-	man5/limits.5 \
-	man5/login.access.5 \
-	man5/porttime.5
-
+	man8/useradd.8 man8/userdel.8 man8/usermod.8 man8/vigr.8 \
+	man8/vipw.8 $(am__append_1) $(am__append_2) $(am__append_4) \
+	$(am__append_5)
+man_nopam = man5/limits.5 man5/login.access.5 man5/porttime.5 \
+	$(am__append_3)
 man_subids = \
 	man1/getsubids.1 \
 	man1/newgidmap.1 \
@@ -443,7 +441,7 @@ man_XMANS = chage.1.xml chfn.1.xml chgpasswd.8.xml chpasswd.8.xml \
 	porttime.5.xml pwck.8.xml pwconv.8.xml shadow.3.xml \
 	shadow.5.xml sg.1.xml su.1.xml suauth.5.xml subgid.5.xml \
 	subuid.5.xml useradd.8.xml userdel.8.xml usermod.8.xml \
-	vipw.8.xml $(am__append_5)
+	vipw.8.xml $(am__append_6)
 login_defs_v = \
 	BCRYPT_MIN_ROUNDS.xml \
 	CHFN_AUTH.xml \
@@ -518,7 +516,7 @@ login_defs_v = \
 EXTRA_DIST = $(man_MANS) $(man_XMANS) config.xml $(addprefix \
 	login.defs.d/,$(login_defs_v)) man8/sulogin.8 sulogin.8.xml \
 	generate_mans.mak generate_translations.mak its.rules \
-	shadow-man.xsl $(am__append_6) $(am__append_7)
+	shadow-man.xsl $(am__append_7) $(am__append_8)
 @ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_FALSE@VENDORDIR_COND = without_vendordir
 @ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_TRUE@VENDORDIR_COND = with_vendordir
 @ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_FALSE@PAM_COND = no_pam

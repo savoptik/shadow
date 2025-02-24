@@ -12,15 +12,16 @@
 #include <errno.h>
 #include <grp.h>
 #include <pwd.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 
 #include "defines.h"
 #include "prototypes.h"
-#include "string/strchr/stpspn.h"
-#include "string/strchr/strrspn.h"
 #include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strspn/stprspn.h"
 #include "string/strtok/stpsep.h"
 
 
@@ -42,7 +43,7 @@ static int applies (const char *, char *);
 
 static int isgrp (const char *, const char *);
 
-static int lines = 0;
+static intmax_t lines = 0;
 
 
 int
@@ -78,12 +79,12 @@ check_su_auth(const char *actual_id, const char *wanted_id, bool su_to_root)
 
 		if (stpsep(temp, "\n") == NULL) {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d: line too long or missing newline",
+				 "%s, line %jd: line too long or missing newline",
 				 SUAUTHFILE, lines));
 			continue;
 		}
 
-		stpcpy(strrspn(temp, " \t"), "");
+		stpcpy(stprspn(temp, " \t"), "");
 
 		p = stpspn(temp, " \t");
 		if (*p == '#' || streq(p, ""))
@@ -94,7 +95,7 @@ check_su_auth(const char *actual_id, const char *wanted_id, bool su_to_root)
 		action = strsep(&p, ":");
 		if (action == NULL || p != NULL) {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d. Bad number of fields.\n",
+				 "%s, line %jd. Bad number of fields.\n",
 				 SUAUTHFILE, lines));
 			continue;
 		}
@@ -128,7 +129,7 @@ check_su_auth(const char *actual_id, const char *wanted_id, bool su_to_root)
 			return OWNPWORD;
 		} else {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d: unrecognized action!\n",
+				 "%s, line %jd: unrecognized action!\n",
 				 SUAUTHFILE, lines));
 		}
 	}
@@ -148,7 +149,7 @@ applies(const char *single, char *list)
 		if (streq(tok, "ALL")) {
 			if (state != 0) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: ALL in bad place\n",
+					 "%s, line %jd: ALL in bad place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
@@ -156,7 +157,7 @@ applies(const char *single, char *list)
 		} else if (streq(tok, "EXCEPT")) {
 			if (state != 1) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: EXCEPT in bas place\n",
+					 "%s, line %jd: EXCEPT in bas place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
@@ -164,7 +165,7 @@ applies(const char *single, char *list)
 		} else if (streq(tok, "GROUP")) {
 			if ((state != 0) && (state != 2)) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: GROUP in bad place\n",
+					 "%s, line %jd: GROUP in bad place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
@@ -177,7 +178,7 @@ applies(const char *single, char *list)
 				break;
 			case 1:	/* An all */
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: expect another token after ALL\n",
+					 "%s, line %jd: expect another token after ALL\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			case 2:	/* All except */

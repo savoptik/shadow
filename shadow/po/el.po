@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow_po_el\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2012-01-21 00:22+0200\n"
 "Last-Translator: Thomas Vasileiou <thomas-v@wildmail.com>\n"
 "Language-Team: Greek <debian-l10n-greek@lists.debian.org>\n"
@@ -24,9 +24,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Προειδοποίηση: άγνωστη ομάδα %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Προειδοποίηση: Πολλές ομάδες\n"
 
 msgid "Your password has expired."
 msgstr "Το συνθηματικό σας έχει λήξει."
@@ -773,14 +770,6 @@ msgid "%s: Permission denied.\n"
 msgstr "%s: άδεια απορρίφθηκε\n"
 
 #, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s: Δεν είναι δυνατόν να καθοριστεί το όνομα χρήστη σας.\n"
-
-#, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s: PAM: %s\n"
-
-#, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: αδυναμία κλειδώματος %s. Δοκιμάστε αργότερα.\n"
 
@@ -870,6 +859,14 @@ msgstr "Άλλο"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s: Πολύ μακριά πεδία\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: Δεν είναι δυνατόν να καθοριστεί το όνομα χρήστη σας.\n"
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s: PAM: %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "Αδυναμία αλλαγής ταυτότητας χρήστη σε root.\n"
@@ -973,36 +970,42 @@ msgstr "%s: οι σημαίες -c, -e, και -m είναι αποκλειστ�
 msgid "%s: unsupported crypt method: %s\n"
 msgstr "%s: η μέθοδος κρυπτογράφησης δεν υποστηρίζεται: %s\n"
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s: γραμμή %d: πολύ μεγάλη γραμμή\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s: γραμμή %d: έλλειψη νέου συνθηματικού\n"
 
 #, fuzzy, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s: Αποτυχία εγγραφής %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s: γραμμή %d: η ομάδα '%s' δεν υπάρχει\n"
 
-#, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: γραμμή %d: αδυναμία προετοιμασίας της νέας εισόδου %s '%s'\n"
 
 #, c-format
 msgid "%s: error detected, changes ignored\n"
 msgstr "%s: Ανιχνεύτηκε σφάλμα, οι αλλαγές αγνοήθηκαν\n"
 
-#, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+#, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s:  (γραμμή %d, χρήστης %s) το συνθηματικό δεν άλλαξε\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: γραμμή %d: ο χρήστης '%s' δεν υπάρχει\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1811,9 +1814,6 @@ msgstr "%s: Το '%s' δεν είναι έγκυρο όνομα ομάδας\n"
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: Ο GID '%lu' δεν υπάρχει\n"
 
-msgid "too many groups\n"
-msgstr "πάρα πολλές ομάδες\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr ""
@@ -1859,8 +1859,9 @@ msgstr "%s: μη έγκυρο όνομα χρήστη '%s'\n"
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s: γραμμή %d: μη έγκυρη γραμμή\n"
 
 #, c-format
@@ -1869,42 +1870,49 @@ msgstr ""
 "%s: αδυναμία ανανέωσης καταχώρησης για το χρήστη %s (δεν βρέθηκε στη βάση "
 "δεδομένων του passwd)\n"
 
-#, c-format
-msgid "%s: line %d: can't create user\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s: γραμμή %d: αδυναμία δημιουργίας χρήστη\n"
 
-#, c-format
-msgid "%s: line %d: can't create group\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s: γραμμή %d: αδυναμία δημιουργίας ομάδας\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s: γραμμή %d: Ο χρήστης '%s' δεν υπάρχει στο %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: unlink: %s: %s\n"
-msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s: αποσύνδεση: %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s: γραμμή %d: αδυναμία ανανέωση συνθηματικού\n"
 
 #, fuzzy, c-format
 #| msgid "%s: line %d: mkdir %s failed: %s\n"
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s: γραμμή %d: αποτυχία δημιουργίας καταλόγου %s (mkdir) : %s\n"
 
-#, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s: γραμμή %d: αποτυχία δημιουργίας καταλόγου %s (mkdir) : %s\n"
 
-#, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s: γραμμή %d: αποτυχία αλλαγής ιδιοκτήτη %s (chown): %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s: γραμμή %d: αδυναμία ανανέωσης καταχώρησης\n"
 
 #, fuzzy, c-format
@@ -3246,6 +3254,9 @@ msgstr "%s: αδυναμία επαναφοράς %s: %s (οι αλλαγές ε
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Προειδοποίηση: Πολλές ομάδες\n"
+
 #~ msgid "Environment overflow\n"
 #~ msgstr "Υπερχείλιση περιβάλλοντος\n"
 
@@ -3287,6 +3298,9 @@ msgstr "%s: αποτυχία εύρεσης καταλόγου tcb %s\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r σύστημα\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "πάρα πολλές ομάδες\n"
 
 #, c-format
 #~ msgid "%s: cannot create new defaults file\n"

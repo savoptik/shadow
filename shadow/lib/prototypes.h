@@ -36,7 +36,7 @@
 #include "commonio.h"
 
 /* addgrps.c */
-#if defined (HAVE_SETGROUPS) && ! defined (USE_PAM)
+#if !defined(USE_PAM)
 extern int add_groups (const char *);
 #endif
 
@@ -222,7 +222,7 @@ extern void login_prompt (char *, int);
 extern void mailcheck (void);
 
 /* motd.c */
-extern void motd (void);
+extern int motd(void);
 
 /* myname.c */
 extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
@@ -384,7 +384,7 @@ extern int del_seuser(const char *login_name);
 /* setugid.c */
 extern int setup_groups (const struct passwd *info);
 extern int change_uid (const struct passwd *info);
-#if (defined HAVE_INITGROUPS) && (! defined USE_PAM)
+#if !defined(USE_PAM)
 extern int setup_uid_gid (const struct passwd *info, bool is_console);
 #else
 extern int setup_uid_gid (const struct passwd *info);

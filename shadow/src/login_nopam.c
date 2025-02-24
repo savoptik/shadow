@@ -47,6 +47,7 @@
 #include <pwd.h>
 #endif
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,8 +59,9 @@
 
 #include "prototypes.h"
 #include "sizeof.h"
-#include "string/strchr/strrspn.h"
+#include "string/strcmp/strcaseeq.h"
 #include "string/strcmp/streq.h"
+#include "string/strspn/stprspn.h"
 #include "string/strtok/stpsep.h"
 
 
@@ -94,7 +96,7 @@ login_access(const char *user, const char *from)
 	 */
 	fp = fopen (TABLE, "r");
 	if (NULL != fp) {
-		int lineno = 0;	/* for diagnostics */
+		intmax_t lineno = 0;	/* for diagnostics */
 		while (   !match
 		       && (fgets (line, sizeof (line), fp) == line))
 		{
@@ -103,14 +105,14 @@ login_access(const char *user, const char *from)
 			lineno++;
 			if (stpsep(line, "\n") == NULL) {
 				SYSLOG ((LOG_ERR,
-					 "%s: line %d: missing newline or line too long",
+					 "%s: line %jd: missing newline or line too long",
 					 TABLE, lineno));
 				continue;
 			}
 			if (line[0] == '#') {
 				continue;	/* comment line */
 			}
-			stpcpy(strrspn(line, " \t"), "");
+			stpcpy(stprspn(line, " \t"), "");
 			if (streq(line, "")) {	/* skip blank lines */
 				continue;
 			}
@@ -120,13 +122,13 @@ login_access(const char *user, const char *from)
 			froms = strsep(&p, ":");
 			if (froms == NULL || p != NULL) {
 				SYSLOG ((LOG_ERR,
-					 "%s: line %d: bad field count",
+					 "%s: line %jd: bad field count",
 					 TABLE, lineno));
 				continue;
 			}
 			if (perm[0] != '+' && perm[0] != '-') {
 				SYSLOG ((LOG_ERR,
-					 "%s: line %d: bad first field",
+					 "%s: line %jd: bad first field",
 					 TABLE, lineno));
 				continue;
 			}
@@ -145,37 +147,32 @@ login_access(const char *user, const char *from)
 static bool
 list_match(char *list, const char *item, bool (*match_fn)(char *, const char*))
 {
-	static const char  sep[] = ", \t";
-
 	char *tok;
-	bool match = false;
+	bool inclusion = true;
+	bool matched = false;
+	bool result = false;
 
 	/*
 	 * Process tokens one at a time. We have exhausted all possible matches
 	 * when we reach an "EXCEPT" token or the end of the list. If we do find
-	 * a match, look for an "EXCEPT" list and recurse to determine whether
-	 * the match is affected by any exceptions.
+	 * a match, look for an "EXCEPT" list and determine whether the match is
+	 * affected by any exceptions.
 	 */
-	while (NULL != (tok = strsep(&list, sep))) {
-		if (strcasecmp (tok, "EXCEPT") == 0) {	/* EXCEPT: give up */
-			break;
-		}
-		match = (*match_fn) (tok, item);
-		if (match) {
-			break;
+	while (NULL != (tok = strsep(&list, ", \t"))) {
+		if (strcaseeq(tok, "EXCEPT")) {  /* EXCEPT: invert */
+			if (!matched) {	/* stop processing: not part of list */
+				break;
+			}
+			inclusion = !inclusion;
+			matched = false;
+
+		} else if ((*match_fn)(tok, item)) {
+			result = inclusion;
+			matched = true;
 		}
 	}
 
-	/* Process exceptions to matches. */
-	if (match) {
-		while (   (NULL != (tok = strsep(&list, sep)))
-		       && (strcasecmp (tok, "EXCEPT") != 0))
-			/* VOID */ ;
-		if (tok == NULL || !list_match(list, item, match_fn)) {
-			return (match);
-		}
-	}
-	return false;
+	return result;
 }
 
 /* myhostname - figure out local machine name */
@@ -236,7 +233,7 @@ static bool user_match (char *tok, const char *string)
 	} else if ((group = getgrnam (tok)) != NULL) {	/* try group membership */
 		int i;
 		for (i = 0; NULL != group->gr_mem[i]; i++) {
-			if (strcasecmp (string, group->gr_mem[i]) == 0) {
+			if (strcaseeq(string, group->gr_mem[i])) {
 				return true;
 			}
 		}
@@ -313,10 +310,10 @@ static bool from_match (char *tok, const char *string)
 		str_len = strlen (string);
 		tok_len = strlen (tok);
 		if (   (str_len > tok_len)
-		    && (strcasecmp (tok, string + str_len - tok_len) == 0)) {
+		    && strcaseeq(tok, string + str_len - tok_len)) {
 			return true;
 		}
-	} else if (strcasecmp (tok, "LOCAL") == 0) {	/* local: no dots */
+	} else if (strcaseeq(tok, "LOCAL")) {	/* LOCAL: no dots */
 		if (strchr (string, '.') == NULL) {
 			return true;
 		}
@@ -335,9 +332,9 @@ static bool string_match (const char *tok, const char *string)
 	 * If the token has the magic value "ALL" the match always succeeds.
 	 * Otherwise, return true if the token fully matches the string.
 	 */
-	if (strcasecmp (tok, "ALL") == 0) {	/* all: always matches */
+	if (strcaseeq(tok, "ALL")) {  /* ALL: always matches */
 		return true;
-	} else if (strcasecmp (tok, string) == 0) {	/* try exact match */
+	} else if (strcaseeq(tok, string)) {  /* try exact match */
 		return true;
 	}
 	return false;
