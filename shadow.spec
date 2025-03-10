@@ -1,5 +1,5 @@
 Name: shadow
-Version: 4.17.2
+Version: 4.17.3
 Release: alt1
 Epoch: 1
 
@@ -473,7 +473,6 @@ rm -f %save_login_defs_file
 %exclude %_man3dir/shadow.3.*
 %exclude %_man5dir/gshadow.5.*
 %exclude %_man5dir/passwd.5.*
-%exclude %_man5dir/suauth.5.*
 %exclude %_man8dir/chgpasswd.8.*
 %exclude %_man8dir/logoutd.8.*
 %exclude %_man8dir/nologin.8.*
@@ -484,6 +483,12 @@ rm -f %save_login_defs_file
 %endif
 
 %changelog
+* Mon Mar 10 2025 Mikhail Efremov <sem@altlinux.org> 1:4.17.3-alt1
+- Dropped PAM config for chage.
+- chpasswd,newusers: Fixed printf() format.
+- lib: Fixed variable type in strrspn() and strrcspn().
+- Updated to 4.17.3.
+
 * Thu Feb 06 2025 Mikhail Efremov <sem@altlinux.org> 1:4.17.2-alt1
 - Returned Basename() function.
 - Dropped unused variables.
