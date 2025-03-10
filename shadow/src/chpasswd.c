@@ -642,7 +642,7 @@ int main (int argc, char **argv)
 		if (use_pam){
 			if (eflg) {
 				if (!paste_pwd (name, cp)) {
-					fprintf (stderr, "%s: line %d: unable to paste new hash\n",
+					fprintf (stderr, "%s: line %jd: unable to paste new hash\n",
 							Prog, line);
 					errors = true;
 					break;

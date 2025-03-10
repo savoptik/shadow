@@ -1163,7 +1163,7 @@ int main (int argc, char **argv)
 		if (shadowtcb_create (fields[0], uid) == SHADOWTCB_FAILURE) {
 			fprintf(stderr, "Problems creating /etc/tcb/%s; "
 					"there may be a stale entry left.\n", fields[0]);
-			fprintf (stderr, "line %d user %s\n", line, fields[0]);
+			fprintf (stderr, "line %jd user %s\n", line, fields[0]);
 			fail_exit (EXIT_FAILURE);
 		}
 #endif				/* WITH_TCB */
