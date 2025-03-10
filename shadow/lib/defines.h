@@ -41,7 +41,7 @@
  * crypt(3), crypt_gensalt(3), and their
  * feature test macros may be defined in here.
  */
-#if HAVE_CRYPT_H
+#if __has_include(<crypt.h>)
 # include <crypt.h>
 #endif
 
@@ -50,13 +50,8 @@
 
 #include <dirent.h>
 
-/*
- * Possible cases:
- * - /usr/include/shadow.h exists and includes the shadow group stuff.
- * - /usr/include/shadow.h exists, but we use our own gshadow.h.
- */
 #include <shadow.h>
-#if defined(SHADOWGRP) && !defined(GSHADOW)
+#if defined(SHADOWGRP)
 #include "gshadow_.h"
 #endif
 

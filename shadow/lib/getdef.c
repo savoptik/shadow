@@ -30,9 +30,10 @@
 #include "prototypes.h"
 #include "shadowlog_internal.h"
 #include "string/sprintf/xasprintf.h"
-#include "string/strchr/stpspn.h"
-#include "string/strchr/strrspn.h"
+#include "string/strcmp/strcaseeq.h"
 #include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strspn/stprspn.h"
 #include "string/strtok/stpsep.h"
 
 
@@ -231,7 +232,7 @@ bool getdef_bool (const char *item)
 		return false;
 	}
 
-	return (strcasecmp (d->value, "yes") == 0);
+	return strcaseeq(d->value, "yes");
 }
 
 
@@ -566,7 +567,7 @@ static void def_load (void)
 		/*
 		 * Trim trailing whitespace.
 		 */
-		stpcpy(strrspn(buf, " \t\n"), "");
+		stpcpy(stprspn(buf, " \t\n"), "");
 
 		/*
 		 * Break the line into two fields.

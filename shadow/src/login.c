@@ -21,6 +21,7 @@
 #include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <assert.h>
@@ -77,7 +78,6 @@ static const char Prog[] = "login";
 
 static const char *hostname = "";
 static /*@null@*/ /*@only@*/char *username = NULL;
-static int reason = PW_LOGIN;
 
 #ifndef USE_PAM
 #ifdef ENABLE_LASTLOG
@@ -289,7 +289,6 @@ static void process_flags (int argc, char *const *argv)
 		case 'h':
 			hflg = true;
 			hostname = optarg;
-			reason = PW_TELNET;
 			break;
 		case 'p':
 			pflg = true;
@@ -537,9 +536,6 @@ int main (int argc, char **argv)
 	}
 	if (fflg) {
 		preauth_flag = true;
-	}
-	if (hflg) {
-		reason = PW_RLOGIN;
 	}
 
 	OPENLOG (Prog);
@@ -905,7 +901,7 @@ int main (int argc, char **argv)
 			goto auth_ok;
 		}
 
-		if (pw_auth (user_passwd, username, reason, NULL) == 0) {
+		if (pw_auth(user_passwd, username) == 0) {
 			goto auth_ok;
 		}
 
@@ -966,7 +962,7 @@ int main (int argc, char **argv)
 		 * all).  --marekm
 		 */
 		if (streq(user_passwd, "")) {
-			pw_auth ("!", username, reason, NULL);
+			pw_auth("!", username);
 		}
 
 		/*
@@ -1182,7 +1178,9 @@ int main (int argc, char **argv)
 		 * this
 		 */
 #ifndef USE_PAM
-		motd ();	/* print the message of the day */
+		if (motd() == -1)
+			exit(EXIT_FAILURE);
+
 		if (   getdef_bool ("FAILLOG_ENAB")
 		    && (0 != faillog.fail_cnt)) {
 			failprint (&faillog);

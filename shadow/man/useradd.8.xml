@@ -232,7 +232,7 @@
 	    set to <replaceable>yes</replaceable> (or
 	    <option>-U/--user-group</option> is specified on the command
 	    line), a group will be created for the user, with the same
-	    name as her loginname. If the variable is set to
+	    name as the loginname. If the variable is set to
 	    <replaceable>no</replaceable> (or
 	    <option>-N/--no-user-group</option> is specified on the
 	    command line), useradd will set the primary group of the new
@@ -680,7 +680,6 @@
 	  </listitem>
 	</varlistentry>
       </variablelist>
-
     </refsect2>
   </refsect1>
 
@@ -876,6 +875,12 @@
 	  <term><replaceable>14</replaceable></term>
 	  <listitem>
 	    <para>can't update SELinux user mapping</para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><replaceable>19</replaceable></term>
+	  <listitem>
+	    <para>invalid user or group name</para>
 	  </listitem>
 	</varlistentry>
       </variablelist>

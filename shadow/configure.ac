@@ -4,7 +4,7 @@ m4_define([libsubid_abi_major], 5)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.17.2], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.17.3], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects tar-pax])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -36,20 +36,13 @@ LT_LIB_DLLOAD
 
 dnl Checks for libraries.
 
-dnl Checks for header files.
-AC_CHECK_HEADERS(crypt.h utmp.h \
-	termio.h sgtty.h sys/ioctl.h paths.h \
-	sys/capability.h sys/random.h \
-	gshadow.h lastlog.h rpc/key_prot.h acl/libacl.h \
-	attr/libattr.h attr/error_context.h)
-
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 
 AC_CHECK_FUNCS(arc4random_buf futimes setlocale \
 	getentropy getrandom getspnam getusershell \
-	initgroups lckpwdf lutimes \
-	setgroups updwtmpx innetgr \
+	lckpwdf lutimes \
+	updwtmpx innetgr \
 	getspnam_r \
 	rpmatch \
 	memset_explicit explicit_bzero stpecpy stpeprintf)
@@ -66,7 +59,6 @@ AC_CHECK_MEMBERS([struct utmpx.ut_name,
                   struct utmpx.ut_xtime],,,[[#include <utmpx.h>]])
 
 dnl Checks for library functions.
-AC_TYPE_GETGROUPS
 AC_FUNC_UTIME_NULL
 AC_REPLACE_FUNCS(putgrent putpwent putspent)
 AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
@@ -75,33 +67,6 @@ AC_CHECK_FUNC(setpgrp)
 AC_CHECK_FUNC(secure_getenv, [AC_DEFINE(HAS_SECURE_GETENV,
                                         1,
                                         [Defined to 1 if you have the declaration of 'secure_getenv'])])
-
-if test "$ac_cv_header_shadow_h" = "yes"; then
-	AC_CACHE_CHECK(for working shadow group support,
-		ac_cv_libc_shadowgrp,
-		AC_RUN_IFELSE([AC_LANG_SOURCE([
-				#include <shadow.h>
-				#ifdef HAVE_GSHADOW_H
-				#include <gshadow.h>
-				#endif
-				int
-				main()
-				{
-					struct sgrp *sg = sgetsgent("test:x::");
-					/* NYS libc on Red Hat 3.0.3 has broken shadow group support */
-					return !sg || !sg->sg_adm || !sg->sg_mem;
-				}]
-			)],
-			[ac_cv_libc_shadowgrp=yes],
-			[ac_cv_libc_shadowgrp=no],
-			[ac_cv_libc_shadowgrp=no]
-		)
-	)
-
-	if test "$ac_cv_libc_shadowgrp" = "yes"; then
-		AC_DEFINE(HAVE_SHADOWGRP, 1, [Have working shadow group support in libc])
-	fi
-fi
 
 AC_CACHE_CHECK([location of shared mail directory], shadow_cv_maildir,
 [for shadow_cv_maildir in /var/mail /var/spool/mail /usr/spool/mail /usr/mail none; do

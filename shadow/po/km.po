@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow_po_km\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2006-06-28 10:08+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -25,9 +25,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "ការ​ព្រមាន ៖ មិន​ស្គាល់​ក្រុម %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "ការព្រមាន​ ៖ មាន​ច្រើន​ក្រុម​ពេក\n"
 
 msgid "Your password has expired."
 msgstr "ពាក្យ​សម្ងាត់​របស់​អ្នក​បាន​ផុត​កំណត់ហើយ​ ។"
@@ -712,14 +709,6 @@ msgstr "%s ៖ មិន​រូមបញ្ចូល​ទាំង​ \"l\" 
 msgid "%s: Permission denied.\n"
 msgstr "%s ៖ សិទ្ធ​ត្រូវ​បាន​បដិសេធ ។\n"
 
-#, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s ៖ មិន​អាចកំណត់​ឈ្មោះ​អ្នកប្រើ​របស់​អ្នក​បាន​ទេ ។\n"
-
-#, fuzzy, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s ៖ %s\n"
-
 #, fuzzy, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s ៖ មិន​អាច​ចាក់សោ​ឯកសារ​បានឡើយ សូមព្យាយាម​ម្តង​ទៀតនៅពេលក្រោយ​\n"
@@ -799,6 +788,14 @@ msgstr "ផ្សេងៗ"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s ៖ វាល គឺ​វែងវែងពេក​\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s ៖ មិន​អាចកំណត់​ឈ្មោះ​អ្នកប្រើ​របស់​អ្នក​បាន​ទេ ។\n"
+
+#, fuzzy, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s ៖ %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "មិន​អាចផ្លាស់ប្តូរ​លេខ​សម្គាល់​ទៅ​ជា​ root បាន​ឡើយ​ ។\n"
@@ -887,12 +884,14 @@ msgstr ""
 msgid "%s: unsupported crypt method: %s\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ បន្ទាត់​វែងពេក​\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ បាត់បង់​ពាក្យ​សម្ងាត់​ថ្មី​\n"
 
 #, fuzzy, c-format
@@ -900,11 +899,11 @@ msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s ៖ មិនមានក្រុម​ %sឡើយ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិនអាចធ្វើឲ្យ​ធាតុបញ្ចូល​ទាន់សម័យបានឡើយ\n"
 
 #, c-format
@@ -912,11 +911,11 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s ៖ បានរកឃើញ​កំហុស មិនអើពើនឹងការផ្លាស់ប្ដូរ​\n"
 
 #, fuzzy, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s ៖ មិនទាន់មានអ្នក​ប្រើ​ %s ទេ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s ៖ មិនទាន់មានអ្នក​ប្រើ​ %s ទេ​\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1630,9 +1629,6 @@ msgstr "%s  ៖ %s ជា​ឈ្មោះ​ក្រុម​មិន​ត
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s ៖ មិនទាន់មានអ្នក​ប្រើ​ %s ទេ​\n"
 
-msgid "too many groups\n"
-msgstr "ច្រើន​ក្រុមពេក​\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr ""
@@ -1674,8 +1670,9 @@ msgstr "%s ៖ឈ្មោះ​អ្នក​ប្រើ​មិន​ត�
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ បន្ទាត់​មិន​ត្រឹមត្រូវ​\n"
 
 #, fuzzy, c-format
@@ -1683,39 +1680,41 @@ msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr "%s ៖ មិនអាច​ធ្វើឲ្យធាតុបញ្ចូល​ទាន់សម័យ​សម្រាប់ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិន​អាច​បង្កើត​ GID បានឡើយ\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិន​អាច​បង្កើត​ GID បានឡើយ\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s ៖ មិនទាន់មានអ្នក​ប្រើ​ %s ទេ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s ៖​ ប្តូរ​ឈ្មោះ​ ៖ %s"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិន​អាច​ធ្វើ​ឲ្យ​ពាក្យ​សម្ងាត់​ទាន់សម័យ​បានឡើយ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ mkdir បានបរាជ័យ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ mkdir បានបរាជ័យ​\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិនអាចធ្វើឲ្យ​ធាតុបញ្ចូល​ទាន់សម័យបានឡើយ\n"
 
 #, fuzzy, c-format
@@ -2856,6 +2855,9 @@ msgstr "%s ៖ មិន​អាច​ស្តារ %s ៖ %s (ការប
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s  ៖ ថត​មូលដ្ឋាន​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "ការព្រមាន​ ៖ មាន​ច្រើន​ក្រុម​ពេក\n"
+
 #~ msgid "Environment overflow\n"
 #~ msgstr "​លើស​ចំណុះ​បរិស្ថាន\n"
 
@@ -2892,6 +2894,9 @@ msgstr "%s  ៖ ថត​មូលដ្ឋាន​មិន​ត្រឹ�
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r ម៉ាស៊ីន​\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "ច្រើន​ក្រុមពេក​\n"
 
 #, c-format
 #~ msgid "%s: cannot create new defaults file\n"

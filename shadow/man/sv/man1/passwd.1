@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11-01-2025
+.\"      Date: 24-02-2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.17.2
+.\"    Source: shadow-utils 4.17.3
 .\"  Language: Swedish
 .\"
-.TH "PASSWD" "1" "11-01-2025" "shadow\-utils 4\&.17\&.2" "User Commands"
+.TH "PASSWD" "1" "24-02-2025" "shadow\-utils 4\&.17\&.3" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -145,7 +145,7 @@ directory\&. Only absolute paths are supported\&.
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
 Apply changes to configuration files under the root filesystem found under the directory
-\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-status\fR

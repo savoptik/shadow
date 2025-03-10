@@ -155,6 +155,14 @@ libshadow_la_SOURCES = \
 	run_part.h \
 	run_part.c \
 	salt.c \
+	search/cmp/cmp.c \
+	search/cmp/cmp.h \
+	search/l/lfind.c \
+	search/l/lfind.h \
+	search/l/lsearch.c \
+	search/l/lsearch.h \
+	search/sort/qsort.c \
+	search/sort/qsort.h \
 	selinux.c \
 	semanage.c \
 	setugid.c \
@@ -165,6 +173,8 @@ libshadow_la_SOURCES = \
 	sgroupio.c \
 	sgroupio.h\
 	shadow.c \
+	shadow/grp/agetgroups.c \
+	shadow/grp/agetgroups.h \
 	shadowio.c \
 	shadowio.h \
 	shadowlog.c \
@@ -176,6 +186,8 @@ libshadow_la_SOURCES = \
 	spawn.c \
 	sssd.c \
 	sssd.h \
+	string/ctype/strisascii/strisdigit.c \
+	string/ctype/strisascii/strisdigit.h \
 	string/memset/memzero.c \
 	string/memset/memzero.h \
 	string/sprintf/snprintf.c \
@@ -186,12 +198,12 @@ libshadow_la_SOURCES = \
 	string/sprintf/xasprintf.h \
 	string/strchr/strchrcnt.c \
 	string/strchr/strchrcnt.h \
-	string/strchr/stpspn.c \
-	string/strchr/stpspn.h \
+	string/strchr/strchrscnt.c \
+	string/strchr/strchrscnt.h \
 	string/strchr/strnul.c \
 	string/strchr/strnul.h \
-	string/strchr/strrspn.c \
-	string/strchr/strrspn.h \
+	string/strcmp/strcaseeq.c \
+	string/strcmp/strcaseeq.h \
 	string/strcmp/streq.c \
 	string/strcmp/streq.h \
 	string/strcpy/stpecpy.c \
@@ -210,6 +222,16 @@ libshadow_la_SOURCES = \
 	string/strdup/xstrndup.h \
 	string/strftime.c \
 	string/strftime.h \
+	string/strspn/stpspn.c \
+	string/strspn/stpspn.h \
+	string/strspn/stprcspn.c \
+	string/strspn/stprcspn.h \
+	string/strspn/stprspn.c \
+	string/strspn/stprspn.h \
+	string/strspn/strrcspn.c \
+	string/strspn/strrcspn.h \
+	string/strspn/strrspn.c \
+	string/strspn/strrspn.h \
 	string/strtok/stpsep.c \
 	string/strtok/stpsep.h \
 	strtoday.c \

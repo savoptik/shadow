@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2006-06-01 15:28+0530\n"
 "Last-Translator: Jurmey Rabgay <jur_gay@yahoo.com>\n"
 "Language-Team: dzongkha <pgeyleg@dit.gov.bt>\n"
@@ -23,9 +23,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "ཉེན་བརྡ་:མ་ཤེས་པའི་སྡེ་ཚན་%s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "ཉེན་བརྡ་:སྡེ་ཚན་མང་དྲགས་པ་\n"
 
 msgid "Your password has expired."
 msgstr "ཁྱོད་ཀྱི་ཆོག་ཡིག་འདི་ དུས་ཡོལ་ནུག"
@@ -705,14 +702,6 @@ msgstr "%s: ཟུར་རྟགས་གཞན་མི་དང་གཅི�
 msgid "%s: Permission denied.\n"
 msgstr "%s: སྣང་བ་ཉན་མ་བཏུབ།\n"
 
-#, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s: ཁྱོད་ཀྱི་ལག་ལེན་པའི་མིང་ གཏན་འབེབས་བཟོ་མི་ཚུགས།\n"
-
-#, fuzzy, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s: %s\n"
-
 #, fuzzy, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s:ཡིག་སྣོད་ཚུ་ལྡེ་མིག་བརྐྱབ་མི་ཚུགས་ དོ་རུང་ཤུལ་ལས་འབད་རྩོལ་བསྐྱེད།\n"
@@ -792,6 +781,14 @@ msgstr "གཞན།"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s: ས་སྒོ་ཚུ་རིང་དྲགས་པས།\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: ཁྱོད་ཀྱི་ལག་ལེན་པའི་མིང་ གཏན་འབེབས་བཟོ་མི་ཚུགས།\n"
+
+#, fuzzy, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s: %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "རྩ་བ་ལུ་ ཨའི་ཌི་ བསྒྱུར་བཅོས་འབད་མི་ཚུགས།\n"
@@ -880,12 +877,14 @@ msgstr ""
 msgid "%s: unsupported crypt method: %s\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s: གྲལ་ཐིག་ %d: གྲལ་ཐིག་རིང་དྲགས་པས།\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཆོག་ཡིག་གསརཔ་ བརླག་སྟོར་ཞུགས་པ།\n"
 
 #, fuzzy, c-format
@@ -893,11 +892,11 @@ msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s: ཁེ་དབང་(%s)ཚུ་བཀོག་ནིའི་འཐུས་ཤོར་བྱུང་ཡོདཔ།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s: སྡེ་ཚན་ %sམེད།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཐོ་བཀོད་དུས་མཐུན་བཟོ་མི་ཚུགས།\n"
 
 #, c-format
@@ -905,11 +904,11 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s: འཛོལ་བ་སྐྱོན་འཛིན་འབད་ཡི་ བསྒྱུར་བཅོས་ཚུ་སྣང་མེད་བཞག་ཡི།\n"
 
 #, fuzzy, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: ལག་ལེན་པ་  %sའདི་ མེད།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: ལག་ལེན་པ་  %sའདི་ མེད།\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1615,9 +1614,6 @@ msgstr "%s: %s འདི་ ནུས་ཅན་གྱི་སྡེ་ཚན�
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: ལག་ལེན་པ་  %sའདི་ མེད།\n"
 
-msgid "too many groups\n"
-msgstr "སྡེ་ཚན་མང་དྲགས་པ།\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr ""
@@ -1659,8 +1655,9 @@ msgstr "%s: ནུས་མེད་ལག་ལེན་པའི་མིང�
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s:གྲལ་ཐིག་%d: ནུས་མེད་གྲལ་ཐིག་\n"
 
 #, fuzzy, c-format
@@ -1668,39 +1665,41 @@ msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr "%s: ལག་ལེན་པ་%sགི་དོན་ལུ་ ཐོ་བཀོད་དུས་མཐུན་བཟོ་མི་ཚུགས།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཇི་ཨའི་ཌི་ གསར་བསྐྲུན་འབད་མི་ཚུགས།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཇི་ཨའི་ཌི་ གསར་བསྐྲུན་འབད་མི་ཚུགས།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s: ལག་ལེན་པ་  %sའདི་ མེད།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s: བསྐྱར་མིང་བཏགས་:%s"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཆོག་ཡིག་དུས་མཐུན་བཟོ་མི་ཚུགས།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s: གྲལ་ཐིག་ %d: mkdir འཐུས་ཤོར་བྱུང་ཡོདཔ།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s: གྲལ་ཐིག་ %d: mkdir འཐུས་ཤོར་བྱུང་ཡོདཔ།\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s: གྲལ་ཐིག་ %d: chown འཐུས་ཤོར་བྱུང་ཡོདཔ།\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s: གྲལ་ཐིག་ %d: ཐོ་བཀོད་དུས་མཐུན་བཟོ་མི་ཚུགས།\n"
 
 #, fuzzy, c-format
@@ -2834,6 +2833,9 @@ msgstr "%s: %sསོར་ཆུད་འབད་མ་ཚུགས་: %s (ཁ
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: ནུས་མེད་གཞི་རྟེན་སྣོད་ཐོ་'%s'།\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "ཉེན་བརྡ་:སྡེ་ཚན་མང་དྲགས་པ་\n"
+
 #~ msgid "Environment overflow\n"
 #~ msgstr "མཐའ་འཁོར་ལུད་སོང་བ།\n"
 
@@ -2870,6 +2872,9 @@ msgstr "%s: ནུས་མེད་གཞི་རྟེན་སྣོད་�
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r host\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "སྡེ་ཚན་མང་དྲགས་པ།\n"
 
 #, c-format
 #~ msgid "%s: cannot create new defaults file\n"

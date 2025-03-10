@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2022-05-16 19:32+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
@@ -22,9 +22,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Попередження: невідома група %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Попередження: забагато груп\n"
 
 msgid "Your password has expired."
 msgstr "Термін дії вашого паролю вичерпано."
@@ -755,14 +752,6 @@ msgid "%s: Permission denied.\n"
 msgstr "%s: у доступі відмовлено.\n"
 
 #, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s: не вдалося визначити ваше ім'я користувача.\n"
-
-#, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s: PAM: %s\n"
-
-#, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: не вдалося заблокувати %s; повторіть пізніше.\n"
 
@@ -849,6 +838,14 @@ msgstr "Інше"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s: поля занадто довгі\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: не вдалося визначити ваше ім'я користувача.\n"
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s: PAM: %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "Не вдалося змінити ідентифікатор на root.\n"
@@ -947,36 +944,42 @@ msgstr "%s: прапорці -c, -e і -m є взаємно виключними
 msgid "%s: unsupported crypt method: %s\n"
 msgstr "%s: непідтримуваний метод шифрування: %s\n"
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s: рядок %d: рядок занадто довгий\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s: рядок %d: бракує нового пароля\n"
 
 #, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s: не вдалося зашифрувати пароль з базою «%s»: %s\n"
 
-#, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s: рядок %d: запису групи «%s» не існує\n"
 
-#, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: рядок %d: не вдалося приготувати новий запис %s «%s»\n"
 
 #, c-format
 msgid "%s: error detected, changes ignored\n"
 msgstr "%s: виявлено помилку, зміни проігноровано\n"
 
-#, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+#, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (рядок %d, користувач %s) пароль не змінено\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: рядок %d: запису користувача «%s» не існує\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1786,9 +1789,6 @@ msgstr "%s: «%s» є некоректною назвою групи\n"
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: GID «%lu» не існує\n"
 
-msgid "too many groups\n"
-msgstr "занадто багато груп\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s: діапазон uid [%lu-%lu) -> [%lu-%lu) заборонено\n"
@@ -1838,8 +1838,9 @@ msgstr "%s: невірне ім'я користувача '%s'\n"
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s: рядок %d: некоректний рядок\n"
 
 #, c-format
@@ -1847,41 +1848,49 @@ msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr ""
 "%s: не вдалося оновити запис користувача %s (немає у базі даних passwd)\n"
 
-#, c-format
-msgid "%s: line %d: can't create user\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s: рядок %d: не вдалося створити запис користувача\n"
 
-#, c-format
-msgid "%s: line %d: can't create group\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s: рядок %d: не вдалося створити групу\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s: рядок %d: користувача «%s» не існує у %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: unlink: %s: %s\n"
-msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s: скасування посилання: %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s: рядок %d: не вдалося оновити пароль\n"
 
-#, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s: рядок %d: домашній каталог має бути вказано як абсолютний шлях\n"
 
-#, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s: рядок %d: помилка під час створення каталогу %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s: рядок %d: помилка зміни власника %s: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s: рядок %d: не вдалося оновити запис\n"
 
 #, c-format
@@ -3185,6 +3194,9 @@ msgstr "%s: не вдалося відновити %s: %s (ваші зміни �
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: не вдалося знайти каталог tcb для %s\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Попередження: забагато груп\n"
+
 #~ msgid "Environment overflow\n"
 #~ msgstr "Переповнення середовища\n"
 
@@ -3225,6 +3237,9 @@ msgstr "%s: не вдалося знайти каталог tcb для %s\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "                %s [-p] -r вузол\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "занадто багато груп\n"
 
 #, c-format
 #~ msgid "%s: cannot create new defaults file\n"

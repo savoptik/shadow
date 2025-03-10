@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.3\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2004-11-20 03:28+0100\n"
 "Last-Translator: Elian Myftiu <pinguini AT fastwebnet DOT it>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -20,9 +20,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Kujdes: ka shumë grupe\n"
 
 msgid "Your password has expired."
 msgstr "Fjalëkalimi yt ka skaduar."
@@ -689,14 +686,6 @@ msgid "%s: Permission denied.\n"
 msgstr ""
 
 #, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: PAM: %s\n"
-msgstr "Kujdes: grup i panjohur %s\n"
-
-#, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr ""
 
@@ -775,6 +764,14 @@ msgstr ""
 #, c-format
 msgid "%s: fields too long\n"
 msgstr ""
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: PAM: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr ""
@@ -863,24 +860,24 @@ msgstr ""
 msgid "%s: unsupported crypt method: %s\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: line too long\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "%s: line %jd: line too long\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "%s: line %jd: missing new password\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, c-format
@@ -888,12 +885,12 @@ msgid "%s: error detected, changes ignored\n"
 msgstr ""
 
 #, fuzzy, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "%s: line %jd: user '%s' does not exist\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
 msgstr ""
@@ -1584,9 +1581,6 @@ msgstr ""
 msgid "%s: GID '%lu' does not exist\n"
 msgstr ""
 
-msgid "too many groups\n"
-msgstr ""
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr ""
@@ -1627,49 +1621,49 @@ msgstr "Kujdes: grup i panjohur %s\n"
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr ""
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "%s: line %jd: invalid line\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 #, c-format
 msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr ""
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: can't create group\n"
-msgstr "Kujdes: grup i panjohur %s\n"
-
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: line %d: %s\n"
-msgstr "Kujdes: grup i panjohur %s\n"
-
-#, c-format
-msgid "%s: line %d: can't update password\n"
-msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "%s: line %jd: can't update password\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
+msgid "%s: line %jd: homedir must be an absolute path\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
+msgid "%s: line %jd: mkdir %s failed: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
+msgid "%s: line %jd: chown %s failed: %s\n"
+msgstr "Kujdes: grup i panjohur %s\n"
+
+#, fuzzy, c-format
+msgid "%s: line %jd: can't update entry\n"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 #, c-format
 msgid "%s: can't find subordinate user range\n"
@@ -2747,6 +2741,9 @@ msgstr ""
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr ""
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Kujdes: ka shumë grupe\n"
+
 #, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"
 #~ msgstr "Kujdes: grup i panjohur %s\n"
@@ -2754,10 +2751,6 @@ msgstr ""
 #, fuzzy, c-format
 #~ msgid "%s: password expiry information changed.\n"
 #~ msgstr "Fjalëkalimi yt ka skaduar."
-
-#, fuzzy
-#~ msgid "%s: line %d: cannot update group entry\n"
-#~ msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy
 #~ msgid "unknown UID: %u\n"

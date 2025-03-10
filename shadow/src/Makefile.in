@@ -150,10 +150,8 @@ chage_OBJECTS = chage.$(OBJEXT)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
-@ACCT_TOOLS_SETUID_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
-chage_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+chage_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -161,11 +159,11 @@ am__v_lt_1 =
 check_subid_range_SOURCES = check_subid_range.c
 check_subid_range_OBJECTS =  \
 	check_subid_range-check_subid_range.$(OBJEXT)
-@USE_PAM_FALSE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
-@ENABLE_SUBIDS_TRUE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1) \
+@USE_PAM_FALSE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
+@ENABLE_SUBIDS_TRUE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4) \
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_3) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
@@ -173,16 +171,17 @@ check_subid_range_OBJECTS =  \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1)
 @ENABLE_SUBIDS_TRUE@check_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 chfn_SOURCES = chfn.c
 chfn_OBJECTS = chfn.$(OBJEXT)
 chfn_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 chgpasswd_SOURCES = chgpasswd.c
 chgpasswd_OBJECTS = chgpasswd.$(OBJEXT)
-chgpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+@ACCT_TOOLS_SETUID_TRUE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1)
+chgpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 chpasswd_SOURCES = chpasswd.c
@@ -194,7 +193,7 @@ chsh_SOURCES = chsh.c
 chsh_OBJECTS = chsh.$(OBJEXT)
 chsh_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 expiry_SOURCES = expiry.c
 expiry_OBJECTS = expiry.$(OBJEXT)
@@ -210,20 +209,20 @@ free_subid_range_OBJECTS =  \
 @ENABLE_SUBIDS_TRUE@free_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 get_subid_owners_SOURCES = get_subid_owners.c
 get_subid_owners_OBJECTS =  \
 	get_subid_owners-get_subid_owners.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@get_subid_owners_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 getsubids_SOURCES = getsubids.c
 getsubids_OBJECTS = getsubids-getsubids.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@getsubids_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 gpasswd_SOURCES = gpasswd.c
 gpasswd_OBJECTS = gpasswd.$(OBJEXT)
 gpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -231,12 +230,12 @@ gpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupadd_SOURCES = groupadd.c
 groupadd_OBJECTS = groupadd.$(OBJEXT)
-groupadd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupadd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupdel_SOURCES = groupdel.c
 groupdel_OBJECTS = groupdel.$(OBJEXT)
-groupdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupmems_SOURCES = groupmems.c
@@ -246,7 +245,7 @@ groupmems_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupmod_SOURCES = groupmod.c
 groupmod_OBJECTS = groupmod.$(OBJEXT)
-groupmod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupmod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 grpck_SOURCES = grpck.c
@@ -268,7 +267,7 @@ lastlog_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 am_login_OBJECTS = login.$(OBJEXT) login_nopam.$(OBJEXT)
 login_OBJECTS = $(am_login_OBJECTS)
 login_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 logoutd_SOURCES = logoutd.c
@@ -281,7 +280,7 @@ new_subid_range_OBJECTS = new_subid_range-new_subid_range.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@new_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 newgidmap_SOURCES = newgidmap.c
 newgidmap_OBJECTS = newgidmap.$(OBJEXT)
 newgidmap_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -306,7 +305,7 @@ passwd_SOURCES = passwd.c
 passwd_OBJECTS = passwd.$(OBJEXT)
 passwd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1)
 pwck_SOURCES = pwck.c
 pwck_OBJECTS = pwck.$(OBJEXT)
 pwck_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -322,7 +321,7 @@ pwunconv_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 am_su_OBJECTS = su.$(OBJEXT) suauth.$(OBJEXT)
 su_OBJECTS = $(am_su_OBJECTS)
 su_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 sulogin_SOURCES = sulogin.c
@@ -331,18 +330,18 @@ sulogin_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 useradd_SOURCES = useradd.c
 useradd_OBJECTS = useradd.$(OBJEXT)
-useradd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+useradd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 userdel_SOURCES = userdel.c
 userdel_OBJECTS = userdel.$(OBJEXT)
-userdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+userdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 usermod_SOURCES = usermod.c
 usermod_OBJECTS = usermod.$(OBJEXT)
-usermod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+usermod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -651,7 +650,7 @@ LDADD = $(INTLLIBS) \
 @ACCT_TOOLS_SETUID_TRUE@LIBPAM_SUID = $(LIBPAM)
 @USE_PAM_FALSE@LIBCRYPT_NOPAM = $(LIBCRYPT)
 @USE_PAM_TRUE@LIBCRYPT_NOPAM = 
-chage_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
+chage_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 newuidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 newgidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 chfn_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)

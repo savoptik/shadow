@@ -34,6 +34,7 @@
 #include "defines.h"
 #include "getdef.h"
 #include "chkname.h"
+#include "string/ctype/strisascii/strisdigit.h"
 #include "string/strcmp/streq.h"
 #include "prototypes.h"
 #include "pwio.h"
@@ -167,7 +168,7 @@ is_valid_name(const char *name)
 		      ( ('0' <= *name) && ('9' >= *name) ) ||
 		      ('_' == *name) ||
 		      ('-' == *name) ||
-		      ( ('$' == *name) && ('\0' == *(name + 1)) )
+		      streq(name, "$")
 		     ))
 		{
 			errno = EINVAL;

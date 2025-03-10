@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow-man-pages 4.16.0\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-01-11 09:35-0600\n"
+"POT-Creation-Date: 2025-02-24 08:18-0600\n"
 "PO-Revision-Date: 2024-07-06 15:36+0200\n"
 "Last-Translator: bubu <bubub@no-log.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -36,9 +36,6 @@ msgstr ""
 #, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Attention : groupe inconnu %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Attention : trop de groupes\n"
 
 msgid "Your password has expired."
 msgstr "Votre mot de passe a expiré."
@@ -790,14 +787,6 @@ msgid "%s: Permission denied.\n"
 msgstr "%s : Permission refusée.\n"
 
 #, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s : Impossible de déterminer votre nom utilisateur.\n"
-
-#, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s : PAM : %s\n"
-
-#, c-format
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s : impossible de vérouiller %s ; réessayer plus tard.\n"
 
@@ -889,6 +878,14 @@ msgstr "Autre"
 #, c-format
 msgid "%s: fields too long\n"
 msgstr "%s : champs trop longs\n"
+
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s : Impossible de déterminer votre nom utilisateur.\n"
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s : PAM : %s\n"
 
 msgid "Cannot change ID to root.\n"
 msgstr "Impossible de changer l'IDentifiant à root.\n"
@@ -988,24 +985,28 @@ msgstr "%s : les drapeaux -c, -e et -m sont mutuellement exclusifs\n"
 msgid "%s: unsupported crypt method: %s\n"
 msgstr "%s : la méthode de chiffrement n'est pas prise en charge : %s\n"
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s : ligne %d : ligne trop longue\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s : ligne %d : il manque le nouveau mot de passe\n"
 
 #, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s : le chiffrement du mot de passe avec le bon '%s' a échoué : %s\n"
 
-#, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s : ligne : %d : le groupe '%s' n'existe pas\n"
 
-#, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr ""
 "%s : ligne %d : la préparation de la nouvelle %s entrée '%s' a échoué\n"
 
@@ -1013,12 +1014,14 @@ msgstr ""
 msgid "%s: error detected, changes ignored\n"
 msgstr "%s : erreur détectée, changements ignorés\n"
 
-#, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+#, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s : (ligne %d, utilisateur %s) mot de passe inchangé\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s : ligne %d : l'utilisateur '%s' n'existe pas\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -1836,9 +1839,6 @@ msgstr "%s : '%s' n'est pas un nom de groupe valable\n"
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s : le GID '%lu' n'existe pas\n"
 
-msgid "too many groups\n"
-msgstr "trop de groupes\n"
-
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s : gamme d'uid [%lu-%lu) -> [%lu-%lu) non autorisés\n"
@@ -1884,8 +1884,9 @@ msgstr "%s : IDentification d'utilisateur '%s' non valable\n"
 msgid "%s: Provide '--crypt-method' before number of rounds\n"
 msgstr "%s: Fournir '--crypt-method' avant le nombre de tours\n"
 
-#, c-format
-msgid "%s: line %d: invalid line\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s : ligne %d : ligne non valable\n"
 
 #, c-format
@@ -1894,42 +1895,51 @@ msgstr ""
 "%s : impossible de mettre à jour l'entrée pour l'utilisateur %s (n'est pas "
 "dans la base de données passwd)\n"
 
-#, c-format
-msgid "%s: line %d: can't create user\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s : ligne %d : impossible de créer l'utilisateur\n"
 
-#, c-format
-msgid "%s: line %d: can't create group\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s : ligne %d : impossible de créer le groupe\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s : ligne %d : l'utilisateur '%s' n'existe pas dans %s\n"
 
-#, c-format
-msgid "%s: line %d: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: %s\n"
+msgid "%s: line %jd: %s\n"
 msgstr "%s : ligne : %d : %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr ""
 "%s : ligne %d : impossible de mettre à jour le fichier des mots de passe - "
 "password -\n"
 
-#, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s : ligne %d : homedir doit être un chemin absolu\n"
 
-#, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s : ligne %d : échec mkdir %s : %s\n"
 
-#, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s : ligne %d : échec de chown %s : %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s : ligne %d : impossible de mettre à jour l'entrée\n"
 
 #, c-format
@@ -3265,6 +3275,9 @@ msgstr ""
 "%s : impossible de trouver le répertoire tcb pour %s\n"
 "\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Attention : trop de groupes\n"
+
 #, c-format
 #~ msgid "%s: Suspiciously long symlink: %s\n"
 #~ msgstr "%s : Lien symbolique suspicieusement long : %s\n"
@@ -3278,6 +3291,9 @@ msgstr ""
 
 #~ msgid " groups="
 #~ msgstr " groupes ="
+
+#~ msgid "too many groups\n"
+#~ msgstr "trop de groupes\n"
 
 #~ msgid "Environment overflow\n"
 #~ msgstr "Débordement de l'environnement\n"

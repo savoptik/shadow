@@ -68,6 +68,7 @@
 #include "string/memset/memzero.h"
 #include "string/sprintf/snprintf.h"
 #include "string/sprintf/xasprintf.h"
+#include "string/strcmp/strcaseeq.h"
 #include "string/strcmp/streq.h"
 #include "string/strdup/xstrdup.h"
 #include "string/strtok/stpsep.h"
@@ -203,6 +204,7 @@ static bool tcb_added = false;
 #define E_SUB_UID_UPDATE 16	/* can't update the subordinate uid file */
 #define E_SUB_GID_UPDATE 18	/* can't update the subordinate gid file */
 #endif				/* ENABLE_SUBIDS */
+#define E_BAD_NAME	19	/* Bad login name */
 
 #define DGROUP			"GROUP"
 #define DGROUPS			"GROUPS"
@@ -765,7 +767,7 @@ err_free_new:
 static int get_groups (char *list)
 {
 	struct group *grp;
-	int errors = 0;
+	bool errors = false;
 	int ngroups = 0;
 
 	/*
@@ -815,7 +817,7 @@ static int get_groups (char *list)
 			fprintf (stderr,
 			         _("%s: group '%s' does not exist\n"),
 			         Prog, g);
-			errors++;
+			errors = true;
 		}
 
 		/*
@@ -849,7 +851,7 @@ static int get_groups (char *list)
 	/*
 	 * Any errors in finding group names are fatal
 	 */
-	if (0 != errors) {
+	if (errors) {
 		return -1;
 	}
 
@@ -1104,11 +1106,11 @@ static void grp_update (void)
 		 *        user_groups. All these groups should be checked
 		 *        for existence with gr_locate already.
 		 */
-		if (gr_locate (sgrp->sg_name) == NULL) {
+		if (gr_locate (sgrp->sg_namp) == NULL) {
 			continue;
 		}
 
-		if (!is_on_list (user_groups, sgrp->sg_name)) {
+		if (!is_on_list (user_groups, sgrp->sg_namp)) {
 			continue;
 		}
 
@@ -1139,7 +1141,7 @@ static void grp_update (void)
 		if (sgr_update (nsgrp) == 0) {
 			fprintf (stderr,
 			         _("%s: failed to prepare the new %s entry '%s'\n"),
-			         Prog, sgr_dbname (), nsgrp->sg_name);
+			         Prog, sgr_dbname (), nsgrp->sg_namp);
 			SYSLOG ((LOG_ERR, "failed to prepare the new %s entry '%s'", sgr_dbname (), user_name));
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_ADD_USER, Prog,
@@ -1157,7 +1159,7 @@ static void grp_update (void)
 #endif
 		SYSLOG ((LOG_INFO,
 		         "add '%s' to shadow group '%s'",
-		         user_name, nsgrp->sg_name));
+		         user_name, nsgrp->sg_namp));
 	}
 #endif				/* SHADOWGRP */
 }
@@ -1558,7 +1560,7 @@ static void process_flags (int argc, char **argv)
 			              user_name, AUDIT_NO_ID,
 			              SHADOW_AUDIT_FAILURE);
 #endif
-			exit (E_BAD_ARG);
+			exit (E_BAD_NAME);
 		}
 		if (!dflg) {
 			char  *uh;
@@ -1922,7 +1924,7 @@ static void new_grent (struct group *grent)
 static void new_sgent (struct sgrp *sgent)
 {
 	memzero (sgent, sizeof *sgent);
-	sgent->sg_name = (char *) user_name;
+	sgent->sg_namp = (char *) user_name;
 	sgent->sg_passwd = "!";	/* XXX warning: const */
 	sgent->sg_adm = &empty_list;
 	sgent->sg_mem = &empty_list;
@@ -1974,7 +1976,7 @@ static void grp_add (void)
 	if (is_shadow_grp && (sgr_update (&sgrp) == 0)) {
 		fprintf (stderr,
 		         _("%s: failed to prepare the new %s entry '%s'\n"),
-		         Prog, sgr_dbname (), sgrp.sg_name);
+		         Prog, sgr_dbname (), sgrp.sg_namp);
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ADD_GROUP, Prog,
 		              "adding group",
@@ -2268,9 +2270,9 @@ static void create_home (void)
 	 */
 	for (cp = strtok(bhome, "/"); cp != NULL; cp = strtok(NULL, "/")) {
 		/* Avoid turning a relative path into an absolute path. */
-		if (bhome[0] == '/' || strlen(path) != 0) {
+		if (bhome[0] == '/' || !streq(path, ""))
 			strcat(path, "/");
-		}
+
 		strcat(path, cp);
 		if (access(path, F_OK) == 0) {
 			continue;
@@ -2379,7 +2381,7 @@ static void create_mail (void)
 
 	private = strcasecmp (create_mail_spool, "private") == 0;
 
-	if ((strcasecmp(create_mail_spool, "yes") != 0) && !private)
+	if (!strcaseeq(create_mail_spool, "yes") && !private)
 		return;
 
 	spool = getdef_str("MAIL_DIR");
