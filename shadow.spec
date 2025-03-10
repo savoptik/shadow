@@ -12,7 +12,7 @@ Source0: %url/%name-%version.tar
 Source1: login.defs
 Source2: useradd.default
 Source3: user-group-mod.pamd
-Source4: chage-chfn-chsh.pamd
+Source4: chfn-chsh.pamd
 Source5: chpasswd-newusers.pamd
 Source6: chage.control
 Source7: chfn.control
@@ -262,10 +262,9 @@ ln -s user-group-mod groupmod
 ln -s user-group-mod useradd
 ln -s user-group-mod userdel
 ln -s user-group-mod usermod
-install -pm640 %_sourcedir/chage-chfn-chsh.pamd chage-chfn-chsh
-ln -s chage-chfn-chsh chage
-ln -s chage-chfn-chsh chfn
-ln -s chage-chfn-chsh chsh
+install -pm640 %_sourcedir/chfn-chsh.pamd chfn-chsh
+ln -s chfn-chsh chfn
+ln -s chfn-chsh chsh
 install -pm600 %_sourcedir/chpasswd-newusers.pamd chpasswd-newusers
 ln -s chpasswd-newusers chpasswd
 ln -s chpasswd-newusers newusers
@@ -395,8 +394,7 @@ rm -f %save_login_defs_file
 %config %_controldir/chfn
 %config %_controldir/chsh
 %if_with pam
-%attr(640,root,shadow) %config(noreplace) %_sysconfdir/pam.d/chage-chfn-chsh
-%_sysconfdir/pam.d/chage
+%attr(640,root,shadow) %config(noreplace) %_sysconfdir/pam.d/chfn-chsh
 %_sysconfdir/pam.d/chfn
 %_sysconfdir/pam.d/chsh
 %endif
