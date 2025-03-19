@@ -466,8 +466,5 @@
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
 
-/* Path for utmp file. */
-#undef _UTMP_FILE
-
 /* Path for wtmp file. */
 #undef _WTMP_FILE
