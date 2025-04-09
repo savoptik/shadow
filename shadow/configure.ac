@@ -4,7 +4,7 @@ m4_define([libsubid_abi_major], 5)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.17.3], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.17.4], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects tar-pax])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -90,18 +90,6 @@ if test $shadow_cv_mailfile != none; then
 		[Name of user's mail spool file if stored in user's home directory.])
 fi
 
-AC_CACHE_CHECK([location of utmp], shadow_cv_utmpdir,
-[for shadow_cv_utmpdir in /var/run /var/adm /usr/adm /etc none; do
-	if test -f $shadow_cv_utmpdir/utmp; then
-		break
-	fi
-done])
-if test "$shadow_cv_utmpdir" = "none"; then
-	AC_MSG_WARN(utmp file not found)
-fi
-AC_DEFINE_UNQUOTED(_UTMP_FILE, "$shadow_cv_utmpdir/utmp",
-	[Path for utmp file.])
-
 AC_CACHE_CHECK([location of faillog/lastlog/wtmp], shadow_cv_logdir,
 [for shadow_cv_logdir in /var/log /var/adm /usr/adm /etc; do
 	if test -d $shadow_cv_logdir; then
@@ -115,7 +103,7 @@ AC_DEFINE_UNQUOTED(LASTLOG_FILE, "$shadow_cv_logdir/lastlog",
 AC_DEFINE_UNQUOTED(FAILLOG_FILE, "$shadow_cv_logdir/faillog",
 	[Path for faillog file.])
 
-AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "/usr/bin/passwd",
+AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "$exec_prefix/bin/passwd",
 	[Path to passwd program.])
 
 AC_ARG_ENABLE(shadowgrp,

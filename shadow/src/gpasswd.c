@@ -384,20 +384,14 @@ static void open_files (void)
 
 static void log_gpasswd_failure (const char *suffix)
 {
-#ifdef WITH_AUDIT
-	char  buf[1024];
-#endif
-
 	if (aflg) {
 		SYSLOG ((LOG_ERR,
 		         "%s failed to add user %s to group %s%s",
 		         myname, user, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "%s failed to add user %s to group %s%s",
-		         myname, user, group, suffix);
-		audit_logger (AUDIT_USER_ACCT, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "add-user-to-group",
+		              user, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_FAILURE);
 #endif
 	} else if (dflg) {
@@ -405,11 +399,9 @@ static void log_gpasswd_failure (const char *suffix)
 		         "%s failed to remove user %s from group %s%s",
 		         myname, user, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "%s failed to remove user %s from group %s%s",
-		         myname, user, group, suffix);
-		audit_logger (AUDIT_USER_ACCT, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "delete-user-from-group",
+		              user, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_FAILURE);
 #endif
 	} else if (rflg) {
@@ -417,11 +409,9 @@ static void log_gpasswd_failure (const char *suffix)
 		         "%s failed to remove password of group %s%s",
 		         myname, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "%s failed to remove password of group %s%s",
-		         myname, group, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_CHAUTHTOK,
+		              "delete-group-password",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_FAILURE);
 #endif
 	} else if (Rflg) {
@@ -429,11 +419,9 @@ static void log_gpasswd_failure (const char *suffix)
 		         "%s failed to restrict access to group %s%s",
 		         myname, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "%s failed to restrict access to group %s%s",
-		         myname, group, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_MGMT,
+		              "restrict-group",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_FAILURE);
 #endif
 	} else if (Aflg || Mflg) {
@@ -443,11 +431,9 @@ static void log_gpasswd_failure (const char *suffix)
 			         "%s failed to set the administrators of group %s to %s%s",
 			         myname, group, admins, suffix));
 #ifdef WITH_AUDIT
-			SNPRINTF(buf, "%s failed to set the administrators of group %s to %s%s",
-			         myname, group, admins, suffix);
-			audit_logger (AUDIT_USER_ACCT, Prog,
-			              buf,
-			              group, AUDIT_NO_ID,
+			audit_logger_with_group (AUDIT_GRP_MGMT,
+			              "set-admins-of-group",
+			              admins, AUDIT_NO_ID, "grp", group,
 			              SHADOW_AUDIT_FAILURE);
 #endif
 		}
@@ -457,11 +443,9 @@ static void log_gpasswd_failure (const char *suffix)
 			         "%s failed to set the members of group %s to %s%s",
 			         myname, group, members, suffix));
 #ifdef WITH_AUDIT
-			SNPRINTF(buf, "%s failed to set the members of group %s to %s%s",
-			         myname, group, members, suffix);
-			audit_logger (AUDIT_USER_ACCT, Prog,
-			              buf,
-			              group, AUDIT_NO_ID,
+			audit_logger_with_group (AUDIT_USER_MGMT,
+			              "add-users-to-group",
+			              members, AUDIT_NO_ID, "grp", group,
 			              SHADOW_AUDIT_FAILURE);
 #endif
 		}
@@ -470,11 +454,9 @@ static void log_gpasswd_failure (const char *suffix)
 		         "%s failed to change password of group %s%s",
 		         myname, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "%s failed to change password of group %s%s",
-		         myname, group, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_CHAUTHTOK,
+		              "change-password",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_FAILURE);
 #endif
 	}
@@ -514,11 +496,9 @@ static void log_gpasswd_success (const char *suffix)
 		         "user %s added by %s to group %s%s",
 		         user, myname, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "user %s added by %s to group %s%s",
-		         user, myname, group, suffix);
-		audit_logger (AUDIT_USER_ACCT, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "add-user-to-group",
+		              user, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_SUCCESS);
 #endif
 	} else if (dflg) {
@@ -526,11 +506,9 @@ static void log_gpasswd_success (const char *suffix)
 		         "user %s removed by %s from group %s%s",
 		         user, myname, group, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "user %s removed by %s from group %s%s",
-		         user, myname, group, suffix);
-		audit_logger (AUDIT_USER_ACCT, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "delete-user-from-group",
+		              user, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_SUCCESS);
 #endif
 	} else if (rflg) {
@@ -540,9 +518,9 @@ static void log_gpasswd_success (const char *suffix)
 #ifdef WITH_AUDIT
 		SNPRINTF(buf, "password of group %s removed by %s%s",
 		         group, myname, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_CHAUTHTOK,
+		              "delete-group-password",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_SUCCESS);
 #endif
 	} else if (Rflg) {
@@ -552,9 +530,9 @@ static void log_gpasswd_success (const char *suffix)
 #ifdef WITH_AUDIT
 		SNPRINTF(buf, "access to group %s restricted by %s%s",
 		         group, myname, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_MGMT,
+		              "restrict-group",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_SUCCESS);
 #endif
 	} else if (Aflg || Mflg) {
@@ -564,11 +542,9 @@ static void log_gpasswd_success (const char *suffix)
 			         "administrators of group %s set by %s to %s%s",
 			         group, myname, admins, suffix));
 #ifdef WITH_AUDIT
-			SNPRINTF(buf, "administrators of group %s set by %s to %s%s",
-			         group, myname, admins, suffix);
-			audit_logger (AUDIT_USER_ACCT, Prog,
-			              buf,
-			              group, AUDIT_NO_ID,
+			audit_logger_with_group (AUDIT_GRP_MGMT,
+			              "set-admins-of-group",
+			              admins, AUDIT_NO_ID, "grp", group,
 			              SHADOW_AUDIT_SUCCESS);
 #endif
 		}
@@ -578,11 +554,9 @@ static void log_gpasswd_success (const char *suffix)
 			         "members of group %s set by %s to %s%s",
 			         group, myname, members, suffix));
 #ifdef WITH_AUDIT
-			SNPRINTF(buf, "members of group %s set by %s to %s%s",
-			         group, myname, members, suffix);
-			audit_logger (AUDIT_USER_ACCT, Prog,
-			              buf,
-			              group, AUDIT_NO_ID,
+			audit_logger_with_group (AUDIT_USER_MGMT,
+			              "add-users-to-group",
+			              members, AUDIT_NO_ID, "grp", group,
 			              SHADOW_AUDIT_SUCCESS);
 #endif
 		}
@@ -591,11 +565,9 @@ static void log_gpasswd_success (const char *suffix)
 		         "password of group %s changed by %s%s",
 		         group, myname, suffix));
 #ifdef WITH_AUDIT
-		SNPRINTF(buf, "password of group %s changed by %s%s",
-		         group, myname, suffix);
-		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
-		              buf,
-		              group, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_GRP_CHAUTHTOK,
+		              "change-password",
+		              myname, AUDIT_NO_ID, "grp", group,
 		              SHADOW_AUDIT_SUCCESS);
 #endif
 	}
