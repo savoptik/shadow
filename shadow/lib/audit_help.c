@@ -115,8 +115,12 @@ audit_logger_with_group(int type, const char *op, const char *name,
 		SNPRINTF(buf, "%s %s=\"%s\"", op, grp_type, grp);
 	}
 
+/* We don't care if audit_log_acct_message() returns an error here */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 	audit_log_acct_message(audit_fd, type, NULL, buf, name, id,
 		               NULL, NULL, NULL, result);
+#pragma GCC diagnostic pop
 }
 
 void audit_logger_message (const char *message, shadow_audit_result result)
