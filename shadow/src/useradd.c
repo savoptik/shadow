@@ -2601,12 +2601,6 @@ int main (int argc, char **argv)
 	 */
 	if (get_name_regexp () && !is_uniq_user (user_name)) {
 		fprintf (stderr, _("%s: user name %s is not unique\n"), Prog, user_name);
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_ADD_USER, Prog,
-		              "adding user",
-		              user_name, AUDIT_NO_ID,
-		              SHADOW_AUDIT_FAILURE);
-#endif
 		fail_exit (E_NAME_IN_USE);
 	}
 
@@ -2640,12 +2634,6 @@ int main (int argc, char **argv)
 		 */
 		if (get_name_regexp () && !is_uniq_group (user_name)) {
 			fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, user_name);
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-						  "adding user",
-						  user_name, AUDIT_NO_ID,
-						  SHADOW_AUDIT_FAILURE);
-#endif
 			fail_exit (E_NAME_IN_USE);
 		}
 
