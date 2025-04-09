@@ -638,13 +638,7 @@ int main (int argc, char **argv)
 	 */
 	if (get_name_regexp () && !is_uniq_group (group_name)) {
 		fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, group_name);
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_ADD_GROUP, Prog,
-					  "adding group",
-					  group_name, AUDIT_NO_ID,
-					  SHADOW_AUDIT_FAILURE);
-#endif
-		exit (E_NAME_IN_USE);
+		fail_exit (E_NAME_IN_USE);
 	}
 
 	grp_update ();
