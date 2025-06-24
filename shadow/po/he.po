@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2004-07-21 23:59+0300\n"
 "Last-Translator: Lior Kaplan <webmaster@guides.co.il>\n"
 "Language-Team: Hebrew <en@li.org>\n"
@@ -1558,7 +1558,7 @@ msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr "%s: שדות ארוכים מידי\n"
 
 #, fuzzy, c-format
-msgid "%s: Could not stat directory for process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
 msgstr "ספרית שורש לא חוקית \"%s\"\n"
 
 #, c-format
@@ -1602,10 +1602,6 @@ msgid ""
 "usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
 "<count> ] ... \n"
 msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not stat directory for target process\n"
-msgstr "ספרית שורש לא חוקית \"%s\"\n"
 
 msgid "  -b, --badname                 allow bad names\n"
 msgstr ""
@@ -2748,8 +2744,9 @@ msgstr "%s: שדות ארוכים מידי\n"
 msgid "failed to stat edited file"
 msgstr ""
 
-msgid "asprintf(3) failed"
-msgstr ""
+#, fuzzy
+msgid "aprintf() failed"
+msgstr "%s: שורה %d: לא יכול לעדכן רשומת סיסמה\n"
 
 msgid "failed to create backup file"
 msgstr ""
@@ -2778,6 +2775,10 @@ msgstr "ספרית שורש לא חוקית \"%s\"\n"
 
 #~ msgid "Usage: id [-a]\n"
 #~ msgstr "שימוש: id [-a]\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "ספרית שורש לא חוקית \"%s\"\n"
 
 #, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"

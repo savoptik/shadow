@@ -91,26 +91,17 @@
 /* Defined to 1 if you have the declaration of 'fgetpwent_r' */
 #undef HAVE_FGETPWENT_R
 
-/* Define to 1 if you have the `futimes' function. */
-#undef HAVE_FUTIMES
-
 /* Define to 1 if you have the `getentropy' function. */
 #undef HAVE_GETENTROPY
 
 /* Define to 1 if you have the `getrandom' function. */
 #undef HAVE_GETRANDOM
 
-/* Define to 1 if you have the `getspnam' function. */
-#undef HAVE_GETSPNAM
-
 /* Define to 1 if you have the `getspnam_r' function. */
 #undef HAVE_GETSPNAM_R
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
-
-/* Define to 1 if you have the `getusershell' function. */
-#undef HAVE_GETUSERSHELL
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV

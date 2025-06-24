@@ -26,8 +26,9 @@
 #include <pwd.h>
 #include "getdef.h"
 #include "shadowlog.h"
-#include "string/sprintf/xasprintf.h"
+#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
 #include "string/strdup/xstrdup.h"
 #include "string/strspn/stpspn.h"
 #include "string/strtok/stpsep.h"
@@ -39,7 +40,7 @@ addenv_path(const char *varname, const char *dirname, const char *filename)
 {
 	char  *buf;
 
-	xasprintf(&buf, "%s/%s", dirname, filename);
+	buf = xaprintf("%s/%s", dirname, filename);
 	addenv(varname, buf);
 	free(buf);
 }
@@ -61,7 +62,7 @@ static void read_env_file (const char *filename)
 		cp = buf;
 		/* ignore whitespace and comments */
 		cp = stpspn(cp, " \t");
-		if (streq(cp, "") || ('#' == *cp)) {
+		if (streq(cp, "") || strprefix(cp, "#")) {
 			continue;
 		}
 		/*
@@ -72,7 +73,7 @@ static void read_env_file (const char *filename)
 		val = stpsep(cp, "=");
 		if (val == NULL)
 			continue;
-		if (strpbrk(name, " \t") != NULL)
+		if (strpbrk(name, " \t"))
 			continue;
 #if 0				/* XXX untested, and needs rewrite with fewer goto's :-) */
 /*

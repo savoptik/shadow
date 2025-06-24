@@ -163,7 +163,7 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
-DIST_SUBDIRS = lib libsubid src po contrib doc etc tests/unit man
+DIST_SUBDIRS = lib libsubid src po doc etc tests/unit man
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/man/po/Makefile.in ABOUT-NLS AUTHORS.md COPYING \
 	ChangeLog NEWS README compile config.guess config.rpath \
@@ -243,6 +243,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -333,8 +334,6 @@ XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMLCATALOG = @XMLCATALOG@
 XML_CATALOG_FILE = @XML_CATALOG_FILE@
 XSLTPROC = @XSLTPROC@
-YACC = @YACC@
-YFLAGS = @YFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -389,7 +388,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib $(am__append_1) src po contrib doc etc tests/unit \
+SUBDIRS = lib $(am__append_1) src po doc etc tests/unit \
 	$(am__append_2)
 CLEANFILES = man/8.out man/po/remove-potcdate.* man/*/login.defs.d man/*/*.mo
 EXTRA_DIST = NEWS README tests/

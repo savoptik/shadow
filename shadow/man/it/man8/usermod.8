@@ -2,12 +2,12 @@
 .\"     Title: usermod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 19/03/2025
+.\"      Date: 24/06/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: Italian
 .\"
-.TH "USERMOD" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
+.TH "USERMOD" "8" "24/06/2025" "shadow\-utils 4\&.18\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -74,29 +74,30 @@ option is given, the contents of the current home directory will be moved to the
 .PP
 \fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
-The date on which the user account will be disabled\&. The date is specified in the format
-\fIYYYY\-MM\-DD\fR\&. Integers as input are interpreted as days after 1970\-01\-01\&.
+Specifies the date on which the user account will be disabled\&. The value can be specified as a date in the YYYY\-MM\-DD format or as a number of days since 1970\-01\-01\&. The date is interpreted using the UTC timezone\&.
 .sp
-An input of \-1 or an empty string will blank the account expiration field in the shadow password file\&. The account will remain available with no date limit\&.
+An input of \-1 or an empty string blanks the account expiration field in the shadow password file\&. The account will remain available with no expiration date\&.
 .sp
-This option requires a
+This option requires the
 /etc/shadow
-file\&. A
+file\&. If no entry exists in the
 /etc/shadow
-entry will be created if there were none\&.
+file, the system will automatically create one\&.
 .RE
 .PP
 \fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-defines the number of days after the password exceeded its maximum age during which the user may still login by immediately replacing the password\&. This grace period before the account becomes inactive is stored in the shadow password file\&. An input of 0 will disable an expired password with no delay\&. An input of \-1 will blank the respective field in the shadow password file\&. See
-\fBshadow\fR(5)
-for more information\&.
+Defines the number of days after a password exceeds its maximum age during which the user can still log in by immediately changing their password\&. If the user does not change their password within this period of time, their account becomes inactive\&. This value is stored in the shadow password file\&.
 .sp
-This option requires a
+A value of 0 disables the account when the password expires, with no delay\&.
+.sp
+A value of \-1 empties the respective field in the shadow password file, which means that the inactivity period is not enforced\&.
+.sp
+This option requires the
 /etc/shadow
-file\&. A
+file\&. If no entry exist in the
 /etc/shadow
-entry will be created if there were none\&.
+file, the system will automatically create one\&.
 .RE
 .PP
 \fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
@@ -199,7 +200,7 @@ and use as well the configuration files located there\&. This option does not ch
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
-changes the user\*(Aqs login shell\&. An empty string for SHELL blanks the field in
+changes the user\*(Aqs login shell\&. An empty string for SHELL empties the field in
 /etc/passwd
 and logs the user into the system\*(Aqs default shell\&.
 .RE

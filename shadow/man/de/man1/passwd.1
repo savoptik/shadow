@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 19.03.2025
+.\"      Date: 24.06.2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: German
 .\"
-.TH "PASSWD" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
+.TH "PASSWD" "1" "24.06.2025" "shadow\-utils 4\&.18\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,30 +36,30 @@ passwd \- \(:andert das Passwort eines Benutzers
 .PP
 The
 \fBpasswd\fR
-command changes passwords for user accounts\&. A normal user may only change the password for their own account, while the superuser may change the password for any account\&.
+command changes passwords for user accounts\&. A regular user can only change the password for their own account, while the superuser can change the password for any account\&. The
 \fBpasswd\fR
 also changes the account or associated password validity period\&.
 .SS "Ver\(:andern des Passworts"
 .PP
-Der Benutzer wird zuerst nach seinem alten Passwort gefragt, falls eines vorhanden ist\&. Dieses Passwort wird dann verschl\(:usselt und mit dem gespeicherten Passwort verglichen\&. Der Benutzer hat nur eine Gelegenheit, das richtige Passwort einzugeben\&. Der Systemadministrator kann diesen Schritt \(:uberspringen, um so vergessene Passw\(:orter zu \(:andern\&.
+If the account has a non\-empty password, the user is first prompted to enter their current password\&. The entered password is encrypted and compared to the stored value\&. The user has only one attempt to enter the correct password\&. The superuser can bypass this step to allow changing forgotten passwords\&.
 .PP
-After the password has been entered, password aging information is checked to see if the user is permitted to change the password at this time\&. If not,
+After the password has been entered, password aging information is checked to determine if the user is permitted to change the password at this time\&. If not,
 \fBpasswd\fR
 refuses to change the password and exits\&.
 .PP
-Der Benutzer wird dann aufgefordert, zweimal ein neues Passwort einzugeben\&. Beide Eingaben werden miteinander verglichen\&. Sie m\(:ussen \(:ubereinstimmen, damit das Passwort ge\(:andert wird\&.
+The user is then prompted twice for a replacement password\&. The second entry is compared against the first and both are required to match for the password to be changed\&.
 .PP
 Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
+rejects passwords that do not meet the complexity requirements\&. Do not include the system default erase or kill characters\&.
 .SS "Hinweise zu Benutzerpassw\(:ortern"
 .PP
-The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
+The security of a password depends on the strength of the encryption algorithm and the size of the key space\&. The legacy
 \fIUNIX\fR
 System encryption method is based on the NBS DES algorithm\&. More recent methods are now recommended (see
-\fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
+\fBENCRYPT_METHOD\fR)\&. The size of the key space depends on the randomness of the selected password\&.
 .PP
-Die unbedachte Auswahl von oder der sorglose Umgang mit ihnen macht Passw\(:orter unsicher\&. Daher sollten Sie kein Passwort w\(:ahlen, das in einem W\(:orterbuch auftaucht oder das aufgeschrieben werden muss\&. Das Passwort sollte zudem weder ein echter Name, noch Ihr Autokennzeichen, Geburtstag oder Ihre Adresse sein\&. All dies kann versuchsweise f\(:ur Angriffe auf das System benutzt werden\&.
+Compromises in password security normally result from careless password selection or handling\&. For this reason, you should not select a password which appears in a dictionary or one that must be written down\&. The password should also not be a proper name, your license number, birth date, or street address\&. Any of these may be used as guesses to violate system security\&.
 .PP
 As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
 .PP
@@ -79,7 +79,7 @@ and causes show status for all users\&.
 .PP
 \fB\-d\fR, \fB\-\-delete\fR
 .RS 4
-l\(:oscht das Passwort eines Benutzers (macht es leer)\&. Dies ist ein schneller Weg, um das Passwort eines Kontos zu deaktivieren\&. Dem Konto ist dann kein Passwort zugeordnet\&.
+Deletes a user\*(Aqs password, making it empty\&. This command sets the account to be passwordless\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-expire\fR
@@ -110,7 +110,7 @@ sperrt das Passwort des bezeichneten Kontos\&. Die Option schaltet ein Passwort 
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to 1970\-01\-02)\&.
 .sp
 Benutzer mit einem gesperrten Passwort k\(:onnen dieses nicht \(:andern\&.
 .RE
@@ -164,7 +164,7 @@ option)\&.
 .RS 4
 Set the number of days of warning before a password change is required\&. The
 \fIWARN_DAYS\fR
-option is the number of days prior to the password expiring that a user will be warned that their password is about to expire\&.
+option is the number of days prior to password expiration during which the user is warned that their password is about to expire\&.
 .RE
 .PP
 \fB\-x\fR, \fB\-\-maxdays\fR\ \&\fIMAX_DAYS\fR
@@ -251,6 +251,12 @@ file busy, try again
 \fI6\fR
 .RS 4
 invalid argument to option
+.RE
+.PP
+\fI10\fR
+.RS 4
+an error was returned by
+pam(3)
 .RE
 .SH "SIEHE AUCH"
 .PP

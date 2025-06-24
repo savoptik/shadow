@@ -2,12 +2,12 @@
 .\"     Title: chfn
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 19.03.2025
+.\"      Date: 24.06.2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: German
 .\"
-.TH "CHFN" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
+.TH "CHFN" "1" "24.06.2025" "shadow\-utils 4\&.18\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-chfn \- \(:andert den vollst\(:andigen Namen und sonstige Informationen zum Benutzer
+chfn \- change full user name and information
 .SH "\(:UBERSICHT"
 .HP \w'\fBchfn\fR\ 'u
 \fBchfn\fR [\fIoptions\fR] [\fILOGIN\fR]
@@ -36,7 +36,8 @@ chfn \- \(:andert den vollst\(:andigen Namen und sonstige Informationen zum Benu
 .PP
 The
 \fBchfn\fR
-command changes user fullname, office room number, office phone number, and home phone number information for a user\*(Aqs account\&. This information is typically printed by
+command changes the user\*(Aqs full name, office room number, office phone number, and home phone number information for an account in the respective fields of
+/etc/passwd\&. This information is typically printed by
 \fBfinger\fR(1)
 and similar programs\&. A normal user may only change the fields for her own account, subject to the restrictions in
 /etc/login\&.defs\&. (The default configuration is to prevent users from changing their fullname\&.) The superuser may change any field for any account\&. Additionally, only the superuser may use the
@@ -48,6 +49,12 @@ These fields must not contain any colons\&. Except for the
 field, they should not contain any comma or equal sign\&. It is also recommended to avoid non\-US\-ASCII characters, but this is only enforced for the phone numbers\&. The
 \fIother\fR
 field is used to store accounting information used by other applications\&.
+.PP
+If
+\fILOGIN\fR
+is not specified,
+\fBchfn\fR
+acts on the current user, and prompts for the current user\*(Aqs password\&.
 .SH "OPTIONEN"
 .PP
 The options which apply to the
@@ -80,7 +87,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&.
 .RE
 .PP
 \fB\-u\fR, \fB\-\-help\fR
@@ -93,13 +100,11 @@ zeigt die Hilfe an und beendet das Programm\&.
 \(:andert die berufliche Telefonnummer des Benutzers\&.
 .RE
 .PP
-If none of the options are selected,
+If none of the options is selected,
 \fBchfn\fR
 operates in an interactive fashion, prompting the user with the current values for all of the fields\&. Enter the new value to change the field, or leave the line blank to use the current value\&. The current value is displayed between a pair of
-\fB[ ]\fR
-marks\&. Without options,
-\fBchfn\fR
-prompts for the current user account\&.
+\fB []\fR
+marks\&.
 .SH "KONFIGURATION"
 .PP
 The following configuration variables in

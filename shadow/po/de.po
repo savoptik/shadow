@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.2-2\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2020-09-22 15:10+0200\n"
 "Last-Translator: Björn Esser <besser82@fedoraproject.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -1780,7 +1780,7 @@ msgstr "%s: Entsperren von %s fehlgeschlagen\n"
 
 #, fuzzy, c-format
 #| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
 msgstr "%s: Erstellen des tcb-Verzeichnisses für %s fehlgeschlagen\n"
 
 #, c-format
@@ -1824,11 +1824,6 @@ msgid ""
 "usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
 "<count> ] ... \n"
 msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for target process\n"
-msgstr "%s: Erstellen des tcb-Verzeichnisses für %s fehlgeschlagen\n"
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
@@ -3225,8 +3220,10 @@ msgstr "Löschen (unlink) der scratch-Datei fehlgeschlagen"
 msgid "failed to stat edited file"
 msgstr "stat-Abfrage der editierten Datei fehlgeschlagen"
 
-msgid "asprintf(3) failed"
-msgstr ""
+#, fuzzy
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "aprintf() failed"
+msgstr "%s: Zeile %d: chown %s (Eigentümer ändern) fehlgeschlagen: %s\n"
 
 msgid "failed to create backup file"
 msgstr "Erzeugen der Sicherungsdatei fehlgeschlagen"
@@ -3285,6 +3282,11 @@ msgstr "%s: tcb-Verzeichnis für %s konnte nicht gefunden werden\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r Rechner\n"
+
+#, fuzzy, c-format
+#~| msgid "%s: Failed to create tcb directory for %s\n"
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "%s: Erstellen des tcb-Verzeichnisses für %s fehlgeschlagen\n"
 
 #~ msgid "too many groups\n"
 #~ msgstr "zu viele Gruppen\n"
