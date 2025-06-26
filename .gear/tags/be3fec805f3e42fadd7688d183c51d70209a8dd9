@@ -1,0 +1,6 @@
+object 49fadc9ef86b7953897527cfdeed2e874805a15d
+type commit
+tag v4.18.0
+tagger Mikhail Efremov <sem@altlinux.org> 1750797610 +0300
+
+shadow 4.18.0
