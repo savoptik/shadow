@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow-man-pages 4.16.0\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2024-07-06 15:36+0200\n"
 "Last-Translator: bubu <bubub@no-log.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -1800,9 +1800,10 @@ msgstr ""
 "%s : Echec de la politique %s setgroups : %s\n"
 " \n"
 
-#, c-format
-msgid "%s: Could not stat directory for process\n"
-msgstr "%s : Impossible de statuer sur le répertoire du processus\n"
+#, fuzzy, c-format
+#| msgid "%s: Could not stat directory for target process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
+msgstr "%s : Impossible de statuer sur le répertoire du processus cible\n"
 
 #, c-format
 msgid ""
@@ -1850,10 +1851,6 @@ msgid ""
 msgstr ""
 "utilisation : %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> "
 "<loweruid> <count> ] ... \n"
-
-#, c-format
-msgid "%s: Could not stat directory for target process\n"
-msgstr "%s : Impossible de statuer sur le répertoire du processus cible\n"
 
 msgid "  -b, --badname                 allow bad names\n"
 msgstr "  -b, --badname                autoriser les mauvais noms\n"
@@ -3259,7 +3256,9 @@ msgstr "impossible de délier le fichier scratch"
 msgid "failed to stat edited file"
 msgstr "impossible de statuer sur le fichier édité"
 
-msgid "asprintf(3) failed"
+#, fuzzy
+#| msgid "asprintf(3) failed"
+msgid "aprintf() failed"
 msgstr "échec de asprintf(3) "
 
 msgid "failed to create backup file"
@@ -3291,6 +3290,10 @@ msgstr ""
 
 #~ msgid " groups="
 #~ msgstr " groupes ="
+
+#, c-format
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "%s : Impossible de statuer sur le répertoire du processus\n"
 
 #~ msgid "too many groups\n"
 #~ msgstr "trop de groupes\n"

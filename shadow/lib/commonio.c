@@ -35,8 +35,10 @@
 #include "shadowlog_internal.h"
 #include "sssd.h"
 #include "string/memset/memzero.h"
+#include "string/sprintf/aprintf.h"
 #include "string/sprintf/snprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
 #include "string/strtok/stpsep.h"
 
 
@@ -377,9 +379,12 @@ int commonio_lock_nowait (struct commonio_db *db, bool log)
 		return 1;
 	}
 
-	if (asprintf(&file, "%s.%ju", db->filename, (uintmax_t) getpid()) == -1)
+	file = aprintf("%s.%ju", db->filename, (uintmax_t) getpid());
+	if (file == NULL)
 		goto cleanup_ENOMEM;
-	if (asprintf(&lock, "%s.lock", db->filename) == -1)
+
+	lock = aprintf("%s.lock", db->filename);
+	if (lock == NULL)
 		goto cleanup_ENOMEM;
 
 	if (do_lock_file (file, lock, log) != 0) {
@@ -519,7 +524,7 @@ static void add_one_entry (struct commonio_db *db,
 
 static bool name_is_nis (const char *name)
 {
-	return (('+' == name[0]) || ('-' == name[0]));
+	return strprefix(name, "+") || strprefix(name, "-");
 }
 
 

@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 03/19/2025
+.\"      Date: 06/24/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: English
 .\"
-.TH "USERADD" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
+.TH "USERADD" "8" "06/24/2025" "shadow\-utils 4\&.18\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -93,11 +93,17 @@ as the value for the user\*(Aqs login directory\&. The default is to append the
 \fILOGIN\fR
 name to
 \fIBASE_DIR\fR
-and use that as the login directory name\&. If the directory
+and use that as the login directory name\&. The directory
 \fIHOME_DIR\fR
-does not exist, then it will be created unless the
+is not created by default\&. However it will be created for non\-system users if either the
+\fB\-m\fR
+flag is specifed or
+\fICREATE_HOME\fR
+in
+login\&.defs
+is set to true\&. However, it will never be created if the
 \fB\-M\fR
-option is specified\&.
+flag is specified\&.
 .RE
 .PP
 \fB\-D\fR, \fB\-\-defaults\fR
@@ -107,12 +113,11 @@ See below, the subsection "Changing the default values"\&.
 .PP
 \fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
-The date on which the user account will be disabled\&. The date is specified in the format
-\fIYYYY\-MM\-DD\fR\&.
+Sets the date on which the user account will be disabled\&. The value can be specified as a date in the YYYY\-MM\-DD format or as a number of days since 1970\-01\-01\&. The date is interpreted using the UTC timezone\&.
 .sp
 If not specified,
 \fBuseradd\fR
-will use the default expiry date specified by the
+uses the default expiry date specified by the
 \fBEXPIRE\fR
 variable in
 /etc/default/useradd, or an empty string (no expiry) by default\&.
@@ -120,15 +125,19 @@ variable in
 .PP
 \fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-defines the number of days after the password exceeded its maximum age where the user is expected to replace this password\&. The value is stored in the shadow password file\&. An input of 0 will disable an expired password with no delay\&. An input of \-1 will blank the respective field in the shadow password file\&. See
-\fBshadow\fR(5)for more information\&.
+Defines the number of days after a password exceeds its maximum age before the user account gets locked\&. If the user does not change their password within this period of time, their account becomes inactive\&. This value is stored in the shadow password file\&. For more information, see
+\fBshadow\fR(5)\&.
+.sp
+A value of 0 disables the account when the password expires, with no delay\&.
+.sp
+A value of \-1 empties the respective field in the shadow password file, which means that the inactivity period is not enforced\&.
 .sp
 If not specified,
 \fBuseradd\fR
-will use the default inactivity period specified by the
+uses the default inactivity period specified by the
 \fBINACTIVE\fR
 variable in
-/etc/default/useradd, or \-1 by default\&.
+/etc/default/useradd, or \-1 by default if no value is specified\&.
 .RE
 .PP
 \fB\-F\fR, \fB\-\-add\-subids\-for\-system\fR
@@ -442,8 +451,7 @@ variable in
 .PP
 \fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-defines the number of days after the password exceeded its maximum age where the user is expected to replace this password\&. See
-\fBshadow\fR(5)for more information\&.
+specifies the number of days after a password expires during which the user can still log in\&. After this period, the account is locked\&.
 .sp
 This option sets the
 \fBINACTIVE\fR

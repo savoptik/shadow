@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -1755,7 +1755,7 @@ msgstr "%s: gặp lỗi khi mở khóa %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
 msgstr "%s: Gặp lỗi khi tạo thư mục tcb cho %s\n"
 
 #, c-format
@@ -1803,11 +1803,6 @@ msgid ""
 "usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
 "<count> ] ... \n"
 msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for target process\n"
-msgstr "%s: Gặp lỗi khi tạo thư mục tcb cho %s\n"
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
@@ -3175,8 +3170,10 @@ msgstr "gặp lỗi khi bỏ liên kết tập tin hỗn tạp"
 msgid "failed to stat edited file"
 msgstr "gặp lỗi khi lấy thống kê tập tin đã sửa"
 
-msgid "asprintf(3) failed"
-msgstr ""
+#, fuzzy
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "aprintf() failed"
+msgstr "%s: dòng %d: lỗi chown (thay đổi quyền sở hữu) %s: %s\n"
 
 msgid "failed to create backup file"
 msgstr "không thể tạo tập tin sao lưu dự phòng"
@@ -3232,6 +3229,11 @@ msgstr "%s: gặp lỗi khi tìm thư mục tcb cho %s\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "       %s [-p] -r máy\n"
+
+#, fuzzy, c-format
+#~| msgid "%s: Failed to create tcb directory for %s\n"
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "%s: Gặp lỗi khi tạo thư mục tcb cho %s\n"
 
 #~ msgid "too many groups\n"
 #~ msgstr "quá nhiều nhóm\n"

@@ -11,21 +11,21 @@
 
 #ident "$Id$"
 
-#include <stdio.h>
-#include <sys/types.h>
 #include <grp.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include "alloc/malloc.h"
-#include "alloc/reallocf.h"
 #include "atoi/getnum.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "string/strcmp/streq.h"
 #include "string/strtok/stpsep.h"
+#include "string/strtok/strsep2arr.h"
+#include "string/strtok/astrsep2ls.h"
 
-
-#define	NFIELDS	4
 
 /*
  * list - turn a comma-separated string into an array of (char *)'s
@@ -40,69 +40,52 @@ static char **
 list(char *s)
 {
 	static char **members = NULL;
-	static size_t size = 0;	/* max members + 1 */
-	size_t i;
 
-	i = 0;
-	for (;;) {
-		/* check if there is room for another pointer (to a group
-		   member name, or terminating NULL).  */
-		if (i >= size) {
-			size = i + 100;	/* at least: i + 1 */
-			members = REALLOCF(members, size, char *);
-			if (!members) {
-				size = 0;
-				return NULL;
-			}
-		}
-		if (!s || streq(s, ""))
-			break;
-		members[i++] = strsep(&s, ",");
-	}
-	members[i] = NULL;
+	size_t  n;
+
+	free(members);
+
+	members = astrsep2ls(s, ",", &n);
+	if (members == NULL)
+		return NULL;
+
+	if (streq(members[n-1], ""))
+		members[n-1] = NULL;
+
 	return members;
 }
 
 
-struct group *sgetgrent (const char *buf)
+struct group *
+sgetgrent(const char *s)
 {
-	static char *grpbuf = NULL;
-	static size_t size = 0;
-	static char *grpfields[NFIELDS];
+	static char         *dup = NULL;
 	static struct group grent;
-	int i;
-	char *cp;
 
-	if (strlen (buf) + 1 > size) {
-		/* no need to use realloc() here - just free it and
-		   allocate a larger block */
-		free (grpbuf);
-		size = strlen (buf) + 1000;	/* at least: strlen(buf) + 1 */
-		grpbuf = MALLOC(size, char);
-		if (grpbuf == NULL) {
-			size = 0;
-			return NULL;
-		}
-	}
-	strcpy (grpbuf, buf);
-	stpsep(grpbuf, "\n");
+	char  *fields[4];
 
-	for (cp = grpbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++)
-		grpfields[i] = strsep(&cp, ":");
+	free(dup);
+	dup = strdup(s);
+	if (dup == NULL)
+		return NULL;
 
-	if (i < NFIELDS || streq(grpfields[2], "") || cp != NULL) {
+	stpsep(dup, "\n");
+
+	if (STRSEP2ARR(dup, ":", fields) == -1)
+		return NULL;
+
+	if (streq(fields[2], ""))
+		return NULL;
+
+	grent.gr_name = fields[0];
+	grent.gr_passwd = fields[1];
+	if (get_gid(fields[2], &grent.gr_gid) == -1) {
 		return NULL;
 	}
-	grent.gr_name = grpfields[0];
-	grent.gr_passwd = grpfields[1];
-	if (get_gid(grpfields[2], &grent.gr_gid) == -1) {
-		return NULL;
-	}
-	grent.gr_mem = list (grpfields[3]);
+	grent.gr_mem = list(fields[3]);
 	if (NULL == grent.gr_mem) {
 		return NULL;	/* out of memory */
 	}
 
 	return &grent;
 }
-

@@ -24,14 +24,16 @@
 
 #include "atoi/a2i/a2s.h"
 #include "atoi/a2i/a2u.h"
-#include "atoi/str2i/str2u.h"
+#include "atoi/str2i.h"
 #include "defines.h"
 #include "getdef.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
-#include "string/sprintf/xasprintf.h"
+#include "sizeof.h"
+#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/strcaseeq.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
 #include "string/strspn/stpspn.h"
 #include "string/strspn/stprspn.h"
 #include "string/strtok/stpsep.h"
@@ -76,12 +78,12 @@ struct itemdef {
 #define FOREIGNDEFS				\
 	{"ALWAYS_SET_PATH", NULL},		\
 	{"ENV_ROOTPATH", NULL},			\
+	{"LOGIN_ENV_SAFELIST", NULL},		\
 	{"LOGIN_KEEP_USERNAME", NULL},		\
 	{"LOGIN_PLAIN_PROMPT", NULL},		\
 	{"MOTD_FIRSTONLY", NULL},		\
 
 
-#define NUMDEFS	(sizeof(def_table)/sizeof(def_table[0]))
 static struct itemdef def_table[] = {
 	{"CHFN_RESTRICT", NULL},
 	{"CONSOLE_GROUPS", NULL},
@@ -459,13 +461,9 @@ out:
 void setdef_config_file (const char* file)
 {
 #ifdef USE_ECONF
-	char  *cp;
-
-	xasprintf(&cp, "%s/%s", file, sysconfdir);
-	sysconfdir = cp;
+	sysconfdir = xaprintf("%s/%s", file, sysconfdir);
 #ifdef VENDORDIR
-	xasprintf(&cp, "%s/%s", file, vendordir);
-	vendordir = cp;
+	vendordir = xaprintf("%s/%s", file, vendordir);
 #endif
 #else
 	def_fname = file;
@@ -573,7 +571,7 @@ static void def_load (void)
 		 * Break the line into two fields.
 		 */
 		name = stpspn(buf, " \t");	/* first nonwhite */
-		if (streq(name, "") || *name == '#')
+		if (streq(name, "") || strprefix(name, "#"))
 			continue;	/* comment or empty */
 
 		s = stpsep(name, " \t");  /* next field */
@@ -614,7 +612,7 @@ int main (int argc, char **argv)
 
 	def_load ();
 
-	for (i = 0; i < NUMDEFS; ++i) {
+	for (i = 0; i < countof(def_table); ++i) {
 		d = def_find (def_table[i].name, NULL);
 		if (NULL == d) {
 			printf ("error - lookup '%s' failed\n",

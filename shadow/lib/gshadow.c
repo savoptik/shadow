@@ -15,36 +15,33 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "alloc/malloc.h"
 #include "alloc/realloc.h"
-#include "alloc/x/xmalloc.h"
 #include "defines.h"
 #include "prototypes.h"
-#include "string/strchr/strchrcnt.h"
 #include "string/strcmp/streq.h"
 #include "string/strtok/stpsep.h"
+#include "string/strtok/strsep2arr.h"
+#include "string/strtok/xastrsep2ls.h"
 
 
 static /*@null@*/FILE *shadow;
 static struct sgrp  sgroup = {};
-
-#define	FIELDS	4
 
 
 static /*@null@*/char **
 build_list(char *s)
 {
 	char    **l;
-	size_t  i;
+	size_t  n;
 
-	l = XMALLOC(strchrcnt(s, ',') + 2, char *);
+	l = xastrsep2ls(s, ",", &n);
 
-	for (i = 0; s != NULL && !streq(s, ""); i++)
-		l[i] = strsep(&s, ",");
-
-	l[i] = NULL;
+	if (streq(l[n-1], ""))
+		l[n-1] = NULL;
 
 	return l;
 }
@@ -68,42 +65,20 @@ void endsgent (void)
 }
 
 /*@observer@*//*@null@*/struct sgrp *
-sgetsgent(const char *string)
+sgetsgent(const char *s)
 {
-	static char *sgrbuf = NULL;
-	static size_t sgrbuflen = 0;
+	static char  *dup = NULL;
 
-	char *fields[FIELDS];
-	char *cp;
-	int i;
-	size_t len = strlen (string) + 1;
+	char  *fields[4];
 
-	if (len > sgrbuflen) {
-		char *buf = REALLOC(sgrbuf, len, char);
-		if (NULL == buf)
-			return NULL;
+	free(dup);
+	dup = strdup(s);
+	if (dup == NULL)
+		return NULL;
 
-		sgrbuf = buf;
-		sgrbuflen = len;
-	}
+	stpsep(dup, "\n");
 
-	strcpy (sgrbuf, string);
-	stpsep(sgrbuf, "\n");
-
-	/*
-	 * There should be exactly 4 colon separated fields.  Find
-	 * all 4 of them and save the starting addresses in fields[].
-	 */
-
-	for (cp = sgrbuf, i = 0; (i < FIELDS) && (NULL != cp); i++)
-		fields[i] = strsep(&cp, ":");
-
-	/*
-	 * If there was an extra field somehow, or perhaps not enough,
-	 * the line is invalid.
-	 */
-
-	if (NULL != cp || i != FIELDS)
+	if (STRSEP2ARR(dup, ":", fields) == -1)
 		return NULL;
 
 	sgroup.sg_namp = fields[0];

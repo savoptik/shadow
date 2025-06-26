@@ -13,12 +13,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
 #include "defines.h"
-#include "prototypes.h"
-#include "subordinateio.h"
 #include "getdef.h"
 #include "idmapping.h"
+#include "prototypes.h"
 #include "shadowlog.h"
+#include "string/strcmp/strprefix.h"
+#include "subordinateio.h"
+
 
 /*
  * Global variables
@@ -116,7 +119,7 @@ static void write_setgroups(int proc_dir_fd, bool allow_setgroups)
 			strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	if (!strncmp(policy_buffer, policy, strlen(policy)))
+	if (strprefix(policy_buffer, policy))
 		goto out;
 
 	/* Write the policy. */
@@ -166,7 +169,7 @@ int main(int argc, char **argv)
 	 */
 
 	target_str = argv[1];
-	if (strlen(target_str) > 3 && strncmp(target_str, "fd:", 3) == 0) {
+	if (strlen(target_str) > 3 && strprefix(target_str, "fd:")) {
 		/* the user passed in a /proc/pid fd for the process */
 		target_str = &target_str[3];
 		proc_dir_fd = get_pidfd_from_fd(target_str);
@@ -190,8 +193,9 @@ int main(int argc, char **argv)
 
 	/* Get the effective uid and effective gid of the target process */
 	if (fstat(proc_dir_fd, &st) < 0) {
-		fprintf(stderr, _("%s: Could not stat directory for process\n"),
-			Prog);
+		fprintf(stderr,
+		        _("%s: Could not stat directory for target process: %s\n"),
+		        Prog, strerror (errno));
 		return EXIT_FAILURE;
 	}
 
@@ -211,6 +215,9 @@ int main(int argc, char **argv)
 	}
 
 	if (!sub_gid_open(O_RDONLY)) {
+		fprintf (stderr,
+		         _("%s: cannot open %s: %s\n"),
+		         Prog, sub_gid_dbname (), strerror (errno));
 		return EXIT_FAILURE;
 	}
 

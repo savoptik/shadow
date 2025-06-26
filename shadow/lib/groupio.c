@@ -19,9 +19,11 @@
 #include "alloc/malloc.h"
 #include "commonio.h"
 #include "defines.h"
+#include "fields.h"
 #include "getdef.h"
 #include "groupio.h"
 #include "prototypes.h"
+#include "string/sprintf/aprintf.h"
 #include "string/strcmp/streq.h"
 
 
@@ -324,7 +326,8 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	}
 
 	/* Concatenate the 2 lines */
-	if (asprintf(&new_line, "%s\n%s", gr1->line, gr2->line) == -1)
+	new_line = aprintf("%s\n%s", gr1->line, gr2->line);
+	if (new_line == NULL)
 		return NULL;
 
 	/* Concatenate the 2 list of members */

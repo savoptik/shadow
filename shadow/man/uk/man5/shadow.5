@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 19/03/2025
+.\"      Date: 24/06/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: Ukrainian
 .\"
-.TH "shadow" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
+.TH "shadow" "5" "24/06/2025" "shadow\-utils 4\&.18\&.0" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -45,41 +45,42 @@ It must be a valid account name, which exists on the system\&.
 .PP
 \fBencrypted password\fR
 .RS 4
-This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
+If the password field is empty, the user can log in without a password\&. However, some applications that read the
 /etc/shadow
-file may decide not to permit any access at all if the password field is empty\&.
+file might block access if the password field is empty\&.
 .sp
-Поле пароля, яке починається зі знаку оклику, означає, що пароль заблоковано\&. Решта символів у рядку є вмістом поля пароля до того, як пароль було заблоковано\&.
+If the password field begins with an exclamation mark
+\fI!\fR, the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
 .sp
 Refer to
 \fBcrypt\fR(3)
 for details on how this string is interpreted\&.
 .sp
-If the password field contains some string that is not a valid result of
-\fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
+If the password field contains a string that is not a valid result of
+\fBcrypt\fR(3), for instance ! or *, the user cannot use a UNIX password to log in\&. However, the user may log in the system by other means\&.
 .RE
 .PP
 \fBdate of last password change\fR
 .RS 4
-Дата останньої зміни пароля, яку вказано у кількості днів з моменту 1 січня 1970 року 00:00 UTC\&.
+The date of the last password change, expressed as the number of days since 1970\-01\-01 00:00:00 UTC\&.
 .sp
-Значення 0 має особливе призначення \(em користувач має змінити пароль під час наступної спроби увійти до системи\&.
+The value 0 indicates that the user must change their password the next time they log in to the system\&.
 .sp
 Якщо поле є порожнім, можливості застарівання паролів буде вимкнено\&.
 .RE
 .PP
 \fBminimum password age\fR
 .RS 4
-Мінімальний вік пароля є кількістю днів з моменту останньої зміни пароля, протягом яких користувачеві буде заборонено змінювати пароль\&.
+The minimum password age is the number of days the user must wait before they can change their password again\&.
 .sp
 Порожнє значення або значення 0 означають, що мінімальний вік пароля не використовуватиметься\&.
 .RE
 .PP
 \fBmaximum password age\fR
 .RS 4
-Максимальний вік пароля є кількістю днів з моменту останньої зміни пароля, по завершенню яких користувачеві доведеться змінити пароль\&.
+The maximum password age is the number of days after which the user must change their password\&.
 .sp
-Після завершення строку дії пароль може лишатися чинним\&. Система попросить користувача змінити пароль під час наступного після завершення строку дії входу до системи\&.
+After this number of days has elapsed, the password may still be valid\&. The user is prompted to change their password at the next login\&.
 .sp
 Порожнє значення поля означатиме, що максимальний вік пароля не визначатиметься, не буде попередження щодо завершення строку дії і не буде періоду вимикання пароля (див\&. нижче)\&.
 .sp
@@ -88,29 +89,29 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBpassword warning period\fR
 .RS 4
-Кількість днів до моменту завершення строку дії пароля (див\&. максимальний вік пароля вище), коли користувача має бути попереджено про завершення строку дії пароля\&.
+The number of days before a password expires (see the maximum password age above) during which the user is warned\&.
 .sp
-Порожнє значення або значення 0 означають, що не буде періоду попередження щодо завершення строку дії пароля\&.
+An empty field and value 0 mean that there is no password warning period\&.
 .RE
 .PP
 \fBpassword inactivity period\fR
 .RS 4
-Кількість днів з моменту завершення строку дії пароля (див\&. максимальний вік пароля вище), протягом яких пароль лишатиметься прийнятним (і користувач зможе оновити пароль під час наступного входу до системи)\&.
+The number of days after a password expires (see the maximum password age above) during which the password is still accepted, and the user must update their password at the next login\&.
 .sp
-Після завершення строку дії пароля і цього періоду лояльності користувач не зможе увійти до системи\&. Для входу до системи користувачеві доведеться звернутися до адміністратора\&.
+After the password expires and the password inactivity period elapses, the user cannot log in and must contact their administrator\&.
 .sp
-Порожнє значення поля означає, що не буде примусового періоду неактивності\&.
+An empty string means that no inactivity period is enforced\&.
 .RE
 .PP
 \fBaccount expiration date\fR
 .RS 4
-Дата завершення строку дії облікового запису, яку вказано у кількості днів з моменту 1 січня 1970 року 00:00 UTC\&.
+The date when the account expires, expressed as the number of days since 1970\-01\-01\&.
 .sp
-Зауважте, що строк дії облікового запису не обов\*(Aqязково збігається із строком дії пароля\&. Якщо завершиться строк дії облікового запису, користувач не зможе увійти до системи\&. Якщо ж завершиться строк дії пароля, користувач не зможе увійти до системи, використовуючи цей пароль\&.
+Note that account expiration differs from password expiration\&. Account expiration prevents the user from logging in, whereas password expiration only prevents users from logging in with their password\&.
 .sp
-Порожнє значення означатиме, що строк дії облікового запису ніколи не завершиться\&.
+An empty field means that the account never expires\&.
 .sp
-Не слід використовувати значення 0, оскільки його можна вважати вказівкою на те, що або у облікового запису немає завершення строку дії, або як те, що строк дії облікового запису завершився 1 січня 1970 року\&.
+The value 0 should not be used, as it is interpreted either as an account with no expiration or as an expiration date of 1970\-01\-01\&.
 .RE
 .PP
 \fBreserved field\fR

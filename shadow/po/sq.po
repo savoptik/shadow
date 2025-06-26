@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.3\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2004-11-20 03:28+0100\n"
 "Last-Translator: Elian Myftiu <pinguini AT fastwebnet DOT it>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -1546,7 +1546,7 @@ msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
-msgid "%s: Could not stat directory for process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
 msgstr "Kujdes: grup i panjohur %s\n"
 
 #, c-format
@@ -1590,10 +1590,6 @@ msgid ""
 "usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
 "<count> ] ... \n"
 msgstr ""
-
-#, fuzzy, c-format
-msgid "%s: Could not stat directory for target process\n"
-msgstr "Kujdes: grup i panjohur %s\n"
 
 msgid "  -b, --badname                 allow bad names\n"
 msgstr ""
@@ -2727,8 +2723,9 @@ msgstr ""
 msgid "failed to stat edited file"
 msgstr ""
 
-msgid "asprintf(3) failed"
-msgstr ""
+#, fuzzy
+msgid "aprintf() failed"
+msgstr "Kujdes: grup i panjohur %s\n"
 
 msgid "failed to create backup file"
 msgstr ""
@@ -2743,6 +2740,10 @@ msgstr ""
 
 #~ msgid "Warning: too many groups\n"
 #~ msgstr "Kujdes: ka shumë grupe\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "Kujdes: grup i panjohur %s\n"
 
 #, fuzzy, c-format
 #~ msgid "%s: Could not open proc directory for target %u\n"

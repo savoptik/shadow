@@ -13,6 +13,7 @@
 
 #include "run_part.h"
 #include "shadowlog_internal.h"
+#include "string/sprintf/aprintf.h"
 
 #define RUN_PARTS "/bin/run-parts"
 
@@ -69,8 +70,9 @@ int run_parts(const char *directory, const char *name, const char *action)
 	for (n=0; n<scanlist; n++) {
 		char         *s;
 
-		if (asprintf(&s, "%s/%s", directory, namelist[n]->d_name) == -1) {
-			fprintf(shadow_logfd, "asprintf: %s\n", strerror(errno));
+		s = aprintf("%s/%s", directory, namelist[n]->d_name);
+		if (s == NULL) {
+			fprintf(shadow_logfd, "aprintf: %s\n", strerror(errno));
 			for (; n<scanlist; n++) {
 				free(namelist[n]);
 			}

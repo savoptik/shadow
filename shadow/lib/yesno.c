@@ -14,7 +14,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "prototypes.h"
+#include "string/strcmp/strcaseprefix.h"
 
 
 /*
@@ -76,10 +78,9 @@ yes_or_no(bool read_only)
 static int
 rpmatch(const char *response)
 {
-	if (response[0] == 'y' || response[0] == 'Y')
+	if (strcaseprefix(response, "y"))
 		return 1;
-
-	if (response[0] == 'n' || response[0] == 'n')
+	if (strcaseprefix(response, "n"))
 		return 0;
 
 	return -1;

@@ -10,6 +10,9 @@
 
 #ifdef USE_PAM
 
+/* Copied from src/passwd.c */
+#define E_PAM_ERR	10	/* PAM returned an error */
+
 #ident "$Id$"
 
 
@@ -40,7 +43,7 @@ void do_pam_passwd (const char *user, bool silent, bool change_expired)
 	if (ret != PAM_SUCCESS) {
 		fprintf (shadow_logfd,
 			 _("passwd: pam_start() failed, error %d\n"), ret);
-		exit (10);	/* XXX */
+		exit (E_PAM_ERR);
 	}
 
 	ret = pam_chauthtok (pamh, flags);
@@ -48,7 +51,7 @@ void do_pam_passwd (const char *user, bool silent, bool change_expired)
 		fprintf (shadow_logfd, _("passwd: %s\n"), pam_strerror (pamh, ret));
 		fputs (_("passwd: password unchanged\n"), shadow_logfd);
 		pam_end (pamh, ret);
-		exit (10);	/* XXX */
+		exit (E_PAM_ERR);
 	}
 
 	fputs (_("passwd: password updated successfully\n"), shadow_logfd);

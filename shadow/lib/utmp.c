@@ -27,6 +27,7 @@
 #include "alloc/x/xmalloc.h"
 #include "sizeof.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
 #include "string/strcpy/strncpy.h"
 #include "string/strcpy/strtcpy.h"
 #include "string/strdup/xstrdup.h"
@@ -35,7 +36,7 @@
 #ident "$Id$"
 
 
-#define UTX_LINESIZE  NITEMS(memberof(struct utmpx, ut_line))
+#define UTX_LINESIZE  countof(memberof(struct utmpx, ut_line))
 
 
 /*
@@ -261,10 +262,7 @@ prepare_utmp(const char *name, const char *line, const char *host,
 		hostname = XSTRNDUP(ut->ut_host);
 #endif
 
-	if (strncmp(line, "/dev/", 5) == 0) {
-		line += 5;
-	}
-
+	line = strprefix(line, "/dev/") ?: line;
 
 	utent = XCALLOC(1, struct utmpx);
 

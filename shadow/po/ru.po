@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.5.1-1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-03-19 14:03-0500\n"
+"POT-Creation-Date: 2025-06-24 20:28+0000\n"
 "PO-Revision-Date: 2017-03-05 11:14+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -1772,7 +1772,7 @@ msgstr "%s: не удалось разблокировать %s\n"
 
 #, fuzzy, c-format
 #| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for process\n"
+msgid "%s: Could not stat directory for target process: %s\n"
 msgstr "%s: не удалось создать tcb-каталог для %s\n"
 
 #, c-format
@@ -1816,11 +1816,6 @@ msgid ""
 "usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
 "<count> ] ... \n"
 msgstr ""
-
-#, fuzzy, c-format
-#| msgid "%s: Failed to create tcb directory for %s\n"
-msgid "%s: Could not stat directory for target process\n"
-msgstr "%s: не удалось создать tcb-каталог для %s\n"
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
@@ -3215,8 +3210,10 @@ msgstr "не удалось удалить черновой файл"
 msgid "failed to stat edited file"
 msgstr "не удалось получить атрибуты редактируемого файла"
 
-msgid "asprintf(3) failed"
-msgstr ""
+#, fuzzy
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "aprintf() failed"
+msgstr "%s: строка %d: вызов chown %s завершился неудачно: %s\n"
 
 msgid "failed to create backup file"
 msgstr "не удалось создать резервную копию файла"
@@ -3272,6 +3269,11 @@ msgstr "%s: не удалось найти каталог tcb для %s\n"
 #, c-format
 #~ msgid "       %s [-p] -r host\n"
 #~ msgstr "                    %s [-p] -r узел\n"
+
+#, fuzzy, c-format
+#~| msgid "%s: Failed to create tcb directory for %s\n"
+#~ msgid "%s: Could not stat directory for process\n"
+#~ msgstr "%s: не удалось создать tcb-каталог для %s\n"
 
 #~ msgid "too many groups\n"
 #~ msgstr "слишком много групп\n"

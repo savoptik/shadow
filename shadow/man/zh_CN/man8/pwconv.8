@@ -2,12 +2,12 @@
 .\"     Title: pwconv
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2025-03-19
+.\"      Date: 2025-06-24
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: Chinese Simplified
 .\"
-.TH "PWCONV" "8" "2025-03-19" "shadow\-utils 4\&.17\&.4" "System Management Commands"
+.TH "PWCONV" "8" "2025-06-24" "shadow\-utils 4\&.18\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "名称"
-pwconv, pwunconv, grpconv, grpunconv \- 在影子密码和组以及其它直接转换
+pwconv, pwunconv, grpconv, grpunconv \- convert between the system\*(Aqs shadowed and plain account files
 .SH "大纲"
 .HP \w'\fBpwconv\fR\ 'u
 \fBpwconv\fR [\fIoptions\fR]
@@ -43,42 +43,42 @@ pwconv, pwunconv, grpconv, grpunconv \- 在影子密码和组以及其它直接�
 The
 \fBpwconv\fR
 command creates
-\fIshadow\fR
+shadow
 from
-\fIpasswd\fR
+passwd
 and an optionally existing
-\fIshadow\fR\&.
+shadow\&.
 .PP
 The
 \fBpwunconv\fR
-command creates
-\fIpasswd\fR
-from
-\fIpasswd\fR
+command creates a plain
+passwd
+from shadowed
+passwd
 and
-\fIshadow\fR
+shadow
 and then removes
-\fIshadow\fR\&.
+shadow\&.
 .PP
 The
 \fBgrpconv\fR
 command creates
-\fIgshadow\fR
+gshadow
 from
-\fIgroup\fR
+group
 and an optionally existing
-\fIgshadow\fR\&.
+gshadow\&.
 .PP
 The
 \fBgrpunconv\fR
-command creates
-\fIgroup\fR
-from
-\fIgroup\fR
+command creates plain
+group
+from shadowed
+group
 and
-\fIgshadow\fR
+gshadow
 and then removes
-\fIgshadow\fR\&.
+gshadow\&.
 .PP
 These four programs all operate on the normal and shadow password and group files:
 /etc/passwd,
@@ -90,7 +90,7 @@ Each program acquires the necessary locks before conversion\&.
 \fBpwconv\fR
 and
 \fBgrpconv\fR
-are similar\&. First, entries in the shadowed file which don\*(Aqt exist in the main file are removed\&. Then, shadowed entries which don\*(Aqt have `x\*(Aq as the password in the main file are updated\&. Any missing shadowed entries are added\&. Finally, passwords in the main file are replaced with `x\*(Aq\&. These programs can be used for initial conversion as well to update the shadowed file if the main file is edited by hand\&.
+are similar\&. First, entries in the shadowed file which don\*(Aqt exist in the plain file are removed\&. Then, entries in the shadowed file which don\*(Aqt have `x\*(Aq as the password in plain file are updated\&. Any missing shadowed entries are added\&. Finally, passwords in the plain file are replaced with `x\*(Aq\&. These programs can be used for initial conversion as well to update the shadowed file if the plain file has been edited by hand\&.
 .PP
 \fBpwconv\fR
 will use the values of
@@ -106,7 +106,7 @@ Likewise
 \fBpwunconv\fR
 and
 \fBgrpunconv\fR
-are similar\&. Passwords in the main file are updated from the shadowed file\&. Entries which exist in the main file but not in the shadowed file are left alone\&. Finally, the shadowed file is removed\&. Some password aging information is lost by
+are similar\&. Passwords in the plain file are updated from the shadowed file\&. Entries which exist in the plain file but not in the shadowed file are left alone\&. Finally, the shadowed file is removed\&. Some password aging information is lost by
 \fBpwunconv\fR\&. It will convert what it can\&.
 .SH "选项"
 .PP
@@ -136,7 +136,7 @@ Errors in the password or group files (such as invalid or duplicate entries) may
 \fBpwck\fR
 and
 \fBgrpck\fR
-to correct any such errors before converting to or from shadow passwords or groups\&.
+to correct any such errors before converting to or from shadowed files\&.
 .SH "配置文件"
 .PP
 The following configuration variable in

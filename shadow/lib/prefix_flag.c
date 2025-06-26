@@ -28,8 +28,9 @@
 #endif				/* ENABLE_SUBIDS */
 #include "getdef.h"
 #include "shadowlog.h"
-#include "string/sprintf/xasprintf.h"
+#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
 
 
 static char *passwd_db_file = NULL;
@@ -53,17 +54,15 @@ static FILE* fp_grent = NULL;
  */
 extern const char* process_prefix_flag (const char* short_opt, int argc, char **argv)
 {
-	/*
-	 * Parse the command line options.
-	 */
-	int i;
-	const char *prefix = NULL, *val;
+	const char *prefix = NULL;
 
-	for (i = 0; i < argc; i++) {
-		val = NULL;
+	for (int i = 0; i < argc; i++) {
+		const char  *val;
+
+		val = strprefix(argv[i], "--prefix=");
+
 		if (   streq(argv[i], "--prefix")
-		    || ((strncmp (argv[i], "--prefix=", 9) == 0)
-			&& (val = argv[i] + 9))
+		    || val != NULL
 		    || streq(argv[i], short_opt))
 		{
 			if (NULL != prefix) {
@@ -128,18 +127,18 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 #ifdef USE_ECONF
 		setdef_config_file(prefix);
 #else
-		xasprintf(&def_conf_file, "%s/%s", prefix, "/etc/login.defs");
+		def_conf_file = xaprintf("%s/%s", prefix, "/etc/login.defs");
 		setdef_config_file(def_conf_file);
 #endif
 
-		xasprintf(&passwd_db_file, "%s/%s", prefix, PASSWD_FILE);
+		passwd_db_file = xaprintf("%s/%s", prefix, PASSWD_FILE);
 		pw_setdbname(passwd_db_file);
 
-		xasprintf(&group_db_file, "%s/%s", prefix, GROUP_FILE);
+		group_db_file = xaprintf("%s/%s", prefix, GROUP_FILE);
 		gr_setdbname(group_db_file);
 
 #ifdef  SHADOWGRP
-		xasprintf(&sgroup_db_file, "%s/%s", prefix, SGROUP_FILE);
+		sgroup_db_file = xaprintf("%s/%s", prefix, SGROUP_FILE);
 		sgr_setdbname(sgroup_db_file);
 #endif
 
@@ -147,15 +146,15 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		if (!getdef_bool("USE_TCB"))
 #endif
 		{
-			xasprintf(&spw_db_file, "%s/%s", prefix, SHADOW_FILE);
+			spw_db_file = xaprintf("%s/%s", prefix, SHADOW_FILE);
 			spw_setdbname(spw_db_file);
 		}
 
 #ifdef ENABLE_SUBIDS
-		xasprintf(&suid_db_file, "%s/%s", prefix, SUBUID_FILE);
+		suid_db_file = xaprintf("%s/%s", prefix, SUBUID_FILE);
 		sub_uid_setdbname(suid_db_file);
 
-		xasprintf(&sgid_db_file, "%s/%s", prefix, SUBGID_FILE);
+		sgid_db_file = xaprintf("%s/%s", prefix, SUBGID_FILE);
 		sub_gid_setdbname(sgid_db_file);
 #endif
 

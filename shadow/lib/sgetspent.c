@@ -16,16 +16,19 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <string.h>
 
 #include "atoi/a2i/a2s.h"
-#include "atoi/str2i/str2u.h"
+#include "atoi/str2i.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
+#include "sizeof.h"
 #include "string/strcmp/streq.h"
 #include "string/strtok/stpsep.h"
+#include "string/strtok/strsep2arr.h"
 
 
 #define	FIELDS	9
@@ -36,40 +39,25 @@
  * sgetspent - convert string in shadow file format to (struct spwd *)
  */
 struct spwd *
-sgetspent(const char *string)
+sgetspent(const char *s)
 {
-	static char spwbuf[PASSWD_ENTRY_MAX_LENGTH];
+	static char        *dup = NULL;
 	static struct spwd spwd;
+
 	char *fields[FIELDS];
-	char *cp;
-	int i;
+	size_t  i;
 
-	/*
-	 * Copy string to local buffer.  It has to be tokenized and we
-	 * have to do that to our private copy.
-	 */
+	free(dup);
+	dup = strdup(s);
+	if (dup == NULL)
+		return NULL;
 
-	if (strlen (string) >= sizeof spwbuf) {
-		fprintf (shadow_logfd,
-		         "%s: Too long passwd entry encountered, file corruption?\n",
-		         shadow_progname);
-		return NULL;	/* fail if too long */
-	}
-	strcpy (spwbuf, string);
-	stpsep(spwbuf, "\n");
+	stpsep(dup, "\n");
 
-	/*
-	 * Tokenize the string into colon separated fields.  Allow up to
-	 * FIELDS different fields.
-	 */
-
-	for (cp = spwbuf, i = 0; cp != NULL && i < FIELDS; i++)
-		fields[i] = strsep(&cp, ":");
-
-	if (i == (FIELDS - 1))
+	i = strsep2arr(dup, ":", countof(fields), fields);
+	if (i == countof(fields) - 1)
 		fields[i++] = "";
-
-	if (cp != NULL || (i != FIELDS && i != OFIELDS))
+	if (i != countof(fields) && i != OFIELDS)
 		return NULL;
 
 	/*

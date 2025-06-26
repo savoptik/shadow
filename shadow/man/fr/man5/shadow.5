@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 19/03/2025
+.\"      Date: 24/06/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.17.4
+.\"    Source: shadow-utils 4.18.0
 .\"  Language: French
 .\"
-.TH "SHADOW" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
+.TH "SHADOW" "5" "24/06/2025" "shadow\-utils 4\&.18\&.0" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -45,41 +45,42 @@ It must be a valid account name, which exists on the system\&.
 .PP
 \fBencrypted password\fR
 .RS 4
-This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
+If the password field is empty, the user can log in without a password\&. However, some applications that read the
 /etc/shadow
-file may decide not to permit any access at all if the password field is empty\&.
+file might block access if the password field is empty\&.
 .sp
-Un champ de mot de passe qui commence avec un point d\*(Aqexclamation indique que le mot de passe est bloqu\('e\&. Les caract\(`eres restants sur la ligne repr\('esentent le champ de mot de passe avant que le mot de passe n\*(Aqait \('et\('e bloqu\('e\&.
+If the password field begins with an exclamation mark
+\fI!\fR, the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
 .sp
 Refer to
 \fBcrypt\fR(3)
 for details on how this string is interpreted\&.
 .sp
-If the password field contains some string that is not a valid result of
-\fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
+If the password field contains a string that is not a valid result of
+\fBcrypt\fR(3), for instance ! or *, the user cannot use a UNIX password to log in\&. However, the user may log in the system by other means\&.
 .RE
 .PP
 \fBdate of last password change\fR
 .RS 4
-The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
+The date of the last password change, expressed as the number of days since 1970\-01\-01 00:00:00 UTC\&.
 .sp
-La valeur 0 a une signification particuli\(`ere\ \&: l\*(Aqutilisateur devra changer son mot de passe la prochaine fois qu\*(Aqil se connectera au syst\(`eme\&.
+The value 0 indicates that the user must change their password the next time they log in to the system\&.
 .sp
 Un champ vide indique que les fonctionnalit\('es de vieillissement de mot de passe sont d\('esactiv\('ees\&.
 .RE
 .PP
 \fBminimum password age\fR
 .RS 4
-L\*(Aq\(^age minimum du mot de passe est la dur\('ee (en jour) que l\*(Aqutilisateur devra attendre avant de pouvoir le changer de nouveau\&.
+The minimum password age is the number of days the user must wait before they can change their password again\&.
 .sp
 An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fBmaximum password age\fR
 .RS 4
-L\*(Aq\(^age maximum du mot de passe est la dur\('ee (en jour) apr\(`es laquelle l\*(Aqutilisateur devra changer son mot de passe\&.
+The maximum password age is the number of days after which the user must change their password\&.
 .sp
-Une fois cette dur\('ee \('ecoul\('ee, le mot de passe restera valable\&. Il sera demand\('e \(`a l\*(Aqutilisateur de le changer la prochaine fois qu\*(Aqil se connectera\&.
+After this number of days has elapsed, the password may still be valid\&. The user is prompted to change their password at the next login\&.
 .sp
 Un champ vide signifie qu\*(Aqil n\*(Aqy a pour le mot de passe aucune limite d\*(Aq\(^age, aucune p\('eriode d\*(Aqavertissement d\*(Aqexpiration et aucune p\('eriode d\*(Aqinactivit\('e (voir ci\-dessous)\&.
 .sp
@@ -88,29 +89,29 @@ Si l\*(Aq\(^age maximum du mot de passe est plus petit que l\*(Aq\(^age minimum 
 .PP
 \fBpassword warning period\fR
 .RS 4
-La dur\('ee (en jour) pendant laquelle l\*(Aqutilisateur sera averti avant que le mot de passe n\*(Aqexpire (voir l\*(Aq\(^age maximum du mot de passe ci\-dessus)\&.
+The number of days before a password expires (see the maximum password age above) during which the user is warned\&.
 .sp
-Un champ vide ou une valeur de 0 signifie qu\*(Aqil n\*(Aqy aura pas de p\('eriode d\*(Aqavertissement d\*(Aqexpiration du mot de passe\&.
+An empty field and value 0 mean that there is no password warning period\&.
 .RE
 .PP
 \fBpassword inactivity period\fR
 .RS 4
-La dur\('ee (en jour) pendant laquelle le mot de passe sera quand m\(^eme accept\('e apr\(`es son expiration (voir l\*(Aq\(^age maximum du mot de passe ci\-dessus)\&. L\*(Aqutilisateur devra mettre \(`a jour son mot de passe \(`a la prochaine connexion\&.
+The number of days after a password expires (see the maximum password age above) during which the password is still accepted, and the user must update their password at the next login\&.
 .sp
-After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
+After the password expires and the password inactivity period elapses, the user cannot log in and must contact their administrator\&.
 .sp
-Un champ vide signifie qu\*(Aqaucune p\('eriode d\*(Aqinactivit\('e n\*(Aqest impos\('ee\&.
+An empty string means that no inactivity period is enforced\&.
 .RE
 .PP
 \fBaccount expiration date\fR
 .RS 4
-The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
+The date when the account expires, expressed as the number of days since 1970\-01\-01\&.
 .sp
-Veuillez noter que l\*(Aqexpiration d\*(Aqun compte diff\(`ere de l\*(Aqexpiration d\*(Aqun mot de passe\&. En cas d\*(Aqexpiration d\*(Aqun compte, l\*(Aqutilisateur ne sera plus autoris\('e \(`a se connecter\&. En cas d\*(Aqexpiration d\*(Aqun mot de passe, l\*(Aqutilisateur n\*(Aqest pas autoris\('e \(`a se connecter en utilisant son mot de passe\&.
+Note that account expiration differs from password expiration\&. Account expiration prevents the user from logging in, whereas password expiration only prevents users from logging in with their password\&.
 .sp
-Un champ vide signifie que le compte n\*(Aqexpirera jamais\&.
+An empty field means that the account never expires\&.
 .sp
-La valeur 0 ne doit pas \(^etre utilis\('ee puisqu\*(Aqelle peut \(^etre interpr\('et\('ee soit comme un compte sans expiration, soit comme ayant expir\('e le 1er\ \&janvier\ \&1970\&.
+The value 0 should not be used, as it is interpreted either as an account with no expiration or as an expiration date of 1970\-01\-01\&.
 .RE
 .PP
 \fBreserved field\fR

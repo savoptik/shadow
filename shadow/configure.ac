@@ -4,7 +4,7 @@ m4_define([libsubid_abi_major], 5)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.17.4], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.18.0], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects tar-pax])
 AC_CONFIG_MACRO_DIRS([m4])
@@ -30,7 +30,6 @@ AM_MAINTAINER_MODE
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_LN_S
-AC_PROG_YACC
 LT_INIT
 LT_LIB_DLLOAD
 
@@ -39,8 +38,8 @@ dnl Checks for libraries.
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 
-AC_CHECK_FUNCS(arc4random_buf futimes setlocale \
-	getentropy getrandom getspnam getusershell \
+AC_CHECK_FUNCS(arc4random_buf setlocale \
+	getentropy getrandom \
 	lckpwdf lutimes \
 	updwtmpx innetgr \
 	getspnam_r \
@@ -335,7 +334,7 @@ if test "$enable_lastlog" = "yes" && test "$ac_cv_header_lastlog_h" = "yes"; the
 		enable_lastlog="yes"
 	else
 		AC_MSG_ERROR([Cannot enable support for lastlog on systems where the data structures aren't available])
-		enable_subids="no"
+		enable_lastlog="no"
 	fi
 fi
 AM_CONDITIONAL(ENABLE_LASTLOG, test "x$enable_lastlog" != "xno")
@@ -688,7 +687,6 @@ AC_CONFIG_FILES([
 	libsubid/Makefile
 	libsubid/subid.h
 	src/Makefile
-	contrib/Makefile
 	etc/Makefile
 	etc/pam.d/Makefile
 	etc/shadow-maint/Makefile
