@@ -42,6 +42,7 @@
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
+#include "fields.h"
 #include "fs/mkstemp/fmkomstemp.h"
 #include "getdef.h"
 #include "groupio.h"

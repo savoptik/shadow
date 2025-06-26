@@ -40,6 +40,7 @@
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
+#include "fields.h"
 #include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
