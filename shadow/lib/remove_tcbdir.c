@@ -27,6 +27,7 @@
 #include "getdef.h"
 #include "shadowio.h"
 #include "tcbfuncs.h"
+#include "string/sprintf/aprintf.h"
 
 #include "shadowlog_internal.h"
 
@@ -42,7 +43,8 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 		return 0;
 	}
 
-	if (asprintf(&buf, "%s" TCB_DIR "/%s", prefix_dir, user_name) < 0) {
+	buf = aprintf("%s" TCB_DIR "/%s", prefix_dir, user_name);
+	if (buf == NULL) {
 		fprintf(shadow_logfd, "%s: Can't allocate memory, "
 				"tcb entry for %s not removed.\n",
 				shadow_progname, user_name);
