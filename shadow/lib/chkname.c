@@ -36,7 +36,7 @@
 #include "chkname.h"
 #include "string/ctype/strisascii/strisdigit.h"
 #include "string/strcmp/streq.h"
-#include "prototypes.h"
+#include "fields.h"
 #include "pwio.h"
 #include "groupio.h"
 
