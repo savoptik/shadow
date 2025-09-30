@@ -2319,7 +2319,7 @@ static void create_mail (void)
 	gid_t         gid;
 	mode_t        mode;
 	const char    *spool;
-	struct group  *gr;
+	struct group  *gr = NULL;
 	bool private;
 
 	private = strcasecmp (create_mail_spool, "private") == 0;
