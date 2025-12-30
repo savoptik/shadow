@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2011-11-26 19:42+0100\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <debian-l10n-eu@lists.debian.org>\n"
@@ -956,6 +956,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: `(%d lerroa, %s erabiltzailea) pasahitza ez da aldatu\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: `(%d lerroa, %s erabiltzailea) pasahitza ez da aldatu\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: %d lerroa: '%s' erabiltzailea ez da existitzen\n"
@@ -1235,7 +1240,9 @@ msgstr "  -r, --system                  sistema kontu bat sortu\n"
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
-msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    taldearen partaideak zerrendatu\n"
 
 #, fuzzy, c-format
@@ -1387,6 +1394,13 @@ msgid ""
 "  -p, --password PASSWORD       change the password to this (encrypted)\n"
 "                                PASSWORD\n"
 msgstr ""
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    taldearen partaideak zerrendatu\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1725,7 +1739,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Erabilera: newgrp [-] [taldea]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Erabilera: sg taldea [[-c] komandoa]\n"
 
 #, fuzzy, c-format

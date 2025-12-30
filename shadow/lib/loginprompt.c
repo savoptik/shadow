@@ -7,13 +7,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
 #include <assert.h>
-#include <stdio.h>
 #include <signal.h>
+#include <stddef.h>
+#include <stdio.h>
 
 #include "attr.h"
 #include "defines.h"
@@ -25,7 +26,8 @@
 #include "string/strtok/stpsep.h"
 
 
-static void login_exit (MAYBE_UNUSED int sig)
+static void
+login_exit(int)
 {
 	_exit (EXIT_FAILURE);
 }
@@ -73,7 +75,7 @@ login_prompt(char *name, int namesize)
 			(void) fclose (fp);
 		}
 	}
-	(void) gethostname (buf, sizeof buf);
+	(void) gethostname(buf, sizeof(buf));
 	printf (_("\n%s login: "), buf);
 	(void) fflush (stdout);
 
@@ -82,10 +84,9 @@ login_prompt(char *name, int namesize)
 	 * removed.
 	 */
 
-	MEMZERO(buf);
-	if (fgets (buf, sizeof buf, stdin) != buf) {
+	memzero_a(buf);
+	if (fgets(buf, sizeof(buf), stdin) == NULL)
 		exit (EXIT_FAILURE);
-	}
 
 	if (stpsep(buf, "\n") == NULL)
 		exit(EXIT_FAILURE);

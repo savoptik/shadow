@@ -45,10 +45,15 @@
   <refsynopsisdiv id='synopsis'>
     <cmdsynopsis>
       <command>sg</command>
-      <arg choice='opt'>- </arg>
-      <arg choice='opt'>group
-	<arg choice='opt'>-c </arg>
-	command
+      <arg choice='opt'>
+        <replaceable>-</replaceable>
+      </arg>
+      <arg choice='plain'>
+        <replaceable>group</replaceable>
+      </arg>
+      <arg choice='opt'>
+        <arg choice='opt'><replaceable>-c</replaceable></arg>
+        <replaceable>command</replaceable>
       </arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -64,10 +69,41 @@
       <command>newgrp</command> and <command>sg</command> is that some
       shells treat <command>newgrp</command> specially, replacing themselves
       with a new instance of a shell that <command>newgrp</command> creates.
-      This doesn't happen with <command>sg</command>, so upon exit from a
+      This doesn't happen with <command>sg</command>, so upon exit from an
       <command>sg</command> command you are returned to your previous group
       ID.
     </para>
+  </refsect1>
+
+  <refsect1 id='options'>
+    <title>OPTIONS</title>
+    <para>
+      The options which apply to the <command>sg</command> command are:
+    </para>
+    <variablelist remap='IP'>
+      <varlistentry>
+	<term><option>-</option>, <option>-l</option></term>
+	<listitem>
+	  <para>
+	    Start the shell as a login shell.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-c</option>
+	</term>
+	<listitem>
+	  <para>
+	    Specify a command that will be invoked by the shell using its
+	    <option>-c</option>.
+	  </para>
+	  <para>
+	    This is the default; for backward compatibility.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
   </refsect1>
 
   <refsect1 id='configuration'>

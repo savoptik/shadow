@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_STRING_STRSPN_STPRCSPN_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
@@ -17,7 +17,7 @@
 #define stprcspn(s, reject)                                                   \
 ({                                                                            \
 	__auto_type  s_ = (s);                                                \
-                                                                              \
+	                                                                      \
 	s_ + strrcspn(s_, reject);                                            \
 })
 

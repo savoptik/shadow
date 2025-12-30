@@ -6,16 +6,16 @@
 #define SHADOW_INCLUDE_LIB_SEARCH_CMP_CMP_H_
 
 
-#include <config.h>
+#include "config.h"
 
 
-#define CMP(TYPE)                                                     \
+#define CMP(T)                                                        \
 (                                                                     \
-	_Generic((TYPE) 0,                                            \
-		int *:            cmp_int,                            \
-		long *:           cmp_long,                           \
-		unsigned int *:   cmp_uint,                           \
-		unsigned long *:  cmp_ulong                           \
+	_Generic((T){0},                                              \
+		int:            cmp_int,                              \
+		long:           cmp_long,                             \
+		unsigned int:   cmp_uint,                             \
+		unsigned long:  cmp_ulong                             \
 	)                                                             \
 )
 

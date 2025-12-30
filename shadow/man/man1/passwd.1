@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/24/2025
+.\"      Date: 12/30/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: English
 .\"
-.TH "PASSWD" "1" "06/24/2025" "shadow\-utils 4\&.18\&.0" "User Commands"
+.TH "PASSWD" "1" "12/30/2025" "shadow\-utils 4\&.19\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -139,7 +139,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
@@ -196,7 +196,7 @@ change the behavior of this tool:
 .PP
 \fBENCRYPT_METHOD\fR (string)
 .RS 4
-This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm is specified on the command line)\&.
 .sp
 It can take one of these values:
 \fIDES\fR
@@ -244,11 +244,28 @@ Maximum number of attempts to change password if rejected (too easy)\&.
 \fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
 .RS 4
 Number of significant characters in the password for crypt()\&.
+.sp
 \fBPASS_MAX_LEN\fR
-is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&. This is ignored if
+is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&.
+.sp
+\fBPASS_MAX_LEN\fR
+is only used for DES\&. It is ignored if an encryption algorithm other than DES is used, either because
 \fBMD5_CRYPT_ENAB\fR
 set to
+\fIyes\fR
+or
+\fBENCRYPT_METHOD\fR
+set to an algorithm other than
+\fIDES\fR\&.
+.sp
+In addition,
+\fBPASS_MAX_LEN\fR
+is only used if
+\fBOBSCURE_CHECKS_ENAB\fR
+set to
 \fIyes\fR\&.
+.sp
+Note: This only affects the generation of user passwords\&. Group password lengths are not checked\&.
 .RE
 .PP
 \fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)

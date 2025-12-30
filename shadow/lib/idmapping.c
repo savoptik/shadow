@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -12,20 +12,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
-#include <sys/prctl.h>
 #if __has_include(<sys/capability.h>)
 # include <sys/capability.h>
 #endif
+#if __has_include(<sys/prctl.h>)
+# include <sys/prctl.h>
+#endif
 
 #include "alloc/calloc.h"
-#include "alloc/x/xmalloc.h"
-#include "atoi/a2i/a2u.h"
+#include "alloc/malloc.h"
+#include "atoi/a2i.h"
+#include "attr.h"
 #include "idmapping.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 #include "sizeof.h"
 #include "string/sprintf/stpeprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strerrno.h"
 
 
 struct map_range *
@@ -43,7 +47,7 @@ get_map_ranges(int ranges, int argc, char **argv)
 		return NULL;
 	}
 
-	mappings = CALLOC(ranges, struct map_range);
+	mappings = calloc_T(ranges, struct map_range);
 	if (!mappings) {
 		fprintf(log_get_logfd(), _( "%s: Memory allocation failure\n"),
 			log_get_progname());
@@ -121,7 +125,7 @@ static inline bool maps_lower_root(int cap, int ranges, const struct map_range *
  * If this is wanted: use file capabilities!
  */
 void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings,
-	const char *map_file, uid_t ruid)
+	const char *map_file, MAYBE_UNUSED uid_t ruid)
 {
 	int idx;
 	const struct map_range *mapping;
@@ -173,7 +177,7 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 #endif
 
 	bufsize = (ULONG_DIGITS + 1) * 3 * ranges + 1;
-	pos = buf = XMALLOC(bufsize, char);
+	pos = buf = xmalloc_T(bufsize, char);
 	end = buf + bufsize;
 
 	/* Build the mapping command */
@@ -194,17 +198,17 @@ void write_mapping(int proc_dir_fd, int ranges, const struct map_range *mappings
 	fd = openat(proc_dir_fd, map_file, O_WRONLY);
 	if (fd < 0) {
 		fprintf(log_get_logfd(), _("%s: open of %s failed: %s\n"),
-			log_get_progname(), map_file, strerror(errno));
+			log_get_progname(), map_file, strerrno());
 		exit(EXIT_FAILURE);
 	}
 	if (write_full(fd, buf, pos - buf) == -1) {
 		fprintf(log_get_logfd(), _("%s: write to %s failed: %s\n"),
-			log_get_progname(), map_file, strerror(errno));
+			log_get_progname(), map_file, strerrno());
 		exit(EXIT_FAILURE);
 	}
 	if (close(fd) != 0 && errno != EINTR) {
 		fprintf(log_get_logfd(), _("%s: closing %s failed: %s\n"),
-			log_get_progname(), map_file, strerror(errno));
+			log_get_progname(), map_file, strerrno());
 		exit(EXIT_FAILURE);
 	}
 	free(buf);

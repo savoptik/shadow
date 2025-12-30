@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_STRING_STRSPN_STRRCSPN_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -24,7 +24,7 @@ inline size_t strrcspn(const char *s, const char *reject);
 inline size_t
 strrcspn(const char *s, const char *reject)
 {
-	char  *p;
+	const char  *p;
 
 	p = strnul(s);
 	while (p > s) {

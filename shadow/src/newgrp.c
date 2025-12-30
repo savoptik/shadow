@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -17,7 +17,8 @@
 #include <sys/types.h>
 
 #include "agetpass.h"
-#include "alloc/x/xmalloc.h"
+#include "alloc/malloc.h"
+#include "alloc/realloc.h"
 #include "chkname.h"
 #include "defines.h"
 /*@-exitarg@*/
@@ -27,11 +28,15 @@
 #include "search/l/lfind.h"
 #include "search/l/lsearch.h"
 #include "shadow/grp/agetgroups.h"
+#include "shadow/gshadow/endsgent.h"
+#include "shadow/gshadow/getsgnam.h"
+#include "shadow/gshadow/sgrp.h"
 #include "shadowlog.h"
 #include "string/sprintf/snprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
+#include "string/strerrno.h"
 
 #include <assert.h>
 
@@ -67,7 +72,7 @@ static void usage (void)
 	if (is_newgrp) {
 		(void) fputs (_("Usage: newgrp [-] [group]\n"), stderr);
 	} else {
-		(void) fputs (_("Usage: sg group [[-c] command]\n"), stderr);
+		(void) fputs (_("Usage: sg [-] group [[-c] command]\n"), stderr);
 	}
 }
 
@@ -96,7 +101,7 @@ static /*@null@*/struct group *find_matching_group (const char *name, struct gro
 		return gr;
 
 	setgrent ();
-	while ((gr = getgrent ()) != NULL) {
+	while (NULL != (gr = getgrent())) {
 		if (gr->gr_gid != gid) {
 			continue;
 		}
@@ -184,7 +189,7 @@ static void check_perms (const struct group *grp,
 		if (NULL == cpasswd) {
 			fprintf (stderr,
 			         _("%s: failed to crypt password with previous salt: %s\n"),
-			         Prog, strerror (errno));
+			        Prog, strerrno());
 			SYSLOG ((LOG_INFO,
 			         "Failed to crypt password with previous salt of group '%s'",
 			         groupname));
@@ -194,9 +199,9 @@ static void check_perms (const struct group *grp,
 		if (streq(grp->gr_passwd, "") ||
 		    !streq(grp->gr_passwd, cpasswd)) {
 #ifdef WITH_AUDIT
-			SNPRINTF(audit_buf, "authentication new_gid=%lu",
+			stprintf_a(audit_buf, "authentication new_gid=%lu",
 			         (unsigned long) grp->gr_gid);
-			audit_logger (AUDIT_GRP_AUTH, Prog,
+			audit_logger (AUDIT_GRP_AUTH,
 			              audit_buf, NULL, getuid (), SHADOW_AUDIT_FAILURE);
 #endif
 			SYSLOG ((LOG_INFO,
@@ -207,9 +212,9 @@ static void check_perms (const struct group *grp,
 			goto failure;
 		}
 #ifdef WITH_AUDIT
-		SNPRINTF(audit_buf, "authentication new_gid=%lu",
+		stprintf_a(audit_buf, "authentication new_gid=%lu",
 		         (unsigned long) grp->gr_gid);
-		audit_logger (AUDIT_GRP_AUTH, Prog,
+		audit_logger (AUDIT_GRP_AUTH,
 		              audit_buf, NULL, getuid (), SHADOW_AUDIT_SUCCESS);
 #endif
 	}
@@ -291,14 +296,14 @@ static void syslog_sg (const char *name, const char *group)
 		if ((pid_t)-1 == child) {
 			/* error in fork() */
 			fprintf (stderr, _("%s: failure forking: %s\n"),
-				 is_newgrp ? "newgrp" : "sg", strerror (errno));
+				is_newgrp ? "newgrp" : "sg", strerrno());
 #ifdef WITH_AUDIT
 			if (group) {
 				audit_logger_with_group(AUDIT_CHGRP_ID, "changing", NULL,
 							getuid(), "new_group", group,
 							SHADOW_AUDIT_FAILURE);
 			} else {
-				audit_logger (AUDIT_CHGRP_ID, Prog,
+				audit_logger (AUDIT_CHGRP_ID,
 				              "changing", NULL, getuid(),
 				              SHADOW_AUDIT_FAILURE);
 			}
@@ -382,10 +387,6 @@ int main (int argc, char **argv)
 	struct sgrp *sgrp;
 #endif
 
-#ifdef WITH_AUDIT
-	audit_help_open ();
-#endif
-
 	check_fds ();
 
 	(void) setlocale (LC_ALL, "");
@@ -427,6 +428,9 @@ int main (int argc, char **argv)
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	OPENLOG (Prog);
+#ifdef WITH_AUDIT
+	audit_help_open ();
+#endif
 	argc--;
 	argv++;
 
@@ -437,7 +441,7 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: Cannot determine your user name.\n"),
 		         Prog);
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_CHGRP_ID, Prog,
+		audit_logger (AUDIT_CHGRP_ID,
 		              "changing", NULL, getuid (), SHADOW_AUDIT_FAILURE);
 #endif
 		SYSLOG ((LOG_WARN, "Cannot determine the user name of the caller (UID %lu)",
@@ -461,8 +465,8 @@ int main (int argc, char **argv)
 	 * The valid syntax are
 	 *      newgrp [-] [groupid]
 	 *      newgrp [-l] [groupid]
-	 *      sg [-]
-	 *      sg [-] groupid [[-c command]
+	 *      sg [-] groupid [[-c] command]
+	 *      sg [-l] groupid [[-c] command]
 	 */
 	if (   (argc > 0)
 	    && (   streq(argv[0], "-")
@@ -494,9 +498,8 @@ int main (int argc, char **argv)
 		if (argc > 0) {
 
 			/*
-			 * skip -c if specified so both forms work:
-			 * "sg group -c command" (as in the man page) or
-			 * "sg group command" (as in the usage message).
+			 * Skip -c if specified so both forms work:
+			 * "sg group -c command" or "sg group command".
 			 */
 			if ((argc > 1) && streq(argv[0], "-c")) {
 				command = argv[1];
@@ -557,7 +560,7 @@ int main (int argc, char **argv)
 			audit_logger_with_group(AUDIT_CHGRP_ID, "changing", NULL, getuid(),
 						"new_group", group, SHADOW_AUDIT_FAILURE);
 		} else {
-			audit_logger(AUDIT_CHGRP_ID, Prog,
+			audit_logger(AUDIT_CHGRP_ID,
 				     "changing", NULL, getuid(), SHADOW_AUDIT_FAILURE);
 		}
 #endif
@@ -614,7 +617,7 @@ int main (int argc, char **argv)
 	 * database. However getgroups() will return the group. So
 	 * if she is listed there already it is ok to grant membership.
 	 */
-	is_member = (LFIND(&grp->gr_gid, gids, ngroups) != NULL);
+	is_member = (LFIND(gid_t, &grp->gr_gid, gids, ngroups) != NULL);
 
 	/*
 	 * For split groups (due to limitations of NIS), check all
@@ -666,9 +669,9 @@ int main (int argc, char **argv)
 	 * If the group doesn't fit, I'll complain loudly and skip this
 	 * part.
 	 */
-	gids = XREALLOC(gids, ngroups + 1, gid_t);
+	gids = xrealloc_T(gids, ngroups + 1, gid_t);
 
-	LSEARCH(&gid, gids, &ngroups);
+	LSEARCH(gid_t, &gid, gids, &ngroups);
 
 	if (setgroups(ngroups, gids) == -1)
 		perror("setgroups");
@@ -694,8 +697,8 @@ int main (int argc, char **argv)
 	if (setgid (gid) != 0) {
 		perror ("setgid");
 #ifdef WITH_AUDIT
-		SNPRINTF(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
-		audit_logger (AUDIT_CHGRP_ID, Prog,
+		stprintf_a(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
+		audit_logger (AUDIT_CHGRP_ID,
 		              audit_buf, NULL, getuid (), SHADOW_AUDIT_FAILURE);
 #endif
 		exit (EXIT_FAILURE);
@@ -704,8 +707,8 @@ int main (int argc, char **argv)
 	if (setuid (getuid ()) != 0) {
 		perror ("setuid");
 #ifdef WITH_AUDIT
-		SNPRINTF(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
-		audit_logger (AUDIT_CHGRP_ID, Prog,
+		stprintf_a(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
+		audit_logger (AUDIT_CHGRP_ID,
 		              audit_buf, NULL, getuid (), SHADOW_AUDIT_FAILURE);
 #endif
 		exit (EXIT_FAILURE);
@@ -719,8 +722,8 @@ int main (int argc, char **argv)
 		closelog ();
 		execl (SHELL, "sh", "-c", command, (char *) NULL);
 #ifdef WITH_AUDIT
-		SNPRINTF(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
-		audit_logger (AUDIT_CHGRP_ID, Prog,
+		stprintf_a(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
+		audit_logger (AUDIT_CHGRP_ID,
 		              audit_buf, NULL, getuid (), SHADOW_AUDIT_FAILURE);
 #endif
 		perror (SHELL);
@@ -787,8 +790,8 @@ int main (int argc, char **argv)
 	}
 
 #ifdef WITH_AUDIT
-	SNPRINTF(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
-	audit_logger (AUDIT_CHGRP_ID, Prog,
+	stprintf_a(audit_buf, "changing new_gid=%lu", (unsigned long) gid);
+	audit_logger (AUDIT_CHGRP_ID,
 	              audit_buf, NULL, getuid (), SHADOW_AUDIT_SUCCESS);
 #endif
 	/*
@@ -817,7 +820,7 @@ int main (int argc, char **argv)
 					getuid(), "new_group", group,
 					SHADOW_AUDIT_FAILURE);
 	} else {
-		audit_logger (AUDIT_CHGRP_ID, Prog,
+		audit_logger (AUDIT_CHGRP_ID,
 		              "changing", NULL, getuid (), 0);
 	}
 #endif

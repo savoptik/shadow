@@ -250,9 +250,6 @@
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H
 
-/* Path for lastlog file. */
-#undef LASTLOG_FILE
-
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
@@ -456,6 +453,3 @@
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
-
-/* Path for wtmp file. */
-#undef _WTMP_FILE

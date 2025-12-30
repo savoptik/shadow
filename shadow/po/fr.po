@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow-man-pages 4.16.0\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2024-07-06 15:36+0200\n"
 "Last-Translator: bubu <bubub@no-log.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -1020,6 +1020,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s : (ligne %d, utilisateur %s) mot de passe inchangé\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s : (ligne %d, utilisateur %s) mot de passe inchangé\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s : ligne %d : l'utilisateur '%s' n'existe pas\n"
@@ -1315,7 +1320,11 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  créer un compte système\n"
 
-msgid "  -U, --users USERS             list of user members of this group\n"
+#, fuzzy
+#| msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr ""
 "  -U, --users USERS             liste des utilisateurs membres de ce groupe\n"
 
@@ -1467,6 +1476,14 @@ msgid ""
 msgstr ""
 "  -p, --password PASSWORD       changer le mot de passe par\n"
 "                                 PASSWORD (chiffré)\n"
+
+#, fuzzy
+#| msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr ""
+"  -U, --users USERS             liste des utilisateurs membres de ce groupe\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1816,7 +1833,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Utilisation : newgrp [-] [group]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Utilisation : sg group [[-c] commande]\n"
 
 #, c-format

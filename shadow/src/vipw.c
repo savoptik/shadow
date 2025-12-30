@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -45,8 +45,8 @@
 #include "sssd.h"
 #include "string/sprintf/aprintf.h"
 #include "string/sprintf/snprintf.h"
-#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strerrno.h"
 
 
 #define MSG_WARN_EDIT_OTHER_FILE _( \
@@ -62,7 +62,7 @@ static const char *Prog;
 static const char *filename, *fileeditname;
 static bool filelocked = false;
 static bool createedit = false;
-static int (*unlock) (void);
+static int (*unlock) (bool);
 static bool quiet = false;
 #ifdef WITH_TCB
 static const char *user = NULL;
@@ -74,7 +74,7 @@ static bool tcb_mode = false;
 static void usage (int status);
 static int create_backup_file (FILE *, const char *, struct stat *);
 static void vipwexit (const char *msg, int syserr, int ret);
-static void vipwedit (const char *, int (*)(void), int (*)(void));
+static void vipwedit (const char *, int (*)(void), int (*)(bool));
 
 /*
  * usage - display usage message and exit
@@ -82,7 +82,7 @@ static void vipwedit (const char *, int (*)(void), int (*)(void));
 static void usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
-	(void) fprintf (stderr,
+	(void) fprintf (usageout,
 	                _("Usage: %s [options]\n"
 	                  "\n"
 	                  "Options:\n"),
@@ -164,7 +164,7 @@ static void vipwexit (const char *msg, int syserr, int ret)
 		}
 	}
 	if (filelocked) {
-		if ((*unlock) () == 0) {
+		if ((*unlock) (true) == 0) {
 			fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, fileeditname);
 			SYSLOG ((LOG_ERR, "failed to unlock %s", fileeditname));
 			/* continue */
@@ -180,10 +180,9 @@ static void vipwexit (const char *msg, int syserr, int ret)
 	    || (0 != syserr)) {
 		(void) fputs ("\n", stderr);
 	}
-	if (!quiet) {
-		fprintf (stdout, _("%s: %s is unchanged\n"), Prog,
-			 filename);
-	}
+	if (!quiet)
+		printf(_("%s: %s is unchanged\n"), Prog, filename);
+
 	exit (ret);
 }
 
@@ -195,7 +194,7 @@ static void vipwexit (const char *msg, int syserr, int ret)
  *
  */
 static void
-vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
+vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (bool))
 {
 	int          status;
 	char         *to_rename;
@@ -207,7 +206,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	/* FIXME: the following should have variable sizes */
 	char         filebackup[1024], fileedit[1024];
 
-	SNPRINTF(filebackup, "%s-", file);
+	stprintf_a(filebackup, "%s-", file);
 #ifdef WITH_TCB
 	if (tcb_mode) {
 		if (   (mkdir (TCB_DIR "/" SHADOWTCB_SCRATCHDIR, 0700) != 0)
@@ -217,12 +216,12 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 			vipwexit (_("failed to drop privileges"), errno, 1);
 		}
-		SNPRINTF(fileedit,
+		stprintf_a(fileedit,
 		         TCB_DIR "/" SHADOWTCB_SCRATCHDIR "/.vipw.shadow.%s",
 		         user);
 	} else {
 #endif				/* WITH_TCB */
-		SNPRINTF(fileedit, "%s.edit", file);
+		stprintf_a(fileedit, "%s.edit", file);
 #ifdef WITH_TCB
 	}
 #endif				/* WITH_TCB */
@@ -312,8 +311,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 
 		status = system (buf);
 		if (-1 == status) {
-			fprintf (stderr, _("%s: %s: %s\n"), Prog, editor,
-			         strerror (errno));
+			fprintf(stderr, _("%s: %s: %s\n"), Prog, editor, strerrno());
 			exit (1);
 		} else if (   WIFEXITED (status)
 		           && (WEXITSTATUS (status) != 0)) {
@@ -352,11 +350,11 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 				editor_pgrp = tcgetpgrp(STDIN_FILENO);
 				if (editor_pgrp == -1) {
 					fprintf (stderr, "%s: %s: %s", Prog,
-						 "tcgetpgrp", strerror (errno));
+						"tcgetpgrp", strerrno());
 				}
 				if (tcsetpgrp(STDIN_FILENO, orig_pgrp) == -1) {
 					fprintf (stderr, "%s: %s: %s", Prog,
-						 "tcsetpgrp", strerror (errno));
+						"tcsetpgrp", strerrno());
 				}
 			}
 			kill (getpid (), SIGSTOP);
@@ -364,7 +362,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 			if (editor_pgrp != -1) {
 				if (tcsetpgrp(STDIN_FILENO, editor_pgrp) == -1) {
 					fprintf (stderr, "%s: %s: %s", Prog,
-						 "tcsetpgrp", strerror (errno));
+						"tcsetpgrp", strerrno());
 				}
 			}
 			killpg (pid, SIGCONT);
@@ -376,8 +374,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	if (orig_pgrp != -1) {
 		 /* Restore terminal pgrp after editing. */
 		if (tcsetpgrp(STDIN_FILENO, orig_pgrp) == -1) {
-			fprintf(stderr, "%s: %s: %s", Prog,
-			        "tcsetpgrp", strerror(errno));
+			fprintf(stderr, "%s: %s: %s", Prog, "tcsetpgrp", strerrno());
 		}
 		sigprocmask(SIG_SETMASK, &omask, NULL);
 	}
@@ -449,7 +446,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	if (rename (to_rename, file) == -1) {
 		fprintf (stderr,
 		         _("%s: can't restore %s: %s (your changes are in %s)\n"),
-		         Prog, file, strerror (errno), to_rename);
+		        Prog, file, strerrno(), to_rename);
 #ifdef WITH_TCB
 		if (tcb_mode) {
 			free(to_rename);
@@ -467,7 +464,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	}
 #endif				/* WITH_TCB */
 
-	if ((*file_unlock) () == 0) {
+	if ((*file_unlock) (true) == 0) {
 		fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, fileeditname);
 		SYSLOG ((LOG_ERR, "failed to unlock %s", fileeditname));
 		/* continue */

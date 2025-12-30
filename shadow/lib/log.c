@@ -7,16 +7,17 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
-#ident "$Id$"
-
-#include <sys/types.h>
+#include <lastlog.h>
+#include <paths.h>
 #include <pwd.h>
 #include <fcntl.h>
+#include <sys/types.h>
 #include <time.h>
+
+#include "attr.h"
 #include "defines.h"
-#include <lastlog.h>
 #include "prototypes.h"
 #include "string/memset/memzero.h"
 #include "string/strcpy/strncpy.h"
@@ -34,7 +35,7 @@ void dolastlog (
 	struct lastlog *ll,
 	const struct passwd *pw,
 	/*@unique@*/const char *line,
-	/*@unique@*/const char *host)
+	MAYBE_UNUSED /*@unique@*/const char *host)
 {
 	int fd;
 	off_t offset;
@@ -45,7 +46,7 @@ void dolastlog (
 	 * If the file does not exist, don't create it.
 	 */
 
-	fd = open (LASTLOG_FILE, O_RDWR);
+	fd = open(_PATH_LASTLOG, O_RDWR);
 	if (-1 == fd) {
 		return;
 	}
@@ -55,12 +56,12 @@ void dolastlog (
 	 * for this UID.  Negative UID's will create problems, but ...
 	 */
 
-	offset = (off_t) pw->pw_uid * sizeof newlog;
+	offset = (off_t) pw->pw_uid * sizeof(newlog);
 
 	if (lseek (fd, offset, SEEK_SET) != offset) {
 		SYSLOG ((LOG_WARN,
 		         "Can't read last lastlog entry for UID %lu in %s. Entry not updated.",
-		         (unsigned long) pw->pw_uid, LASTLOG_FILE));
+		         (unsigned long) pw->pw_uid, _PATH_LASTLOG));
 		(void) close (fd);
 		return;
 	}
@@ -71,8 +72,8 @@ void dolastlog (
 	 * the way we read the old one in.
 	 */
 
-	if (read (fd, &newlog, sizeof newlog) != (ssize_t) sizeof newlog) {
-		memzero (&newlog, sizeof newlog);
+	if (read(fd, &newlog, sizeof(newlog)) != (ssize_t) sizeof(newlog)) {
+		memzero(&newlog, sizeof(newlog));
 	}
 	if (NULL != ll) {
 		*ll = newlog;
@@ -81,12 +82,12 @@ void dolastlog (
 	ll_time = newlog.ll_time;
 	ll_time = time(NULL);
 	newlog.ll_time = ll_time;
-	STRTCPY(newlog.ll_line, line);
+	strtcpy_a(newlog.ll_line, line);
 #if HAVE_LL_HOST
-	STRNCPY(newlog.ll_host, host);
+	strncpy_a(newlog.ll_host, host);
 #endif
 	if (   (lseek (fd, offset, SEEK_SET) != offset)
-	    || (write_full(fd, &newlog, sizeof newlog) == -1)) {
+	    || (write_full(fd, &newlog, sizeof(newlog)) == -1)) {
 		goto err_write;
 	}
 
@@ -105,5 +106,5 @@ err_write:
 err_close:
 	SYSLOG ((LOG_WARN,
 	         "Can't write lastlog entry for UID %lu in %s: %m",
-	         (unsigned long) pw->pw_uid, LASTLOG_FILE));
+	         (unsigned long) pw->pw_uid, _PATH_LASTLOG));
 }

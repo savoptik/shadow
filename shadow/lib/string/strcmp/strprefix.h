@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_STRING_STRCMP_STRPREFIX_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -19,9 +19,9 @@
 #define strprefix(s, prefix)                                          \
 ({                                                                    \
 	const char  *p_;                                              \
-                                                                      \
+	                                                              \
 	p_ = strprefix_(s, prefix);                                   \
-                                                                      \
+	                                                              \
 	_Generic(s,                                                   \
 		const char *:                     p_,                 \
 		const void *:                     p_,                 \

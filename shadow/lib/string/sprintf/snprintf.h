@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_STRING_SPRINTF_SNPRINTF_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -16,7 +16,8 @@
 #include "sizeof.h"
 
 
-#define SNPRINTF(s, fmt, ...)                                                 \
+// stprintf_a - string truncate print formatted array
+#define stprintf_a(s, fmt, ...)                                               \
 (                                                                             \
 	snprintf_(s, countof(s), fmt __VA_OPT__(,) __VA_ARGS__)               \
 )

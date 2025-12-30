@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <errno.h>
 #include <grp.h>
@@ -73,7 +73,7 @@ check_su_auth(const char *actual_id, const char *wanted_id, bool su_to_root)
 		return DENY;
 	}
 
-	while (fgets (temp, sizeof (temp), authfile_fd) != NULL) {
+	while (fgets(temp, sizeof(temp), authfile_fd) != NULL) {
 		char  *p;
 
 		lines++;

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -48,7 +48,7 @@ int shell (const char *file, /*@null@*/const char *arg, char *const envp[])
 	 * don't want to tell us what it is themselves.
 	 */
 	if (arg == NULL) {
-		SNPRINTF(arg0, "-%s", Basename(file));
+		stprintf_a(arg0, "-%s", Basename(file));
 		arg = arg0;
 	}
 
@@ -74,7 +74,7 @@ int shell (const char *file, /*@null@*/const char *arg, char *const envp[])
 	 * how to execute this stupid shell, so I might as well give
 	 * up in disgust ...
 	 */
-	SNPRINTF(arg0, _("Cannot execute %s"), file);
+	stprintf_a(arg0, _("Cannot execute %s"), file);
 	errno = err;
 	perror (arg0);
 	return err;

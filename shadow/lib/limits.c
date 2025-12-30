@@ -13,7 +13,7 @@
  * Enhancements of resource limit code by Thomas Orgis <thomas@orgis.org>
  */
 
-#include <config.h>
+#include "config.h"
 
 #ifndef USE_PAM
 
@@ -30,9 +30,7 @@
 #include "shadowlog.h"
 #include <sys/resource.h>
 
-#include "atoi/a2i/a2i.h"
-#include "atoi/a2i/a2s.h"
-#include "atoi/str2i.h"
+#include "atoi/a2i.h"
 #include "string/memset/memzero.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
@@ -68,11 +66,11 @@ static int setrlimit_value (unsigned int resource,
 		if (a2i(rlim_t, &l, value, NULL, 10, 0, type_max(rlim_t)) == -1
 		    && errno != ENOTSUP)
 		{
-			return 0;  // FIXME: We could instead throw an error, though.
+			return 0;  // FIXME: we could instead throw an error, though.
 		}
 
 		if (__builtin_mul_overflow(l, multiplier, &limit)) {
-			/* FIXME: Again, silent error handling...
+			/* FIXME: again, silent error handling...
 			 * Wouldn't screaming make more sense?
 			 */
 			return 0;
@@ -169,7 +167,7 @@ static int check_logins (const char *name, const char *maxlogins)
  * [Tt]: t = RLIMIT_CPU		max CPU time (MIN)
  * [Uu]: u = RLIMIT_NPROC	max number of processes
  *
- * NOTE: Remember to extend the "no-limits" string below when adding a new
+ * NOTE: remember to extend the "no-limits" string below when adding a new
  * limit...
  *
  * Return value:
@@ -289,7 +287,7 @@ static int do_user_limits (const char *buf, const char *name)
 #endif
 		default:
 			/* Only report invalid strings once */
-			/* Note: A string can be invalid just because a
+			/* Note: a string can be invalid just because a
 			 * specific (theoretically valid) setting is not
 			 * supported by this build.
 			 * It is just a warning in syslog anyway. The line
@@ -351,11 +349,11 @@ static int setup_user_limits (const char *uname)
 	char tempbuf[1024];
 
 	/* init things */
-	MEMZERO(buf);
-	MEMZERO(name);
-	MEMZERO(limits);
-	MEMZERO(deflimits);
-	MEMZERO(tempbuf);
+	memzero_a(buf);
+	memzero_a(name);
+	memzero_a(limits);
+	memzero_a(deflimits);
+	memzero_a(tempbuf);
 
 	/* start the checks */
 	fil = fopen (LIMITS_FILE, "r");
@@ -366,13 +364,13 @@ static int setup_user_limits (const char *uname)
 	 * - '#' (comment) chars only as first chars on a line;
 	 * - username must start on first column (or *, or @group)
 	 *
-	 * FIXME: A better (smarter) checking should be done
+	 * FIXME: a better (smarter) checking should be done
 	 */
 	while (fgets (buf, 1024, fil) != NULL) {
 		if (strprefix(buf, "#") || strprefix(buf, "\n")) {
 			continue;
 		}
-		MEMZERO(tempbuf);
+		memzero_a(tempbuf);
 		/* a valid line should have a username, then spaces,
 		 * then limits
 		 * we allow the format:
@@ -388,7 +386,7 @@ static int setup_user_limits (const char *uname)
 		 *       account)
 		 *  @group: the limit applies to the members of the group
 		 *
-		 * To clarify: The first entry with matching user name rules,
+		 * To clarify: the first entry with matching user name rules,
 		 * everything after it is ignored. If there is no user entry,
 		 * the last encountered entry for a matching group rules.
 		 * If there is no matching group entry, the default limits rule.
@@ -467,7 +465,7 @@ void setup_limits (const struct passwd *info)
 		if (info->pw_uid != 0) {
 			if ((setup_user_limits (info->pw_name) & LOGIN_ERROR_LOGIN) != 0) {
 				(void) fputs (_("Too many logins.\n"), log_get_logfd());
-				(void) sleep (2); /* XXX: Should be FAIL_DELAY */
+				(void) sleep (2); /* XXX: should be FAIL_DELAY */
 				exit (EXIT_FAILURE);
 			}
 		}

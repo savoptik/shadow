@@ -7,12 +7,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
 #include <getopt.h>
 #include <lastlog.h>
+#include <paths.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -23,7 +24,7 @@
 #include <net/if.h>
 #endif
 
-#include "atoi/str2i.h"
+#include "atoi/a2i.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "getdef.h"
@@ -32,16 +33,9 @@
 #include "shadowlog.h"
 #include "sizeof.h"
 #include "string/memset/memzero.h"
+#include "string/strerrno.h"
 #include "string/strftime.h"
 
-
-
-/*
- * Needed for MkLinux DR1/2/2.1 - J.
- */
-#ifndef LASTLOG_FILE
-#define LASTLOG_FILE "/var/log/lastlog"
-#endif
 
 /*
  * Global variables
@@ -125,7 +119,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread (&ll, sizeof (ll), 1, lastlogfile) != 1) {
+		if (fread(&ll, sizeof(ll), 1, lastlogfile) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
 			         Prog, (unsigned long)pw->pw_uid);
@@ -137,7 +131,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 		 * as if we were reading an non existing entry in the
 		 * sparse lastlog file).
 		 */
-		memzero (&ll, sizeof (ll));
+		memzero(&ll, sizeof(ll));
 	}
 
 	/* Filter out entries that do not match with the -t or -b options */
@@ -164,7 +158,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	if (tm == NULL) {
 		cp = "(unknown)";
 	} else {
-		STRFTIME(ptime, "%a %b %e %H:%M:%S %z %Y", tm);
+		strftime_a(ptime, "%a %b %e %H:%M:%S %z %Y", tm);
 		cp = ptime;
 	}
 	if (ll.ll_time == (time_t) 0) {
@@ -223,12 +217,12 @@ static void update_one (/*@null@*/const struct passwd *pw)
 		return;
 	}
 
-	offset = (off_t) pw->pw_uid * sizeof (ll);
+	offset = (off_t) pw->pw_uid * sizeof(ll);
 	/* fseeko errors are not really relevant for us. */
 	err = fseeko (lastlogfile, offset, SEEK_SET);
 	assert (0 == err);
 
-	memzero (&ll, sizeof (ll));
+	memzero(&ll, sizeof(ll));
 
 	if (Sflg) {
 		ll.ll_time = NOW;
@@ -237,20 +231,20 @@ static void update_one (/*@null@*/const struct passwd *pw)
 #endif
 		strcpy (ll.ll_line, "lastlog");
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
+		audit_logger (AUDIT_ACCT_UNLOCK,
 			"clearing-lastlog",
 			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 #endif
 	}
 #ifdef WITH_AUDIT
 	else {
-		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
+		audit_logger (AUDIT_ACCT_UNLOCK,
 			"refreshing-lastlog",
 			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 	}
 #endif
 
-	if (fwrite (&ll, sizeof(ll), 1, lastlogfile) != 1) {
+	if (fwrite(&ll, sizeof(ll), 1, lastlogfile) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to update the entry for UID %lu\n"),
 			         Prog, (unsigned long)pw->pw_uid);
@@ -433,9 +427,9 @@ int main (int argc, char **argv)
 		}
 	}
 
-	lastlogfile = fopen (LASTLOG_FILE, (Cflg || Sflg)?"r+":"r");
+	lastlogfile = fopen(_PATH_LASTLOG, (Cflg || Sflg)?"r+":"r");
 	if (NULL == lastlogfile) {
-		perror (LASTLOG_FILE);
+		perror(_PATH_LASTLOG);
 		exit (EXIT_FAILURE);
 	}
 
@@ -443,7 +437,7 @@ int main (int argc, char **argv)
 	if (fstat (fileno (lastlogfile), &statbuf) != 0) {
 		fprintf (stderr,
 		         _("%s: Cannot get the size of %s: %s\n"),
-		         Prog, LASTLOG_FILE, strerror (errno));
+		        Prog, _PATH_LASTLOG, strerrno());
 		exit (EXIT_FAILURE);
 	}
 

@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_TYPETRAITS_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include "sizeof.h"
 
@@ -51,6 +51,17 @@
 #define is_same_typeof(a, b)                                                  \
 (                                                                             \
 	is_same_type(typeof(a), typeof(b))                                    \
+)
+
+
+#define QChar_of(s)  typeof                                           \
+(                                                                     \
+	_Generic(s,                                                   \
+		const char *:  (const char){0},                       \
+		const void *:  (const char){0},                       \
+		char *:        (char){0},                             \
+		void *:        (char){0}                              \
+	)                                                             \
 )
 
 

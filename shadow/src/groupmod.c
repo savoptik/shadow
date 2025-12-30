@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -27,7 +27,7 @@
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 
-#include "alloc/x/xmalloc.h"
+#include "alloc/malloc.h"
 #include "atoi/getnum.h"
 #include "chkname.h"
 #include "defines.h"
@@ -38,12 +38,13 @@
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif
+#include "shadow/gshadow/sgrp.h"
 #include "shadowlog.h"
 #include "sssd.h"
 #include "string/sprintf/stpeprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcpy/stpecpy.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
 
 
 /*
@@ -61,6 +62,10 @@
 #define E_PAM_USERNAME	12	/* can't determine your username for use with pam */
 #define E_PAM_ERROR	13	/* pam returned an error, see Syslog facility id groupmod */
 
+struct option_flags {
+	bool chroot;
+	bool prefix;
+};
 
 /*
  * Global variables
@@ -102,11 +107,11 @@ static void new_sgent (struct sgrp *);
 static void grp_update (void);
 static void check_new_gid (void);
 static void check_new_name (void);
-static void process_flags (int, char **);
-static void lock_files (void);
+static void process_flags (int, char **, struct option_flags *);
+static void lock_files(const struct option_flags *flags);
 static void prepare_failure_reports (void);
 static void open_files (void);
-static void close_files (void);
+static void close_files(const struct option_flags *flags);
 static void update_primary_groups (gid_t ogid, gid_t ngid);
 
 
@@ -132,7 +137,8 @@ static void usage (int status)
 	                "                                PASSWORD\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
-	(void) fputs (_("  -U, --users USERS             list of user members of this group\n"), usageout);
+	(void) fputs (_("  -U, --users USERS             comma-separated list of users to add as\n"
+	                "                                members of this group\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -237,7 +243,7 @@ grp_update(void)
 			 * shadowed password, we force the creation of a
 			 * gshadow entry when a new password is requested.
 			 */
-			bzero(&sgrp, sizeof sgrp);
+			bzero(&sgrp, sizeof(sgrp));
 			sgrp.sg_namp   = xstrdup (grp.gr_name);
 			sgrp.sg_passwd = xstrdup (grp.gr_passwd);
 			sgrp.sg_adm    = &empty;
@@ -253,11 +259,9 @@ grp_update(void)
 	}
 
 	if (user_list) {
-		char  *u, *ul;
-
 		if (!aflg) {
 			// requested to replace the existing groups
-			grp.gr_mem = XMALLOC(1, char *);
+			grp.gr_mem = xmalloc_T(1, char *);
 			grp.gr_mem[0] = NULL;
 		} else {
 			// append to existing groups
@@ -267,7 +271,7 @@ grp_update(void)
 #ifdef	SHADOWGRP
 		if (NULL != osgrp) {
 			if (!aflg) {
-				sgrp.sg_mem = XMALLOC(1, char *);
+				sgrp.sg_mem = xmalloc_T(1, char *);
 				sgrp.sg_mem[0] = NULL;
 			} else {
 				if (NULL != sgrp.sg_mem[0])
@@ -276,18 +280,22 @@ grp_update(void)
 		}
 #endif				/* SHADOWGRP */
 
-		ul = user_list;
-		while (NULL != (u = strsep(&ul, ","))) {
-			if (prefix_getpwnam(u) == NULL) {
-				fprintf(stderr, _("Invalid member username %s\n"), u);
-				exit (E_GRP_UPDATE);
-			}
+		if (!streq(user_list, "")) {
+			char  *u, *ul;
 
-			grp.gr_mem = add_list(grp.gr_mem, u);
+			ul = user_list;
+			while (NULL != (u = strsep(&ul, ","))) {
+				if (prefix_getpwnam(u) == NULL) {
+					fprintf(stderr, _("Invalid member username %s\n"), u);
+					exit(E_GRP_UPDATE);
+				}
+
+				grp.gr_mem = add_list(grp.gr_mem, u);
 #ifdef	SHADOWGRP
-			if (NULL != osgrp)
-				sgrp.sg_mem = add_list(sgrp.sg_mem, u);
+				if (NULL != osgrp)
+					sgrp.sg_mem = add_list(sgrp.sg_mem, u);
 #endif				/* SHADOWGRP */
+			}
 		}
 	}
 
@@ -405,7 +413,7 @@ check_new_name(void)
  *	values that the user will be created with accordingly. The values
  *	are checked for sanity.
  */
-static void process_flags (int argc, char **argv)
+static void process_flags (int argc, char **argv, struct option_flags *flags)
 {
 	int c;
 	static struct option long_options[] = {
@@ -451,8 +459,10 @@ static void process_flags (int argc, char **argv)
 			pflg = true;
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
+			flags->chroot = true;
 			break;
 		case 'P': /* no-op, handled in process_prefix_flag () */
+			flags->prefix = true;
 			break;
 		case 'U':
 			user_list = optarg;
@@ -479,16 +489,20 @@ static void process_flags (int argc, char **argv)
  *	close_files() closes all of the files that were opened for this new
  *	group. This causes any modified entries to be written out.
  */
-static void close_files (void)
+static void close_files(const struct option_flags *flags)
 {
-	if (gr_close () == 0) {
+	bool process_selinux;
+
+	process_selinux = !flags->chroot && !flags->prefix;
+
+	if (gr_close (process_selinux) == 0) {
 		fprintf (stderr,
 		         _("%s: failure while writing changes to %s\n"),
 		         Prog, gr_dbname ());
 		exit (E_GRP_UPDATE);
 	}
 #ifdef WITH_AUDIT
-	audit_logger (AUDIT_GRP_MGMT, Prog,
+	audit_logger (AUDIT_GRP_MGMT,
 	              info_group.audit_msg,
 	              group_name, AUDIT_NO_ID,
 	              SHADOW_AUDIT_SUCCESS);
@@ -498,13 +512,13 @@ static void close_files (void)
 	         gr_dbname (), info_group.action));
 	del_cleanup (cleanup_report_mod_group);
 
-	cleanup_unlock_group (NULL);
+	cleanup_unlock_group (&process_selinux);
 	del_cleanup (cleanup_unlock_group);
 
 #ifdef	SHADOWGRP
 	if (   is_shadow_grp
 	    && (pflg || nflg || user_list)) {
-		if (sgr_close () == 0) {
+		if (sgr_close (process_selinux) == 0) {
 			fprintf (stderr,
 			         _("%s: failure while writing changes to %s\n"),
 			         Prog, sgr_dbname ());
@@ -513,12 +527,12 @@ static void close_files (void)
 #ifdef WITH_AUDIT
 		/* If both happened, log password change as its more important */
 		if (pflg)
-			audit_logger (AUDIT_GRP_CHAUTHTOK, Prog,
+			audit_logger (AUDIT_GRP_CHAUTHTOK,
 		              info_gshadow.audit_msg,
 		              group_name, AUDIT_NO_ID,
 		              SHADOW_AUDIT_SUCCESS);
 		else
-			audit_logger (AUDIT_GRP_MGMT, Prog,
+			audit_logger (AUDIT_GRP_MGMT,
 		              info_gshadow.audit_msg,
 		              group_name, AUDIT_NO_ID,
 		              SHADOW_AUDIT_SUCCESS);
@@ -528,20 +542,20 @@ static void close_files (void)
 		         sgr_dbname (), info_gshadow.action));
 		del_cleanup (cleanup_report_mod_gshadow);
 
-		cleanup_unlock_gshadow (NULL);
+		cleanup_unlock_gshadow (&process_selinux);
 		del_cleanup (cleanup_unlock_gshadow);
 	}
 #endif				/* SHADOWGRP */
 
 	if (gflg) {
-		if (pw_close () == 0) {
+		if (pw_close (process_selinux) == 0) {
 			fprintf (stderr,
 			         _("%s: failure while writing changes to %s\n"),
 			         Prog, pw_dbname ());
 			exit (E_GRP_UPDATE);
 		}
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_GRP_MGMT, Prog,
+		audit_logger (AUDIT_GRP_MGMT,
 		              info_passwd.audit_msg,
 		              group_name, AUDIT_NO_ID,
 		              SHADOW_AUDIT_SUCCESS);
@@ -551,12 +565,12 @@ static void close_files (void)
 		         pw_dbname (), info_passwd.action));
 		del_cleanup (cleanup_report_mod_passwd);
 
-		cleanup_unlock_passwd (NULL);
+		cleanup_unlock_passwd (&process_selinux);
 		del_cleanup (cleanup_unlock_passwd);
 	}
 
 #ifdef WITH_AUDIT
-	audit_logger (AUDIT_GRP_MGMT, Prog,
+	audit_logger (AUDIT_GRP_MGMT,
 	              "modify-group",
 	              group_name, AUDIT_NO_ID,
 	              SHADOW_AUDIT_SUCCESS);
@@ -581,15 +595,15 @@ static void prepare_failure_reports (void)
 #endif
 	info_passwd.name  = group_name;
 
-	gr                     = XMALLOC(512, char);
+	gr                     = xmalloc_T(512, char);
 	info_group.audit_msg   = gr;
 	gr_end                 = gr + 512;
 #ifdef	SHADOWGRP
-	sgr                    = XMALLOC(512, char);
+	sgr                    = xmalloc_T(512, char);
 	info_gshadow.audit_msg = sgr;
 	sgr_end                = sgr + 512;
 #endif
-	pw                     = XMALLOC(512, char);
+	pw                     = xmalloc_T(512, char);
 	info_passwd.audit_msg  = pw;
 	pw_end                 = pw + 512;
 
@@ -657,15 +671,19 @@ static void prepare_failure_reports (void)
  *
  *	lock_files() locks the group, gshadow, and passwd databases.
  */
-static void lock_files (void)
+static void lock_files(const struct option_flags *flags)
 {
+	bool process_selinux;
+
+	process_selinux = !flags->chroot && !flags->prefix;
+
 	if (gr_lock () == 0) {
 		fprintf (stderr,
 		         _("%s: cannot lock %s; try again later.\n"),
 		         Prog, gr_dbname ());
 		exit (E_GRP_UPDATE);
 	}
-	add_cleanup (cleanup_unlock_group, NULL);
+	add_cleanup (cleanup_unlock_group, &process_selinux);
 
 #ifdef	SHADOWGRP
 	if (   is_shadow_grp
@@ -676,7 +694,7 @@ static void lock_files (void)
 			         Prog, sgr_dbname ());
 			exit (E_GRP_UPDATE);
 		}
-		add_cleanup (cleanup_unlock_gshadow, NULL);
+		add_cleanup (cleanup_unlock_gshadow, &process_selinux);
 	}
 #endif
 
@@ -687,7 +705,7 @@ static void lock_files (void)
 			         Prog, pw_dbname ());
 			exit (E_GRP_UPDATE);
 		}
-		add_cleanup (cleanup_unlock_passwd, NULL);
+		add_cleanup (cleanup_unlock_passwd, &process_selinux);
 	}
 }
 
@@ -734,7 +752,7 @@ void update_primary_groups (gid_t ogid, gid_t ngid)
 	struct passwd *pwd;
 
 	prefix_setpwent ();
-	while ((pwd = prefix_getpwent ()) != NULL) {
+	while (NULL != (pwd = prefix_getpwent())) {
 		if (pwd->pw_gid == ogid) {
 			const struct passwd *lpwd;
 			struct passwd npwd;
@@ -771,6 +789,7 @@ int main (int argc, char **argv)
 	int retval;
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
+	struct option_flags  flags = {.chroot = false, .prefix = false};
 
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
@@ -794,7 +813,7 @@ int main (int argc, char **argv)
 		exit (E_CLEANUP_SERVICE);
 	}
 
-	process_flags (argc, argv);
+	process_flags (argc, argv, &flags);
 
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
@@ -859,7 +878,7 @@ int main (int argc, char **argv)
 		check_new_name ();
 	}
 
-	lock_files ();
+	lock_files (&flags);
 
 	/*
 	 * Now if the group is not changed, it's our fault.
@@ -875,7 +894,7 @@ int main (int argc, char **argv)
 
 	grp_update ();
 
-	close_files ();
+	close_files (&flags);
 
 	nscd_flush_cache ("group");
 	sssd_flush_cache (SSSD_DB_GROUP);

@@ -8,11 +8,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
 #include <pwd.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -60,7 +61,7 @@ bool hushed (const char *username)
 	 */
 
 	if (hushfile[0] != '/') {
-		SNPRINTF(buf, "%s/%s", pw->pw_dir, hushfile);
+		stprintf_a(buf, "%s/%s", pw->pw_dir, hushfile);
 		return (access (buf, F_OK) == 0);
 	}
 
@@ -73,7 +74,7 @@ bool hushed (const char *username)
 	if (NULL == fp) {
 		return false;
 	}
-	for (found = false; !found && (fgets (buf, sizeof buf, fp) == buf);) {
+	for (found = false; !found && (fgets(buf, sizeof(buf), fp) != NULL);) {
 		stpsep(buf, "\n");
 		found = streq(buf, pw->pw_shell) ||
 		        streq(buf, pw->pw_name);

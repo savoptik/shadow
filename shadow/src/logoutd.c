@@ -6,13 +6,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <utmpx.h>
@@ -21,6 +22,7 @@
 #include "prototypes.h"
 #include "shadowlog.h"
 #include "sizeof.h"
+#include "string/strcmp/strneq.h"
 #include "string/strcpy/strncat.h"
 #include "string/strdup/strndupa.h"
 
@@ -54,8 +56,8 @@ check_login(const struct utmpx *ut)
 	char    *line;
 	time_t  now;
 
-	user = STRNDUPA(ut->ut_user);
-	line = STRNDUPA(ut->ut_line);
+	user = strndupa_a(ut->ut_user);
+	line = strndupa_a(ut->ut_line);
 
 	now = time(NULL);
 
@@ -114,7 +116,7 @@ static void send_mesg_to_tty (int tty_fd)
  *	off from the system.
  */
 int
-main(int argc, char **argv)
+main(int argc, char *[])
 {
 	pid_t  pid;
 
@@ -171,16 +173,16 @@ main(int argc, char **argv)
 		 * for login sessions will be checked to see if the user
 		 * is permitted to be signed on at this time.
 		 */
-		while ((ut = getutxent()) != NULL) {
+		while (NULL != (ut = getutxent())) {
 			int   tty_fd;
 			char  tty_name[sizeof(ut->ut_line) + 6];  // /dev/ + NUL
 
 			if (ut->ut_type != USER_PROCESS) {
 				continue;
 			}
-			if (ut->ut_user[0] == '\0') {
+			if (strneq_a(ut->ut_user, ""))
 				continue;
-			}
+
 			if (check_login (ut)) {
 				continue;
 			}
@@ -205,7 +207,7 @@ main(int argc, char **argv)
 			else
 				strcpy(tty_name, "");
 
-			STRNCAT(tty_name, ut->ut_line);
+			strncat_a(tty_name, ut->ut_line);
 #ifndef O_NOCTTY
 #define O_NOCTTY 0
 #endif
@@ -225,7 +227,7 @@ main(int argc, char **argv)
 
 			SYSLOG ((LOG_NOTICE,
 				 "logged off user '%s' on '%s'",
-			         STRNDUPA(ut->ut_user),
+			         strndupa_a(ut->ut_user),
 				 tty_name));
 
 			/*

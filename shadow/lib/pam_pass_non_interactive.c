@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id:$"
 
@@ -27,7 +27,7 @@
 static int ni_conv (int num_msg,
                     const struct pam_message **msg,
                     struct pam_response **resp,
-                    MAYBE_UNUSED void *appdata_ptr);
+                    void *);
 static const struct pam_conv non_interactive_pam_conv = {
 	ni_conv,
 	NULL
@@ -38,7 +38,7 @@ static const struct pam_conv non_interactive_pam_conv = {
 static int ni_conv (int num_msg,
                     const struct pam_message **msg,
                     struct pam_response **resp,
-                    MAYBE_UNUSED void *appdata_ptr)
+                    void *)
 {
 	struct pam_response *responses;
 	int count;
@@ -49,7 +49,7 @@ static int ni_conv (int num_msg,
 		return PAM_CONV_ERR;
 	}
 
-	responses = CALLOC (num_msg, struct pam_response);
+	responses = calloc_T(num_msg, struct pam_response);
 	if (NULL == responses) {
 		return PAM_CONV_ERR;
 	}
@@ -78,7 +78,7 @@ static int ni_conv (int num_msg,
 			break;
 		case PAM_TEXT_INFO:
 			if (   (NULL == msg[count]->msg)
-			    || (fprintf (stdout, "%s\n", msg[count]->msg) <0)) {
+			    || (printf("%s\n", msg[count]->msg) <0)) {
 				goto failed_conversation;
 			}
 			responses[count].resp = NULL;

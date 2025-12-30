@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ifndef USE_PAM
 
@@ -37,7 +37,7 @@
 
 	fp = fopen (fname, "r");
 	if (   (NULL == fp)
-	    || (fgets (tzbuf, sizeof (tzbuf), fp) == NULL)) {
+	    || (fgets(tzbuf, sizeof(tzbuf), fp) == NULL)) {
 		result = "TZ=CST6CDT";
 	} else {
 		stpsep(tzbuf, "\n");

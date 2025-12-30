@@ -8,8 +8,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
+#include <paths.h>
 #include <shadow.h>
 #include <stdio.h>
 
@@ -18,6 +19,7 @@
 #include "fields.h"
 #include "getdef.h"
 #include "prototypes.h"
+#include "shadow/shadow/sgetspent.h"
 #include "shadowio.h"
 
 #ifdef WITH_TCB
@@ -74,14 +76,12 @@ static struct commonio_ops shadow_ops = {
 	shadow_getname,
 	shadow_parse,
 	shadow_put,
-	fgets,
-	fputs,
 	NULL,			/* open_hook */
 	NULL			/* close_hook */
 };
 
 static struct commonio_db shadow_db = {
-	SHADOW_FILE,		/* filename */
+	_PATH_SHADOW,		/* filename */
 	&shadow_ops,		/* ops */
 	NULL,			/* fp */
 #ifdef WITH_SELINUX
@@ -185,7 +185,7 @@ int spw_rewind (void)
 	return commonio_next (&shadow_db);
 }
 
-int spw_close (void)
+int spw_close (bool process_selinux)
 {
 	int retval = 0;
 #ifdef WITH_TCB
@@ -195,7 +195,7 @@ int spw_close (void)
 		return 0;
 	}
 #endif				/* WITH_TCB */
-	retval = commonio_close (&shadow_db);
+	retval = commonio_close (&shadow_db, process_selinux);
 #ifdef WITH_TCB
 	if (use_tcb && (shadowtcb_gain_priv () == SHADOWTCB_FAILURE)) {
 		return 0;
@@ -204,14 +204,14 @@ int spw_close (void)
 	return retval;
 }
 
-int spw_unlock (void)
+int spw_unlock (bool process_selinux)
 {
 #ifdef WITH_TCB
 	int retval = 0;
 
 	if (!getdef_bool ("USE_TCB")) {
 #endif				/* WITH_TCB */
-		return commonio_unlock (&shadow_db);
+		return commonio_unlock (&shadow_db, process_selinux);
 #ifdef WITH_TCB
 	}
 	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {

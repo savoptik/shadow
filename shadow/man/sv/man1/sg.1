@@ -2,12 +2,12 @@
 .\"     Title: sg
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 24-06-2025
+.\"      Date: 30-12-2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: Swedish
 .\"
-.TH "SG" "1" "24-06-2025" "shadow\-utils 4\&.18\&.0" "User Commands"
+.TH "SG" "1" "30-12-2025" "shadow\-utils 4\&.19\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 sg \- k\(:or kommando med annat grupp\-id
 .SH "SYNOPSIS"
 .HP \w'\fBsg\fR\ 'u
-\fBsg\fR [\-] [group\ [\-c\ ]\ command]
+\fBsg\fR [\fI\-\fR] \fIgroup\fR [[\fI\-c\fR]\ \fIcommand\fR]
 .SH "BESKRIVNING"
 .PP
 The
@@ -51,9 +51,27 @@ is that some shells treat
 specially, replacing themselves with a new instance of a shell that
 \fBnewgrp\fR
 creates\&. This doesn\*(Aqt happen with
-\fBsg\fR, so upon exit from a
+\fBsg\fR, so upon exit from an
 \fBsg\fR
 command you are returned to your previous group ID\&.
+.SH "FLAGGOR"
+.PP
+The options which apply to the
+\fBsg\fR
+command are:
+.PP
+\fB\-\fR, \fB\-l\fR
+.RS 4
+Start the shell as a login shell\&.
+.RE
+.PP
+\fB\-c\fR
+.RS 4
+Specify a command that will be invoked by the shell using its
+\fB\-c\fR\&.
+.sp
+This is the default; for backward compatibility\&.
+.RE
 .SH "CONFIGURATION"
 .PP
 The following configuration variables in

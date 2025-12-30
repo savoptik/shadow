@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "exitcodes.h"
 #include "prototypes.h"
+#include "shadow/gshadow/endsgent.h"
 
 
 #ident "$Id$"

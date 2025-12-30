@@ -19,7 +19,7 @@
 #ifndef _PROTOTYPES_H
 #define _PROTOTYPES_H
 
-#include <config.h>
+#include "config.h"
 
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -34,6 +34,8 @@
 #include "attr.h"
 #include "defines.h"
 #include "commonio.h"
+#include "shadow/gshadow/sgrp.h"
+
 
 /* addgrps.c */
 #if !defined(USE_PAM)
@@ -92,11 +94,11 @@ void cleanup_report_del_group_gshadow (void *group_name);
 void cleanup_report_mod_passwd (void *cleanup_info);
 void cleanup_report_mod_group (void *cleanup_info);
 void cleanup_report_mod_gshadow (void *cleanup_info);
-void cleanup_unlock_group (/*@null@*/void *MAYBE_UNUSED);
+void cleanup_unlock_group (void *process_selinux);
 #ifdef SHADOWGRP
-void cleanup_unlock_gshadow (/*@null@*/void *MAYBE_UNUSED);
+void cleanup_unlock_gshadow (void *process_selinux);
 #endif
-void cleanup_unlock_passwd (/*@null@*/void *MAYBE_UNUSED);
+void cleanup_unlock_passwd (void *process_selinux);
 
 /* console.c */
 extern bool console (const char *);
@@ -153,11 +155,6 @@ extern int getrange (const char *range,
 /* gettime.c */
 extern time_t gettime (void);
 
-/* fputsx.c */
-ATTR_ACCESS(write_only, 1, 2)
-extern /*@null@*/char *fgetsx(/*@returned@*/char *restrict, int, FILE *restrict);
-extern int fputsx (const char *, FILE *);
-
 /* groupio.c */
 extern void __gr_del_entry (const struct commonio_entry *ent);
 extern /*@observer@*/const struct commonio_db *__gr_get_db (void);
@@ -181,7 +178,7 @@ extern void audit_help_open (void);
 typedef enum {
 	SHADOW_AUDIT_FAILURE = 0,
 	SHADOW_AUDIT_SUCCESS = 1} shadow_audit_result;
-extern void audit_logger (int type, const char *pgname, const char *op,
+extern void audit_logger (int type, const char *op,
                           const char *name, unsigned int id,
                           shadow_audit_result result);
 void audit_logger_message (const char *message, shadow_audit_result result);
@@ -199,6 +196,7 @@ extern void setup_limits (const struct passwd *);
 extern /*@only@*/char **add_list (/*@returned@*/ /*@only@*/char **, const char *);
 extern /*@only@*/char **del_list (/*@returned@*/ /*@only@*/char **, const char *);
 extern /*@only@*/char **dup_list (char *const *);
+extern void free_list (char **);
 extern bool is_on_list (char *const *list, const char *member);
 extern /*@only@*/char **comma_to_list (const char *);
 
@@ -303,7 +301,8 @@ extern int do_pam_passwd_non_interactive (const char *pam_service,
 #endif				/* USE_PAM */
 
 /* obscure.c */
-extern bool obscure (const char *, const char *, const struct passwd *);
+extern bool obscure (const char *, const char *);
+extern void obscure_get_range(int *, int *);
 
 /* pam_pass.c */
 #ifdef USE_PAM
@@ -337,7 +336,7 @@ extern struct spwd *pwd_to_spwd (const struct passwd *);
 
 /* pwdcheck.c */
 #ifndef USE_PAM
-extern void passwd_check (const char *, const char *, const char *);
+extern void passwd_check(const char *, const char *);
 #endif
 
 /* pwd_init.c */
@@ -394,17 +393,6 @@ extern void setup (struct passwd *);
 
 /* setupenv.c */
 extern void setup_env (struct passwd *);
-
-/* sgetgrent.c */
-extern struct group *sgetgrent (const char *buf);
-
-/* sgetpwent.c */
-extern struct passwd *sgetpwent (const char *buf);
-
-/* sgetspent.c */
-#ifndef HAVE_SGETSPENT
-extern struct spwd *sgetspent (const char *string);
-#endif
 
 /* sgroupio.c */
 extern void __sgr_del_entry (const struct commonio_entry *ent);
@@ -468,11 +456,13 @@ extern int user_busy (const char *name, uid_t uid);
  * @brief Get host for the current session
  *
  * @param[out] out Host name
+ * @param[in] main_pid the PID of the main process (the parent PID if
+ *                     the process forked itself)
  *
  * @return 0 or a positive integer if the host was obtained properly,
  *         another value on error.
  */
-extern int get_session_host (char **out);
+extern int get_session_host (char **out, pid_t main_pid);
 #ifndef ENABLE_LOGIND
 /**
  * @brief Update or create an utmp entry in utmp, wtmp, utmpw, or wtmpx
@@ -480,24 +470,30 @@ extern int get_session_host (char **out);
  * @param[in] user username
  * @param[in] tty tty
  * @param[in] host hostname
+ * @param[in] main_pid the PID of the main process (the parent PID if
+ *                     the process forked itself)
  *
  * @return 0 if utmp was updated properly,
  *         1 on error.
  */
 extern int update_utmp (const char *user,
                         const char *tty,
-                        const char *host);
+                        const char *host,
+                        pid_t main_pid);
 /**
  * @brief Update the cumulative failure log
  *
  * @param[in] failent_user username
  * @param[in] tty tty
  * @param[in] host hostname
+ * @param[in] main_pid the PID of the main process (the parent PID if
+ *                     the process forked itself)
  *
  */
 extern void record_failure(const char *failent_user,
                            const char *tty,
-                           const char *hostname);
+                           const char *hostname,
+                           pid_t main_pid);
 #endif /* ENABLE_LOGIND */
 
 /**

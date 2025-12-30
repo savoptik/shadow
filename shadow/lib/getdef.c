@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -22,15 +22,13 @@
 #include <libeconf.h>
 #endif
 
-#include "atoi/a2i/a2s.h"
-#include "atoi/a2i/a2u.h"
-#include "atoi/str2i.h"
+#include "atoi/a2i.h"
 #include "defines.h"
 #include "getdef.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
 #include "sizeof.h"
-#include "string/sprintf/xaprintf.h"
+#include "string/sprintf/aprintf.h"
 #include "string/strcmp/strcaseeq.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
@@ -555,7 +553,7 @@ static void def_load (void)
 	/*
 	 * Go through all of the lines in the file.
 	 */
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
 
 		/*
 		 * Trim trailing whitespace.

@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 24/06/2025
+.\"      Date: 30/12/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: Ukrainian
 .\"
-.TH "newusers" "8" "24/06/2025" "shadow\-utils 4\&.18\&.0" "System Management Commands"
+.TH "newusers" "8" "30/12/2025" "shadow\-utils 4\&.19\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,7 +53,7 @@ It can be the name of a new user or the name of an existing user (or a user crea
 .PP
 \fIpw_passwd\fR
 .RS 4
-Це поле буде зашифровано і використано як нове значення зашифрованого пароля\&.
+If this field is not empty, it will be encrypted and used as the new value of the encrypted password\&.
 .RE
 .PP
 \fIpw_uid\fR
@@ -161,7 +161,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR

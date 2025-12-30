@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_STRING_STRCHR_STRNUL_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
@@ -18,7 +18,7 @@
 #define strnul(s)                                                             \
 ({                                                                            \
 	__auto_type  s_ = s;                                                  \
-                                                                              \
+	                                                                      \
 	s_ + strlen(s_);                                                      \
 })
 

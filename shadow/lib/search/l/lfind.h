@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024, Alejandro Colomar <alx@kernel.org>
+// SPDX-FileCopyrightText: 2024-2025, Alejandro Colomar <alx@kernel.org>
 // SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -6,26 +6,25 @@
 #define SHADOW_INCLUDE_LIB_SEARCH_L_LFIND_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <search.h>
 #include <stddef.h>
 
 #include "search/cmp/cmp.h"
-#include "typetraits.h"
-
-#include <assert.h>
+#include "sizeof.h"
 
 
-#define LFIND(k, a, n)                                                \
+// lfind_T - linear find type-safe
+#define lfind_T(T, ...)            lfind_T_(typeas(T), __VA_ARGS__)
+#define lfind_T_(T, k, a, n, cmp)                                     \
 ({                                                                    \
-	__auto_type  k_ = k;                                          \
-	__auto_type  a_ = a;                                          \
-                                                                      \
-	static_assert(is_same_typeof(k_, a_), "");                    \
-                                                                      \
-	(typeof(k_)) lfind_(k_, a_, n, sizeof(*k_), CMP(typeof(k_))); \
+	_Generic(k, T *: (void)0, const T *: (void)0);                \
+	_Generic(a, T *: (void)0, const T *: (void)0);                \
+	(T *){lfind_(k, a, n, sizeof(T), cmp)};                       \
 })
+
+#define LFIND(T, ...)  lfind_T(T, __VA_ARGS__, CMP(T))
 
 
 inline void *lfind_(const void *k, const void *a, size_t n, size_t ksize,

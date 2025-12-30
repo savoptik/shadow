@@ -12,7 +12,7 @@
  * in other shadow-aware programs.  --marekm
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <pwd.h>
@@ -33,11 +33,11 @@
  *	password expiration criteria.
  *
  * Return value:
- *	0: The password is still valid
- *	1: The password has expired, it must be changed
- *	2: The password has expired since a long time and the account is
+ *	0: the password is still valid
+ *	1: the password has expired, it must be changed
+ *	2: the password has expired since a long time and the account is
  *	   now disabled. (password cannot be changed)
- *	3: The account has expired
+ *	3: the account has expired
  */
 int isexpired (const struct passwd *pw, /*@null@*/const struct spwd *sp)
 {
@@ -82,13 +82,11 @@ int isexpired (const struct passwd *pw, /*@null@*/const struct spwd *sp)
 
 	/*
 	 * The last and max fields must be present for an account
-	 * to have an expired password.  A maximum of >10000 days
-	 * is considered to be infinite.
+	 * to have an expired password.
 	 */
 
 	if (   (-1 == sp->sp_lstchg)
-	    || (-1 == sp->sp_max)
-	    || (sp->sp_max >= 10000)) {
+	    || (-1 == sp->sp_max)) {
 		return 0;
 	}
 

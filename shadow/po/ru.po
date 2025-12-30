@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.5.1-1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2017-03-05 11:14+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -1001,6 +1001,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (строка %d, пользователь %s) пароль не изменён\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: (строка %d, пользователь %s) пароль не изменён\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: строка %d: пользователь «%s» не существует\n"
@@ -1291,7 +1296,9 @@ msgstr "  -r, --system                  создавать системную г
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
-msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    перечислить всех членов группы\n"
 
 #, fuzzy, c-format
@@ -1442,6 +1449,13 @@ msgid ""
 msgstr ""
 "  -p, --password ПАРОЛЬ         изменить пароль на заданный (шифрованный)\n"
 "                                ПАРОЛЬ\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    перечислить всех членов группы\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1784,7 +1798,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Использование: newgrp [-] [группа]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Использование: sg группа [[-c] команда]\n"
 
 #, c-format
