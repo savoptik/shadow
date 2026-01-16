@@ -85,10 +85,10 @@ static void print_day_as_date (long day);
 static void list_fields (void);
 static void process_flags (int argc, char **argv, struct option_flags *flags);
 static void check_flags (int argc, int opt_index);
-static void check_perms (void);
+static void check_perms (const struct option_flags *flags);
 static void open_files (bool readonly, const struct option_flags *flags, const char *name, const struct passwd **pw);
-static void close_files (void);
-NORETURN static void fail_exit (int code);
+static void close_files (const struct option_flags *flags);
+NORETURN static void fail_exit (int code, bool process_selinux);
 
 /*
  * fail_exit - do some cleanup and exit with the given error code
@@ -531,12 +531,12 @@ static void open_files (bool readonly, const struct option_flags *flags, const c
 		fprintf (stderr, _("%s: user '%s' does not exist in %s\n"),
 		         Prog, name, pw_dbname ());
 		closelog ();
-		fail_exit (E_NOPERM);
+		fail_exit (E_NOPERM, process_selinux);
 	}
 
 #ifdef WITH_TCB
 	if (shadowtcb_set_user ((*pw)->pw_name) == SHADOWTCB_FAILURE) {
-		fail_exit (E_NOPERM);
+		fail_exit (E_NOPERM, process_selinux);
 	}
 #endif
 
