@@ -451,7 +451,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (bool))
 	if (link (file, filebackup) != 0) {
 		fprintf (stderr,
 		         _("%s: can't link %s to %s: %s (your changes are in %s)\n"),
-		         Prog, file, filebackup, strerror (errno), to_rename);
+		         Prog, file, filebackup, strerrno(), to_rename);
 #ifdef WITH_TCB
 		if (tcb_mode) {
 			free (to_rename);
