@@ -430,7 +430,7 @@ static void close_files(const struct option_flags *flags)
 }
 
 #ifdef USE_PAM
-static int paste_pwd_shadow (char *name, char *pwd)
+static int paste_pwd_shadow (char *name, char *pwd, bool process_selinux)
 {
 	const struct spwd *sp;
 	struct spwd newsp;
@@ -450,7 +450,7 @@ static int paste_pwd_shadow (char *name, char *pwd)
 	{
 		fprintf (stderr, "can't open shadow file for %s\n",
 				name);
-		spw_unlock ();
+		spw_unlock (process_selinux);
 		return 0;
 	}
 	sp = spw_locate (name);
@@ -470,22 +470,22 @@ static int paste_pwd_shadow (char *name, char *pwd)
 		fprintf (stderr, "can't update shadow entry for %s\n", name);
 		return 0;
 	}
-	if (!spw_close ())
+	if (!spw_close (process_selinux))
 	{
 		fprintf (stderr, "error updating shadow file\n");
 		return 0;
 	}
-	spw_unlock ();
+	spw_unlock (process_selinux);
 	return 1;
 }
 
-static int paste_pwd (char *name, char *pwd)
+static int paste_pwd (char *name, char *pwd, bool process_selinux)
 {
 	const struct passwd *pw;
 	struct passwd newpw;
 
 	if (spw_file_present ())
-		return paste_pwd_shadow (name, pwd);
+		return paste_pwd_shadow (name, pwd, process_selinux);
 
 	if (!pw_lock ())
 	{
@@ -513,12 +513,12 @@ static int paste_pwd (char *name, char *pwd)
 		fprintf (stderr, "cannot update password entry\n");
 		return 0;
 	}
-	if (!pw_close ())
+	if (!pw_close (process_selinux))
 	{
 		fprintf (stderr, "error updating password file\n");
 		return 0;
 	}
-	pw_unlock ();
+	pw_unlock (process_selinux);
 	return 1;
 }
 #endif				/* USE_PAM */
@@ -661,7 +661,7 @@ int main (int argc, char **argv)
 #ifdef USE_PAM
 		if (use_pam){
 			if (eflg) {
-				if (!paste_pwd (name, cp)) {
+				if (!paste_pwd (name, cp, process_selinux)) {
 					fprintf (stderr, "%s: line %jd: unable to paste new hash\n",
 							Prog, line);
 					errors = true;

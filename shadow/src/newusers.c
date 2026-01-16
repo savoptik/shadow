@@ -117,7 +117,7 @@ static int add_user (const char *, uid_t, gid_t);
 #ifndef USE_PAM
 static int update_passwd (struct passwd *, const char *);
 #endif				/* !USE_PAM */
-static int add_passwd (struct passwd *, const char *);
+static int add_passwd (struct passwd *, const char *, bool);
 static void process_flags (int argc, char **argv, struct option_flags *flags);
 static void check_flags (void);
 static void check_perms(const struct option_flags *flags);
@@ -460,7 +460,7 @@ static int update_passwd (struct passwd *pwd, const char *password)
  * add_passwd - add or update the encrypted password
  */
 static int
-add_passwd(struct passwd *pwd, MAYBE_UNUSED const char *password)
+add_passwd(struct passwd *pwd, MAYBE_UNUSED const char *password, bool process_selinux)
 {
 	const struct spwd *sp;
 	struct spwd spent;
@@ -589,14 +589,14 @@ add_passwd(struct passwd *pwd, MAYBE_UNUSED const char *password)
 out_update:
 	retval = spw_update (&spent) == 0;
 
-	if (spw_close () == 0) {
+	if (spw_close (process_selinux) == 0) {
 		fprintf (stderr,
 				_("%s: failure while writing changes to %s\n"),
 				Prog, spw_dbname ());
 		SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
 		retval = -1;
 	}
-	if (spw_unlock () == 0) {
+	if (spw_unlock (process_selinux) == 0) {
 		fprintf (stderr,
 				_("%s: failed to unlock %s\n"),
 				Prog, spw_dbname ());
@@ -1185,7 +1185,7 @@ int main (int argc, char **argv)
 		usernames[nusers-1] = xstrdup(fields[0]);
 		passwords[nusers-1] = xstrdup(fields[1]);
 #endif				/* USE_PAM */
-		if (!streq(fields[1], "") && add_passwd(&newpw, fields[1]) != 0) {
+		if (!streq(fields[1], "") && add_passwd(&newpw, fields[1], process_selinux) != 0) {
 			fprintf (stderr,
 			         _("%s: line %jd: can't update password\n"),
 			         Prog, line);
