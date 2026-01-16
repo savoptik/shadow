@@ -7,11 +7,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id: $"
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -29,6 +30,7 @@
 #include "shadowlog.h"
 #include "string/sprintf/snprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strneq.h"
 #include "string/strcmp/strprefix.h"
 
 
@@ -65,14 +67,14 @@ user_busy_utmp(const char *name)
 	struct utmpx  *utent;
 
 	setutxent();
-	while ((utent = getutxent()) != NULL)
+	while (NULL != (utent = getutxent()))
 	{
 		if (utent->ut_type != USER_PROCESS) {
 			continue;
 		}
-		if (strncmp (utent->ut_user, name, sizeof utent->ut_user) != 0) {
+		if (!strneq_a(utent->ut_user, name))
 			continue;
-		}
+
 		if (kill (utent->ut_pid, 0) != 0) {
 			continue;
 		}
@@ -97,12 +99,12 @@ static int different_namespace (const char *sname)
 	char     path[41];
 	char     buf[512], buf2[512];
 
-	SNPRINTF(path, "/proc/%s/ns/user", sname);
+	stprintf_a(path, "/proc/%s/ns/user", sname);
 
-	if (READLINKNUL(path, buf) == -1)
+	if (readlinknul_a(path, buf) == -1)
 		return 0;
 
-	if (READLINKNUL("/proc/self/ns/user", buf2) == -1)
+	if (readlinknul_a("/proc/self/ns/user", buf2) == -1)
 		return 0;
 
 	if (streq(buf, buf2))
@@ -120,13 +122,13 @@ static int check_status (const char *name, const char *sname, uid_t uid)
 	char  line[1024];
 	FILE  *sfile;
 
-	SNPRINTF(status, "/proc/%s/status", sname);
+	stprintf_a(status, "/proc/%s/status", sname);
 
 	sfile = fopen (status, "r");
 	if (NULL == sfile) {
 		return 0;
 	}
-	while (fgets (line, sizeof (line), sfile) == line) {
+	while (fgets(line, sizeof(line), sfile) != NULL) {
 		if (strprefix(line, "Uid:\t")) {
 			unsigned long ruid, euid, suid;
 
@@ -180,7 +182,7 @@ static int user_busy_processes (const char *name, uid_t uid)
 	if (proc == NULL) {
 		perror ("opendir /proc");
 #ifdef ENABLE_SUBIDS
-		sub_uid_close();
+		sub_uid_close(true);
 #endif
 		return 0;
 	}
@@ -188,12 +190,12 @@ static int user_busy_processes (const char *name, uid_t uid)
 		perror ("stat (\"/\")");
 		(void) closedir (proc);
 #ifdef ENABLE_SUBIDS
-		sub_uid_close();
+		sub_uid_close(true);
 #endif
 		return 0;
 	}
 
-	while ((ent = readdir (proc)) != NULL) {
+	while (NULL != (ent = readdir(proc))) {
 		tmp_d_name = ent->d_name;
 		/*
 		 * Ingo Molnar's patch introducing NPTL for 2.4 hides
@@ -213,7 +215,7 @@ static int user_busy_processes (const char *name, uid_t uid)
 		}
 
 		/* Check if the process is in our chroot */
-		SNPRINTF(root_path, "/proc/%lu/root", (unsigned long) pid);
+		stprintf_a(root_path, "/proc/%lu/root", (unsigned long) pid);
 		if (stat (root_path, &sbroot_process) != 0) {
 			continue;
 		}
@@ -225,7 +227,7 @@ static int user_busy_processes (const char *name, uid_t uid)
 		if (check_status (name, tmp_d_name, uid) != 0) {
 			(void) closedir (proc);
 #ifdef ENABLE_SUBIDS
-			sub_uid_close();
+			sub_uid_close(true);
 #endif
 			fprintf (log_get_logfd(),
 			         _("%s: user %s is currently used by process %d\n"),
@@ -233,10 +235,10 @@ static int user_busy_processes (const char *name, uid_t uid)
 			return 1;
 		}
 
-		SNPRINTF(task_path, "/proc/%lu/task", (unsigned long) pid);
+		stprintf_a(task_path, "/proc/%lu/task", (unsigned long) pid);
 		task_dir = opendir (task_path);
 		if (task_dir != NULL) {
-			while ((ent = readdir (task_dir)) != NULL) {
+			while (NULL != (ent = readdir(task_dir))) {
 				pid_t tid;
 				if (get_pid(ent->d_name, &tid) == -1) {
 					continue;
@@ -248,7 +250,7 @@ static int user_busy_processes (const char *name, uid_t uid)
 					(void) closedir (proc);
 					(void) closedir (task_dir);
 #ifdef ENABLE_SUBIDS
-					sub_uid_close();
+					sub_uid_close(true);
 #endif
 					fprintf (log_get_logfd(),
 					         _("%s: user %s is currently used by process %d\n"),
@@ -264,7 +266,7 @@ static int user_busy_processes (const char *name, uid_t uid)
 
 	(void) closedir (proc);
 #ifdef ENABLE_SUBIDS
-	sub_uid_close();
+	sub_uid_close(true);
 #endif				/* ENABLE_SUBIDS */
 	return 0;
 }

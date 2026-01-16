@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -29,7 +29,7 @@
 #include "shadowlog.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
 
 
 /*
@@ -49,7 +49,8 @@ static void catch_signals (int);
 static int pw_entry(const char *name, struct passwd *pwent);
 
 
-static void catch_signals (MAYBE_UNUSED int sig)
+static void
+catch_signals(int)
 {
 	_exit (1);
 }

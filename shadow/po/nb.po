@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2018-03-05 12:33+0100\n"
 "Last-Translator: Åka Sikrom <a4@hush.com>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -1011,6 +1011,12 @@ msgstr "%s: (linje %d: bruker %s) passordet er ikke endret\n"
 
 # , c-format
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: (linje %d: bruker %s) passordet er ikke endret\n"
+
+# , c-format
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: linje %d: bruker «%s» finnes ikke\n"
@@ -1303,7 +1309,9 @@ msgstr "  -r, --system                  lag en systemkonto\n"
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
-msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    vis gruppemedlemmer\n"
 
 #, fuzzy, c-format
@@ -1466,6 +1474,13 @@ msgid ""
 msgstr ""
 "  -p, --password PASSORD       endre passordet til valgt (kryptert)\n"
 "                                PASSORD\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    vis gruppemedlemmer\n"
 
 # , c-format
 #, c-format
@@ -1812,7 +1827,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Bruk: newgrp [-] [gruppe]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Bruk: sg group [[-c] command]\n"
 
 # , c-format

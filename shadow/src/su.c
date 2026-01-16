@@ -28,7 +28,7 @@
    Boston, MA 02110-1301, USA.  */
 
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -46,7 +46,7 @@
 #include <fcntl.h>
 #endif				/* !USE_PAM */
 
-#include "alloc/x/xmalloc.h"
+#include "alloc/malloc.h"
 #include "attr.h"
 #include "cast.h"
 #include "defines.h"
@@ -59,12 +59,12 @@
 #include "pwauth.h"
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "string/sprintf/aprintf.h"
 #include "string/sprintf/snprintf.h"
-#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
 #include "string/strcpy/strtcpy.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
 
 
 /*
@@ -115,7 +115,7 @@ static void execve_shell (const char *shellname,
                           char *args[],
                           char *const envp[]);
 #ifdef USE_PAM
-static void kill_child (MAYBE_UNUSED int s);
+static void kill_child(int);
 static void prepare_pam_close_session (void);
 #else				/* !USE_PAM */
 static void die (int);
@@ -169,7 +169,8 @@ static bool iswheel (const char *username)
 	return is_on_list (grp->gr_mem, username);
 }
 #else				/* USE_PAM */
-static void kill_child (MAYBE_UNUSED int s)
+static void
+kill_child(int)
 {
 	if (0 != pid_child) {
 		(void) kill (-pid_child, SIGKILL);
@@ -187,7 +188,7 @@ static bool restricted_shell (const char *shellname)
 	/*@observer@*/const char *line;
 
 	setusershell ();
-	while ((line = getusershell ()) != NULL) {
+	while (NULL != (line = getusershell())) {
 		if (('#' != *line) && streq(line, shellname)) {
 			endusershell ();
 			return false;
@@ -250,7 +251,7 @@ static void execve_shell (const char *shellname,
 		while (NULL != args[n_args]) {
 			n_args++;
 		}
-		targs = XMALLOC(n_args + 3, char *);
+		targs = xmalloc_T(n_args + 3, char *);
 		targs[0] = "sh";
 		targs[1] = "-";
 		targs[2] = xstrdup (shellname);
@@ -394,8 +395,8 @@ static void prepare_pam_close_session (void)
 		              stderr);
 		(void) kill (-pid_child, caught);
 
-		SNPRINTF(kill_msg, _(" ...killed.\n"));
-		SNPRINTF(wait_msg, _(" ...waiting for child to terminate.\n"));
+		stprintf_a(kill_msg, _(" ...killed.\n"));
+		stprintf_a(wait_msg, _(" ...waiting for child to terminate.\n"));
 
 		/* Any signals other than SIGCHLD and SIGALRM will no longer have any effect,
 		 * so it's time to block all of them. */
@@ -686,7 +687,7 @@ static /*@only@*/struct passwd * do_check_perms (void)
 		SYSLOG ((LOG_INFO,
 		         "Change user from '%s' to '%s' as requested by PAM",
 		         name, tmp_name));
-		if (STRTCPY(name, tmp_name) == -1) {
+		if (strtcpy_a(name, tmp_name) == -1) {
 			fprintf (stderr, _("Overlong user name '%s'\n"),
 			         tmp_name);
 			SYSLOG ((LOG_NOTICE, "Overlong user name '%s'",
@@ -785,7 +786,7 @@ save_caller_context(void)
 		         (unsigned long) caller_uid));
 		su_failure (caller_tty, true); /* unknown target UID*/
 	}
-	STRTCPY(caller_name, pw->pw_name);
+	strtcpy_a(caller_name, pw->pw_name);
 
 #ifndef USE_PAM
 #ifdef SU_ACCESS
@@ -861,7 +862,7 @@ static void process_flags (int argc, char **argv)
 	}
 
 	if (optind < argc) {
-		STRTCPY(name, argv[optind++]);	/* use this login id */
+		strtcpy_a(name, argv[optind++]);  /* use this login id */
 	}
 	if (streq(name, "")) {		/* use default user */
 		struct passwd *root_pw = getpwnam ("root");
@@ -951,7 +952,7 @@ static void set_environment (struct passwd *pw)
 	cp = getdef_str ((pw->pw_uid == 0) ? "ENV_SUPATH" : "ENV_PATH");
 	if (NULL == cp) {
 		addenv ((pw->pw_uid == 0) ? "PATH=/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/bin:/usr/bin", NULL);
-	} else if (strchr (cp, '=') != NULL) {
+	} else if (strchr(cp, '=')) {
 		addenv (cp, NULL);
 	} else {
 		addenv ("PATH", cp);
@@ -978,10 +979,10 @@ static void set_environment (struct passwd *pw)
 		}
 
 #ifdef USE_PAM
-	        /* we need to setup the environment *after* pam_open_session(),
-                 * else the UID is changed before stuff like pam_xauth could
-                 * run, and we cannot access /etc/shadow and co
-                 */
+		/* we need to setup the environment *after* pam_open_session(),
+		 * else the UID is changed before stuff like pam_xauth could
+		 * run, and we cannot access /etc/shadow and co
+		 */
 		/* update environment with all pam set variables */
 		char **envcp = pam_getenvlist (pamh);
 		if (NULL != envcp) {
@@ -1033,10 +1034,8 @@ int main (int argc, char **argv)
 #ifdef USE_PAM
 	ret = pam_start (Prog, name, &conv, &pamh);
 	if (PAM_SUCCESS != ret) {
-		SYSLOG ((LOG_ERR, "pam_start: error %d", ret);
-		fprintf (stderr,
-		         _("%s: pam_start: error %d\n"),
-		         Prog, ret));
+		SYSLOG((LOG_ERR, "pam_start: error %d", ret));
+		fprintf(stderr, _("%s: pam_start: error %d\n"), Prog, ret);
 		exit (1);
 	}
 

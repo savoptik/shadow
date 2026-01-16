@@ -11,11 +11,12 @@
  * Separated from setup.c.  --marekm
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
 #include <assert.h>
+#include <stddef.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -26,10 +27,10 @@
 #include <pwd.h>
 #include "getdef.h"
 #include "shadowlog.h"
-#include "string/sprintf/xaprintf.h"
+#include "string/sprintf/aprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
 #include "string/strspn/stpspn.h"
 #include "string/strtok/stpsep.h"
 
@@ -55,7 +56,7 @@ static void read_env_file (const char *filename)
 	if (NULL == fp) {
 		return;
 	}
-	while (fgets (buf, (int)(sizeof buf), fp) == buf) {
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		if (stpsep(buf, "\n") == NULL)
 			break;
 
@@ -235,7 +236,7 @@ void setup_env (struct passwd *info)
 	if (NULL == cp) {
 		/* not specified, use a minimal default */
 		addenv ((info->pw_uid == 0) ? "PATH=/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/bin:/usr/bin", NULL);
-	} else if (strchr (cp, '=')) {
+	} else if (strchr(cp, '=')) {
 		/* specified as name=value (PATH=...) */
 		addenv (cp, NULL);
 	} else {

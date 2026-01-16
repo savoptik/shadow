@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 
-#include <config.h>
+#include "config.h"
 
 #include <stdarg.h>  // Required by <cmocka.h>
 #include <stddef.h>  // Required by <cmocka.h>
@@ -13,8 +13,8 @@
 #include "typetraits.h"
 
 
-static void test_type_max(void **state);
-static void test_type_min(void **state);
+static void test_type_max(void **);
+static void test_type_min(void **);
 
 
 int
@@ -30,7 +30,7 @@ main(void)
 
 
 static void
-test_type_max(void **state)
+test_type_max(void **)
 {
 	assert_true(type_max(long) == LONG_MAX);
 	assert_true(type_max(unsigned long) == ULONG_MAX);
@@ -43,7 +43,7 @@ test_type_max(void **state)
 
 
 static void
-test_type_min(void **state)
+test_type_min(void **)
 {
 	assert_true(type_min(long) == LONG_MIN);
 	assert_true(type_min(unsigned long) == 0);

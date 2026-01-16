@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -26,7 +26,7 @@
 #include <sys/ioctl.h>
 #include <assert.h>
 
-#include "alloc/x/xmalloc.h"
+#include "alloc/malloc.h"
 #include "attr.h"
 #include "chkname.h"
 #include "defines.h"
@@ -37,13 +37,16 @@
 #include "getdef.h"
 #include "prototypes.h"
 #include "pwauth.h"
+#include "shadow/gshadow/endsgent.h"
 #include "shadowlog.h"
 #include "string/memset/memzero.h"
 #include "string/sprintf/snprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strneq.h"
 #include "string/strcmp/strprefix.h"
 #include "string/strcpy/strtcpy.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
+#include "string/strerrno.h"
 #include "string/strftime.h"
 
 
@@ -63,14 +66,6 @@ static pam_handle_t *pamh = NULL;
 
 #endif				/* USE_PAM */
 
-#ifndef USE_PAM
-/*
- * Needed for MkLinux DR1/2/2.1 - J.
- */
-#ifndef LASTLOG_FILE
-#define LASTLOG_FILE "/var/log/lastlog"
-#endif
-#endif				/* !USE_PAM */
 
 /*
  * Global variables
@@ -371,12 +366,14 @@ static void init_env (void)
 #endif				/* !USE_PAM */
 }
 
-static void exit_handler (MAYBE_UNUSED int sig)
+static void
+exit_handler(int)
 {
 	_exit (0);
 }
 
-static void alarm_handler (MAYBE_UNUSED int sig)
+static void
+alarm_handler(int)
 {
 	write_full(STDERR_FILENO, tmsg, strlen(tmsg));
 	signal(SIGALRM, exit_handler);
@@ -456,6 +453,7 @@ int main (int argc, char **argv)
 	char           *host = NULL;
 	char           tty[BUFSIZ];
 	char           fromhost[512];
+	pid_t          initial_pid; /* the "session leader" PID */
 	const char     *failent_user;
 	const char     *tmptty;
 	const char     *cp;
@@ -506,7 +504,8 @@ int main (int argc, char **argv)
 		exit (1);	/* must be a terminal */
 	}
 
-	err = get_session_host(&host);
+	initial_pid = getpid();
+	err = get_session_host(&host, initial_pid);
 	/*
 	 * Be picky if run by normal users (possible if installed setuid
 	 * root), but not if run by root.
@@ -522,7 +521,7 @@ int main (int argc, char **argv)
 	if (NULL == tmptty) {
 		tmptty = "UNKNOWN";
 	}
-	STRTCPY(tty, tmptty);
+	strtcpy_a(tty, tmptty);
 
 #ifndef USE_PAM
 	is_console = console (tty);
@@ -595,16 +594,16 @@ int main (int argc, char **argv)
 	}
 
 	if (!streq(cp, "")) {
-		SNPRINTF(fromhost, " on '%.100s' from '%.200s'", tty, cp);
+		stprintf_a(fromhost, " on '%.100s' from '%.200s'", tty, cp);
 	} else {
-		SNPRINTF(fromhost, " on '%.100s'", tty);
+		stprintf_a(fromhost, " on '%.100s'", tty);
 	}
 	free(host);
 
       top:
 	/* only allow ALARM sec. for login */
 	timeout = getdef_unum ("LOGIN_TIMEOUT", ALARM);
-	SNPRINTF(tmsg, _("\nLogin timed out after %u seconds.\n"), timeout);
+	stprintf_a(tmsg, _("\nLogin timed out after %u seconds.\n"), timeout);
 	(void) signal (SIGALRM, alarm_handler);
 	if (timeout > 0) {
 		(void) alarm (timeout);
@@ -648,10 +647,10 @@ int main (int argc, char **argv)
 		unsigned int  failcount = 0;
 
 		/* Make the login prompt look like we want it */
-		if (gethostname (hostn, sizeof (hostn)) == 0) {
-			SNPRINTF(loginprompt, _("%s login: "), hostn);
+		if (gethostname(hostn, sizeof(hostn)) == 0) {
+			stprintf_a(loginprompt, _("%s login: "), hostn);
 		} else {
-			STRTCPY(loginprompt, _("login: "));
+			strtcpy_a(loginprompt, _("login: "));
 		}
 
 		retcode = pam_set_item (pamh, PAM_USER_PROMPT, loginprompt);
@@ -800,7 +799,7 @@ int main (int argc, char **argv)
 
 	retcode = pam_setcred (pamh, PAM_ESTABLISH_CRED);
 	PAM_FAIL_CHECK;
-	/* NOTE: If pam_setcred changes PAM_USER, this will not be taken
+	/* Note: if pam_setcred changes PAM_USER, this will not be taken
 	 * into account.
 	 */
 
@@ -834,7 +833,7 @@ int main (int argc, char **argv)
 				exit (1);
 			}
 			preauth_flag = false;
-			username = XMALLOC(max_size, char);
+			username = xmalloc_T(max_size, char);
 			login_prompt(username, max_size);
 
 			if (streq(username, "")) {
@@ -946,7 +945,7 @@ int main (int argc, char **argv)
 			failure (pwd->pw_uid, tty, &faillog);
 		}
 #ifndef ENABLE_LOGIND
-		record_failure(failent_user, tty, hostname);
+		record_failure(failent_user, tty, hostname, initial_pid);
 #endif /* ENABLE_LOGIND */
 
 		retries--;
@@ -1094,8 +1093,7 @@ int main (int argc, char **argv)
 	child = fork ();
 	if (child < 0) {
 		/* error in fork() */
-		fprintf (stderr, _("%s: failure forking: %s"),
-		         Prog, strerror (errno));
+		fprintf(stderr, _("%s: failure forking: %s"), Prog, strerrno());
 		PAM_END;
 		exit (0);
 	} else if (child != 0) {
@@ -1111,7 +1109,7 @@ int main (int argc, char **argv)
 #endif
 
 	/* If we were init, we need to start a new session */
-	if (getppid() == 1) {
+	if (1 == initial_pid) {
 		setsid();
 		if (ioctl(0, TIOCSCTTY, 1) != 0) {
 			fprintf (stderr, _("TIOCSCTTY failed on %s"), tty);
@@ -1123,7 +1121,7 @@ int main (int argc, char **argv)
 	 * The utmp entry needs to be updated to indicate the new status
 	 * of the session, the new PID and SID.
 	 */
-	err = update_utmp (username, tty, hostname);
+	err = update_utmp(username, tty, hostname, initial_pid);
 	if (err != 0) {
 		SYSLOG ((LOG_WARN, "Unable to update utmp entry for %s", username));
 	}
@@ -1203,13 +1201,13 @@ int main (int argc, char **argv)
 			struct tm  tm;
 
 			localtime_r(&ll_time, &tm);
-			STRFTIME(ptime, "%a %b %e %H:%M:%S %z %Y", &tm);
+			strftime_a(ptime, "%a %b %e %H:%M:%S %z %Y", &tm);
 			printf (_("Last login: %s on %s"),
 			        ptime, ll.ll_line);
 #ifdef HAVE_LL_HOST		/* __linux__ || SUN4 */
-			if ('\0' != ll.ll_host[0]) {
+			if (!strneq_a(ll.ll_host, "")) {
 				printf (_(" from %.*s"),
-				        (int) sizeof ll.ll_host, ll.ll_host);
+				        (int) sizeof(ll.ll_host), ll.ll_host);
 			}
 #endif
 			printf (".\n");

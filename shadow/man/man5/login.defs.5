@@ -2,12 +2,12 @@
 .\"     Title: login.defs
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/24/2025
+.\"      Date: 12/30/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: English
 .\"
-.TH "LOGIN\&.DEFS" "5" "06/24/2025" "shadow\-utils 4\&.18\&.0" "File Formats and Configuration"
+.TH "LOGIN\&.DEFS" "5" "12/30/2025" "shadow\-utils 4\&.19\&.0" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -121,7 +121,7 @@ If set to
 .PP
 \fBENCRYPT_METHOD\fR (string)
 .RS 4
-This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm is specified on the command line)\&.
 .sp
 It can take one of these values:
 \fIDES\fR
@@ -229,7 +229,7 @@ The default value for
 .RS 4
 Used to select the HMAC cryptography algorithm that the pam_timestamp module is going to use to calculate the keyed\-hash message authentication code\&.
 .sp
-Note: Check
+Note: check
 hmac(3)
 to see the possible algorithms that are available in your system\&.
 .RE
@@ -429,11 +429,28 @@ are only used at the time of account creation\&. Any changes to these settings w
 \fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
 .RS 4
 Number of significant characters in the password for crypt()\&.
+.sp
 \fBPASS_MAX_LEN\fR
-is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&. This is ignored if
+is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&.
+.sp
+\fBPASS_MAX_LEN\fR
+is only used for DES\&. It is ignored if an encryption algorithm other than DES is used, either because
 \fBMD5_CRYPT_ENAB\fR
 set to
+\fIyes\fR
+or
+\fBENCRYPT_METHOD\fR
+set to an algorithm other than
+\fIDES\fR\&.
+.sp
+In addition,
+\fBPASS_MAX_LEN\fR
+is only used if
+\fBOBSCURE_CHECKS_ENAB\fR
+set to
 \fIyes\fR\&.
+.sp
+Note: This only affects the generation of user passwords\&. Group password lengths are not checked\&.
 .RE
 .PP
 \fBPORTTIME_CHECKS_ENAB\fR (boolean)

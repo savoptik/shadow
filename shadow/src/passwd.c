@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -21,7 +21,7 @@
 #include <time.h>
 
 #include "agetpass.h"
-#include "atoi/a2i/a2s.h"
+#include "atoi/a2i.h"
 #include "chkname.h"
 #include "defines.h"
 #include "getdef.h"
@@ -33,11 +33,12 @@
 #include "shadowlog.h"
 #include "sssd.h"
 #include "string/memset/memzero.h"
-#include "string/sprintf/xaprintf.h"
+#include "string/sprintf/aprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
 #include "string/strcpy/strtcpy.h"
-#include "string/strdup/xstrdup.h"
+#include "string/strdup/strdup.h"
+#include "string/strerrno.h"
 #include "time/day_to_str.h"
 
 
@@ -53,6 +54,12 @@
 #define E_PWDBUSY	5	/* passwd file busy, try again later */
 #define E_BAD_ARG	6	/* invalid argument to option */
 #define E_PAM_ERR	10	/* PAM returned an error */
+
+struct option_flags {
+	bool chroot;
+	bool prefix;
+};
+
 /*
  * Global variables
  */
@@ -121,19 +128,18 @@ static bool do_update_pwd = false;
  */
 
 /* local function prototypes */
-NORETURN static void usage (int);
+NORETURN static void usage(int);
 
-static int new_password (const struct passwd *);
+static int new_password(const struct passwd *);
 
-static void check_password (const struct passwd *, const struct spwd *);
-static /*@observer@*/const char *pw_status (const char *);
-static void print_status (const struct passwd *);
-NORETURN static void fail_exit (int);
-NORETURN static void oom (void);
-static char *update_crypt_pw (char *);
-static void update_noshadow (void);
-
-static void update_shadow (void);
+static void check_password(const struct passwd *, const struct spwd *, bool);
+static /*@observer@*/const char *pw_status(const char *);
+static void print_status(const struct passwd *);
+NORETURN static void fail_exit(int, bool);
+NORETURN static void oom(bool);
+static char *update_crypt_pw(char *, bool);
+static void update_noshadow(bool);
+static void update_shadow(bool);
 
 /*
  * usage - print command usage and exit
@@ -188,8 +194,6 @@ static int new_password (const struct passwd *pw)
 	int i;			/* Counter for retries */
 	int ret;
 	bool warned;
-	int pass_max_len = -1;
-	const char *method;
 
 	/*
 	 * Authenticate the user. The user will be prompted for their own
@@ -208,7 +212,7 @@ static int new_password (const struct passwd *pw)
 			erase_pass (clear);
 			fprintf (stderr,
 			         _("%s: failed to crypt password with previous salt: %s\n"),
-			         Prog, strerror (errno));
+			         Prog, strerrno());
 			SYSLOG ((LOG_INFO,
 			         "Failed to crypt password with previous salt of user '%s'",
 			         pw->pw_name));
@@ -226,7 +230,7 @@ static int new_password (const struct passwd *pw)
 			                pw->pw_name);
 			return -1;
 		}
-		STRTCPY(orig, clear);
+		strtcpy_a(orig, clear);
 		erase_pass (clear);
 		strzero (cipher);
 	} else {
@@ -235,45 +239,24 @@ static int new_password (const struct passwd *pw)
 
 	/*
 	 * Get the new password. The user is prompted for the new password
-	 * and has five tries to get it right. The password will be tested
-	 * for strength, unless it is the root user. This provides an escape
-	 * for initial login passwords.
+	 * and has PASS_CHANGE_TRIES tries to get it right. The password will
+	 * be optionally tested for strength. The root user can circumvent
+	 * tests. This provides an escape for initial login passwords.
 	 */
-	method = getdef_str ("ENCRYPT_METHOD");
-	if (NULL == method) {
-		if (!getdef_bool ("MD5_CRYPT_ENAB")) {
-			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
-		}
-	} else {
-		if (   streq(method, "MD5")
-#ifdef USE_SHA_CRYPT
-		    || streq(method, "SHA256")
-		    || streq(method, "SHA512")
-#endif /* USE_SHA_CRYPT */
-#ifdef USE_BCRYPT
-		    || streq(method, "BCRYPT")
-#endif /* USE_BCRYPT*/
-#ifdef USE_YESCRYPT
-		    || streq(method, "YESCRYPT")
-#endif /* USE_YESCRYPT*/
-
-		    ) {
-			pass_max_len = -1;
-		} else {
-			pass_max_len = getdef_num ("PASS_MAX_LEN", 8);
-		}
-	}
 	if (!qflg && !sflg) {
+		int pass_max_len, pass_min_len;
+
+		obscure_get_range(&pass_min_len, &pass_max_len);
 		if (pass_max_len == -1) {
 			(void) printf (_(
 "Enter the new password (minimum of %d characters)\n"
 "Please use a combination of upper and lower case letters and numbers.\n"),
-				getdef_num ("PASS_MIN_LEN", 5));
+				pass_min_len);
 		} else {
 			(void) printf (_(
 "Enter the new password (minimum of %d, maximum of %d characters)\n"
 "Please use a combination of upper and lower case letters and numbers.\n"),
-				getdef_num ("PASS_MIN_LEN", 5), pass_max_len);
+				pass_min_len, pass_max_len);
 		}
 	}
 
@@ -285,11 +268,11 @@ static int new_password (const struct passwd *pw)
 		if (NULL == cp) {
 			return -1;
 		}
-		ret = STRTCPY (pass, cp);
+		ret = strtcpy_a(pass, cp);
 		erase_pass (cp);
 		if (ret == -1) {
 			(void) fputs (_("Password is too long.\n"), stderr);
-			MEMZERO(pass);
+			memzero_a(pass);
 			return -1;
 		}
 	} else {
@@ -297,23 +280,23 @@ static int new_password (const struct passwd *pw)
 		for (i = getdef_num ("PASS_CHANGE_TRIES", 5); i > 0; i--) {
 			cp = agetpass (_("New password: "));
 			if (NULL == cp) {
-				MEMZERO(orig);
-				MEMZERO(pass);
+				memzero_a(orig);
+				memzero_a(pass);
 				return -1;
 			}
 			if (warned && !streq(pass, cp)) {
 				warned = false;
 			}
-			ret = STRTCPY (pass, cp);
+			ret = strtcpy_a(pass, cp);
 			erase_pass (cp);
 			if (ret == -1) {
 				(void) fputs (_("Password is too long.\n"), stderr);
-				MEMZERO(orig);
-				MEMZERO(pass);
+				memzero_a(orig);
+				memzero_a(pass);
 				return -1;
 			}
 
-			if (!amroot && !obscure(orig, pass, pw)) {
+			if (!amroot && !obscure(orig, pass)) {
 				(void) puts (_("Try again."));
 				continue;
 			}
@@ -324,15 +307,15 @@ static int new_password (const struct passwd *pw)
 			 * --marekm
 			 */
 			if (amroot && !warned && getdef_bool ("PASS_ALWAYS_WARN")
-				&& !obscure(orig, pass, pw)) {
+				&& !obscure(orig, pass)) {
 				(void) puts (_("\nWarning: weak password (enter it again to use it anyway)."));
 				warned = true;
 				continue;
 			}
 			cp = agetpass (_("Re-enter new password: "));
 			if (NULL == cp) {
-				MEMZERO(orig);
-				MEMZERO(pass);
+				memzero_a(orig);
+				memzero_a(pass);
 				return -1;
 			}
 			if (!streq(cp, pass)) {
@@ -343,10 +326,10 @@ static int new_password (const struct passwd *pw)
 				break;
 			}
 		}
-		MEMZERO(orig);
+		memzero_a(orig);
 
 		if (i == 0) {
-			MEMZERO(pass);
+			memzero_a(pass);
 			return -1;
 		}
 	}
@@ -357,16 +340,16 @@ static int new_password (const struct passwd *pw)
 	 */
 	salt = crypt_make_salt (NULL, NULL);
 	cp = pw_encrypt (pass, salt);
-	MEMZERO(pass);
+	memzero_a(pass);
 
 	if (NULL == cp) {
 		fprintf (stderr,
 		         _("%s: failed to crypt password with salt '%s': %s\n"),
-		         Prog, salt, strerror (errno));
+		         Prog, salt, strerrno());
 		return -1;
 	}
 
-	STRTCPY(crypt_passwd, cp);
+	strtcpy_a(crypt_passwd, cp);
 	return 0;
 }
 
@@ -376,7 +359,7 @@ static int new_password (const struct passwd *pw)
  *	check_password() sees if the invoker has permission to change the
  *	password for the given user.
  */
-static void check_password (const struct passwd *pw, const struct spwd *sp)
+static void check_password (const struct passwd *pw, const struct spwd *sp, bool process_selinux)
 {
 	int exp_status;
 
@@ -387,7 +370,7 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 	 * PAM) was specified, do nothing. --marekm
 	 */
 	if (kflg && (0 == exp_status)) {
-		exit (E_SUCCESS);
+		fail_exit(E_SUCCESS, process_selinux);
 	}
 
 	/*
@@ -412,7 +395,7 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 		                sp->sp_namp);
 		SYSLOG ((LOG_WARN, "password locked for '%s'", sp->sp_namp));
 		closelog ();
-		exit (E_NOPERM);
+		fail_exit(E_NOPERM, process_selinux);
 	}
 
 	/*
@@ -430,10 +413,10 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 		if (now < ok) {
 			(void) fprintf (stderr,
 			                _("The password for %s cannot be changed yet.\n"),
-			                pw->pw_name);
-			SYSLOG ((LOG_WARN, "now < minimum age for '%s'", pw->pw_name));
+			                sp->sp_namp);
+			SYSLOG ((LOG_WARN, "now < minimum age for '%s'", sp->sp_namp));
 			closelog ();
-			exit (E_NOPERM);
+			fail_exit(E_NOPERM, process_selinux);
 		}
 	}
 }
@@ -459,7 +442,7 @@ static void print_status (const struct passwd *pw)
 
 	sp = prefix_getspnam (pw->pw_name); /* local, no need for xprefix_getspnam */
 	if (NULL != sp) {
-		DAY_TO_STR(date, sp->sp_lstchg);
+		day_to_str_a(date, sp->sp_lstchg);
 		(void) printf ("%s %s %s %ld %ld %ld %ld\n",
 		               pw->pw_name,
 		               pw_status (sp->sp_pwdp),
@@ -480,20 +463,20 @@ static void print_status (const struct passwd *pw)
 
 NORETURN
 static void
-fail_exit (int status)
+fail_exit (int status, bool process_selinux)
 {
-	if (pw_locked) {
-		if (pw_unlock () == 0) {
-			(void) fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+	if (spw_locked) {
+		if (spw_unlock (process_selinux) == 0) {
+			(void) fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
 			/* continue */
 		}
 	}
 
-	if (spw_locked) {
-		if (spw_unlock () == 0) {
-			(void) fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, spw_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+	if (pw_locked) {
+		if (pw_unlock (process_selinux) == 0) {
+			(void) fprintf (stderr, _("%s: failed to unlock %s\n"), Prog, pw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
 			/* continue */
 		}
 	}
@@ -503,13 +486,95 @@ fail_exit (int status)
 
 NORETURN
 static void
-oom (void)
+oom (bool process_selinux)
 {
 	(void) fprintf (stderr, _("%s: out of memory\n"), Prog);
-	fail_exit (E_FAILURE);
+	fail_exit (E_FAILURE, process_selinux);
 }
 
-static char *update_crypt_pw (char *cp)
+/*
+ * open_files - lock and open the password files
+ *
+ *      open_files() opens password files if available.
+ */
+static void open_files(bool process_selinux)
+{
+	if (pw_lock () == 0) {
+		(void) fprintf (stderr,
+		                _("%s: cannot lock %s; try again later.\n"),
+		                Prog, pw_dbname ());
+		exit (E_PWDBUSY);
+	}
+	pw_locked = true;
+	if (pw_open (O_RDWR) == 0) {
+		(void) fprintf (stderr,
+		                _("%s: cannot open %s\n"),
+		                Prog, pw_dbname ());
+		SYSLOG ((LOG_WARN, "cannot open %s", pw_dbname ()));
+		fail_exit (E_MISSING, process_selinux);
+	}
+
+	if (!spw_file_present ())
+		return;
+	if (spw_lock () == 0) {
+		(void) fprintf (stderr,
+		                _("%s: cannot lock %s; try again later.\n"),
+		                Prog, spw_dbname ());
+		fail_exit (E_PWDBUSY, process_selinux);
+	}
+	spw_locked = true;
+	if (spw_open (O_RDWR) == 0) {
+		(void) fprintf (stderr,
+		                _("%s: cannot open %s\n"),
+		                Prog, spw_dbname ());
+		SYSLOG ((LOG_WARN, "cannot open %s", spw_dbname ()));
+		fail_exit (E_FAILURE, process_selinux);
+	}
+}
+
+/*
+ * close_files - close all of the files that were opened
+ *
+ *	close_files() closes all of the files that were opened for this
+ *	user.  This causes a possibly modified entry to be written out.
+ */
+static void close_files(bool process_selinux)
+{
+	if (spw_locked) {
+		if (spw_close (process_selinux) == 0) {
+			(void) fprintf (stderr,
+			                _("%s: failure while writing changes to %s\n"),
+			                Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
+			fail_exit (E_FAILURE, process_selinux);
+		}
+		if (spw_unlock (process_selinux) == 0) {
+			(void) fprintf (stderr,
+			                _("%s: failed to unlock %s\n"),
+			                Prog, spw_dbname ());
+			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
+			/* continue */
+		}
+		spw_locked = false;
+	}
+	if (pw_close (process_selinux) == 0) {
+		(void) fprintf (stderr,
+		                _("%s: failure while writing changes to %s\n"),
+		                Prog, pw_dbname ());
+		SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
+		fail_exit (E_FAILURE, process_selinux);
+	}
+	if (pw_unlock (process_selinux) == 0) {
+		(void) fprintf (stderr,
+		                _("%s: failed to unlock %s\n"),
+		                Prog, pw_dbname ());
+		SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
+		/* continue */
+	}
+	pw_locked = false;
+}
+
+static char *update_crypt_pw (char *cp, bool process_selinux)
 {
 	if (!use_pam)
 	{
@@ -527,7 +592,7 @@ static char *update_crypt_pw (char *cp)
 			                _("%s: unlocking the password would result in a passwordless account.\n"
 			                  "You should set a password with usermod -p to unlock the password of this account.\n"),
 			                Prog);
-			fail_exit (E_FAILURE);
+			fail_exit (E_FAILURE, process_selinux);
 		} else {
 			cp++;
 		}
@@ -549,99 +614,51 @@ static char *update_crypt_pw (char *cp)
 }
 
 
-static void update_noshadow (void)
+static void update_noshadow(bool process_selinux)
 {
 	const struct passwd *pw;
 	struct passwd *npw;
 
-	if (pw_lock () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: cannot lock %s; try again later.\n"),
-		                Prog, pw_dbname ());
-		exit (E_PWDBUSY);
-	}
-	pw_locked = true;
-	if (pw_open (O_RDWR) == 0) {
-		(void) fprintf (stderr,
-		                _("%s: cannot open %s\n"),
-		                Prog, pw_dbname ());
-		SYSLOG ((LOG_WARN, "cannot open %s", pw_dbname ()));
-		fail_exit (E_MISSING);
-	}
+	
 	pw = pw_locate (name);
 	if (NULL == pw) {
 		(void) fprintf (stderr,
 		                _("%s: user '%s' does not exist in %s\n"),
 		                Prog, name, pw_dbname ());
-		fail_exit (E_NOPERM);
+		fail_exit (E_NOPERM, process_selinux);
 	}
+	check_password(pw, pwd_to_spwd(pw), process_selinux);
 	npw = __pw_dup (pw);
 	if (NULL == npw) {
-		oom ();
+		oom (process_selinux);
 	}
-	npw->pw_passwd = update_crypt_pw (npw->pw_passwd);
+	npw->pw_passwd = update_crypt_pw (npw->pw_passwd, process_selinux);
 	if (pw_update (npw) == 0) {
 		(void) fprintf (stderr,
 		                _("%s: failed to prepare the new %s entry '%s'\n"),
 		                Prog, pw_dbname (), npw->pw_name);
-		fail_exit (E_FAILURE);
+		fail_exit (E_FAILURE, process_selinux);
 	}
-	if (pw_close () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: failure while writing changes to %s\n"),
-		                Prog, pw_dbname ());
-		SYSLOG ((LOG_ERR, "failure while writing changes to %s", pw_dbname ()));
-		fail_exit (E_FAILURE);
-	}
-	if (pw_unlock () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: failed to unlock %s\n"),
-		                Prog, pw_dbname ());
-		SYSLOG ((LOG_ERR, "failed to unlock %s", pw_dbname ()));
-		/* continue */
-	}
-	pw_locked = false;
 }
 
-static void update_shadow (void)
+static void update_shadow(bool process_selinux)
 {
+	const struct passwd pw = { .pw_passwd = SHADOW_PASSWD_STRING };
 	const struct spwd *sp;
 	struct spwd *nsp;
 
-	if (spw_lock () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: cannot lock %s; try again later.\n"),
-		                Prog, spw_dbname ());
-		exit (E_PWDBUSY);
-	}
-	spw_locked = true;
-	if (spw_open (O_RDWR) == 0) {
-		(void) fprintf (stderr,
-		                _("%s: cannot open %s\n"),
-		                Prog, spw_dbname ());
-		SYSLOG ((LOG_WARN, "cannot open %s", spw_dbname ()));
-		fail_exit (E_FAILURE);
-	}
-	sp = spw_locate (name);
+	sp = spw_locked ? spw_locate(name) : NULL;
 	if (NULL == sp) {
 		/* Try to update the password in /etc/passwd instead. */
-		(void) spw_close ();
-		update_noshadow ();
-		if (spw_unlock () == 0) {
-			(void) fprintf (stderr,
-			                _("%s: failed to unlock %s\n"),
-			                Prog, spw_dbname ());
-			SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
-			/* continue */
-		}
-		spw_locked = false;
+		update_noshadow (process_selinux);
 		return;
 	}
+	check_password(&pw, sp, process_selinux);
 	nsp = __spw_dup (sp);
 	if (NULL == nsp) {
-		oom ();
+		oom (process_selinux);
 	}
-	nsp->sp_pwdp = update_crypt_pw (nsp->sp_pwdp);
+	nsp->sp_pwdp = update_crypt_pw (nsp->sp_pwdp, process_selinux);
 	if (xflg) {
 		nsp->sp_max = age_max;
 	}
@@ -679,23 +696,8 @@ static void update_shadow (void)
 		(void) fprintf (stderr,
 		                _("%s: failed to prepare the new %s entry '%s'\n"),
 		                Prog, spw_dbname (), nsp->sp_namp);
-		fail_exit (E_FAILURE);
+		fail_exit (E_FAILURE, process_selinux);
 	}
-	if (spw_close () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: failure while writing changes to %s\n"),
-		                Prog, spw_dbname ());
-		SYSLOG ((LOG_ERR, "failure while writing changes to %s", spw_dbname ()));
-		fail_exit (E_FAILURE);
-	}
-	if (spw_unlock () == 0) {
-		(void) fprintf (stderr,
-		                _("%s: failed to unlock %s\n"),
-		                Prog, spw_dbname ());
-		SYSLOG ((LOG_ERR, "failed to unlock %s", spw_dbname ()));
-		/* continue */
-	}
-	spw_locked = false;
 }
 
 /*
@@ -733,6 +735,8 @@ main(int argc, char **argv)
 	char *cp;		/* Miscellaneous character pointing  */
 
 	const struct spwd *sp;	/* Shadow file entry for user   */
+	struct option_flags  flags = {.chroot = false, .prefix = false};
+	bool process_selinux;
 
 	sanitize_env ();
 	check_fds ();
@@ -851,8 +855,10 @@ main(int argc, char **argv)
 				}
 				break;
 			case 'R': /* no-op, handled in process_root_flag () */
+				flags.chroot = true;
 				break;
 			case 'P': /* no-op, handled in process_prefix_flag () */
+				flags.prefix = true;
 				break;
 			case 'S':
 				Sflg = true;	/* ok for users */
@@ -899,6 +905,7 @@ main(int argc, char **argv)
 			}
 		}
 	}
+	process_selinux = !flags.chroot && !flags.prefix;
 
 	/*
 	 * Now I have to get the user name. The name will be gotten from the
@@ -918,7 +925,7 @@ main(int argc, char **argv)
 	if (optind < argc) {
 		if (!is_valid_user_name (argv[optind])) {
 			fprintf (stderr, _("%s: Provided user name is not a valid name\n"), Prog);
-			fail_exit (E_NOPERM);
+			fail_exit (E_NOPERM, process_selinux);
 		}
 		name = argv[optind];
 	} else {
@@ -1049,13 +1056,13 @@ main(int argc, char **argv)
 		 * If there are no other flags, just change the password.
 		 */
 		if (!anyflag) {
-			STRTCPY(crypt_passwd, cp);
+			strtcpy_a(crypt_passwd, cp);
 
 			/*
 			 * See if the user is permitted to change the password.
 			 * Otherwise, go ahead and set a new password.
 			 */
-			check_password (pw, sp);
+			check_password(pw, sp, process_selinux);
 
 			/*
 			 * Let the user know whose password is being changed.
@@ -1108,11 +1115,9 @@ main(int argc, char **argv)
 		closelog ();
 		exit (E_NOPERM);
 	}
-	if (spw_file_present ()) {
-		update_shadow ();
-	} else {
-		update_noshadow ();
-	}
+	open_files(process_selinux);
+	update_shadow(process_selinux);
+	close_files(process_selinux);
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");

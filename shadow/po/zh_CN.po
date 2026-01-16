@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.15\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2022-07-27 23:04+0800\n"
 "Last-Translator: Celeste Liu <coelacanthus@outlook.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -933,6 +933,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s：(第 %d 行，用户 %s) 密码未更改\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s：(第 %d 行，用户 %s) 密码未更改\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s：第 %d 行：用户“%s”不存在\n"
@@ -1190,7 +1195,11 @@ msgstr "  -p, --password PASSWORD       为新组使用此加密过的密码\n"
 msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  创建一个系统账户\n"
 
-msgid "  -U, --users USERS             list of user members of this group\n"
+#, fuzzy
+#| msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    该组的用户成员列表\n"
 
 #, c-format
@@ -1324,6 +1333,13 @@ msgid ""
 "  -p, --password PASSWORD       change the password to this (encrypted)\n"
 "                                PASSWORD\n"
 msgstr "  -p, --password PASSWORD       将密码更改为(加密过的) PASSWORD\n"
+
+#, fuzzy
+#| msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    该组的用户成员列表\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1648,7 +1664,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "用法：newgrp [-] [组]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "用法：sg 组 [[-c] 命令]\n"
 
 #, c-format

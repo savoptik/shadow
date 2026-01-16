@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow master\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2016-10-04 07:07+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -988,6 +988,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (dòng %d, người dùng %s) mật khẩu chưa thay đổi\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: (dòng %d, người dùng %s) mật khẩu chưa thay đổi\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: dòng %d: người dùng “%s” không tồn tại\n"
@@ -1274,7 +1279,9 @@ msgstr "  -r, --system                  tạo một tài khoản hệ thống\n"
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
-msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    liệt kê những người trong nhóm\n"
 
 #, fuzzy, c-format
@@ -1424,6 +1431,13 @@ msgid ""
 msgstr ""
 "  -p, --password MẬT_KHẨU       thay đổi mật khẩu thành MẬT_KHẨU (đã mật mã) "
 "này\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    liệt kê những người trong nhóm\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1769,7 +1783,9 @@ msgstr ""
 "Cách dùng: newgrp [-] [nhóm]\n"
 "[newgrp: nhóm mới]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr ""
 "Cách dùng: sg group [[-c] lệnh]\n"
 "[group: nhóm]\n"

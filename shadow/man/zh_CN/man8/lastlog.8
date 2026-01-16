@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2025-06-24
+.\"      Date: 2025-12-30
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: Chinese Simplified
 .\"
-.TH "LASTLOG" "8" "2025-06-24" "shadow\-utils 4\&.18\&.0" "System Management Commands"
+.TH "LASTLOG" "8" "2025-12-30" "shadow\-utils 4\&.19\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -59,7 +59,7 @@ Print only lastlog records older than
 .RS 4
 Clear lastlog record of a user\&. This option can be used only together with
 \fB\-u\fR
-(\fB\-\-user\fR))\&.
+(\fB\-\-user\fR)\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -73,14 +73,14 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-set\fR
 .RS 4
 Set lastlog record of a user to the current time\&. This option can be used only together with
 \fB\-u\fR
-(\fB\-\-user\fR))\&.
+(\fB\-\-user\fR)\&.
 .RE
 .PP
 \fB\-t\fR, \fB\-\-time\fR\ \&\fIDAYS\fR

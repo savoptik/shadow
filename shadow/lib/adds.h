@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_ADDS_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <errno.h>
 #include <limits.h>
@@ -55,7 +55,7 @@ addslN(size_t n, long addend[n])
 
 	e = errno;
 	while (n > 1) {
-		QSORT(addend, n);
+		QSORT(long, addend, n);
 
 		errno = 0;
 		addend[0] = addsl2(addend[0], addend[--n]);

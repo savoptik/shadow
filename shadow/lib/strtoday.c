@@ -7,12 +7,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 
-#include <config.h>
+#include "config.h"
 
 #include <stddef.h>
 #include <time.h>
 
-#include "atoi/str2i.h"
+#include "atoi/a2i.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "string/strcmp/streq.h"

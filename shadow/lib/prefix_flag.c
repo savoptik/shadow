@@ -5,11 +5,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
+#include <paths.h>
 #include <stdio.h>
+
 #include <assert.h>
 
 #include "atoi/getnum.h"
@@ -27,10 +29,12 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "getdef.h"
+#include "shadow/gshadow/gshadow.h"
 #include "shadowlog.h"
-#include "string/sprintf/xaprintf.h"
+#include "string/sprintf/aprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
+#include "string/strerrno.h"
 
 
 static char *passwd_db_file = NULL;
@@ -39,7 +43,7 @@ static char *group_db_file = NULL;
 static char *sgroup_db_file = NULL;
 static char *suid_db_file = NULL;
 static char *sgid_db_file = NULL;
-static char *def_conf_file = NULL;
+MAYBE_UNUSED static char *def_conf_file = NULL;
 static FILE* fp_pwent = NULL;
 static FILE* fp_grent = NULL;
 
@@ -93,7 +97,7 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		    || (setreuid (getuid (), getuid ()) != 0)) {
 			fprintf (log_get_logfd(),
 			         _("%s: failed to drop privileges (%s)\n"),
-			         log_get_progname(), strerror (errno));
+			         log_get_progname(), strerrno());
 			exit (EXIT_FAILURE);
 		}
 
@@ -112,7 +116,7 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		if (rp == NULL) {
 			fprintf (log_get_logfd(),
 				 "%s: can't get prefix real path: %s\n",
-				 log_get_progname(), strerror (errno));
+				 log_get_progname(), strerrno());
 			exit (E_BAD_ARG);
 		}
 		if (streq(rp, "/")) {
@@ -138,7 +142,7 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		gr_setdbname(group_db_file);
 
 #ifdef  SHADOWGRP
-		sgroup_db_file = xaprintf("%s/%s", prefix, SGROUP_FILE);
+		sgroup_db_file = xaprintf("%s/%s", prefix, _PATH_GSHADOW);
 		sgr_setdbname(sgroup_db_file);
 #endif
 
@@ -146,7 +150,7 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 		if (!getdef_bool("USE_TCB"))
 #endif
 		{
-			spw_db_file = xaprintf("%s/%s", prefix, SHADOW_FILE);
+			spw_db_file = xaprintf("%s/%s", prefix, _PATH_SHADOW);
 			spw_setdbname(spw_db_file);
 		}
 
@@ -177,7 +181,7 @@ extern struct group *prefix_getgrnam(const char *name)
 		fg = fopen(group_db_file, "rt");
 		if (!fg)
 			return NULL;
-		while ((grp = fgetgrent(fg)) != NULL) {
+		while (NULL != (grp = fgetgrent(fg))) {
 			if (streq(name, grp->gr_name))
 				break;
 		}
@@ -197,7 +201,7 @@ extern struct group *prefix_getgrgid(gid_t gid)
 		fg = fopen(group_db_file, "rt");
 		if (!fg)
 			return NULL;
-		while ((grp = fgetgrent(fg)) != NULL) {
+		while (NULL != (grp = fgetgrent(fg))) {
 			if (gid == grp->gr_gid)
 				break;
 		}
@@ -217,7 +221,7 @@ extern struct passwd *prefix_getpwuid(uid_t uid)
 		fg = fopen(passwd_db_file, "rt");
 		if (!fg)
 			return NULL;
-		while ((pwd = fgetpwent(fg)) != NULL) {
+		while (NULL != (pwd = fgetpwent(fg))) {
 			if (uid == pwd->pw_uid)
 				break;
 		}
@@ -237,7 +241,7 @@ extern struct passwd *prefix_getpwnam(const char* name)
 		fg = fopen(passwd_db_file, "rt");
 		if (!fg)
 			return NULL;
-		while ((pwd = fgetpwent(fg)) != NULL) {
+		while (NULL != (pwd = fgetpwent(fg))) {
 			if (streq(name, pwd->pw_name))
 				break;
 		}
@@ -280,7 +284,7 @@ extern struct spwd *prefix_getspnam(const char* name)
 		fg = fopen(spw_db_file, "rt");
 		if (!fg)
 			return NULL;
-		while ((sp = fgetspent(fg)) != NULL) {
+		while (NULL != (sp = fgetspent(fg))) {
 			if (streq(name, sp->sp_namp))
 				break;
 		}

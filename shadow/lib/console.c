@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -52,7 +52,7 @@ is_listed(const char *cfgin, const char *tty, bool def)
 	if (*cons != '/') {
 		char *pbuf;
 
-		STRTCPY(buf, cons);
+		strtcpy_a(buf, cons);
 		pbuf = buf;
 		while (NULL != (s = strsep(&pbuf, ":"))) {
 			if (streq(s, tty)) {
@@ -76,7 +76,7 @@ is_listed(const char *cfgin, const char *tty, bool def)
 	 * See if this tty is listed in the console file.
 	 */
 
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		stpsep(buf, "\n");
 		if (streq(buf, tty)) {
 			(void) fclose (fp);

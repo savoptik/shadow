@@ -6,14 +6,15 @@
 #define SHADOW_INCLUDE_LIB_STRING_STRCPY_STRNCPY_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
 #include "sizeof.h"
 
 
-#define STRNCPY(dst, src)  strncpy(dst, src, countof(dst))
+// strncpy_a - nonstring copy array
+#define strncpy_a(dst, src)  strncpy(dst, src, countof(dst))
 
 
 #endif  // include guard

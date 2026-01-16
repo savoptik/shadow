@@ -92,7 +92,7 @@ host_triplet = @host@
 @HAVE_CMOCKA_TRUE@	test_chkname$(EXEEXT) test_snprintf$(EXEEXT) \
 @HAVE_CMOCKA_TRUE@	test_strncpy$(EXEEXT) test_strtcpy$(EXEEXT) \
 @HAVE_CMOCKA_TRUE@	test_typetraits$(EXEEXT) \
-@HAVE_CMOCKA_TRUE@	test_xaprintf$(EXEEXT) $(am__EXEEXT_1)
+@HAVE_CMOCKA_TRUE@	test_exit_if_null$(EXEEXT) $(am__EXEEXT_1)
 @ENABLE_LOGIND_TRUE@@HAVE_CMOCKA_TRUE@am__append_1 = \
 @ENABLE_LOGIND_TRUE@@HAVE_CMOCKA_TRUE@    test_logind
 
@@ -154,6 +154,20 @@ test_chkname_OBJECTS = $(am_test_chkname_OBJECTS)
 test_chkname_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_chkname_CFLAGS) \
 	$(CFLAGS) $(test_chkname_LDFLAGS) $(LDFLAGS) -o $@
+am__test_exit_if_null_SOURCES_DIST = ../../lib/exit_if_null.c \
+	../../lib/shadowlog.c ../../lib/alloc/malloc.c \
+	test_exit_if_null.c
+@HAVE_CMOCKA_TRUE@am_test_exit_if_null_OBJECTS = ../../lib/test_exit_if_null-exit_if_null.$(OBJEXT) \
+@HAVE_CMOCKA_TRUE@	../../lib/test_exit_if_null-shadowlog.$(OBJEXT) \
+@HAVE_CMOCKA_TRUE@	../../lib/alloc/test_exit_if_null-malloc.$(OBJEXT) \
+@HAVE_CMOCKA_TRUE@	test_exit_if_null-test_exit_if_null.$(OBJEXT)
+test_exit_if_null_OBJECTS = $(am_test_exit_if_null_OBJECTS)
+@HAVE_CMOCKA_TRUE@test_exit_if_null_DEPENDENCIES =  \
+@HAVE_CMOCKA_TRUE@	$(am__DEPENDENCIES_1)
+test_exit_if_null_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_exit_if_null_CFLAGS) $(CFLAGS) \
+	$(test_exit_if_null_LDFLAGS) $(LDFLAGS) -o $@
 am__test_logind_SOURCES_DIST = ../../lib/logind.c test_logind.c
 @HAVE_CMOCKA_TRUE@am_test_logind_OBJECTS =  \
 @HAVE_CMOCKA_TRUE@	../../lib/test_logind-logind.$(OBJEXT) \
@@ -200,16 +214,6 @@ test_typetraits_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_typetraits_CFLAGS) $(CFLAGS) $(test_typetraits_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__test_xaprintf_SOURCES_DIST = ../../lib/string/sprintf/aprintf.c \
-	../../lib/string/sprintf/xaprintf.c test_xaprintf.c
-@HAVE_CMOCKA_TRUE@am_test_xaprintf_OBJECTS = ../../lib/string/sprintf/test_xaprintf-aprintf.$(OBJEXT) \
-@HAVE_CMOCKA_TRUE@	../../lib/string/sprintf/test_xaprintf-xaprintf.$(OBJEXT) \
-@HAVE_CMOCKA_TRUE@	test_xaprintf-test_xaprintf.$(OBJEXT)
-test_xaprintf_OBJECTS = $(am_test_xaprintf_OBJECTS)
-@HAVE_CMOCKA_TRUE@test_xaprintf_DEPENDENCIES = $(am__DEPENDENCIES_1)
-test_xaprintf_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_xaprintf_CFLAGS) \
-	$(CFLAGS) $(test_xaprintf_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -223,27 +227,28 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ../../lib/$(DEPDIR)/test_adds-adds.Po \
 	../../lib/$(DEPDIR)/test_chkname-chkname.Po \
+	../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po \
+	../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po \
 	../../lib/$(DEPDIR)/test_logind-logind.Po \
+	../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po \
 	../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po \
 	../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po \
 	../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po \
 	../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po \
-	../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po \
-	../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po \
 	../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po \
 	./$(DEPDIR)/test_adds-test_adds.Po \
 	./$(DEPDIR)/test_atoi_strtoi-test_atoi_strtoi.Po \
 	./$(DEPDIR)/test_chkname-test_chkname.Po \
+	./$(DEPDIR)/test_exit_if_null-test_exit_if_null.Po \
 	./$(DEPDIR)/test_logind-test_logind.Po \
 	./$(DEPDIR)/test_snprintf-test_snprintf.Po \
 	./$(DEPDIR)/test_strncpy-test_strncpy.Po \
 	./$(DEPDIR)/test_strtcpy-test_strtcpy.Po \
-	./$(DEPDIR)/test_typetraits-test_typetraits.Po \
-	./$(DEPDIR)/test_xaprintf-test_xaprintf.Po
+	./$(DEPDIR)/test_typetraits-test_typetraits.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -264,19 +269,19 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(test_adds_SOURCES) $(test_atoi_strtoi_SOURCES) \
-	$(test_chkname_SOURCES) $(test_logind_SOURCES) \
-	$(test_snprintf_SOURCES) $(test_strncpy_SOURCES) \
-	$(test_strtcpy_SOURCES) $(test_typetraits_SOURCES) \
-	$(test_xaprintf_SOURCES)
+	$(test_chkname_SOURCES) $(test_exit_if_null_SOURCES) \
+	$(test_logind_SOURCES) $(test_snprintf_SOURCES) \
+	$(test_strncpy_SOURCES) $(test_strtcpy_SOURCES) \
+	$(test_typetraits_SOURCES)
 DIST_SOURCES = $(am__test_adds_SOURCES_DIST) \
 	$(am__test_atoi_strtoi_SOURCES_DIST) \
 	$(am__test_chkname_SOURCES_DIST) \
+	$(am__test_exit_if_null_SOURCES_DIST) \
 	$(am__test_logind_SOURCES_DIST) \
 	$(am__test_snprintf_SOURCES_DIST) \
 	$(am__test_strncpy_SOURCES_DIST) \
 	$(am__test_strtcpy_SOURCES_DIST) \
-	$(am__test_typetraits_SOURCES_DIST) \
-	$(am__test_xaprintf_SOURCES_DIST)
+	$(am__test_typetraits_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -486,7 +491,7 @@ RECHECK_LOGS = $(TEST_LOGS)
 AM_RECURSIVE_TARGETS = check recheck
 TEST_SUITE_LOG = test-suite.log
 TEST_EXTENSIONS = @EXEEXT@ .test
-LOG_DRIVER = $(SHELL) $(top_srcdir)/test-driver
+LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
 am__set_b = \
   case '$@' in \
@@ -501,15 +506,17 @@ am__set_b = \
 am__test_logs1 = $(TESTS:=.log)
 am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
 TEST_LOGS = $(am__test_logs2:.test.log=.log)
-TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/test-driver
+TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
 	$(TEST_LOG_FLAGS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
-	$(top_srcdir)/test-driver
+am__DIST_COMMON = $(srcdir)/Makefile.in \
+	$(top_srcdir)/build-aux/depcomp \
+	$(top_srcdir)/build-aux/test-driver
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AM_DISTCHECK_CONFIGURE_FLAGS = @AM_DISTCHECK_CONFIGURE_FLAGS@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -538,7 +545,6 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
@@ -582,7 +588,6 @@ LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LIYESCRYPT = @LIYESCRYPT@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -817,22 +822,22 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)
 @HAVE_CMOCKA_TRUE@    $(CMOCKA_LIBS) \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
-@HAVE_CMOCKA_TRUE@test_xaprintf_SOURCES = \
-@HAVE_CMOCKA_TRUE@    ../../lib/string/sprintf/aprintf.c \
-@HAVE_CMOCKA_TRUE@    ../../lib/string/sprintf/xaprintf.c \
-@HAVE_CMOCKA_TRUE@    test_xaprintf.c \
+@HAVE_CMOCKA_TRUE@test_exit_if_null_SOURCES = \
+@HAVE_CMOCKA_TRUE@    ../../lib/exit_if_null.c \
+@HAVE_CMOCKA_TRUE@    ../../lib/shadowlog.c \
+@HAVE_CMOCKA_TRUE@    ../../lib/alloc/malloc.c \
+@HAVE_CMOCKA_TRUE@    test_exit_if_null.c \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
-@HAVE_CMOCKA_TRUE@test_xaprintf_CFLAGS = \
+@HAVE_CMOCKA_TRUE@test_exit_if_null_CFLAGS = \
 @HAVE_CMOCKA_TRUE@    $(AM_CFLAGS) \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
-@HAVE_CMOCKA_TRUE@test_xaprintf_LDFLAGS = \
-@HAVE_CMOCKA_TRUE@    -Wl,-wrap,vasprintf \
+@HAVE_CMOCKA_TRUE@test_exit_if_null_LDFLAGS = \
 @HAVE_CMOCKA_TRUE@    -Wl,-wrap,exit \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
-@HAVE_CMOCKA_TRUE@test_xaprintf_LDADD = \
+@HAVE_CMOCKA_TRUE@test_exit_if_null_LDADD = \
 @HAVE_CMOCKA_TRUE@    $(CMOCKA_LIBS) \
 @HAVE_CMOCKA_TRUE@    $(NULL)
 
@@ -921,6 +926,23 @@ test_atoi_strtoi$(EXEEXT): $(test_atoi_strtoi_OBJECTS) $(test_atoi_strtoi_DEPEND
 test_chkname$(EXEEXT): $(test_chkname_OBJECTS) $(test_chkname_DEPENDENCIES) $(EXTRA_test_chkname_DEPENDENCIES) 
 	@rm -f test_chkname$(EXEEXT)
 	$(AM_V_CCLD)$(test_chkname_LINK) $(test_chkname_OBJECTS) $(test_chkname_LDADD) $(LIBS)
+../../lib/test_exit_if_null-exit_if_null.$(OBJEXT):  \
+	../../lib/$(am__dirstamp) ../../lib/$(DEPDIR)/$(am__dirstamp)
+../../lib/test_exit_if_null-shadowlog.$(OBJEXT):  \
+	../../lib/$(am__dirstamp) ../../lib/$(DEPDIR)/$(am__dirstamp)
+../../lib/alloc/$(am__dirstamp):
+	@$(MKDIR_P) ../../lib/alloc
+	@: > ../../lib/alloc/$(am__dirstamp)
+../../lib/alloc/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../../lib/alloc/$(DEPDIR)
+	@: > ../../lib/alloc/$(DEPDIR)/$(am__dirstamp)
+../../lib/alloc/test_exit_if_null-malloc.$(OBJEXT):  \
+	../../lib/alloc/$(am__dirstamp) \
+	../../lib/alloc/$(DEPDIR)/$(am__dirstamp)
+
+test_exit_if_null$(EXEEXT): $(test_exit_if_null_OBJECTS) $(test_exit_if_null_DEPENDENCIES) $(EXTRA_test_exit_if_null_DEPENDENCIES) 
+	@rm -f test_exit_if_null$(EXEEXT)
+	$(AM_V_CCLD)$(test_exit_if_null_LINK) $(test_exit_if_null_OBJECTS) $(test_exit_if_null_LDADD) $(LIBS)
 ../../lib/test_logind-logind.$(OBJEXT): ../../lib/$(am__dirstamp) \
 	../../lib/$(DEPDIR)/$(am__dirstamp)
 
@@ -961,20 +983,11 @@ test_strtcpy$(EXEEXT): $(test_strtcpy_OBJECTS) $(test_strtcpy_DEPENDENCIES) $(EX
 test_typetraits$(EXEEXT): $(test_typetraits_OBJECTS) $(test_typetraits_DEPENDENCIES) $(EXTRA_test_typetraits_DEPENDENCIES) 
 	@rm -f test_typetraits$(EXEEXT)
 	$(AM_V_CCLD)$(test_typetraits_LINK) $(test_typetraits_OBJECTS) $(test_typetraits_LDADD) $(LIBS)
-../../lib/string/sprintf/test_xaprintf-aprintf.$(OBJEXT):  \
-	../../lib/string/sprintf/$(am__dirstamp) \
-	../../lib/string/sprintf/$(DEPDIR)/$(am__dirstamp)
-../../lib/string/sprintf/test_xaprintf-xaprintf.$(OBJEXT):  \
-	../../lib/string/sprintf/$(am__dirstamp) \
-	../../lib/string/sprintf/$(DEPDIR)/$(am__dirstamp)
-
-test_xaprintf$(EXEEXT): $(test_xaprintf_OBJECTS) $(test_xaprintf_DEPENDENCIES) $(EXTRA_test_xaprintf_DEPENDENCIES) 
-	@rm -f test_xaprintf$(EXEEXT)
-	$(AM_V_CCLD)$(test_xaprintf_LINK) $(test_xaprintf_OBJECTS) $(test_xaprintf_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f ../../lib/*.$(OBJEXT)
+	-rm -f ../../lib/alloc/*.$(OBJEXT)
 	-rm -f ../../lib/atoi/strtoi/*.$(OBJEXT)
 	-rm -f ../../lib/search/cmp/*.$(OBJEXT)
 	-rm -f ../../lib/string/sprintf/*.$(OBJEXT)
@@ -985,23 +998,24 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_adds-adds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_chkname-chkname.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/$(DEPDIR)/test_logind-logind.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_adds-test_adds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_atoi_strtoi-test_atoi_strtoi.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_chkname-test_chkname.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_exit_if_null-test_exit_if_null.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_logind-test_logind.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_snprintf-test_snprintf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_strncpy-test_strncpy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_strtcpy-test_strtcpy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_typetraits-test_typetraits.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_xaprintf-test_xaprintf.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1145,6 +1159,62 @@ test_chkname-test_chkname.obj: test_chkname.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_chkname_CFLAGS) $(CFLAGS) -c -o test_chkname-test_chkname.obj `if test -f 'test_chkname.c'; then $(CYGPATH_W) 'test_chkname.c'; else $(CYGPATH_W) '$(srcdir)/test_chkname.c'; fi`
 
+../../lib/test_exit_if_null-exit_if_null.o: ../../lib/exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/test_exit_if_null-exit_if_null.o -MD -MP -MF ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Tpo -c -o ../../lib/test_exit_if_null-exit_if_null.o `test -f '../../lib/exit_if_null.c' || echo '$(srcdir)/'`../../lib/exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Tpo ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/exit_if_null.c' object='../../lib/test_exit_if_null-exit_if_null.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/test_exit_if_null-exit_if_null.o `test -f '../../lib/exit_if_null.c' || echo '$(srcdir)/'`../../lib/exit_if_null.c
+
+../../lib/test_exit_if_null-exit_if_null.obj: ../../lib/exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/test_exit_if_null-exit_if_null.obj -MD -MP -MF ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Tpo -c -o ../../lib/test_exit_if_null-exit_if_null.obj `if test -f '../../lib/exit_if_null.c'; then $(CYGPATH_W) '../../lib/exit_if_null.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/exit_if_null.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Tpo ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/exit_if_null.c' object='../../lib/test_exit_if_null-exit_if_null.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/test_exit_if_null-exit_if_null.obj `if test -f '../../lib/exit_if_null.c'; then $(CYGPATH_W) '../../lib/exit_if_null.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/exit_if_null.c'; fi`
+
+../../lib/test_exit_if_null-shadowlog.o: ../../lib/shadowlog.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/test_exit_if_null-shadowlog.o -MD -MP -MF ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Tpo -c -o ../../lib/test_exit_if_null-shadowlog.o `test -f '../../lib/shadowlog.c' || echo '$(srcdir)/'`../../lib/shadowlog.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Tpo ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/shadowlog.c' object='../../lib/test_exit_if_null-shadowlog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/test_exit_if_null-shadowlog.o `test -f '../../lib/shadowlog.c' || echo '$(srcdir)/'`../../lib/shadowlog.c
+
+../../lib/test_exit_if_null-shadowlog.obj: ../../lib/shadowlog.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/test_exit_if_null-shadowlog.obj -MD -MP -MF ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Tpo -c -o ../../lib/test_exit_if_null-shadowlog.obj `if test -f '../../lib/shadowlog.c'; then $(CYGPATH_W) '../../lib/shadowlog.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/shadowlog.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Tpo ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/shadowlog.c' object='../../lib/test_exit_if_null-shadowlog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/test_exit_if_null-shadowlog.obj `if test -f '../../lib/shadowlog.c'; then $(CYGPATH_W) '../../lib/shadowlog.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/shadowlog.c'; fi`
+
+../../lib/alloc/test_exit_if_null-malloc.o: ../../lib/alloc/malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/alloc/test_exit_if_null-malloc.o -MD -MP -MF ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Tpo -c -o ../../lib/alloc/test_exit_if_null-malloc.o `test -f '../../lib/alloc/malloc.c' || echo '$(srcdir)/'`../../lib/alloc/malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Tpo ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/alloc/malloc.c' object='../../lib/alloc/test_exit_if_null-malloc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/alloc/test_exit_if_null-malloc.o `test -f '../../lib/alloc/malloc.c' || echo '$(srcdir)/'`../../lib/alloc/malloc.c
+
+../../lib/alloc/test_exit_if_null-malloc.obj: ../../lib/alloc/malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT ../../lib/alloc/test_exit_if_null-malloc.obj -MD -MP -MF ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Tpo -c -o ../../lib/alloc/test_exit_if_null-malloc.obj `if test -f '../../lib/alloc/malloc.c'; then $(CYGPATH_W) '../../lib/alloc/malloc.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/alloc/malloc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Tpo ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/alloc/malloc.c' object='../../lib/alloc/test_exit_if_null-malloc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o ../../lib/alloc/test_exit_if_null-malloc.obj `if test -f '../../lib/alloc/malloc.c'; then $(CYGPATH_W) '../../lib/alloc/malloc.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/alloc/malloc.c'; fi`
+
+test_exit_if_null-test_exit_if_null.o: test_exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT test_exit_if_null-test_exit_if_null.o -MD -MP -MF $(DEPDIR)/test_exit_if_null-test_exit_if_null.Tpo -c -o test_exit_if_null-test_exit_if_null.o `test -f 'test_exit_if_null.c' || echo '$(srcdir)/'`test_exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_exit_if_null-test_exit_if_null.Tpo $(DEPDIR)/test_exit_if_null-test_exit_if_null.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_exit_if_null.c' object='test_exit_if_null-test_exit_if_null.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o test_exit_if_null-test_exit_if_null.o `test -f 'test_exit_if_null.c' || echo '$(srcdir)/'`test_exit_if_null.c
+
+test_exit_if_null-test_exit_if_null.obj: test_exit_if_null.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -MT test_exit_if_null-test_exit_if_null.obj -MD -MP -MF $(DEPDIR)/test_exit_if_null-test_exit_if_null.Tpo -c -o test_exit_if_null-test_exit_if_null.obj `if test -f 'test_exit_if_null.c'; then $(CYGPATH_W) 'test_exit_if_null.c'; else $(CYGPATH_W) '$(srcdir)/test_exit_if_null.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_exit_if_null-test_exit_if_null.Tpo $(DEPDIR)/test_exit_if_null-test_exit_if_null.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_exit_if_null.c' object='test_exit_if_null-test_exit_if_null.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_exit_if_null_CFLAGS) $(CFLAGS) -c -o test_exit_if_null-test_exit_if_null.obj `if test -f 'test_exit_if_null.c'; then $(CYGPATH_W) 'test_exit_if_null.c'; else $(CYGPATH_W) '$(srcdir)/test_exit_if_null.c'; fi`
+
 ../../lib/test_logind-logind.o: ../../lib/logind.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_logind_CFLAGS) $(CFLAGS) -MT ../../lib/test_logind-logind.o -MD -MP -MF ../../lib/$(DEPDIR)/test_logind-logind.Tpo -c -o ../../lib/test_logind-logind.o `test -f '../../lib/logind.c' || echo '$(srcdir)/'`../../lib/logind.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/$(DEPDIR)/test_logind-logind.Tpo ../../lib/$(DEPDIR)/test_logind-logind.Po
@@ -1256,48 +1326,6 @@ test_typetraits-test_typetraits.obj: test_typetraits.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_typetraits.c' object='test_typetraits-test_typetraits.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_typetraits_CFLAGS) $(CFLAGS) -c -o test_typetraits-test_typetraits.obj `if test -f 'test_typetraits.c'; then $(CYGPATH_W) 'test_typetraits.c'; else $(CYGPATH_W) '$(srcdir)/test_typetraits.c'; fi`
-
-../../lib/string/sprintf/test_xaprintf-aprintf.o: ../../lib/string/sprintf/aprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT ../../lib/string/sprintf/test_xaprintf-aprintf.o -MD -MP -MF ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Tpo -c -o ../../lib/string/sprintf/test_xaprintf-aprintf.o `test -f '../../lib/string/sprintf/aprintf.c' || echo '$(srcdir)/'`../../lib/string/sprintf/aprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Tpo ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/string/sprintf/aprintf.c' object='../../lib/string/sprintf/test_xaprintf-aprintf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o ../../lib/string/sprintf/test_xaprintf-aprintf.o `test -f '../../lib/string/sprintf/aprintf.c' || echo '$(srcdir)/'`../../lib/string/sprintf/aprintf.c
-
-../../lib/string/sprintf/test_xaprintf-aprintf.obj: ../../lib/string/sprintf/aprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT ../../lib/string/sprintf/test_xaprintf-aprintf.obj -MD -MP -MF ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Tpo -c -o ../../lib/string/sprintf/test_xaprintf-aprintf.obj `if test -f '../../lib/string/sprintf/aprintf.c'; then $(CYGPATH_W) '../../lib/string/sprintf/aprintf.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/string/sprintf/aprintf.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Tpo ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/string/sprintf/aprintf.c' object='../../lib/string/sprintf/test_xaprintf-aprintf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o ../../lib/string/sprintf/test_xaprintf-aprintf.obj `if test -f '../../lib/string/sprintf/aprintf.c'; then $(CYGPATH_W) '../../lib/string/sprintf/aprintf.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/string/sprintf/aprintf.c'; fi`
-
-../../lib/string/sprintf/test_xaprintf-xaprintf.o: ../../lib/string/sprintf/xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT ../../lib/string/sprintf/test_xaprintf-xaprintf.o -MD -MP -MF ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Tpo -c -o ../../lib/string/sprintf/test_xaprintf-xaprintf.o `test -f '../../lib/string/sprintf/xaprintf.c' || echo '$(srcdir)/'`../../lib/string/sprintf/xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Tpo ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/string/sprintf/xaprintf.c' object='../../lib/string/sprintf/test_xaprintf-xaprintf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o ../../lib/string/sprintf/test_xaprintf-xaprintf.o `test -f '../../lib/string/sprintf/xaprintf.c' || echo '$(srcdir)/'`../../lib/string/sprintf/xaprintf.c
-
-../../lib/string/sprintf/test_xaprintf-xaprintf.obj: ../../lib/string/sprintf/xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT ../../lib/string/sprintf/test_xaprintf-xaprintf.obj -MD -MP -MF ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Tpo -c -o ../../lib/string/sprintf/test_xaprintf-xaprintf.obj `if test -f '../../lib/string/sprintf/xaprintf.c'; then $(CYGPATH_W) '../../lib/string/sprintf/xaprintf.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/string/sprintf/xaprintf.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Tpo ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../../lib/string/sprintf/xaprintf.c' object='../../lib/string/sprintf/test_xaprintf-xaprintf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o ../../lib/string/sprintf/test_xaprintf-xaprintf.obj `if test -f '../../lib/string/sprintf/xaprintf.c'; then $(CYGPATH_W) '../../lib/string/sprintf/xaprintf.c'; else $(CYGPATH_W) '$(srcdir)/../../lib/string/sprintf/xaprintf.c'; fi`
-
-test_xaprintf-test_xaprintf.o: test_xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT test_xaprintf-test_xaprintf.o -MD -MP -MF $(DEPDIR)/test_xaprintf-test_xaprintf.Tpo -c -o test_xaprintf-test_xaprintf.o `test -f 'test_xaprintf.c' || echo '$(srcdir)/'`test_xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xaprintf-test_xaprintf.Tpo $(DEPDIR)/test_xaprintf-test_xaprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_xaprintf.c' object='test_xaprintf-test_xaprintf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o test_xaprintf-test_xaprintf.o `test -f 'test_xaprintf.c' || echo '$(srcdir)/'`test_xaprintf.c
-
-test_xaprintf-test_xaprintf.obj: test_xaprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -MT test_xaprintf-test_xaprintf.obj -MD -MP -MF $(DEPDIR)/test_xaprintf-test_xaprintf.Tpo -c -o test_xaprintf-test_xaprintf.obj `if test -f 'test_xaprintf.c'; then $(CYGPATH_W) 'test_xaprintf.c'; else $(CYGPATH_W) '$(srcdir)/test_xaprintf.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xaprintf-test_xaprintf.Tpo $(DEPDIR)/test_xaprintf-test_xaprintf.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_xaprintf.c' object='test_xaprintf-test_xaprintf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xaprintf_CFLAGS) $(CFLAGS) -c -o test_xaprintf-test_xaprintf.obj `if test -f 'test_xaprintf.c'; then $(CYGPATH_W) 'test_xaprintf.c'; else $(CYGPATH_W) '$(srcdir)/test_xaprintf.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1547,9 +1575,9 @@ test_typetraits.log: test_typetraits$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-test_xaprintf.log: test_xaprintf$(EXEEXT)
-	@p='test_xaprintf$(EXEEXT)'; \
-	b='test_xaprintf'; \
+test_exit_if_null.log: test_exit_if_null$(EXEEXT)
+	@p='test_exit_if_null$(EXEEXT)'; \
+	b='test_exit_if_null'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1645,6 +1673,8 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f ../../lib/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../../lib/$(am__dirstamp)
+	-rm -f ../../lib/alloc/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../../lib/alloc/$(am__dirstamp)
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../../lib/atoi/strtoi/$(am__dirstamp)
 	-rm -f ../../lib/search/cmp/$(DEPDIR)/$(am__dirstamp)
@@ -1665,23 +1695,24 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 distclean: distclean-am
 		-rm -f ../../lib/$(DEPDIR)/test_adds-adds.Po
 	-rm -f ../../lib/$(DEPDIR)/test_chkname-chkname.Po
+	-rm -f ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po
+	-rm -f ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po
 	-rm -f ../../lib/$(DEPDIR)/test_logind-logind.Po
+	-rm -f ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po
 	-rm -f ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po
-	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po
-	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po
 	-rm -f ../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po
 	-rm -f ./$(DEPDIR)/test_adds-test_adds.Po
 	-rm -f ./$(DEPDIR)/test_atoi_strtoi-test_atoi_strtoi.Po
 	-rm -f ./$(DEPDIR)/test_chkname-test_chkname.Po
+	-rm -f ./$(DEPDIR)/test_exit_if_null-test_exit_if_null.Po
 	-rm -f ./$(DEPDIR)/test_logind-test_logind.Po
 	-rm -f ./$(DEPDIR)/test_snprintf-test_snprintf.Po
 	-rm -f ./$(DEPDIR)/test_strncpy-test_strncpy.Po
 	-rm -f ./$(DEPDIR)/test_strtcpy-test_strtcpy.Po
 	-rm -f ./$(DEPDIR)/test_typetraits-test_typetraits.Po
-	-rm -f ./$(DEPDIR)/test_xaprintf-test_xaprintf.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1729,23 +1760,24 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 		-rm -f ../../lib/$(DEPDIR)/test_adds-adds.Po
 	-rm -f ../../lib/$(DEPDIR)/test_chkname-chkname.Po
+	-rm -f ../../lib/$(DEPDIR)/test_exit_if_null-exit_if_null.Po
+	-rm -f ../../lib/$(DEPDIR)/test_exit_if_null-shadowlog.Po
 	-rm -f ../../lib/$(DEPDIR)/test_logind-logind.Po
+	-rm -f ../../lib/alloc/$(DEPDIR)/test_exit_if_null-malloc.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtoi.Po
 	-rm -f ../../lib/atoi/strtoi/$(DEPDIR)/test_atoi_strtoi-strtou_noneg.Po
 	-rm -f ../../lib/search/cmp/$(DEPDIR)/test_adds-cmp.Po
 	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_snprintf-snprintf.Po
-	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-aprintf.Po
-	-rm -f ../../lib/string/sprintf/$(DEPDIR)/test_xaprintf-xaprintf.Po
 	-rm -f ../../lib/string/strcpy/$(DEPDIR)/test_strtcpy-strtcpy.Po
 	-rm -f ./$(DEPDIR)/test_adds-test_adds.Po
 	-rm -f ./$(DEPDIR)/test_atoi_strtoi-test_atoi_strtoi.Po
 	-rm -f ./$(DEPDIR)/test_chkname-test_chkname.Po
+	-rm -f ./$(DEPDIR)/test_exit_if_null-test_exit_if_null.Po
 	-rm -f ./$(DEPDIR)/test_logind-test_logind.Po
 	-rm -f ./$(DEPDIR)/test_snprintf-test_snprintf.Po
 	-rm -f ./$(DEPDIR)/test_strncpy-test_strncpy.Po
 	-rm -f ./$(DEPDIR)/test_strtcpy-test_strtcpy.Po
 	-rm -f ./$(DEPDIR)/test_typetraits-test_typetraits.Po
-	-rm -f ./$(DEPDIR)/test_xaprintf-test_xaprintf.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

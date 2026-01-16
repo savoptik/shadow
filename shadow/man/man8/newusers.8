@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/24/2025
+.\"      Date: 12/30/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: English
 .\"
-.TH "NEWUSERS" "8" "06/24/2025" "shadow\-utils 4\&.18\&.0" "System Management Commands"
+.TH "NEWUSERS" "8" "12/30/2025" "shadow\-utils 4\&.19\&.0" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,7 +53,7 @@ It can be the name of a new user or the name of an existing user (or a user crea
 .PP
 \fIpw_passwd\fR
 .RS 4
-This field will be encrypted and used as the new value of the encrypted password\&.
+If this field is not empty, it will be encrypted and used as the new value of the encrypted password\&.
 .RE
 .PP
 \fIpw_uid\fR
@@ -161,7 +161,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
@@ -189,7 +189,7 @@ change the behavior of this tool:
 .PP
 \fBENCRYPT_METHOD\fR (string)
 .RS 4
-This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm is specified on the command line)\&.
 .sp
 It can take one of these values:
 \fIDES\fR

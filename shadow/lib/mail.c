@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 #include "prototypes.h"
 #include "defines.h"
 #include <assert.h>
@@ -16,7 +16,7 @@
 #include <string.h>
 
 #include "getdef.h"
-#include "string/sprintf/xaprintf.h"
+#include "string/sprintf/aprintf.h"
 
 #ident "$Id$"
 

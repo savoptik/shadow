@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ifndef USE_PAM
 #ident "$Id$"
@@ -111,7 +111,7 @@ pw_auth(const char *cipher, const char *user)
 	}
 #endif
 
-	SNPRINTF(prompt, cp, user);
+	stprintf_a(prompt, cp, user);
 	clear = agetpass(prompt);
 	input = (clear == NULL) ? "" : clear;
 

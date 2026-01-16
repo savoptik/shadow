@@ -8,11 +8,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ifdef SHADOWGRP
 
-#ident "$Id$"
+#include <paths.h>
 
 #include "alloc/calloc.h"
 #include "alloc/malloc.h"
@@ -22,6 +22,10 @@
 #include "fields.h"
 #include "getdef.h"
 #include "sgroupio.h"
+#include "shadow/gshadow/gshadow.h"
+#include "shadow/gshadow/putsgent.h"
+#include "shadow/gshadow/sgetsgent.h"
+#include "shadow/gshadow/sgrp.h"
 #include "string/memset/memzero.h"
 
 
@@ -30,7 +34,7 @@
 	struct sgrp *sg;
 	int i;
 
-	sg = CALLOC (1, struct sgrp);
+	sg = calloc_T(1, struct sgrp);
 	if (NULL == sg) {
 		return NULL;
 	}
@@ -54,7 +58,7 @@
 
 	for (i = 0; NULL != sgent->sg_adm[i]; i++);
 	/*@-mustfreeonly@*/
-	sg->sg_adm = MALLOC(i + 1, char *);
+	sg->sg_adm = malloc_T(i + 1, char *);
 	/*@=mustfreeonly@*/
 	if (NULL == sg->sg_adm) {
 		free (sg->sg_passwd);
@@ -79,7 +83,7 @@
 
 	for (i = 0; NULL != sgent->sg_mem[i]; i++);
 	/*@-mustfreeonly@*/
-	sg->sg_mem = MALLOC(i + 1, char *);
+	sg->sg_mem = malloc_T(i + 1, char *);
 	/*@=mustfreeonly@*/
 	if (NULL == sg->sg_mem) {
 		for (i = 0; NULL != sg->sg_adm[i]; i++) {
@@ -198,14 +202,12 @@ static struct commonio_ops gshadow_ops = {
 	gshadow_getname,
 	gshadow_parse,
 	gshadow_put,
-	fgetsx,
-	fputsx,
 	NULL,			/* open_hook */
 	NULL			/* close_hook */
 };
 
 static struct commonio_db gshadow_db = {
-	SGROUP_FILE,		/* filename */
+	_PATH_GSHADOW,		/* filename */
 	&gshadow_ops,		/* ops */
 	NULL,			/* fp */
 #ifdef WITH_SELINUX
@@ -274,14 +276,14 @@ int sgr_rewind (void)
 	return commonio_next (&gshadow_db);
 }
 
-int sgr_close (void)
+int sgr_close (bool process_selinux)
 {
-	return commonio_close (&gshadow_db);
+	return commonio_close (&gshadow_db, process_selinux);
 }
 
-int sgr_unlock (void)
+int sgr_unlock (bool process_selinux)
 {
-	return commonio_unlock (&gshadow_db);
+	return commonio_unlock (&gshadow_db, process_selinux);
 }
 
 void __sgr_set_changed (void)

@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2012-01-26 23:57+0100\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -987,6 +987,11 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (Linje %d, bruger %s) adgangskode ikke ændret\n"
 
 #, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: (Linje %d, bruger %s) adgangskode ikke ændret\n"
+
+#, fuzzy, c-format
 #| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: Linje %d: Bruger »%s« findes ikke\n"
@@ -1265,7 +1270,9 @@ msgstr "  -r, --system                  opret en systemkonto\n"
 
 #, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
-msgid "  -U, --users USERS             list of user members of this group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr "  -l, --list                    vis medlemmer af gruppen\n"
 
 #, fuzzy, c-format
@@ -1421,6 +1428,13 @@ msgid ""
 msgstr ""
 "  -p, --password ADGANGSKODE    ændr adgangskoden til denne (krypteret)\n"
 "                                ADGANGSKODE\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr "  -l, --list                    vis medlemmer af gruppen\n"
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1755,7 +1769,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Brug: newgrp [-] [gruppe]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Brug: sg gruppe [[-c] kommando]\n"
 
 #, fuzzy, c-format

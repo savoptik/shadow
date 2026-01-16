@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 
-#include <config.h>
+#include "config.h"
 
 #if !defined(USE_PAM)
 
@@ -24,6 +24,8 @@
 #include "shadow/grp/agetgroups.h"
 #include "shadowlog.h"
 #include "string/strchr/strchrscnt.h"
+#include "string/strcmp/streq.h"
+#include "string/strerrno.h"
 
 
 /*
@@ -34,7 +36,7 @@
 int
 add_groups(const char *list)
 {
-	char    *g, *p, *dup;
+	char    *dup;
 	FILE *shadow_logfd = log_get_logfd();
 	gid_t   *gids;
 	size_t  n;
@@ -43,29 +45,34 @@ add_groups(const char *list)
 	if (gids == NULL)
 		return -1;
 
-	gids = REALLOCF(gids, n + strchrscnt(list, ",:") + 1, gid_t);
+	gids = reallocf_T(gids, n + strchrscnt(list, ",:") + 1, gid_t);
 	if (gids == NULL)
 		return -1;
 
-	p = dup = strdup(list);
+	dup = strdup(list);
 	if (dup == NULL)
 		goto free_gids;
 
-	while (NULL != (g = strsep(&p, ",:"))) {
-		struct group  *grp;
+	if (!streq(dup, "")) {
+		char  *g, *p;
 
-		grp = getgrnam(g); /* local, no need for xgetgrnam */
-		if (NULL == grp) {
-			fprintf(shadow_logfd, _("Warning: unknown group %s\n"), g);
-			continue;
+		p = dup;
+		while (NULL != (g = strsep(&p, ",:"))) {
+			struct group  *grp;
+
+			grp = getgrnam(g); /* local, no need for xgetgrnam */
+			if (NULL == grp) {
+				fprintf(shadow_logfd, _("Warning: unknown group %s\n"), g);
+				continue;
+			}
+
+			LSEARCH(gid_t, &grp->gr_gid, gids, &n);
 		}
-
-		LSEARCH(&grp->gr_gid, gids, &n);
 	}
 	free(dup);
 
 	if (setgroups(n, gids) == -1) {
-		fprintf(shadow_logfd, "setgroups: %s\n", strerror(errno));
+		fprintf(shadow_logfd, "setgroups: %s\n", strerrno());
 		goto free_gids;
 	}
 

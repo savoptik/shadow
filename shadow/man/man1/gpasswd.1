@@ -2,12 +2,12 @@
 .\"     Title: gpasswd
 .\"    Author: Rafal Maszkowski
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/24/2025
+.\"      Date: 12/30/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: English
 .\"
-.TH "GPASSWD" "1" "06/24/2025" "shadow\-utils 4\&.18\&.0" "User Commands"
+.TH "GPASSWD" "1" "12/30/2025" "shadow\-utils 4\&.19\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -98,7 +98,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-remove\-password\fR
@@ -142,7 +142,7 @@ change the behavior of this tool:
 .PP
 \fBENCRYPT_METHOD\fR (string)
 .RS 4
-This defines the system default encryption algorithm for encrypting passwords (if no algorithm are specified on the command line)\&.
+This defines the system default encryption algorithm for encrypting passwords (if no algorithm is specified on the command line)\&.
 .sp
 It can take one of these values:
 \fIDES\fR

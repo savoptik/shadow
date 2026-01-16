@@ -13,12 +13,13 @@
  *   true  - OK
  *   false - bad name
  * errors:
- *   EINVAL	Invalid name characters or sequences
+ *   EINVAL	Invalid name
+ *   EILSEQ	Invalid name character sequence (acceptable with --badname)
  *   EOVERFLOW	Name longer than maximum size
  */
 
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -27,6 +28,7 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <regex.h>
@@ -34,8 +36,10 @@
 #include "defines.h"
 #include "getdef.h"
 #include "chkname.h"
+#include "string/ctype/strchrisascii/strchriscntrl.h"
 #include "string/ctype/strisascii/strisdigit.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strcaseeq.h"
 #include "fields.h"
 #include "pwio.h"
 #include "groupio.h"
@@ -154,7 +158,11 @@ is_valid_name(const char *name)
 		return is_valid_name_regexp (name, name_re);
 
 	/*
-	 * User/group names must match [a-z_][a-z0-9_-]*[$]
+	 * User/group names must match BRE regex:
+	 *    [a-z_][a-z0-9_-]*$\?
+	 *
+	 * as a non-POSIX, extension, allow "$" as the last char for
+	 * sake of Samba 3.x "add machine script"
 	 */
 
 	if (('\0' == *name) ||
@@ -171,7 +179,7 @@ is_valid_name(const char *name)
 		      streq(name, "$")
 		     ))
 		{
-			errno = EINVAL;
+			errno = EILSEQ;
 			return false;
 		}
 	}

@@ -772,6 +772,8 @@ run_test ./usertools/useradd/65_useradd_locked_group/useradd.test
 run_test ./usertools/useradd/66_useradd_locked_shadow/useradd.test
 run_test ./usertools/useradd/67_useradd_locked_gshadow/useradd.test
 run_test ./usertools/useradd/68_useradd-s_empty/useradd.test
+run_test ./usertools/useradd/69_useradd_default_GROUPS_name/useradd.test
+run_test ./usertools/useradd/70_useradd-r_default_GROUPS_name/useradd.test
 run_test ./usertools/userdel/01_userdel_usage/userdel.test
 run_test ./usertools/userdel/02_userdel_usage_invalid_option/userdel.test
 run_test ./usertools/userdel/03_userdel_usage_no_users/userdel.test
@@ -1015,6 +1017,7 @@ run_test ./newusers/58_invalid_input_file/newusers.test
 run_test ./newusers/59_no_gshadow_file/newusers.test
 run_test ./newusers/60_update_no_gecos/newusers.test
 run_test ./newusers/61_update_no_shell/newusers.test
+run_test ./newusers/62_create_user_no_aging/newusers.test
 run_test ./split_groups/01_useradd_split_group/useradd.test
 run_test ./split_groups/02_useradd_no_split_group/useradd.test
 run_test ./split_groups/03_useradd_split_group_already_split/useradd.test

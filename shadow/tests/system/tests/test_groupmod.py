@@ -28,13 +28,44 @@ def test_groupmod__change_gid(shadow: Shadow):
     shadow.groupadd("tgroup")
     shadow.groupmod("-g 1001 tgroup")
 
-    result = shadow.tools.getent.group("tgroup")
-    assert result is not None, "Group should be found"
-    assert result.name == "tgroup", "Incorrect groupname"
-    assert result.gid == 1001, "Incorrect GID"
+    group_entry = shadow.tools.getent.group("tgroup")
+    assert group_entry is not None, "Group should be found"
+    assert group_entry.name == "tgroup", "Incorrect groupname"
+    assert group_entry.gid == 1001, "Incorrect GID"
 
     if shadow.host.features["gshadow"]:
-        result = shadow.tools.getent.gshadow("tgroup")
-        assert result is not None, "Group should be found"
-        assert result.name == "tgroup", "Incorrect groupname"
-        assert result.password == "!", "Incorrect password"
+        gshadow_entry = shadow.tools.getent.gshadow("tgroup")
+        assert gshadow_entry is not None, "Group should be found"
+        assert gshadow_entry.name == "tgroup", "Incorrect groupname"
+        assert gshadow_entry.password == "!", "Incorrect password"
+
+
+@pytest.mark.topology(KnownTopology.Shadow)
+def test_groupmod__u_option_empty_string_clears_members(shadow: Shadow):
+    """
+    :title: Test groupmod -U option with empty user list
+    :setup:
+        1. Create test group
+    :steps:
+        1. Run groupmod with -U option and empty string parameter
+        2. Verify group exists after operation
+        3. Confirm group has no members
+    :expectedresults:
+        1. groupmod -U '' command completes successfully
+        2. Group entry remains valid and accessible
+        3. Group member list is empty (no users assigned to group)
+    :customerscenario: False
+    """
+    shadow.groupadd("tgroup")
+    shadow.groupmod("-U '' tgroup")
+
+    group_entry = shadow.tools.getent.group("tgroup")
+    assert group_entry is not None, "Group should be found"
+    assert group_entry.name == "tgroup", "Incorrect groupname"
+    assert not group_entry.members, "Group should have no members"
+
+    if shadow.host.features["gshadow"]:
+        gshadow_entry = shadow.tools.getent.gshadow("tgroup")
+        assert gshadow_entry is not None, "Group should be found"
+        assert gshadow_entry.name == "tgroup", "Incorrect groupname"
+        assert not gshadow_entry.members, "Group should have no members"

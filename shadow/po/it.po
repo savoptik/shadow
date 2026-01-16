@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.1.1\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2025-06-24 20:28+0000\n"
+"POT-Creation-Date: 2025-12-30 14:17+0100\n"
 "PO-Revision-Date: 2008-03-27 14:40+0100\n"
 "Last-Translator: Danilo Piazzalunga <danilopiazza@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -947,6 +947,10 @@ msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: l'utente «%s» non esiste\n"
 
 #, fuzzy, c-format
+msgid "%s: (line %jd, user %s) invalid password hash\n"
+msgstr "%s: l'utente «%s» non esiste\n"
+
+#, fuzzy, c-format
 msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: l'utente «%s» non esiste\n"
 
@@ -1204,8 +1208,13 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
-msgid "  -U, --users USERS             list of user members of this group\n"
+#, fuzzy
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"\t                         members of this group\n"
 msgstr ""
+"  -s, --sha-rounds              il numero di passaggi SHA per gli\n"
+"                                algoritmi di cifratura SHA*\n"
 
 #, fuzzy, c-format
 #| msgid "invalid user name '%s'\n"
@@ -1340,6 +1349,14 @@ msgid ""
 "  -p, --password PASSWORD       change the password to this (encrypted)\n"
 "                                PASSWORD\n"
 msgstr ""
+
+#, fuzzy
+msgid ""
+"  -U, --users USERS             comma-separated list of users to add as\n"
+"                                members of this group\n"
+msgstr ""
+"  -s, --sha-rounds              il numero di passaggi SHA per gli\n"
+"                                algoritmi di cifratura SHA*\n"
 
 #, fuzzy, c-format
 msgid "%s: invalid group name '%s'\n"
@@ -1656,7 +1673,9 @@ msgstr ""
 msgid "Usage: newgrp [-] [group]\n"
 msgstr "Uso: newgrp [-] [GRUPPO]\n"
 
-msgid "Usage: sg group [[-c] command]\n"
+#, fuzzy
+#| msgid "Usage: sg group [[-c] command]\n"
+msgid "Usage: sg [-] group [[-c] command]\n"
 msgstr "Uso: sg GRUPPO [[-c] COMANDO]\n"
 
 #, fuzzy, c-format

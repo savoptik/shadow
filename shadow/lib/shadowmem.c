@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -26,7 +26,7 @@
 {
 	struct spwd *sp;
 
-	sp = CALLOC (1, struct spwd);
+	sp = calloc_T(1, struct spwd);
 	if (NULL == sp) {
 		return NULL;
 	}

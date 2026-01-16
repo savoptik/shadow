@@ -2,12 +2,12 @@
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 06/24/2025
+.\"      Date: 12/30/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.18.0
+.\"    Source: shadow-utils 4.19.0
 .\"  Language: English
 .\"
-.TH "CHSH" "1" "06/24/2025" "shadow\-utils 4\&.18\&.0" "User Commands"
+.TH "CHSH" "1" "12/30/2025" "shadow\-utils 4\&.19\&.0" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -54,7 +54,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&. Only absolute paths are supported\&.
+directory\&. Only absolute paths are supported\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
@@ -72,13 +72,9 @@ marks\&.
 .SH "NOTE"
 .PP
 The only restriction placed on the login shell is that the command name must be listed in
-/etc/shells, unless the invoker is the superuser, and then any value may be added\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
-/bin/rsh
-in
-/etc/shells
-is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value\&.
+/etc/shells\&.
 .PP
-For this reason, placing
+If the invoker is the superuser any value may be added regardless what is defined in the configuration files\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
 /bin/rsh
 in
 /etc/shells

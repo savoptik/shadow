@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdint.h>
@@ -18,16 +18,17 @@
 #include "pwio.h"
 #include "getdef.h"
 #include "shadowlog.h"
+#include "string/strerrno.h"
 
 /*
  * get_ranges - Get the minimum and maximum ID ranges for the search
  *
  * This function will return the minimum and maximum ranges for IDs
  *
- * 0: The function completed successfully
- * EINVAL: The provided ranges are impossible (such as maximum < minimum)
+ * 0: the function completed successfully
+ * EINVAL: the provided ranges are impossible (such as maximum < minimum)
  *
- * preferred_min: The special-case minimum value for a specifically-
+ * preferred_min: the special-case minimum value for a specifically-
  * requested ID, which may be lower than the standard min_id
  */
 static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
@@ -54,11 +55,11 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 		/* Check that the ranges make sense */
 		if (*max_id < *min_id) {
 			(void) fprintf (log_get_logfd(),
-                            _("%s: Invalid configuration: SYS_UID_MIN (%lu), "
-                              "UID_MIN (%lu), SYS_UID_MAX (%lu)\n"),
-                            log_get_progname(), (unsigned long) *min_id,
-                            getdef_ulong ("UID_MIN", 1000UL),
-                            (unsigned long) *max_id);
+			    _("%s: Invalid configuration: SYS_UID_MIN (%lu), "
+			      "UID_MIN (%lu), SYS_UID_MAX (%lu)\n"),
+			    log_get_progname(), (unsigned long) *min_id,
+			    getdef_ulong ("UID_MIN", 1000UL),
+			    (unsigned long) *max_id);
 			return EINVAL;
 		}
 		/*
@@ -233,11 +234,11 @@ int find_new_uid(bool sys_user,
 	 */
 
 	/* Create an array to hold all of the discovered UIDs */
-	used_uids = CALLOC(uid_max + 1, bool);
+	used_uids = calloc_T(uid_max + 1, bool);
 	if (NULL == used_uids) {
 		fprintf (log_get_logfd(),
 			 _("%s: failed to allocate memory: %s\n"),
-			 log_get_progname(), strerror (errno));
+			 log_get_progname(), strerrno());
 		return -1;
 	}
 
@@ -245,7 +246,7 @@ int find_new_uid(bool sys_user,
 	(void) pw_rewind ();
 	highest_found = uid_min;
 	lowest_found = uid_max;
-	while ((pwd = pw_next ()) != NULL) {
+	while (NULL != (pwd = pw_next())) {
 		/*
 		 * Does this entry have a lower UID than the lowest we've found
 		 * so far?

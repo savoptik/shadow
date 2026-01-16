@@ -51,19 +51,8 @@
 #include <dirent.h>
 
 #include <shadow.h>
-#if defined(SHADOWGRP)
-#include "gshadow_.h"
-#endif
 
 #include <limits.h>
-
-#ifndef	NGROUPS_MAX
-#ifdef	NGROUPS
-#define	NGROUPS_MAX	NGROUPS
-#else
-#define	NGROUPS_MAX	64
-#endif
-#endif
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -79,11 +68,6 @@
 #define LOG_WARN LOG_WARNING
 #endif
 
-/* LOG_NOWAIT is deprecated */
-#ifndef LOG_NOWAIT
-#define LOG_NOWAIT 0
-#endif
-
 /* LOG_AUTH is deprecated, use LOG_AUTHPRIV instead */
 #ifndef LOG_AUTHPRIV
 #define LOG_AUTHPRIV LOG_AUTH
@@ -97,7 +81,7 @@
    syslogd should log the current system time for each event, and not
    trust the formatted time received from the unix domain (or worse,
    UDP) socket.  -MM */
-/* Avoid translated PAM error messages: Set LC_ALL to "C".
+/* Avoid translated PAM error messages: set LC_ALL to "C".
  * --Nekral */
 #define SYSLOG(x)							\
 	do {								\
@@ -123,7 +107,7 @@
    in just one place.  */
 
 #ifndef SYSLOG_OPTIONS
-/* #define SYSLOG_OPTIONS (LOG_PID | LOG_CONS | LOG_NOWAIT) */
+/* #define SYSLOG_OPTIONS (LOG_PID | LOG_CONS) */
 #define SYSLOG_OPTIONS (LOG_PID)
 #endif
 
@@ -160,22 +144,12 @@
 #define GROUP_FILE "/etc/group"
 #endif
 
-#ifndef SHADOW_FILE
-#define SHADOW_FILE "/etc/shadow"
-#endif
-
 #ifndef SUBUID_FILE
 #define SUBUID_FILE "/etc/subuid"
 #endif
 
 #ifndef SUBGID_FILE
 #define SUBGID_FILE "/etc/subgid"
-#endif
-
-#ifdef SHADOWGRP
-#ifndef SGROUP_FILE
-#define SGROUP_FILE "/etc/gshadow"
-#endif
 #endif
 
 /*

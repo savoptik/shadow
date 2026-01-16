@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ifdef WITH_SELINUX
 
@@ -28,7 +28,7 @@
 
 
 format_attr(printf, 3, 4)
-static void semanage_error_callback (MAYBE_UNUSED void *varg,
+static void semanage_error_callback (void *,
                                      semanage_handle_t *handle,
                                      const char *fmt, ...)
 {

@@ -6,7 +6,7 @@
 #define SHADOW_INCLUDE_LIB_FS_READLINK_AREADLINK_H_
 
 
-#include <config.h>
+#include "config.h"
 
 #include <errno.h>
 #include <stdbool.h>
@@ -33,7 +33,7 @@ areadlink(const char *link)
 		int   len;
 		char  *buf;
 
-		buf = MALLOC(size, char);
+		buf = malloc_T(size, char);
 		if (NULL == buf)
 			return NULL;
 

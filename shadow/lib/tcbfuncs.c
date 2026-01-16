@@ -5,7 +5,7 @@
 
 #define _GNU_SOURCE
 
-#include <config.h>
+#include "config.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -26,6 +26,8 @@
 #include "shadowlog_internal.h"
 #include "string/sprintf/aprintf.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
+#include "string/strerrno.h"
 
 
 #define SHADOWTCB_HASH_BY 1000
@@ -108,7 +110,7 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *prefix_dir, con
 	if (lstat (path, &st) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot stat %s: %s\n"),
-		         shadow_progname, path, strerror (errno));
+		         shadow_progname, path, strerrno());
 		free (path);
 		return NULL;
 	}
@@ -128,10 +130,10 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *prefix_dir, con
 		free (path);
 		return NULL;
 	}
-	if (READLINKNUL(path, link) == -1) {
+	if (readlinknul_a(path, link) == -1) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot read symbolic link %s: %s\n"),
-		         shadow_progname, path, strerror (errno));
+		         shadow_progname, path, strerrno());
 		free (path);
 		return NULL;
 	}
@@ -197,10 +199,10 @@ static shadowtcb_status mkdir_leading (const char *prefix_dir, const char *name,
 	if (stat (tcb_dir, &st) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot stat %s: %s\n"),
-		         shadow_progname, tcb_dir, strerror (errno));
+		         shadow_progname, tcb_dir, strerrno());
 		goto out_free_tcb_dir;
 	}
-	while ((ind = strchr (ptr, '/'))) {
+	while (NULL != (ind = strchr(ptr, '/'))) {
 		stpcpy(ind, "");
 		dir = aprintf("%s/%s", tcb_dir, path);
 		if (dir == NULL) {
@@ -210,19 +212,19 @@ static shadowtcb_status mkdir_leading (const char *prefix_dir, const char *name,
 		if ((mkdir (dir, 0700) != 0) && (errno != EEXIST)) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot create directory %s: %s\n"),
-			         shadow_progname, dir, strerror (errno));
+			         shadow_progname, dir, strerrno());
 			goto out_free_dir;
 		}
 		if (chown (dir, 0, st.st_gid) != 0) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot change owner of %s: %s\n"),
-			         shadow_progname, dir, strerror (errno));
+			         shadow_progname, dir, strerrno());
 			goto out_free_dir;
 		}
 		if (chmod (dir, 0711) != 0) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot change mode of %s: %s\n"),
-			         shadow_progname, dir, strerror (errno));
+			         shadow_progname, dir, strerrno());
 			goto out_free_dir;
 		}
 		free (dir);
@@ -256,7 +258,7 @@ static shadowtcb_status unlink_suffs (const char *prefix_dir, const char *user)
 		if ((unlink (tmp) != 0) && (errno != ENOENT)) {
 			fprintf (shadow_logfd,
 			         _("%s: unlink: %s: %s\n"),
-			         shadow_progname, tmp, strerror (errno));
+			         shadow_progname, tmp, strerrno());
 			free (tmp);
 			return SHADOWTCB_FAILURE;
 		}
@@ -267,30 +269,39 @@ static shadowtcb_status unlink_suffs (const char *prefix_dir, const char *user)
 }
 
 /* path should be a relative existing tcb directory */
-static shadowtcb_status rmdir_leading (const char *prefix_dir, char *path)
+static shadowtcb_status
+rmdir_leading(const char *prefix_dir, const char *relpath)
 {
-	char *ind, *dir;
+	char  *ind, *path, *p;
 	shadowtcb_status ret = SHADOWTCB_SUCCESS;
-	while ((ind = strrchr (path, '/'))) {
+
+	path = aprintf("%s" TCB_DIR "/%s", prefix_dir, relpath);
+	if (path == NULL)
+		goto oom;
+
+	p = strprefix(path, prefix_dir);
+	p = strprefix(p, TCB_DIR "/");
+
+	while ((ind = strrchr(p, '/'))) {
 		stpcpy(ind, "");
-		dir = aprintf("%s" TCB_DIR "/%s", prefix_dir, path);
-		if (dir == NULL) {
-			OUT_OF_MEMORY;
-			return SHADOWTCB_FAILURE;
-		}
-		if (rmdir (dir) != 0) {
+
+		if (rmdir(path) != 0) {
 			if (errno != ENOTEMPTY) {
 				fprintf (shadow_logfd,
 				         _("%s: Cannot remove directory %s: %s\n"),
-				         shadow_progname, dir, strerror (errno));
+				         shadow_progname, path, strerrno());
 				ret = SHADOWTCB_FAILURE;
 			}
-			free (dir);
 			break;
 		}
-		free (dir);
 	}
+
+	free(path);
 	return ret;
+
+oom:
+	OUT_OF_MEMORY;
+	return SHADOWTCB_FAILURE;
 }
 
 static shadowtcb_status move_dir (const char *prefix_dir, const char *user_newname, uid_t user_newid)
@@ -312,7 +323,7 @@ static shadowtcb_status move_dir (const char *prefix_dir, const char *user_newna
 	if (stat (olddir, &oldmode) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot stat %s: %s\n"),
-		         shadow_progname, olddir, strerror (errno));
+		         shadow_progname, olddir, strerrno());
 		goto out_free;
 	}
 	old_uid = oldmode.st_uid;
@@ -339,7 +350,7 @@ static shadowtcb_status move_dir (const char *prefix_dir, const char *user_newna
 	if (rename (real_old_dir, real_new_dir) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot rename %s to %s: %s\n"),
-		         shadow_progname, real_old_dir, real_new_dir, strerror (errno));
+		         shadow_progname, real_old_dir, real_new_dir, strerrno());
 		goto out_free;
 	}
 	if (rmdir_leading (prefix_dir, real_old_dir_rel) == SHADOWTCB_FAILURE) {
@@ -348,7 +359,7 @@ static shadowtcb_status move_dir (const char *prefix_dir, const char *user_newna
 	if ((unlink (olddir) != 0) && (errno != ENOENT)) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot remove %s: %s\n"),
-		         shadow_progname, olddir, strerror (errno));
+		         shadow_progname, olddir, strerrno());
 		goto out_free;
 	}
 	newdir = aprintf("%s" TCB_DIR "/%s", prefix_dir, user_newname);
@@ -363,7 +374,7 @@ static shadowtcb_status move_dir (const char *prefix_dir, const char *user_newna
 	    && (symlink (real_new_dir_rel, newdir) != 0)) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot create symbolic link %s: %s\n"),
-		         shadow_progname, real_new_dir_rel, strerror (errno));
+		         shadow_progname, real_new_dir_rel, strerrno());
 		goto out_free;
 	}
 	ret = SHADOWTCB_SUCCESS;
@@ -472,26 +483,26 @@ static shadowtcb_status _shadowtcb_move (const char *prefix_dir, /*@NULL@*/const
 	if (stat (tcbdir, &dirmode) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot stat %s: %s\n"),
-		         shadow_progname, tcbdir, strerror (errno));
+		         shadow_progname, tcbdir, strerrno());
 		goto out_free;
 	}
 	if (chown (tcbdir, 0, 0) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owners of %s: %s\n"),
-		         shadow_progname, tcbdir, strerror (errno));
+		         shadow_progname, tcbdir, strerrno());
 		goto out_free;
 	}
 	if (chmod (tcbdir, 0700) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
-		         shadow_progname, tcbdir, strerror (errno));
+		         shadow_progname, tcbdir, strerrno());
 		goto out_free;
 	}
 	if (lstat (shadow, &filemode) != 0) {
 		if (errno != ENOENT) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot lstat %s: %s\n"),
-			         shadow_progname, shadow, strerror (errno));
+			         shadow_progname, shadow, strerrno());
 			goto out_free;
 		}
 		fprintf (shadow_logfd,
@@ -510,13 +521,13 @@ static shadowtcb_status _shadowtcb_move (const char *prefix_dir, /*@NULL@*/const
 		if (chown (shadow, user_newid, filemode.st_gid) != 0) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot change owner of %s: %s\n"),
-			         shadow_progname, shadow, strerror (errno));
+			         shadow_progname, shadow, strerrno());
 			goto out_free;
 		}
 		if (chmod (shadow, filemode.st_mode & 07777) != 0) {
 			fprintf (shadow_logfd,
 			         _("%s: Cannot change mode of %s: %s\n"),
-			         shadow_progname, shadow, strerror (errno));
+			         shadow_progname, shadow, strerrno());
 			goto out_free;
 		}
 	}
@@ -526,13 +537,13 @@ static shadowtcb_status _shadowtcb_move (const char *prefix_dir, /*@NULL@*/const
 	if (chown (tcbdir, user_newid, dirmode.st_gid) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owner of %s: %s\n"),
-		         shadow_progname, tcbdir, strerror (errno));
+		         shadow_progname, tcbdir, strerrno());
 		goto out_free;
 	}
 	if (chmod (tcbdir, dirmode.st_mode & 07777) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
-		         shadow_progname, tcbdir, strerror (errno));
+		         shadow_progname, tcbdir, strerrno());
 		goto out_free;
 	}
 	ret = SHADOWTCB_SUCCESS;
@@ -573,7 +584,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	if (stat (tcb_dir, &tcbdir_stat) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot stat %s: %s\n"),
-		         shadow_progname, tcb_dir, strerror (errno));
+		         shadow_progname, tcb_dir, strerrno());
 		goto out_free_tcb_dir;
 	}
 	shadowgid = tcbdir_stat.st_gid;
@@ -600,8 +611,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 #endif
 	if (mkdir (dir, 0700) != 0) {
 		fprintf (shadow_logfd,
-		         _("%s: mkdir: %s: %s\n"),
-		         shadow_progname, dir, strerror (errno));
+		         _("%s: mkdir: %s: %s\n"), shadow_progname, dir, strerrno());
 		goto out_free;
 	}
 #ifdef WITH_SELINUX
@@ -611,31 +621,31 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	if (fd < 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot open %s: %s\n"),
-		         shadow_progname, shadow, strerror (errno));
+		         shadow_progname, shadow, strerrno());
 		goto out_free;
 	}
 	if (fchown (fd, 0, authgid) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owner of %s: %s\n"),
-		         shadow_progname, shadow, strerror (errno));
+		         shadow_progname, shadow, strerrno());
 		goto out_free;
 	}
 	if (fchmod (fd, (mode_t) ((authgid == shadowgid) ? 0600 : 0640)) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
-		         shadow_progname, shadow, strerror (errno));
+		         shadow_progname, shadow, strerrno());
 		goto out_free;
 	}
 	if (chown (dir, 0, authgid) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owner of %s: %s\n"),
-		         shadow_progname, dir, strerror (errno));
+		         shadow_progname, dir, strerrno());
 		goto out_free;
 	}
 	if (chmod (dir, (mode_t) ((authgid == shadowgid) ? 02700 : 02710)) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
-		         shadow_progname, dir, strerror (errno));
+		         shadow_progname, dir, strerrno());
 		goto out_free;
 	}
 	if (   (_shadowtcb_set_user (prefix_dir, name) == SHADOWTCB_FAILURE)

@@ -3,11 +3,12 @@
  * SPDX-FileCopyrightText: 1996 - 1999, Marek Michałkiewicz
  * SPDX-FileCopyrightText: 2001 - 2005, Tomasz Kłoczko
  * SPDX-FileCopyrightText: 2008 - 2009, Nicolas François
+ * SPDX-FileCopyrightText: 2025, Evgeny Grin (Karlson2k)
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #include "defines.h"
 #include "prototypes.h"
@@ -15,28 +16,36 @@
 
 #include <utmpx.h>
 #include <assert.h>
+#include <paths.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 
-#include "alloc/x/xcalloc.h"
-#include "alloc/x/xmalloc.h"
+#include "alloc/calloc.h"
+#include "alloc/malloc.h"
+#include "attr.h"
 #include "sizeof.h"
+#include "string/strchr/strnul.h"
 #include "string/strcmp/streq.h"
+#include "string/strcmp/strneq.h"
 #include "string/strcmp/strprefix.h"
 #include "string/strcpy/strncpy.h"
-#include "string/strcpy/strtcpy.h"
-#include "string/strdup/xstrdup.h"
-#include "string/strdup/xstrndup.h"
+#include "string/strdup/strdup.h"
+#include "string/strdup/strndup.h"
 
 #ident "$Id$"
 
 
 #define UTX_LINESIZE  countof(memberof(struct utmpx, ut_line))
+
+// ttyname_ra - tty name re-entrant array
+#define ttyname_ra(fd, buf)  ttyname_r(fd, buf, countof(buf))
 
 
 /*
@@ -45,27 +54,20 @@
 static bool
 is_my_tty(const char tty[UTX_LINESIZE])
 {
-	char         full_tty[STRLEN("/dev/") + UTX_LINESIZE + 1];
-	/* tmptty shall be bigger than full_tty */
-	static char  tmptty[sizeof(full_tty) + 1] = "";
+	char  full_tty[STRLEN("/dev/") + UTX_LINESIZE + 1];
+	char  my_tty[countof(full_tty)];
 
 	stpcpy(full_tty, "");
 	if (tty[0] != '/')
 		strcpy (full_tty, "/dev/");
 	strncat(full_tty, tty, UTX_LINESIZE);
 
-	if (streq(tmptty, "")) {
-		const char *tname = ttyname (STDIN_FILENO);
-		if (NULL != tname)
-			STRTCPY(tmptty, tname);
-	}
-
-	if (streq(tmptty, "")) {
+	if (ttyname_ra(STDIN_FILENO, my_tty) != 0) {
 		(void) puts (_("Unable to determine your tty name."));
 		exit (EXIT_FAILURE);
 	}
 
-	return streq(full_tty, tmptty);
+	return streq(full_tty, my_tty);
 }
 
 
@@ -110,7 +112,7 @@ failtmp(const char *username, const struct utmpx *failent)
 	 * Append the new failure record and close the log file.
 	 */
 
-	if (write_full(fd, failent, sizeof *failent) == -1) {
+	if (write_full(fd, failent, sizeof(*failent)) == -1) {
 		goto err_write;
 	}
 
@@ -137,61 +139,76 @@ err_close:
  * get_current_utmp - return the most probable utmp entry for the current
  *                    session
  *
- *	The utmp file is scanned for an entry with the same process ID.
- *	The line entered by the *getty / telnetd, etc. should also match
- *	the current terminal.
+ *	When an entry is returned by this function, and if the utmpx structure
+ *	has a ut_id field and this field is not empty, then this field
+ *	should be used to update the entry information.
  *
- *	When an entry is returned by get_current_utmp, and if the utmpx
- *	structure has a ut_id field, this field should be used to update
- *	the entry information.
- *
- *	Return NULL if no entries exist in utmp for the current process.
+ *	Return NULL if no entries exist in utmp for the current process or
+ *	            there is an error reading utmp.
  */
+ATTR_MALLOC(free)
 static /*@null@*/ /*@only@*/struct utmpx *
-get_current_utmp(void)
+get_current_utmp(pid_t main_pid)
 {
 	struct utmpx  *ut;
-	struct utmpx  *ret = NULL;
+	struct utmpx  *ut_by_pid  = NULL;
+	struct utmpx  *ut_by_line = NULL;
 
 	setutxent();
 
 	/* First, try to find a valid utmp entry for this process.  */
-	while ((ut = getutxent()) != NULL) {
-		if (   (ut->ut_pid == getpid ())
-		    && ('\0' != ut->ut_id[0])
-		    && (   (LOGIN_PROCESS == ut->ut_type)
-		        || (USER_PROCESS  == ut->ut_type))
-		    /* A process may have failed to close an entry
-		     * Check if this entry refers to the current tty */
-		    && is_my_tty(ut->ut_line))
-		{
-			break;
+	while (NULL != (ut = getutxent())) {
+		if (   (LOGIN_PROCESS != ut->ut_type)
+		    && (USER_PROCESS  != ut->ut_type))
+			continue;
+
+		if (main_pid == ut->ut_pid) {
+			if (is_my_tty(ut->ut_line))
+				break; /* Perfect match, stop the search */
+
+			if (NULL == ut_by_pid) {
+				ut_by_pid = xmalloc_T(1, struct utmpx);
+				*ut_by_pid = *ut;
+			}
+
+		} else if (   (NULL == ut_by_line)
+			   && (LOGIN_PROCESS == ut->ut_type) /* Be more picky when matching by 'ut_line' only */
+			   && (is_my_tty(ut->ut_line))) {
+			ut_by_line = xmalloc_T(1, struct utmpx);
+			*ut_by_line = *ut;
 		}
 	}
 
+	if (NULL == ut)
+		ut = ut_by_pid ?: ut_by_line;
+
 	if (NULL != ut) {
-		ret = XMALLOC(1, struct utmpx);
-		memcpy (ret, ut, sizeof (*ret));
+		struct utmpx  *ut_copy;
+
+		ut_copy = xmalloc_T(1, struct utmpx);
+		memcpy(ut_copy, ut, sizeof(*ut));
+		ut = ut_copy;
 	}
 
+	free(ut_by_line);
+	free(ut_by_pid);
 	endutxent();
 
-	return ret;
+	return ut;
 }
 
 
 int
-get_session_host(char **out)
+get_session_host(char **out, pid_t main_pid)
 {
 	int           ret = 0;
 	struct utmpx  *ut;
 
-	ut = get_current_utmp();
+	ut = get_current_utmp(main_pid);
 
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
-	if ((ut != NULL) && (ut->ut_host[0] != '\0')) {
-		*out = XSTRNDUP(ut->ut_host);
-		free (ut);
+	if ((ut != NULL) && !strneq_a(ut->ut_host, "")) {
+		*out = xstrndup_a(ut->ut_host);
 	} else {
 		*out = NULL;
 		ret = -2;
@@ -200,6 +217,8 @@ get_session_host(char **out)
 	*out = NULL;
 	ret = -2;
 #endif
+
+	free(ut);
 
 	return ret;
 }
@@ -231,7 +250,8 @@ updwtmpx(const char *filename, const struct utmpx *ut)
  *	It accepts an utmp entry in input (ut) to return an entry with
  *	the right ut_id. This is typically an entry returned by
  *	get_current_utmp
- *	If ut is NULL, ut_id will be forged based on the line argument.
+ *	If ut is NULL or ut->ut_id is empty, ut_id will be forged based on
+ *	the line argument.
  *
  *	The ut_host field of the input structure may also be kept, and is
  *	used to define the ut_addr/ut_addr_v6 fields. (if these fields
@@ -244,7 +264,7 @@ updwtmpx(const char *filename, const struct utmpx *ut)
  */
 static /*@only@*/struct utmpx *
 prepare_utmp(const char *name, const char *line, const char *host,
-             /*@null@*/const struct utmpx *ut)
+             /*@null@*/const struct utmpx *ut, pid_t main_pid)
 {
 	char            *hostname = NULL;
 	struct utmpx    *utent;
@@ -258,36 +278,36 @@ prepare_utmp(const char *name, const char *line, const char *host,
 	if (NULL != host && !streq(host, ""))
 		hostname = xstrdup(host);
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
-	else if (NULL != ut && '\0' != ut->ut_host[0])
-		hostname = XSTRNDUP(ut->ut_host);
+	else if (NULL != ut && !strneq_a(ut->ut_host, ""))
+		hostname = xstrndup_a(ut->ut_host);
 #endif
 
 	line = strprefix(line, "/dev/") ?: line;
 
-	utent = XCALLOC(1, struct utmpx);
+	utent = xcalloc_T(1, struct utmpx);
 
 
 	utent->ut_type = USER_PROCESS;
-	utent->ut_pid = getpid ();
-	STRNCPY(utent->ut_line, line);
-	if (NULL != ut) {
-		STRNCPY(utent->ut_id, ut->ut_id);
+	utent->ut_pid = main_pid;
+	strncpy_a(utent->ut_line, line);
+	if (   (NULL != ut)
+	    && ('\0' != ut->ut_id[0])) {
+		strncpy_a(utent->ut_id, ut->ut_id);
 	} else {
-		/* XXX - assumes /dev/tty?? */
-		STRNCPY(utent->ut_id, line + 3);
+		strncpy_a(utent->ut_id, strnul(line) - MIN(strlen(line), countof(utent->ut_id)));
 	}
 #if defined(HAVE_STRUCT_UTMPX_UT_NAME)
-	STRNCPY(utent->ut_name, name);
+	strncpy_a(utent->ut_name, name);
 #endif
-	STRNCPY(utent->ut_user, name);
+	strncpy_a(utent->ut_user, name);
 	if (NULL != hostname) {
 		struct addrinfo *info = NULL;
 #if defined(HAVE_STRUCT_UTMPX_UT_HOST)
-		STRNCPY(utent->ut_host, hostname);
+		strncpy_a(utent->ut_host, hostname);
 #endif
 #if defined(HAVE_STRUCT_UTMPX_UT_SYSLEN)
-		utent->ut_syslen = MIN (strlen (hostname),
-		                        sizeof (utent->ut_host));
+		utent->ut_syslen = MIN(strlen(hostname),
+		                       sizeof(utent->ut_host));
 #endif
 #if defined(HAVE_STRUCT_UTMPX_UT_ADDR) || defined(HAVE_STRUCT_UTMPX_UT_ADDR_V6)
 		if (getaddrinfo (hostname, NULL, NULL, &info) == 0) {
@@ -298,23 +318,17 @@ prepare_utmp(const char *name, const char *line, const char *host,
 				struct sockaddr_in *sa =
 					(struct sockaddr_in *) info->ai_addr;
 # if defined(HAVE_STRUCT_UTMPX_UT_ADDR)
-				memcpy (&(utent->ut_addr),
-				        &(sa->sin_addr),
-				        MIN (sizeof (utent->ut_addr),
-				             sizeof (sa->sin_addr)));
+				utent->ut_addr = sa->sin_addr.s_addr;
 # endif
 # if defined(HAVE_STRUCT_UTMPX_UT_ADDR_V6)
-				memcpy (utent->ut_addr_v6,
-				        &(sa->sin_addr),
-				        MIN (sizeof (utent->ut_addr_v6),
-				             sizeof (sa->sin_addr)));
+				utent->ut_addr_v6[0] = sa->sin_addr.s_addr;
 			} else if (info->ai_family == AF_INET6) {
 				struct sockaddr_in6 *sa =
 					(struct sockaddr_in6 *) info->ai_addr;
 				memcpy (utent->ut_addr_v6,
 				        &(sa->sin6_addr),
-				        MIN (sizeof (utent->ut_addr_v6),
-				             sizeof (sa->sin6_addr)));
+				        MIN(sizeof(utent->ut_addr_v6),
+				            sizeof(sa->sin6_addr)));
 # endif
 			}
 			freeaddrinfo (info);
@@ -359,7 +373,7 @@ setutmp(struct utmpx *ut)
 
 #if !defined(USE_PAM)
 	/* This is done by pam_lastlog */
-	updwtmpx(_WTMP_FILE, ut);
+	updwtmpx(_PATH_WTMP, ut);
 #endif
 
 	return err;
@@ -367,12 +381,13 @@ setutmp(struct utmpx *ut)
 
 
 int
-update_utmp(const char *user, const char *tty, const char *host)
+update_utmp(const char *user, const char *tty, const char *host,
+            pid_t main_pid)
 {
 	struct utmpx  *utent, *ut;
 
-	utent = get_current_utmp ();
-	ut = prepare_utmp  (user, tty, host, utent);
+	utent = get_current_utmp(main_pid);
+	ut = prepare_utmp(user, tty, host, utent, main_pid);
 
 	(void) setutmp  (ut);	/* make entry in the utmp & wtmp files */
 
@@ -384,13 +399,15 @@ update_utmp(const char *user, const char *tty, const char *host)
 
 
 void
-record_failure(const char *failent_user, const char *tty, const char *hostname)
+record_failure(const char *failent_user, const char *tty, const char *hostname,
+               pid_t main_pid)
 {
 	struct utmpx  *utent, *failent;
 
 	if (getdef_str ("FTMP_FILE") != NULL) {
-		utent = get_current_utmp ();
-		failent = prepare_utmp (failent_user, tty, hostname, utent);
+		utent = get_current_utmp(main_pid);
+		failent = prepare_utmp(failent_user, tty, hostname, utent,
+		                       main_pid);
 		failtmp (failent_user, failent);
 		free (utent);
 		free (failent);
@@ -410,12 +427,12 @@ active_sessions_count(const char *name, unsigned long limit)
 		if (USER_PROCESS != ut->ut_type) {
 			continue;
 		}
-		if ('\0' == ut->ut_user[0]) {
+		if (strneq_a(ut->ut_user, ""))
 			continue;
-		}
-		if (strncmp (name, ut->ut_user, sizeof (ut->ut_user)) != 0) {
+
+		if (!strneq_a(ut->ut_user, name))
 			continue;
-		}
+
 		count++;
 		if (count > limit) {
 			break;

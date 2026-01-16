@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <config.h>
+#include "config.h"
 
 #ident "$Id$"
 
@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "alloc/x/xmalloc.h"
+#include "alloc/malloc.h"
 #include "attr.h"
 #include "fs/readlink/areadlink.h"
 #include "prototypes.h"
@@ -39,9 +39,9 @@
 #endif				/* WITH_ATTR */
 #include "shadowlog.h"
 #include "string/sprintf/aprintf.h"
-#include "string/sprintf/xaprintf.h"
 #include "string/strcmp/streq.h"
 #include "string/strcmp/strprefix.h"
+#include "string/strerrno.h"
 
 
 static /*@null@*/const char *src_orig;
@@ -72,12 +72,10 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
                      uid_t old_uid, uid_t new_uid,
                      gid_t old_gid, gid_t new_gid);
 static int copy_symlink (const struct path_info *src, const struct path_info *dst,
-                         MAYBE_UNUSED bool reset_selinux,
                          const struct stat *statp, const struct timespec mt[],
                          uid_t old_uid, uid_t new_uid,
                          gid_t old_gid, gid_t new_gid);
 static int copy_hardlink (const struct path_info *dst,
-                          MAYBE_UNUSED bool reset_selinux,
                           struct link_name *lp);
 static int copy_special (const struct path_info *src, const struct path_info *dst,
                          bool reset_selinux,
@@ -101,7 +99,8 @@ static int fchown_if_needed (int fdst, const struct stat *statp,
  * error_acl - format the error messages for the ACL and EQ libraries.
  */
 format_attr(printf, 2, 3)
-static void error_acl (MAYBE_UNUSED struct error_context *ctx, const char *fmt, ...)
+static void
+error_acl(struct error_context *, const char *fmt, ...)
 {
 	va_list ap;
 	FILE *shadow_logfd = log_get_logfd();
@@ -118,7 +117,7 @@ static void error_acl (MAYBE_UNUSED struct error_context *ctx, const char *fmt, 
 	if (vfprintf (shadow_logfd, fmt, ap) != 0) {
 		(void) fputs (_(": "), shadow_logfd);
 	}
-	(void) fprintf (shadow_logfd, "%s\n", strerror (errno));
+	(void) fprintf(shadow_logfd, "%s\n", strerrno());
 	va_end (ap);
 }
 
@@ -230,7 +229,7 @@ static /*@exposed@*/ /*@null@*/struct link_name *check_link (const char *name, c
 		return NULL;
 	}
 
-	lp = XMALLOC(1, struct link_name);
+	lp = xmalloc_T(1, struct link_name);
 	lp->ln_dev = sb->st_dev;
 	lp->ln_ino = sb->st_ino;
 	lp->ln_count = sb->st_nlink;
@@ -310,7 +309,7 @@ static int copy_tree_impl (const struct path_info *src, const struct path_info *
 		dst_orig = dst->full_path;
 		set_orig = true;
 	}
-	while ((0 == err) && (ent = readdir (dir)) != NULL) {
+	while (0 == err && NULL != (ent = readdir(dir))) {
 		char              *src_name = NULL;
 		char              *dst_name;
 		struct path_info  src_entry, dst_entry;
@@ -437,7 +436,7 @@ static int copy_entry (const struct path_info *src, const struct path_info *dst,
 	*/
 
 	else if (S_ISLNK (sb.st_mode)) {
-		err = copy_symlink (src, dst, reset_selinux, &sb, mt,
+		err = copy_symlink (src, dst, &sb, mt,
 				    old_uid, new_uid, old_gid, new_gid);
 	}
 
@@ -446,7 +445,7 @@ static int copy_entry (const struct path_info *src, const struct path_info *dst,
 	*/
 
 	else if ((lp = check_link (src->full_path, &sb)) != NULL) {
-		err = copy_hardlink (dst, reset_selinux, lp);
+		err = copy_hardlink (dst, lp);
 	}
 
 	/*
@@ -502,14 +501,14 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
 		return -1;
 	}
 #endif				/* WITH_SELINUX */
-        /*
-         * If the destination is already a directory, don't change it
-         * but copy into it (recursively).
-        */
-        if (fstatat(dst->dirfd, dst->name, &dst_sb, AT_SYMLINK_NOFOLLOW) == 0 && S_ISDIR(dst_sb.st_mode)) {
-            return (copy_tree_impl (src, dst, false, reset_selinux,
-                           old_uid, new_uid, old_gid, new_gid) != 0);
-        }
+	/*
+	 * If the destination is already a directory, don't change it
+	 * but copy into it (recursively).
+	 */
+	if (fstatat(dst->dirfd, dst->name, &dst_sb, AT_SYMLINK_NOFOLLOW) == 0 && S_ISDIR(dst_sb.st_mode)) {
+		return (copy_tree_impl (src, dst, false, reset_selinux,
+		               old_uid, new_uid, old_gid, new_gid) != 0);
+	}
 
 	if (   (mkdirat (dst->dirfd, dst->name, statp->st_mode & 0700) != 0)
 	    || (chownat_if_needed (dst, statp,
@@ -551,7 +550,6 @@ static int copy_dir (const struct path_info *src, const struct path_info *dst,
  *	Return 0 on success, -1 on error.
  */
 static int copy_symlink (const struct path_info *src, const struct path_info *dst,
-                         MAYBE_UNUSED bool reset_selinux,
                          const struct stat *statp, const struct timespec mt[],
                          uid_t old_uid, uid_t new_uid,
                          gid_t old_gid, gid_t new_gid)
@@ -622,7 +620,6 @@ static int copy_symlink (const struct path_info *src, const struct path_info *ds
  *	Return 0 on success, -1 on error.
  */
 static int copy_hardlink (const struct path_info *dst,
-                          MAYBE_UNUSED bool reset_selinux,
                           struct link_name *lp)
 {
 	/* FIXME: selinux, ACL, Extended Attributes needed? */
@@ -653,8 +650,8 @@ static int copy_hardlink (const struct path_info *dst,
  *	Return 0 on success, -1 on error.
  */
 static int
-copy_special(const struct path_info *src, const struct path_info *dst,
-             bool reset_selinux,
+copy_special(MAYBE_UNUSED const struct path_info *src, const struct path_info *dst,
+             MAYBE_UNUSED bool reset_selinux,
              const struct stat *statp, const struct timespec mt[],
              uid_t old_uid, uid_t new_uid,
              gid_t old_gid, gid_t new_gid)
@@ -709,7 +706,7 @@ copy_special(const struct path_info *src, const struct path_info *dst,
  *	Return 0 on success, -1 on error.
  */
 static int copy_file (const struct path_info *src, const struct path_info *dst,
-                      bool reset_selinux,
+                      MAYBE_UNUSED bool reset_selinux,
                       const struct stat *statp, const struct timespec mt[],
                       uid_t old_uid, uid_t new_uid,
                       gid_t old_gid, gid_t new_gid)
@@ -761,7 +758,7 @@ static int copy_file (const struct path_info *src, const struct path_info *dst,
 		char buf[8192];
 		ssize_t cnt;
 
-		cnt = read (ifd, buf, sizeof buf);
+		cnt = read(ifd, buf, sizeof(buf));
 		if (cnt < 0) {
 			if (errno == EINTR) {
 				continue;
@@ -801,7 +798,7 @@ static int chown_function ## _if_needed (type_dst dst,                 \
 {                                                                      \
 	uid_t tmpuid = (uid_t) -1;                                     \
 	gid_t tmpgid = (gid_t) -1;                                     \
-                                                                       \
+	                                                               \
 	/* Use new_uid if old_uid is set to -1 or if the file was      \
 	 * owned by the user. */                                       \
 	if (((uid_t) -1 == old_uid) || (statp->st_uid == old_uid)) {   \
@@ -812,14 +809,14 @@ static int chown_function ## _if_needed (type_dst dst,                 \
 	if ((uid_t) -1 == tmpuid) {                                    \
 		tmpuid = statp->st_uid;                                \
 	}                                                              \
-                                                                       \
+	                                                               \
 	if (((gid_t) -1 == old_gid) || (statp->st_gid == old_gid)) {   \
 		tmpgid = new_gid;                                      \
 	}                                                              \
 	if ((gid_t) -1 == tmpgid) {                                    \
 		tmpgid = statp->st_gid;                                \
 	}                                                              \
-                                                                       \
+	                                                               \
 	return chown_function (dst, tmpuid, tmpgid);                   \
 }
 

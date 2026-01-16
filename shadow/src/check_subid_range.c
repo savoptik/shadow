@@ -3,7 +3,7 @@
 // Exits 0 if owner has subid range starting start, of size count
 // Exits 1 otherwise.
 
-#include <config.h>
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -12,8 +12,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "atoi/a2i.h"
 #include "atoi/getnum.h"
-#include "atoi/str2i.h"
 #include "defines.h"
 #include "idmapping.h"
 #include "prototypes.h"
