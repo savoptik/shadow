@@ -116,7 +116,14 @@ static bool is_valid_name_regexp (const char *name, const char *regexp)
 	int errcode;
 	bool result = false;
 
-	if (valid_field (name, ":\n") != 0) {
+	/*
+	 * Strictly disallow really bad names
+	 */
+	if (streq(name, ".")
+	 || streq(name, "..")
+	 || strspn(name, "-")
+	 || strisdigit(name)
+	 ||(valid_field (name, " \"#',/:;\n") != 0)) {
 		errno = EINVAL;
 		return false;
 	}
@@ -124,7 +131,7 @@ static bool is_valid_name_regexp (const char *name, const char *regexp)
 	/*
 	 * Don't allow digit at the begining of user/group names.
 	 */
-	if (('\0' == *name) || (('0' <= *name) && ('9' >= *name))) {
+	if (('0' <= *name) && ('9' >= *name)) {
 		errno = EINVAL;
 		return false;
 	}
@@ -152,8 +159,14 @@ static bool
 is_valid_name(const char *name)
 {
 
-	const char *name_re = get_name_regexp ();
+	const char *name_re;;
 
+	if (streq(name, "")) {
+		errno = EINVAL;
+		return false;
+	}
+
+	name_re = get_name_regexp ();
 	if (name_re)
 		return is_valid_name_regexp (name, name_re);
 
@@ -165,8 +178,7 @@ is_valid_name(const char *name)
 	 * sake of Samba 3.x "add machine script"
 	 */
 
-	if (('\0' == *name) ||
-	    !((('a' <= *name) && ('z' >= *name)) || ('_' == *name))) {
+	if (!((('a' <= *name) && ('z' >= *name)) || ('_' == *name))) {
 		errno = EINVAL;
 		return false;
 	}
