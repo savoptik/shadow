@@ -28,6 +28,7 @@
 #include "shadowio.h"
 #include "tcbfuncs.h"
 #include "string/sprintf/aprintf.h"
+#include "string/strerrno.h"
 
 #include "shadowlog_internal.h"
 
@@ -53,7 +54,7 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 
 	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 		fprintf (shadow_logfd, _("%s: Cannot drop privileges: %s\n"),
-		         shadow_progname, strerror (errno));
+		         shadow_progname, strerrno());
 		shadowtcb_gain_priv ();
 		free (buf);
 		return false;
@@ -64,7 +65,7 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 	 */
 	if (remove_tree (buf, false) != 0) {
 		fprintf (shadow_logfd, _("%s: Cannot remove the content of %s: %s\n"),
-		         shadow_progname, buf, strerror (errno));
+		         shadow_progname, buf, strerrno());
 		shadowtcb_gain_priv ();
 		free (buf);
 		return false;
@@ -73,7 +74,7 @@ bool remove_tcbdir (const char *user_name, uid_t user_id)
 	free (buf);
 	if (shadowtcb_remove (prefix_dir, user_name) == SHADOWTCB_FAILURE) {
 		fprintf (shadow_logfd, _("%s: Cannot remove tcb files for %s: %s\n"),
-		         shadow_progname, user_name, strerror (errno));
+		         shadow_progname, user_name, strerrno());
 		ret = false;
 	}
 	return ret;
