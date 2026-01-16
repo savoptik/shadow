@@ -231,6 +231,7 @@ This virtual package unifies all shadow suite subpackages.
 	--with-group-name-max-length=32 \
 	--without-sha-crypt \
 	--without-su \
+	--disable-logind \
 	%{?_with_pam:--enable-account-tools-setuid} \
 	%{subst_enable man}
 %make_build
