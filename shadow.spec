@@ -1,6 +1,6 @@
 Name: shadow
-Version: 4.18.0
-Release: alt2
+Version: 4.19.0
+Release: alt1
 Epoch: 1
 
 Summary: Utilities for managing shadow password files and user/group accounts
@@ -484,6 +484,16 @@ rm -f %save_login_defs_file
 %endif
 
 %changelog
+* Mon Jan 19 2026 Mikhail Efremov <sem@altlinux.org> 1:4.19.0-alt1
+- useradd: Fix fail_exit() calls.
+- chpasswd,newusers: Add process_selinux argument to some functions.
+- chage: Fix fail_exit(),check_perms() and close_files().
+- Explicitly disabled logind.
+- lib/chkname.c: More strict check for user name.
+- vipw: Use strerrno().
+- remove_tcbdir: Use strerrno().
+- Updated to 4.19.0.
+
 * Tue Sep 30 2025 Mikhail Efremov <sem@altlinux.org> 1:4.18.0-alt2
 - useradd: Fixed variable initialization.
 - newgrp: Fixed build without LTO.
