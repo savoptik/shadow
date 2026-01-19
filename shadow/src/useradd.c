@@ -2305,7 +2305,7 @@ static void create_home(const struct option_flags *flags)
 		fprintf (stderr,
 				_("%s: Cannot change owner of %s: %s\n"),
 				Prog, prefix_user_home, strerrno());
-		fail_exit (E_HOMEDIR);
+		fail_exit (E_HOMEDIR, process_selinux);
 	}
 	mode = getdef_num("HOME_MODE",
 			  0777 & ~getdef_num("UMASK", GETDEF_DEFAULT_UMASK));
@@ -2313,7 +2313,7 @@ static void create_home(const struct option_flags *flags)
 		fprintf (stderr,
 				_("%s: Cannot change mode of %s: %s\n"),
 				Prog, prefix_user_home, strerrno());
-		fail_exit (E_HOMEDIR);
+		fail_exit (E_HOMEDIR, process_selinux);
 	}
 	home_added = true;
 #ifdef WITH_AUDIT
@@ -2632,7 +2632,7 @@ int main (int argc, char **argv)
 	 */
 	if (get_name_regexp () && !is_uniq_user (user_name)) {
 		fprintf (stderr, _("%s: user name %s is not unique\n"), Prog, user_name);
-		fail_exit (E_NAME_IN_USE);
+		fail_exit (E_NAME_IN_USE, process_selinux);
 	}
 
 	if (uflg)
@@ -2665,7 +2665,7 @@ int main (int argc, char **argv)
 		 */
 		if (get_name_regexp () && !is_uniq_group (user_name)) {
 			fprintf (stderr, _("%s: group name %s is not unique\n"), Prog, user_name);
-			fail_exit (E_NAME_IN_USE);
+			fail_exit (E_NAME_IN_USE, process_selinux);
 		}
 
 		grp_add (process_selinux);
