@@ -7,6 +7,9 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "string/strcmp/streq.h"
+#include "string/strcmp/strprefix.h"
+
 
 /*
  * match_regex - return true if match, false if not
@@ -37,6 +40,15 @@ match_regex(const char *pattern, const char *string)
 bool 
 is_valid_hash(const char *hash) 
 {
+	hash = strprefix(hash, "!") ?: hash;
+
+	// Passwordless account; discouraged
+	if (streq(hash, ""))
+		return true;
+
+	if (streq(hash, "*"))
+		return true;
+
 	// Minimum hash length
 	if (strlen(hash) < 13)
 		return false;
