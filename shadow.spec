@@ -1,5 +1,5 @@
 Name: shadow
-Version: 4.19.2
+Version: 4.19.4
 Release: alt1
 Epoch: 1
 
@@ -469,6 +469,10 @@ rm -f %save_login_defs_file
 %endif
 
 %changelog
+* Thu Mar 05 2026 Mikhail Efremov <sem@altlinux.org> 1:4.19.4-alt1
+- Disabled account-tools-setuid build option.
+- Updated to 4.19.4.
+
 * Wed Jan 21 2026 Mikhail Efremov <sem@altlinux.org> 1:4.19.2-alt1
 - Updated to 4.19.2.
 
